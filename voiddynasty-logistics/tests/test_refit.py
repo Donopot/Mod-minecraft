@@ -7,19 +7,26 @@ import subprocess
 import tempfile
 import unittest
 import zipfile
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from bridge_project import RESOURCES, version
 
 ROOT = Path(__file__).resolve().parents[1]
-PACK = ROOT / "fabric-adapter/src/client/resources/resourcepacks/refit"
+PACK = RESOURCES / "resourcepacks/refit"
 
 
 @unittest.skipUnless(os.name == "nt", "Installed Windows Minecraft test environment")
 class RefitTests(unittest.TestCase):
     def setUp(self):
         self.mc = Path(os.environ["APPDATA"]) / ".minecraft"
-        self.original = self.mc / "mods/voiddynasty-1.0.0.jar"
-        self.artifact = ROOT / "dist/voiddynasty-bridge-0.7.0.jar"
+        build_file = ROOT / ".runtime/fabric-build/build.local.json"
+        if not build_file.is_file():
+            self.skipTest("Build the canonical bridge before runtime validation")
+        build = json.loads(build_file.read_text(encoding="utf-8"))
+        self.original = Path(build["original"])
+        self.artifact = ROOT / f"dist/voiddynasty-bridge-{version()}.jar"
         if not self.original.exists() or not self.artifact.exists():
-            self.skipTest("Build 0.7.0 and supply the original mod before runtime validation")
+            self.skipTest("Build the current bridge and supply its exact base mod before runtime validation")
 
     def test_fabric_weaving_and_real_inventories(self):
         build = json.loads((ROOT / ".runtime/fabric-build/build.local.json").read_text(encoding="utf-8"))

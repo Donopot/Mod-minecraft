@@ -1,3 +1,11 @@
+# 2026-10-17 — bridge unique 0.7.1
+
+- Removed the duplicate Minecraft Java/resources from `fabric-adapter/src`; the Git history preserves them.
+- Restored `ControlPadMixin` to the canonical bridge and retained dynamic ship types.
+- Redirected build, generators, tests and packaging to `../voiddynasty-bridge`.
+- Installer packaging now verifies canonical source provenance, source/artifact integrity and the exact selected base JAR.
+- Receipts and protocol remain unchanged. Local builds and isolated tests only; no installed mod or save replaced.
+
 # VOID DYNASTY prototype work log
 
 ## 2026-10-15 — first implementation

@@ -19,6 +19,9 @@ public final class RefitInventoryHarness {
     private static int total(SimpleContainer c){int out=0;for(int i=0;i<c.getContainerSize();i++)out+=c.getItem(i).getCount();return out;}
     public static void run(String pack) throws Exception {
         SharedConstants.tryDetectVersion();Bootstrap.bootStrap();
+        var shipTypes=FleetPadScreen.class.getDeclaredField("SHIPS");shipTypes.setAccessible(true);
+        check(java.util.Arrays.equals((Object[])shipTypes.get(null), com.donopot.voiddynasty.ShipType.values()),
+                "Pad exposes every ship type from the actual base mod without a fixed list");
         // No world/datapack is started. Bind explicit fixture defaults through the engine's public API.
         var defaults=DataComponentMap.builder().set(DataComponents.MAX_STACK_SIZE,64).build();
         for(var item:new Item[]{Items.IRON_INGOT,Items.GOLD_INGOT,Items.DIAMOND})item.builtInRegistryHolder().bindComponents(defaults);

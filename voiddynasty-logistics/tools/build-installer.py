@@ -5,23 +5,30 @@ import json
 import os
 import subprocess
 import zipfile
+from bridge_project import validated_payload, version as bridge_version
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    version = json.loads((ROOT / "rt-adapter/Info.json").read_text(encoding="utf-8"))["Version"]
+    version = bridge_version()
+    if json.loads((ROOT / "rt-adapter/Info.json").read_text(encoding="utf-8"))["Version"] != version:
+        raise SystemExit("Bridge and RT package versions must match")
     work = ROOT / ".runtime/installer-build"
     work.mkdir(parents=True, exist_ok=True)
     rt = ROOT / "dist/VoidDynastyBridge"
     mc = ROOT / f"dist/voiddynasty-bridge-{version}.jar"
+    bridge = validated_payload(ROOT / ".runtime/fabric-build/build.local.json", mc)
+    if json.loads((rt / "Info.json").read_text(encoding="utf-8"))["Version"] != version:
+        raise SystemExit("Rebuild the RT adapter before packaging this release")
     local = json.loads((ROOT / ".runtime/rt-build.local.json").read_text(encoding="utf-8-sig"))
     code = Path(local["managed"]) / "Code.dll"
     digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
     manifest = work / "payload.json"
     manifest.write_text(json.dumps({
         "version": version,
-        "original_sha256": "9d98712d9fe37133dcea81d992e99fcf1a13618ebbb589350b60ee0c4159e98e",
+        "original_sha256": bridge["original_sha256"],
+        "bridge_source_sha256": bridge["source_sha256"],
         "game_code_sha256": digest(code),
         "minecraft_sha256": digest(mc),
         "dll_sha256": digest(rt / "VoidDynastyBridge.dll"),

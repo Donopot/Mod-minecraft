@@ -7,11 +7,11 @@ Ce dépôt réunit les projets de développement Minecraft et la passerelle Rogu
 | Dossier | Contenu |
 |---|---|
 | `voiddynasty/` | Mod principal et flotte à six classes, conservés depuis le commit initial. |
-| `voiddynasty-bridge/` | Version du bridge déjà présente dans ce dépôt, avec ses modifications du pad. |
-| `voiddynasty-logistics/` | Suite de logistique 0.7.0 : adaptateurs Fabric et Rogue Trader, protocole, simulation, tests et assistant Windows. |
+| `voiddynasty-bridge/` | Source unique du bridge Minecraft 0.7.1 : pad dynamique, coffres, armes et logistique. |
+| `voiddynasty-logistics/` | Suite 0.7.1 : adaptateur Rogue Trader, protocole, simulation, tests et assistant Windows. |
 | `onepiece/` | Port Fabric 26.3 : 40 fruits, 213 techniques, formes et revue des assets alpha.19. |
 
-La suite de logistique conserve la copie d’adaptateur Fabric utilisée par ses recettes 0.7.0. Le dossier `voiddynasty-bridge/` reste la version du bridge déjà développée dans ce dépôt ; ses évolutions sont conservées. [Organisation et versions](docs/CENTRALISATION.md).
+Le bridge Minecraft est construit uniquement depuis `voiddynasty-bridge/`. La copie de sources dans `voiddynasty-logistics/fabric-adapter/` a été retirée ; l’assistant et les tests utilisent le projet unique. [Organisation et versions](docs/CENTRALISATION.md).
 
 Les JAR de mods, bibliothèques de jeux, ressources visuelles binaires privées, mondes et données d’exécution restent locaux. One Piece fournit un manifeste et un importeur pour rétablir ses ressources depuis le paquet privé correspondant. Les droits existants de chaque composant sont conservés ; cette centralisation ne les remplace pas par une nouvelle licence.
 
@@ -22,7 +22,7 @@ Monorepo des sources du mod Minecraft **VOID DYNASTY** et de son addon **Refit &
 | Dossier | Rôle |
 |---|---|
 | `voiddynasty/` | Le mod principal (Fabric, MC 26.3) : ~180 classes, flotte de vaisseaux en blocs, armes, factions |
-| `voiddynasty-bridge/` | Addon client `voiddynasty_bridge` 0.7.0 : pad de commandement à onglets, lasers visibles, effets plasma, logistique |
+| `voiddynasty-bridge/` | Addon client `voiddynasty_bridge` 0.7.1 : pad de commandement à onglets, lasers visibles, effets plasma, logistique |
 
 ## Environnement
 
@@ -37,7 +37,7 @@ Monorepo des sources du mod Minecraft **VOID DYNASTY** et de son addon **Refit &
 cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.0.0.jar
 
 # la bridge (nécessite le jar du mod dans voiddynasty-bridge/libs/)
-cd ../voiddynasty-bridge && ./gradlew build   # -> build/libs/voiddynasty_bridge-0.7.0.jar
+cd ../voiddynasty-bridge && ./gradlew build   # -> build/libs/voiddynasty_bridge-0.7.1.jar
 ```
 
 Voir `voiddynasty-bridge/libs/README.md` : les binaires de dépendance ne sont pas versionnés.

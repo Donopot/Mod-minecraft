@@ -1,6 +1,6 @@
-VOID DYNASTY — Assistant 0.7.0 (alpha)
+VOID DYNASTY — Assistant 0.7.1 (alpha)
 
-1. Extraire le ZIP, puis ouvrir VOID-DYNASTY-Assistant-0.7.0.exe.
+1. Extraire le ZIP, puis ouvrir VOID-DYNASTY-Assistant-0.7.1.exe.
 2. Fermer les deux jeux et renseigner leurs dossiers dans l'assistant.
 3. Selectionner eventuellement le monde Minecraft et la sauvegarde RT correspondante :
    ils seront copies avant l'installation. Les anciens fichiers de mods sont toujours sauvegardes.
@@ -28,7 +28,9 @@ Les preferences sont conservees a cote. Le jeton du pont n'est ni inclus ni affi
 L'installeur n'associe pas une campagne a votre place : cette approbation se fait dans RT.
 Une association existante doit garder le meme monde et sa derniere sauvegarde REWARD_COMMITTED.
 
-Nouveautes 0.7.0 : pad a onglets, coffres synchronises et pages accessibles, rayon laser visible,
+Nouveautes 0.7.1 : source Minecraft unique, types de vaisseaux dynamiques, relais de flotte retabli.
+Le paquet controle l empreinte du JAR de base ayant servi a sa compilation.
+Correctifs 0.7.0 conserves : pad a onglets, coffres synchronises et pages accessibles, rayon laser visible,
 impacts de bolts plus compacts, plasma plus lisible et nouveaux modeles industriels.
 Les transferts et le rendu doivent encore etre verifies dans votre partie.
 

@@ -1,6 +1,7 @@
 """Generate both adapters' fixed mission catalogue from our own contract data."""
 import hashlib
 import json
+from bridge_project import BRIDGE
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -47,6 +48,6 @@ public final class CargoCatalog {
 }
 '''
     (ROOT/'rt-adapter/CargoCatalog.cs').write_text(cs,encoding='utf-8')
-    (ROOT/'fabric-adapter/src/main/java/com/donopot/voiddynastybridge/CargoCatalog.java').write_text(java,encoding='utf-8')
+    (BRIDGE/'src/main/java/com/donopot/voiddynastybridge/CargoCatalog.java').write_text(java,encoding='utf-8')
     print('Generated',len(rows),'missions; catalogue SHA-256:',digest)
 if __name__=='__main__':main()

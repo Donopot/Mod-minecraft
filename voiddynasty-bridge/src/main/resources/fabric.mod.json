@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "voiddynasty_bridge",
-  "version": "0.7.0",
+  "version": "${version}",
   "name": "VOID DYNASTY — Refit & Bridge",
   "description": "Local solo bridge, fleet pad and custom chest fixes, visible laser and plasma effects.",
   "environment": "client",

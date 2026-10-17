@@ -52,7 +52,7 @@ namespace VoidDynasty.RogueTrader {
                 entry.Logger.Log(status);
                 server = null;
             }
-            entry.Logger.Log("VOID DYNASTY 0.7.0 delivery build loaded; requires verified per-save state and explicit world pairing.");
+            entry.Logger.Log("VOID DYNASTY 0.7.1 delivery build loaded; requires verified per-save state and explicit world pairing.");
             return true;
         }
 
@@ -120,7 +120,7 @@ namespace VoidDynasty.RogueTrader {
         }
 
         private static void Draw(UnityModManager.ModEntry entry) {
-            GUILayout.Label("VOID DYNASTY | Rogue Trader bridge | 0.7.0 livraison", new GUILayoutOption[0]);
+            GUILayout.Label("VOID DYNASTY | Rogue Trader bridge | 0.7.1 livraison", new GUILayoutOption[0]);
             GUILayout.Label(status, new GUILayoutOption[0]);
             GUILayout.Label("Native campaign GameId (diagnostic): " + campaign, new GUILayoutOption[0]);
             GUILayout.Label("Zone: " + zone, new GUILayoutOption[0]);

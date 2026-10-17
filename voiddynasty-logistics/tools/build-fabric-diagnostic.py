@@ -7,6 +7,7 @@ import shutil
 from pathlib import Path
 import subprocess
 import zipfile
+from bridge_project import BRIDGE, RESOURCES, fingerprint, validate_base_jar, version
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -23,8 +24,13 @@ def main():
         parser.error("Provide --java-home pointing to a JDK 25 installation")
     minecraft = args.minecraft_path.resolve()
     original = args.original_jar or minecraft / "mods/voiddynasty-1.0.0.jar"
-    if not original.is_file() or hashlib.sha256(original.read_bytes()).hexdigest() != "9d98712d9fe37133dcea81d992e99fcf1a13618ebbb589350b60ee0c4159e98e":
-        parser.error("Provide the verified original VOID DYNASTY 1.0.0 JAR for the refit API references")
+    if not original.is_file():
+        parser.error("Provide --original-jar pointing to the selected VOID DYNASTY base JAR")
+    try:
+        original_hash = validate_base_jar(original)
+    except (ValueError, KeyError, zipfile.BadZipFile) as error:
+        parser.error(str(error))
+    release = version()
     game = minecraft / "versions/fabric-loader-0.19.5-26.3/fabric-loader-0.19.5-26.3.jar"
     loader = minecraft / "libraries/net/fabricmc/fabric-loader/0.19.5/fabric-loader-0.19.5.jar"
     api = minecraft / "mods/fabric-api-0.162.0+26.3.jar"
@@ -47,25 +53,36 @@ def main():
             if name.startswith("META-INF/jars/") and name.endswith(".jar"):
                 (modules / Path(name).name).write_bytes(archive.read(name))
     dependencies = [game, loader, original, *sorted(modules.glob("*.jar")), *sorted((minecraft / "libraries").rglob("*.jar")), *sorted((minecraft / "mods").glob("*geckolib*.jar"))]
-    sources = sorted((ROOT / "fabric-adapter/src/client/java").rglob("*.java")) + sorted((ROOT / "fabric-adapter/src/main/java").rglob("*.java"))
+    sources = sorted((BRIDGE / "src/main/java").rglob("*.java"))
+    source_hash = fingerprint()
     arguments = ["--release", "25", "-encoding", "UTF-8", "-proc:none", "-d", classes.as_posix(),
-                 "-classpath", ";".join(path.as_posix() for path in dependencies), *[path.as_posix() for path in sources]]
+                 "-classpath", os.pathsep.join(path.as_posix() for path in dependencies), *[path.as_posix() for path in sources]]
     argfile = work / "javac.args"
     argfile.write_text("\n".join('"' + arg.replace('"', '\\"') + '"' for arg in arguments), encoding="utf-8")
     subprocess.run([str(home / "bin/javac.exe"), "@" + str(argfile)], cwd=ROOT, check=True)
-    output = ROOT / "dist/voiddynasty-bridge-0.7.0.jar"
+    if validate_base_jar(original) != original_hash:
+        raise SystemExit("Base mod changed while compiling; rebuild against a stable file")
+    if fingerprint() != source_hash:
+        raise SystemExit("Bridge sources changed while compiling; rebuild before packaging")
+    output = ROOT / f"dist/voiddynasty-bridge-{release}.jar"
     output.parent.mkdir(exist_ok=True)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         for source in sorted((classes / "com/donopot/voiddynastybridge").rglob("*.class")):
             archive.write(source, source.relative_to(classes).as_posix())
-        resources = ROOT / "fabric-adapter/src/client/resources"
+        resources = RESOURCES
         for source in sorted(resources.rglob("*")):
             if source.is_file():
-                archive.write(source, source.relative_to(resources).as_posix())
+                name = source.relative_to(resources).as_posix()
+                data = source.read_bytes()
+                if name == "fabric.mod.json":
+                    data = data.replace(b"${version}", release.encode("utf-8"))
+                archive.writestr(name, data)
     digest = hashlib.sha256(output.read_bytes()).hexdigest()
     output.with_suffix(".jar.sha256").write_text(digest + "  " + output.name + "\n", encoding="utf-8")
     manifest = {"jdk": str(home.resolve()), "minecraft": str(minecraft), "classpath": [str(p) for p in dependencies],
-                "classes": str(classes), "artifact": str(output), "sha256": digest}
+                "classes": str(classes), "artifact": str(output), "sha256": digest,
+                "bridge_project": str(BRIDGE.resolve()), "version": release, "source_sha256": source_hash,
+                "original": str(original.resolve()), "original_sha256": original_hash}
     (work / "build.local.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print("Built separate delivery companion: " + str(output))
 

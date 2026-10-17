@@ -7,6 +7,8 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $workspace = Split-Path -Parent $PSScriptRoot
+$bridgeProperties = Join-Path (Split-Path -Parent $workspace) 'voiddynasty-bridge/gradle.properties'
+$bridgeVersion = ((Get-Content -LiteralPath $bridgeProperties | Where-Object { $_ -match '^version=' }) -replace '^version=', '').Trim()
 $original = (Resolve-Path -LiteralPath $VoidDynastyJar).Path
 $minecraftRoot = (Resolve-Path -LiteralPath $MinecraftPath).Path
 $modsRoot = Join-Path $minecraftRoot 'mods'
@@ -38,7 +40,7 @@ $plan = @(
 if (-not $RogueTraderOnly) {
     $plan = @(
         @{ source = $original; target = (Get-ModDestination 'voiddynasty' 'voiddynasty-1.0.0.jar') },
-        @{ source = (Join-Path $workspace 'dist\voiddynasty-bridge-0.7.0.jar'); target = (Get-ModDestination 'voiddynasty_bridge' 'voiddynasty-bridge-0.7.0.jar') }
+        @{ source = (Join-Path $workspace ("dist\voiddynasty-bridge-" + $bridgeVersion + ".jar")); target = (Get-ModDestination 'voiddynasty_bridge' ("voiddynasty-bridge-" + $bridgeVersion + ".jar")) }
     ) + $plan
 }
 foreach ($item in $plan) {

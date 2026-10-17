@@ -1,8 +1,0 @@
-{
-  "required": true,
-  "package": "com.donopot.voiddynastybridge.refit.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": ["SuperChestMenuMixin", "WeaponServiceMixin", "BoltProjectileMixin", "LaserBeamMixin"],
-  "client": ["ControlPadMixin", "ClientRegistrationMixin", "SupplyChestScreen"],
-  "injectors": {"defaultRequire": 1}
-}

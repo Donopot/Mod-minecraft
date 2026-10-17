@@ -9,6 +9,7 @@
     "LaserBeamMixin"
   ],
   "client": [
+    "ControlPadMixin",
     "ClientRegistrationMixin",
     "SupplyChestScreen"
   ],

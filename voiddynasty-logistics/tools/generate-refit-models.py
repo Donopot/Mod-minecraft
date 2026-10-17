@@ -1,8 +1,9 @@
 """Own low-poly block models; reference installed textures without copying any bitmap."""
 from pathlib import Path
 import json
+from bridge_project import RESOURCES
 
-ROOT = Path(__file__).resolve().parents[1] / "fabric-adapter/src/client/resources/resourcepacks/refit"
+ROOT = RESOURCES / "resourcepacks/refit"
 ASSETS = ROOT / "assets"
 FACES = ("north", "south", "west", "east", "up", "down")
 

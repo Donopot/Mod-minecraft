@@ -2,11 +2,13 @@
 
 Le commit initial 5c25f8f contient les projets VOID DYNASTY et son bridge. La centralisation ajoute la suite de logistique et le port One Piece sans remplacer ces deux dossiers.
 
-## Suite de logistique 0.7.0
+## Suite de logistique 0.7.1 — bridge unique
 
-`voiddynasty-logistics/` conserve un ensemble cohérent de sources et de tests : `fabric-adapter/`, `rt-adapter/`, `installer/`, `protocol/`, `void_bridge/`, `tools/`, `tests/` et `docs/`. Sa copie de l’adaptateur Fabric correspond aux recettes documentées de cette version. Les modifications plus récentes du pad dans `voiddynasty-bridge/` gardent leur propre historique.
+`voiddynasty-bridge/` est l’unique source Minecraft. `voiddynasty-logistics/` conserve l’adaptateur RT, l’installeur, le protocole, la simulation, les tests et les outils de construction. Son ancien dossier `fabric-adapter/` ne contient plus qu’un lien de migration ; les anciennes sources restent dans l’historique Git.
 
-L’assistant Windows se compile avec les outils de la suite. Les références Unity, Rogue Trader, UMM et les JAR de mods doivent provenir de l’installation locale. Les sauvegardes, secrets de liaison et exécutables ne sont pas publiés. Voir le README de la suite pour les prérequis.
+Les générateurs, le build local, les tests et les paquets pointent vers le bridge voisin. Le relais réseau `ControlPadMixin` est de nouveau actif ; le pad utilise tous les types de `ShipType.values()`. L’assistant embarque uniquement un build issu de cette source et contrôle son empreinte ainsi que celle du JAR de base choisi. Les formats de reçus et le protocole v4 sont inchangés.
+
+Les références Unity, Rogue Trader, UMM et les JAR de mods proviennent de l’installation locale. Les sauvegardes, secrets de liaison et exécutables ne sont pas publiés. Voir [la migration](BRIDGE-UNIQUE-0.7.1.md) et les README pour les prérequis.
 
 ## One Piece alpha.19
 

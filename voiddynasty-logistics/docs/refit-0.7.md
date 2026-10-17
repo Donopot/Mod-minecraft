@@ -1,3 +1,9 @@
+# Mise à jour 0.7.1
+
+Le bridge est désormais construit depuis une seule source, `../../voiddynasty-bridge/`. Le pad reprend tous les types de vaisseaux et le relais de liste est réactivé. Voir [la migration et les validations](../../docs/BRIDGE-UNIQUE-0.7.1.md). La section suivante décrit les correctifs et la recette historiques de 0.7.0.
+
+---
+
 # Refonte du pad, des coffres et des effets — 0.7.0
 
 Cette version ajoute les corrections au compagnon `voiddynasty_bridge`. Le JAR original VOID DYNASTY 1.0.0 reste identique. Les fonctions du pad, des coffres et des armes fonctionnent sans connexion a Rogue Trader ; le pont reste disponible avec son protocole v4 et ses recettes existantes.

@@ -1,6 +1,6 @@
-# Assistant Windows et premiere utilisation — 0.7.0
+# Assistant Windows et premiere utilisation — 0.7.1
 
-Le paquet joueur est `dist/VOID-DYNASTY-Joueur-0.7.0.zip`. Il contient l'executable autonome `VOID-DYNASTY-Assistant-0.7.0.exe`, un guide et son empreinte SHA-256. L'executable embarque les deux modules du pont. Python, un compilateur et les outils de developpement ne sont pas necessaires chez le joueur.
+Le paquet joueur est `dist/VOID-DYNASTY-Joueur-0.7.1.zip`. Il contient l'executable autonome `VOID-DYNASTY-Assistant-0.7.1.exe`, un guide et son empreinte SHA-256. L'executable embarque les deux modules du pont. Python, un compilateur et les outils de developpement ne sont pas necessaires chez le joueur.
 
 ## Installation
 
@@ -12,7 +12,7 @@ Le paquet joueur est `dist/VOID-DYNASTY-Joueur-0.7.0.zip`. Il contient l'executa
 6. Consulter **Verification** : profil Minecraft, dependances, original, assemblage RT et fermeture des jeux. Corriger les points bloquants. Les versions de cette alpha sont volontairement restreintes a l'environnement valide.
 7. Consulter **Installation**, qui affiche les quatre destinations et le dossier de sauvegarde. Cliquer **Sauvegarder et installer**. Attendre la confirmation et ouvrir **Jouer et entretien**.
 
-Versions requises : Minecraft 26.3, profil Fabric 0.19.5, Fabric API 0.162.0+26.3, GeckoLib 5.5.7, JAR original 1.0.0 reconnu et assemblage RT cible 1.6.1.514 reconnu. Le lanceur Minecraft doit fournir Java 25. L'assistant verifie le profil, pas le processus Java que le lanceur choisira ensuite. .NET Framework 4.8 est la cible de l'assistant Windows. Aucun chargeur, dependance ou jeu n'est fourni ou telecharge.
+Versions requises : Minecraft 26.3, profil Fabric 0.19.5, Fabric API 0.162.0+26.3, GeckoLib 5.5.7, JAR de base 1.0.0 exact utilise pour compiler le paquet et assemblage RT cible 1.6.1.514 reconnu. Le lanceur Minecraft doit fournir Java 25. L'assistant verifie le profil, pas le processus Java que le lanceur choisira ensuite. .NET Framework 4.8 est la cible de l'assistant Windows. Aucun chargeur, dependance ou jeu n'est fourni ou telecharge.
 
 Les dossiers Steam usuels sont recherches pour RT ; un autre emplacement reste selectionnable. Les profils de lanceurs alternatifs doivent disposer du dossier `versions` du profil Fabric : une instance qui ne l'expose pas sera refusee plutot que declaree compatible sans preuve. Cette premiere version ne configure pas automatiquement les lanceurs tiers.
 
@@ -22,7 +22,7 @@ Les dossiers Steam usuels sont recherches pour RT ; un autre emplacement reste s
 
 Dans un monde Minecraft solo local, `/voidbridge` ouvre le guide tant que le depot et l'association ne sont pas presents. `/voidbridge assistant` et le bouton **?** du terminal permettent de le retrouver. Il indique l'etape actuelle : charger RT, creer le depot, demander le lien et obtenir l'approbation RT, puis choisir et livrer une mission. Les boutons passent par les actions serveur existantes ; ils ne modifient jamais directement le journal ou les recus.
 
-**Association existante :** conserver le meme monde et la derniere sauvegarde RT `REWARD_COMMITTED` correspondante. Ne pas refaire la preparation ni l'association. Le guide rappelle cette regle. Les recettes, le protocole v4 et les recompenses natives de 0.6.0 restent inchanges dans 0.7.0.
+**Association existante :** conserver le meme monde et la derniere sauvegarde RT `REWARD_COMMITTED` correspondante. Ne pas refaire la preparation ni l'association. Le guide rappelle cette regle. Les recettes, le protocole v4 et les recompenses natives de 0.6.0 restent inchanges dans 0.7.1.
 
 ## Mise a jour, restauration et retrait
 
@@ -50,4 +50,4 @@ L'executable n'est pas signe numeriquement. Ses empreintes servent a verifier le
 
 Apres les deux modules : `python tools/build-installer.py`. L'outil compile `installer/` avec le compilateur .NET Framework local et embarque exclusivement nos propres JAR/DLL/manifestes. L'empreinte de `Code.dll` est un controle de compatibilite ; le DLL du jeu n'est jamais embarque. Le JAR original, les bibliotheques de jeux et les assets extraits restent exclus.
 
-La version 0.7.0 ajoute les corrections du pad, des coffres, des effets d’armes et des blocs decrites dans [refit-0.7.md](refit-0.7.md). Le fonctionnement du pont et ses recus restent inchanges.
+La version 0.7.1 ajoute les corrections du pad, des coffres, des effets d’armes et des blocs decrites dans [refit-0.7.md](refit-0.7.md). Le fonctionnement du pont et ses recus restent inchanges.

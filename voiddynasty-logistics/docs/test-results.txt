@@ -41,10 +41,18 @@ test_invalid_response_types_and_correlations (test_bridge.ProtocolTests.test_inv
 test_malformed_json_duplicate_keys_non_object_and_bad_utf8 (test_bridge.ProtocolTests.test_malformed_json_duplicate_keys_non_object_and_bad_utf8) ... ok
 test_size_boundary_and_oversize (test_bridge.ProtocolTests.test_size_boundary_and_oversize) ... ok
 test_tcp_fragmentation_and_coalescing (test_bridge.ProtocolTests.test_tcp_fragmentation_and_coalescing) ... ok
-test_existing_real_receipt_migrates_without_reward_or_identity_changes (test_delivery.DeliveryBuildTests.test_existing_real_receipt_migrates_without_reward_or_identity_changes) ... ok
+test_altered_artifact_is_rejected (test_bridge_build.BridgeBuildTests.test_altered_artifact_is_rejected) ... ok
+test_changed_base_is_rejected (test_bridge_build.BridgeBuildTests.test_changed_base_is_rejected) ... ok
+test_legacy_source_tree_is_rejected (test_bridge_build.BridgeBuildTests.test_legacy_source_tree_is_rejected) ... ok
+test_metadata_disagreement_is_rejected (test_bridge_build.BridgeBuildTests.test_metadata_disagreement_is_rejected) ... ok
+test_package_sources_have_one_bridge_and_no_private_outputs (test_bridge_build.BridgeBuildTests.test_package_sources_have_one_bridge_and_no_private_outputs) ... ok
+test_resource_edit_requires_rebuild (test_bridge_build.BridgeBuildTests.test_resource_edit_requires_rebuild) ... ok
+test_source_edit_requires_rebuild (test_bridge_build.BridgeBuildTests.test_source_edit_requires_rebuild) ... ok
+test_verified_base_is_bound_to_the_package (test_bridge_build.BridgeBuildTests.test_verified_base_is_bound_to_the_package) ... ok
+test_existing_real_receipt_migrates_without_reward_or_identity_changes (test_delivery.DeliveryBuildTests.test_existing_real_receipt_migrates_without_reward_or_identity_changes) ... skipped 'Private real save fixture not present'
 test_live_server_withholds_ack_until_main_thread_finishes (test_delivery.DeliveryBuildTests.test_live_server_withholds_ack_until_main_thread_finishes) ... ok
 test_native_cargo_archive_checks_entity_and_blueprint (test_delivery.DeliveryBuildTests.test_native_cargo_archive_checks_entity_and_blueprint) ... ok
-test_native_cargo_reader_accepts_actual_game_archive (test_delivery.DeliveryBuildTests.test_native_cargo_reader_accepts_actual_game_archive) ... ok
+test_native_cargo_reader_accepts_actual_game_archive (test_delivery.DeliveryBuildTests.test_native_cargo_reader_accepts_actual_game_archive) ... skipped 'Private game fixture not present'
 test_real_csharp_ledger_dedup_and_rollback (test_delivery.DeliveryBuildTests.test_real_csharp_ledger_dedup_and_rollback) ... ok
 test_actual_java_client_clears_campaign_on_menu_snapshot (test_diagnostic.DiagnosticInteropTests.test_actual_java_client_clears_campaign_on_menu_snapshot) ... ok
 test_actual_java_client_expires_repeated_game_snapshot (test_diagnostic.DiagnosticInteropTests.test_actual_java_client_expires_repeated_game_snapshot) ... ok
@@ -61,9 +69,9 @@ test_fabric_weaving_and_real_inventories (test_refit.RefitTests.test_fabric_weav
 test_refit_models_resolve_and_remain_bounded (test_refit.RefitTests.test_refit_models_resolve_and_remain_bounded) ... ok
 
 ----------------------------------------------------------------------
-Ran 57 tests in 27.352s
+Ran 65 tests in 28.045s
 
-OK
+OK (skipped=2)
 
 Exit code: 0
 
@@ -73,3 +81,8 @@ Reply lost after reward saved. Cargo locked; reconnecting with same delivery ID.
 PASS | reload: 1 surplus ingot, 0 reserved, 10 logistics points, one receipt
 
 Exit code: 0
+
+Supplemental invocation, 2026-10-17 (private historical save fixture copied into the isolated test checkout):
+$ python -m unittest tests.test_delivery.DeliveryBuildTests.test_existing_real_receipt_migrates_without_reward_or_identity_changes tests.test_delivery.DeliveryBuildTests.test_native_cargo_reader_accepts_actual_game_archive -v
+Both named tests passed. Ran 2 tests in 1.903s. Exit code: 0.
+The original 65-test result above retains its two skips; these supplemental results cover those exact two test IDs.

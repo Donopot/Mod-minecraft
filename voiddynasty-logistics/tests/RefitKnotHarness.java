@@ -10,6 +10,10 @@ public final class RefitKnotHarness {
         Thread.currentThread().setContextClassLoader(loader);
         for(String target:new String[]{"menu.SuperChestMenu","ControlPadScreen","client.SuperChestScreen","client.VoidDynastyModClient","weapon.WeaponService","weapon.BoltProjectile","weapon.LaserBeamEntity"}){
             var type=Class.forName("com.donopot.voiddynasty."+target,false,loader);type.getDeclaredMethods();
+            if (target.equals("ControlPadScreen") && java.util.Arrays.stream(type.getDeclaredMethods())
+                    .noneMatch(method -> method.getName().contains("vd$list"))) {
+                throw new AssertionError("Fleet response relay is missing from the transformed pad");
+            }
             System.out.println("TRANSFORM PASS "+target);
         }
         knot.addToClassPath(Path.of(args[1]));
