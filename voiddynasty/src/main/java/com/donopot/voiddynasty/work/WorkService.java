@@ -181,6 +181,17 @@ public final class WorkService {
 
         // C. à portée ?
         if (distanceSq(bot, target) > REACH * REACH || !visible(level, bot, target)) {
+            // Filet de securite : si marcher ne change rien pendant 40 ticks, on abandonne
+            // cette cible (elle sera comptee comme laissee) au lieu de figer le chantier.
+            if (state.idleTicks > 40) {
+                if (bot instanceof Mob mob) mob.getNavigation().stop();
+                state.hasTarget = false;
+                state.skipped++;
+                state.idleTicks = 0;
+                state.setDirty();
+                advance(state);
+                return;
+            }
             stepToward(level, state, bot, target);
             return;
         }
@@ -342,9 +353,22 @@ public final class WorkService {
     // ---------------------------------------------------------------- déplacement
 
     static boolean visible(ServerLevel level, LivingEntity bot, BlockPos target) {
-        var hit = level.clip(new ClipContext(bot.getEyePosition(), Vec3.atCenterOf(target),
+        // Un joueur mine un bloc par la face qu'il voit, pas par son centre : un bloc
+        // dont le centre est occupe par un voisin reste minable si une face est degagee.
+        // Tester le seul centre bloquait le servitor debout sur le cube qu'il minait.
+        if (visibleAt(level, bot, Vec3.atCenterOf(target))) return true;
+        for (Direction d : Direction.values()) {
+            if (visibleAt(level, bot, Vec3.atCenterOf(target).add(
+                    d.getStepX() * 0.49, d.getStepY() * 0.49, d.getStepZ() * 0.49))) return true;
+        }
+        return false;
+    }
+
+    private static boolean visibleAt(ServerLevel level, LivingEntity bot, Vec3 point) {
+        var hit = level.clip(new ClipContext(bot.getEyePosition(), point,
                 ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot));
-        return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(target);
+        return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(new BlockPos(
+                (int) Math.floor(point.x), (int) Math.floor(point.y), (int) Math.floor(point.z)));
     }
 
     /** Native pathfinding to a reachable work position, never teleport or mine through a wall. */
