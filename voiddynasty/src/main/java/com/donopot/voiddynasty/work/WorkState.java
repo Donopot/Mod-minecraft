@@ -15,21 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * État persistant d'un chantier : le travail en cours **et** le journal des blocs modifiés.
+ * État persistant d'un chantier : le travail en cours, l'inventaire du Servitor et le journal.
  *
- * <p>Pourquoi persistant : un chantier doit survivre à un redémarrage du serveur (exigence
- * « reprise exacte, jamais de reprise à zéro »), et le journal doit permettre d'annuler
- * (« annule les dix dernières minutes »).</p>
- *
- * <p>Le journal est borné : au-delà de {@link #JOURNAL_MAX} entrées, les plus anciennes sont
- * oubliées — on préfère une annulation partielle garantie à une sauvegarde qui gonfle sans fin.</p>
+ * <p>Le Servitor n'est pas un exécuteur distant : il a une cible, une progression de casse, un
+ * outil qui s'use et un inventaire de 36 emplacements. Tout cela vit ici pour survivre au
+ * redémarrage — un chantier doit reprendre exactement où il s'est arrêté.</p>
  */
 public final class WorkState extends SavedData {
 
-    /** Nombre maximum d'entrées de journal conservées. ~50 000 blocs ≈ quelques Mo. */
+    /** Nombre maximum d'entrées de journal conservées. */
     public static final int JOURNAL_MAX = 50_000;
+    /** Emplacements de l'inventaire du Servitor (comme un joueur). */
+    public static final int INV_SLOTS = 36;
 
-    /** Une modification réversible : position, état d'origine encodé en NBT, instant. */
     public static final class Entry {
         public final BlockPos pos;
         public final CompoundTag state;
@@ -42,22 +40,44 @@ public final class WorkState extends SavedData {
         }
     }
 
-    // ---- chantier en cours (null = aucun) ----
+    // ---- chantier ----
     public String jobName = null;
     public int minX, minY, minZ, maxX, maxY, maxZ;
     public int cursorX, cursorY, cursorZ;
-    public int total = 0;      // blocs non vides dans la zone, calculé au démarrage
-    public int done = 0;       // blocs cassés
-    public int skipped = 0;    // blocs laissés (incassables, protégés, fluides, coffres)
+    public int total = 0;
+    public int done = 0;
+    public int skipped = 0;
     public boolean finished = false;
     public String lastStop = "";
 
-    // ---- coffre de depot et butin ----
+    // ---- cible en cours ----
+    public boolean hasTarget = false;
+    public int targetX, targetY, targetZ;
+    public double progress = 0.0;        // secondes de travail accumulées sur la cible
+
+    // ---- outil ----
+    public String toolId = "";           // "" = mains nues
+    public int toolDamage = 0;
+    public int toolBlocks = 0;           // blocs cassés avec l'outil courant
+
+    // ---- inventaire (36 emplacements, "id|count") ----
+    public final List<String> invSlots = new ArrayList<>();
+
+    // ---- depot ----
     public boolean hasDepot = false;
     public int depotX, depotY, depotZ;
-    public int deposited = 0;      // objets mis en coffre
-    public int lootBlocks = 0;     // conteneurs inventories
+    public int depotCount = 1;
+    public int deposited = 0;
+    public boolean goingToDepot = false;
+    /** Le travail est fini : il ne reste qu'a vider le sac au depot avant de conclure. */
+    public boolean finishing = false;
+
+    // ---- butin releve ----
+    public int lootBlocks = 0;
     public final List<String> lootLog = new ArrayList<>();
+
+    /** UUID du Servitor qui exécute ce chantier ("" = aucun). */
+    public String servitorUuid = "";
 
     public final List<Entry> journal = new ArrayList<>();
 
@@ -78,7 +98,6 @@ public final class WorkState extends SavedData {
         return jobName != null && !finished;
     }
 
-    /** Note un conteneur rencontré. Borné à 200 lignes : on veut un rapport, pas un dump. */
     public void noteLoot(String line) {
         lootBlocks++;
         if (lootLog.size() < 200) {
@@ -87,13 +106,44 @@ public final class WorkState extends SavedData {
         setDirty();
     }
 
-    /** Ajoute une entrée au journal en respectant la borne. */
     public void record(BlockPos pos, CompoundTag state, long tick) {
         journal.add(new Entry(pos, state, tick));
         while (journal.size() > JOURNAL_MAX) {
             journal.remove(0);
         }
         setDirty();
+    }
+
+    /** Résumé du dépôt pour le status. */
+    public String depositSummary() {
+        if (!hasDepot) {
+            return "aucun";
+        }
+        return (depotX + " " + depotY + " " + depotZ) + " x" + depotCount
+                + (deposited > 0 ? " (" + deposited + " obj)" : "");
+    }
+
+    /** Poids total de l'inventaire (pour le rapport). */
+    public int invCount() {
+        int n = 0;
+        for (String slot : invSlots) {
+            n += countOf(slot);
+        }
+        return n;
+    }
+
+    static int countOf(String slot) {
+        int i = slot.lastIndexOf('|');
+        try {
+            return i < 0 ? 0 : Integer.parseInt(slot.substring(i + 1));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    static String idOf(String slot) {
+        int i = slot.lastIndexOf('|');
+        return i < 0 ? slot : slot.substring(0, i);
     }
 
     // ---------------- sérialisation ----------------
@@ -110,11 +160,28 @@ public final class WorkState extends SavedData {
             job.putInt("done", s.done);
             job.putInt("skipped", s.skipped);
             job.putBoolean("finished", s.finished);
+            job.putBoolean("has_target", s.hasTarget);
+            job.putIntArray("target", new int[]{s.targetX, s.targetY, s.targetZ});
+            job.putDouble("progress", s.progress);
+            job.putString("tool", s.toolId);
+            job.putInt("tool_damage", s.toolDamage);
+            job.putInt("tool_blocks", s.toolBlocks);
             job.putInt("deposited", s.deposited);
+            job.putInt("depot_count", s.depotCount);
+            job.putBoolean("going_depot", s.goingToDepot);
+            job.putBoolean("finishing", s.finishing);
             job.putInt("loot_blocks", s.lootBlocks);
             if (s.hasDepot) {
                 job.putIntArray("depot", new int[]{s.depotX, s.depotY, s.depotZ});
             }
+            if (!s.servitorUuid.isEmpty()) {
+                job.putString("servitor", s.servitorUuid);
+            }
+            ListTag inv = new ListTag();
+            for (String slot : s.invSlots) {
+                inv.add(StringTag.valueOf(slot));
+            }
+            job.put("inv", inv);
             ListTag butin = new ListTag();
             for (String line : s.lootLog) {
                 butin.add(StringTag.valueOf(line));
@@ -122,8 +189,9 @@ public final class WorkState extends SavedData {
             job.put("loot", butin);
             root.put("job", job);
         }
-        if (!s.lastStop.isEmpty()) root.putString("last_stop", s.lastStop);
-
+        if (!s.lastStop.isEmpty()) {
+            root.putString("last_stop", s.lastStop);
+        }
         ListTag entries = new ListTag();
         for (Entry e : s.journal) {
             CompoundTag t = new CompoundTag();
@@ -157,12 +225,29 @@ public final class WorkState extends SavedData {
             s.done = job.getInt("done").orElse(0);
             s.skipped = job.getInt("skipped").orElse(0);
             s.finished = job.getBoolean("finished").orElse(false);
+            s.hasTarget = job.getBoolean("has_target").orElse(false);
+            int[] tg = job.getIntArray("target").orElse(new int[]{0, 0, 0});
+            if (tg.length == 3) {
+                s.targetX = tg[0]; s.targetY = tg[1]; s.targetZ = tg[2];
+            }
+            s.progress = job.getDouble("progress").orElse(0.0);
+            s.toolId = job.getString("tool").orElse("");
+            s.toolDamage = job.getInt("tool_damage").orElse(0);
+            s.toolBlocks = job.getInt("tool_blocks").orElse(0);
             s.deposited = job.getInt("deposited").orElse(0);
+            s.depotCount = Math.max(1, job.getInt("depot_count").orElse(1));
+            s.goingToDepot = job.getBoolean("going_depot").orElse(false);
+            s.finishing = job.getBoolean("finishing").orElse(false);
             s.lootBlocks = job.getInt("loot_blocks").orElse(0);
+            s.servitorUuid = job.getString("servitor").orElse("");
             int[] dp = job.getIntArray("depot").orElse(new int[]{0, 0, 0});
             if (dp.length == 3 && !(dp[0] == 0 && dp[1] == 0 && dp[2] == 0)) {
                 s.hasDepot = true;
                 s.depotX = dp[0]; s.depotY = dp[1]; s.depotZ = dp[2];
+            }
+            ListTag inv = job.getList("inv").orElse(new ListTag());
+            for (int i = 0; i < inv.size() && s.invSlots.size() < INV_SLOTS; i++) {
+                inv.getString(i).ifPresent(s.invSlots::add);
             }
             ListTag butin = job.getList("loot").orElse(new ListTag());
             for (int i = 0; i < butin.size(); i++) {
@@ -173,7 +258,9 @@ public final class WorkState extends SavedData {
         ListTag entries = root.getList("journal").orElse(new ListTag());
         for (int i = 0; i < entries.size(); i++) {
             CompoundTag t = entries.getCompound(i).orElse(null);
-            if (t == null) continue;
+            if (t == null) {
+                continue;
+            }
             BlockPos pos = BlockPos.of(t.getLong("pos").orElse(0L));
             CompoundTag st = t.getCompound("state").orElse(new CompoundTag());
             long tick = t.getLong("tick").orElse(0L);
