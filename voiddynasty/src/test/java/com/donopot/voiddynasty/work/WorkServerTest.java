@@ -57,6 +57,8 @@ public final class WorkServerTest implements ModInitializer {
         s.jobName = "test"; s.finished = true; s.journal.clear(); s.invSlots.clear(); s.depots.clear();
         s.rollbackRemaining = 0; s.rollbackStarted = false; s.done = 0;
         s.hasTarget = false; s.hasDepot = false; s.goingToDepot = false; s.finishing = false;
+        s.buildingDepot = false; s.depotPlanned = false; s.awaitingServitor = false;
+        s.depotSearchCursor = 0; s.depotBuildTicks = 0; s.supplyChests = 64; s.supplySupports = 64;
         return s;
     }
     private static void tickRollback(ServerLevel level, WorkState state) throws Exception {
@@ -74,6 +76,60 @@ public final class WorkServerTest implements ModInitializer {
     }
     private static void run(ServerLevel level, String phase) throws Exception {
         switch (phase) {
+            case "autoDepotSetup" -> {
+                WorkState s = reset(level); s.jobName = null;
+                for (int x = 42; x <= 58; x++) for (int z = 2; z <= 14; z++)
+                    for (int y = 56; y <= 68; y++) level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 3);
+                BlockPos origin = new BlockPos(50, 64, 8), target = new BlockPos(48, 64, 8);
+                level.setBlock(origin.below(), Blocks.STONE.defaultBlockState(), 3);
+                level.setBlock(target, Blocks.STONE.defaultBlockState(), 3);
+                s = WorkService.start(level, "automatic", target, target, "minecraft:iron_pickaxe", origin);
+                check(s != null && s.hasJob() && !s.hasDepot && s.depots.isEmpty(), "zone accepted without prebuilt depot or ground near selection corner");
+                check(!s.servitorUuid.isEmpty() && level.getBlockState(target).is(Blocks.STONE)
+                        && s.supplyChests == 64 && s.supplySupports == 64, "start spawns worker without remotely placing infrastructure");
+            }
+            case "autoDepotCheck" -> {
+                WorkState s = WorkState.get(level); BlockPos p = new BlockPos(s.depotX, s.depotY, s.depotZ);
+                check(s.hasDepot && s.depots.size() == 1 && level.getBlockState(p).is(Blocks.CHEST), "worker builds and registers its own depot");
+                check(level.getBlockState(p.below()).is(Blocks.COBBLESTONE) && s.supplyChests == 63 && s.supplySupports == 63,
+                        "worker builds missing footing from separate finite kit");
+                check(s.finished && s.done == 1 && s.invSlots.isEmpty() && s.deposited == 1, "worker completes mining and deposits without player preparing ground");
+            }
+            case "extendDepotSetup" -> {
+                WorkState s = WorkState.get(level);
+                Container depot = (Container) level.getBlockEntity(new BlockPos(s.depotX, s.depotY, s.depotZ));
+                for (int i = 0; i < depot.getContainerSize(); i++) depot.setItem(i, new ItemStack(Items.EMERALD, 64));
+                s.invSlots.add(new ItemStack(Items.DIAMOND, 2));
+                check(WorkService.deposit(level) != null, "full-depot recovery accepted with carried resources");
+            }
+            case "extendDepotCheck" -> {
+                WorkState s = WorkState.get(level);
+                check(s.finished && s.invSlots.isEmpty() && s.depots.size() == 2, "worker builds an additional depot when first is full");
+                Container first = (Container) level.getBlockEntity(s.depots.getFirst());
+                Container second = (Container) level.getBlockEntity(s.depots.getLast());
+                boolean untouched = true;
+                for (int i = 0; i < first.getContainerSize(); i++) untouched &= first.getItem(i).is(Items.EMERALD) && first.getItem(i).getCount() == 64;
+                check(untouched, "depot extension never clears unrelated full chest contents");
+                int delivered = 0;
+                for (int i = 0; i < second.getContainerSize(); i++) if (second.getItem(i).is(Items.DIAMOND)) delivered += second.getItem(i).getCount();
+                check(delivered == 2, "extension deposits carried resources exactly once");
+                check(s.supplyChests == 62 && s.supplySupports == 62, "each constructed depot and footing consumes one kit unit");
+            }
+            case "pendingSpawnSetup" -> {
+                WorkState s = reset(level); s.jobName = null;
+                for (int x = 50; x <= 62; x++) for (int z = 18; z <= 30; z++)
+                    for (int y = 47; y <= 70; y++) level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 3);
+                BlockPos origin = new BlockPos(56, 64, 24), target = new BlockPos(56, 90, 24);
+                level.setBlock(target, Blocks.STONE.defaultBlockState(), 3);
+                s = WorkService.start(level, "pending", target, target, "minecraft:iron_pickaxe", origin);
+                check(s != null && s.hasJob() && s.awaitingServitor && s.servitorUuid.isEmpty(), "even unavailable spawn ground does not reject selection");
+                check(level.getBlockState(target).is(Blocks.STONE) && s.journal.isEmpty(), "queued start leaves terrain and ledger intact");
+                level.setBlock(origin.below(), Blocks.STONE.defaultBlockState(), 3);
+            }
+            case "pendingSpawnCheck" -> {
+                WorkState s = WorkState.get(level);
+                check(!s.awaitingServitor && !s.servitorUuid.isEmpty() && s.jobName.equals("pending"), "accepted job automatically finds newly available departure ground");
+            }
             case "mining" -> {
                 WorkState s = reset(level);
                 var bot = ModEntities.SERVITOR_1.create(level, EntitySpawnReason.COMMAND);
@@ -188,6 +244,10 @@ public final class WorkServerTest implements ModInitializer {
                         for (int y = 64; y <= 68; y++) level.setBlock(new BlockPos(x, y, z), Blocks.BEDROCK.defaultBlockState(), 3);
                 s = WorkService.start(level, "unreachable", target, target, "minecraft:iron_pickaxe");
                 check(s != null, "unreachable fixture worker spawned");
+                // This scenario isolates mining navigation after infrastructure is ready.
+                chest(level, s, new BlockPos(10, 64, 6));
+                s.hasDepot = true; s.depotX = 10; s.depotY = 64; s.depotZ = 6;
+                s.buildingDepot = false; s.depotPlanned = false;
                 LivingEntity bot = (LivingEntity) level.getEntity(UUID.fromString(s.servitorUuid));
                 bot.snapTo(2.5, 64, 8.5, 0, 0); s.invSlots.add(new ItemStack(Items.DIAMOND, 2));
             }
@@ -210,6 +270,8 @@ public final class WorkServerTest implements ModInitializer {
                 s.tool = new ItemStack(Items.IRON_PICKAXE); s.tool.setDamageValue(71);
                 s.hasDepot = true; s.depotX = 20; s.depotY = 64; s.depotZ = 24;
                 s.depots.add(new BlockPos(20, 64, 24)); s.depots.add(new BlockPos(24, 64, 24));
+                s.buildingDepot = true; s.depotPlanned = true; s.planX = 25; s.planY = 64; s.planZ = 26;
+                s.depotBuildTicks = 7; s.supplyChests = 61; s.supplySupports = 60;
                 receipt(s, new BlockPos(20, 65, 20), named.copy()); s.setDirty();
                 check(true, "persistence fixture staged");
             }
@@ -220,6 +282,8 @@ public final class WorkServerTest implements ModInitializer {
                 check(s.journal.size() == 1 && s.journal.getFirst().dropsKnown
                         && ItemStack.matches(s.invSlots.getFirst(), s.journal.getFirst().drops.getFirst()), "disk restart keeps exact receipts");
                 check(s.depots.size() == 2 && s.finished && s.rollbackRemaining == 0, "disk restart keeps depots and requires explicit resume");
+                check(s.buildingDepot && s.depotPlanned && s.planX == 25 && s.depotBuildTicks == 7
+                        && s.supplyChests == 61 && s.supplySupports == 60, "disk restart preserves pending depot construction and material counts");
             }
             default -> throw new IllegalArgumentException(phase);
         }

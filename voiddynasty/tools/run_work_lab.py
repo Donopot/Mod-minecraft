@@ -58,10 +58,14 @@ def launch():
 proc=rcon=output=None
 try:
  proc,rcon,output=launch()
- for cmd in ['forceload add 0 0 47 47','time set midnight','gamerule minecraft:advance_time false']:
+ for cmd in ['forceload add 0 0 63 47','time set midnight','gamerule minecraft:advance_time false']:
   print(cmd,rcon.cmd(cmd),flush=True)
  time.sleep(3)
- run_phase(rcon,'rollback');run_phase(rcon,'mining');run_phase(rcon,'navigationSetup')
+ run_phase(rcon,'rollback');run_phase(rcon,'mining')
+ run_phase(rcon,'autoDepotSetup');time.sleep(5);run_phase(rcon,'autoDepotCheck')
+ run_phase(rcon,'extendDepotSetup');time.sleep(5);run_phase(rcon,'extendDepotCheck')
+ run_phase(rcon,'pendingSpawnSetup');time.sleep(3);run_phase(rcon,'pendingSpawnCheck')
+ run_phase(rcon,'navigationSetup')
  time.sleep(25)
  run_phase(rcon,'navigationCheck');run_phase(rcon,'unreachableSetup')
  time.sleep(23)

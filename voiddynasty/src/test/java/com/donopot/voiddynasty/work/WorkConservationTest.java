@@ -72,6 +72,8 @@ public final class WorkConservationTest {
         state.invSlots.get(1).setDamageValue(91); state.tool = state.invSlots.get(1).copy();
         state.hasDepot = true; state.depots.add(BlockPos.ZERO); state.depots.add(new BlockPos(4, 0, 0));
         state.rollbackStarted = true;
+        state.buildingDepot = true; state.depotPlanned = true; state.planX = 7;
+        state.depotBuildTicks = 6; state.supplyChests = 62; state.supplySupports = 61;
         var entry = new WorkState.Entry(new BlockPos(1, 2, 3), NbtUtils.writeBlockState(Blocks.DIAMOND_ORE.defaultBlockState()), 7);
         entry.dropsKnown = true; entry.drops = List.of(named.copy()); state.journal.add(entry);
         var ops = RegistryOps.create(NbtOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
@@ -83,6 +85,11 @@ public final class WorkConservationTest {
         check(loaded.journal.getFirst().dropsKnown && ItemStack.matches(named, loaded.journal.getFirst().drops.getFirst()),
                 "exact rollback receipt persists");
         check(loaded.rollbackStarted && !loaded.hasJob(), "restart cannot automatically resume mining after rollback");
+        check(loaded.buildingDepot && loaded.depotPlanned && loaded.planX == 7 && loaded.depotBuildTicks == 6
+                && loaded.supplyChests == 62 && loaded.supplySupports == 61, "construction plan and separate material kit survive reload");
+        CompoundTag previousFormat = ((CompoundTag) encoded).copy();
+        CompoundTag previousMeta = previousFormat.getCompound("metadata").orElseThrow(); previousMeta.putInt("schema", 2);
+        check(!WorkState.CODEC.parse(ops, previousFormat).getOrThrow().needsRecovery(), "existing schema2 jobs remain readable");
         CompoundTag corrupt = ((CompoundTag) encoded).copy(); corrupt.remove("inventory");
         WorkState locked = WorkState.CODEC.parse(ops, corrupt).getOrThrow();
         check(locked.needsRecovery() && !locked.hasJob(), "malformed modern data locks instead of becoming empty legacy inventory");

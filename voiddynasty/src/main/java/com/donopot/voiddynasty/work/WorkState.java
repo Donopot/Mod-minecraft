@@ -86,6 +86,11 @@ public final class WorkState extends SavedData {
     public boolean needsRecovery() { return recoveryPayload != null; }
 
     // ---- depot ----
+    public boolean awaitingServitor;
+    public int originX, originY, originZ, spawnSearchCursor;
+    public boolean buildingDepot, depotPlanned;
+    public int planX, planY, planZ, depotBuildTicks, depotSearchCursor;
+    public int supplyChests = 64, supplySupports = 64;
     public boolean hasDepot = false;
     public int depotX, depotY, depotZ;
     public int depotCount = 1;
@@ -147,7 +152,7 @@ public final class WorkState extends SavedData {
 
     private static WorkState restore(CompoundTag tag, List<ItemStack> bag, ItemStack tool,
                                      List<List<ItemStack>> receipts) {
-        if (tag.getInt("schema").orElse(0) != 2) throw new IllegalArgumentException("Unknown work schema");
+        if (tag.getInt("schema").orElse(0) != 2 && tag.getInt("schema").orElse(0) != 3) throw new IllegalArgumentException("Unknown work schema");
         WorkState s = fromTag(tag, false);
         if (s.jobName == null && (!bag.isEmpty() || !s.journal.isEmpty()))
             throw new IllegalArgumentException("Orphan work inventory or journal");
@@ -190,7 +195,7 @@ public final class WorkState extends SavedData {
     /** Résumé du dépôt pour le status. */
     public String depositSummary() {
         if (!hasDepot) {
-            return "aucun";
+            return buildingDepot ? "construction automatique en cours" : "a construire";
         }
         return (depotX + " " + depotY + " " + depotZ) + " x" + depotCount
                 + (deposited > 0 ? " (" + deposited + " obj)" : "");
@@ -221,7 +226,7 @@ public final class WorkState extends SavedData {
 
     private static CompoundTag toTag(WorkState s) {
         CompoundTag root = new CompoundTag();
-        root.putInt("schema", 2);
+        root.putInt("schema", 3);
         if (s.jobName != null) {
             CompoundTag job = new CompoundTag();
             job.putString("name", s.jobName);
@@ -239,6 +244,16 @@ public final class WorkState extends SavedData {
             job.putInt("tool_damage", s.toolDamage);
             job.putInt("tool_blocks", s.toolBlocks);
             job.putInt("deposited", s.deposited);
+            job.putIntArray("origin", new int[]{s.originX, s.originY, s.originZ});
+            job.putBoolean("awaiting_servitor", s.awaitingServitor);
+            job.putInt("spawn_search", s.spawnSearchCursor);
+            job.putBoolean("building_depot", s.buildingDepot);
+            job.putBoolean("depot_planned", s.depotPlanned);
+            job.putIntArray("depot_plan", new int[]{s.planX, s.planY, s.planZ});
+            job.putInt("depot_build_ticks", s.depotBuildTicks);
+            job.putInt("depot_search", s.depotSearchCursor);
+            job.putInt("supply_chests", s.supplyChests);
+            job.putInt("supply_supports", s.supplySupports);
             job.putInt("depot_count", s.depotCount);
             job.putBoolean("going_depot", s.goingToDepot);
             job.putBoolean("finishing", s.finishing);
@@ -312,6 +327,20 @@ public final class WorkState extends SavedData {
             s.toolDamage = job.getInt("tool_damage").orElse(0);
             s.toolBlocks = job.getInt("tool_blocks").orElse(0);
             s.deposited = job.getInt("deposited").orElse(0);
+            int[] origin = job.getIntArray("origin").orElse(new int[]{s.minX - 1, s.maxY, s.minZ - 2});
+            if (origin.length != 3) throw new IllegalArgumentException("Invalid origin");
+            s.originX = origin[0]; s.originY = origin[1]; s.originZ = origin[2];
+            s.awaitingServitor = job.getBoolean("awaiting_servitor").orElse(false);
+            s.spawnSearchCursor = Math.max(0, job.getInt("spawn_search").orElse(0));
+            s.buildingDepot = job.getBoolean("building_depot").orElse(false);
+            s.depotPlanned = job.getBoolean("depot_planned").orElse(false);
+            int[] plan = job.getIntArray("depot_plan").orElse(new int[]{0, 0, 0});
+            if (plan.length != 3) throw new IllegalArgumentException("Invalid depot plan");
+            s.planX = plan[0]; s.planY = plan[1]; s.planZ = plan[2];
+            s.depotBuildTicks = Math.max(0, job.getInt("depot_build_ticks").orElse(0));
+            s.depotSearchCursor = Math.max(0, job.getInt("depot_search").orElse(0));
+            s.supplyChests = Math.max(0, job.getInt("supply_chests").orElse(64));
+            s.supplySupports = Math.max(0, job.getInt("supply_supports").orElse(64));
             s.depotCount = Math.max(1, job.getInt("depot_count").orElse(1));
             s.goingToDepot = job.getBoolean("going_depot").orElse(false);
             s.finishing = job.getBoolean("finishing").orElse(false);

@@ -79,7 +79,9 @@ public final class WorkCommand {
         BlockPos a = BlockPosArgument.getLoadedBlockPos(ctx, "coin1");
         BlockPos b = BlockPosArgument.getLoadedBlockPos(ctx, "coin2");
         String tool = BuiltInRegistries.ITEM.getKey(Items.IRON_PICKAXE).toString();
-        WorkState state = WorkService.start(level, name, a, b, tool);
+        WorkState state = WorkService.start(level, name, a, b, tool, ctx.getSource().getEntity() == null
+                ? new BlockPos(Math.min(a.getX(), b.getX()) - 1, Math.max(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()) - 2)
+                : BlockPos.containing(ctx.getSource().getPosition()));
         if (state == null) {
             ctx.getSource().sendFailure(Component.literal(
                     "Chantier refuse : " + WorkState.get(level).lastStop + " (voir /work status)."));
@@ -87,9 +89,8 @@ public final class WorkCommand {
         }
         ctx.getSource().sendSuccess(() -> Component.literal(
                 "Chantier « " + name + " » demarre : " + state.total + " positions."
-                        + " Servitor en " + state.depotX + " " + state.depotY + " " + state.depotZ
-                        + " avec " + state.toolId.substring(state.toolId.indexOf(':') + 1)
-                        + " | depot au meme endroit."), true);
+                        + " Depot construit automatiquement par le servitor; outil " + state.toolId.substring(state.toolId.indexOf(':') + 1)
+                        + ". " + state.lastStop), true);
         return 1;
     }
 
@@ -122,7 +123,7 @@ public final class WorkCommand {
                 + " | sac " + state.invSlots.size() + "/" + WorkState.INV_SLOTS
                 + " (" + state.invCount() + " obj)"
                 + " | " + target
-                + " | depot " + state.depositSummary()
+                + " | depot " + state.depositSummary() + " | kit " + state.supplyChests + " coffres/" + state.supplySupports + " supports"
                 + " | butin " + state.lootBlocks
                 + " | journal " + state.journal.size() + " | rollback " + state.rollbackRemaining
                 + " | " + state.lastStop

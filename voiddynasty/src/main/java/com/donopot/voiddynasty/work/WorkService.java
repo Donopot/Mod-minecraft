@@ -106,6 +106,10 @@ public final class WorkService {
                 continue;
             }
             if (!state.hasJob()) continue;
+            if (state.awaitingServitor && state.servitorUuid.isEmpty()) {
+                if (level.getGameTime() % 20 == 0) spawnServitor(level, state);
+                continue;
+            }
             LivingEntity bot = servitor(level, state);
             if (bot == null || bot.level() != level) {
                 pause(state, "servitor absent ou dimension incorrecte — /work resume");
@@ -114,10 +118,11 @@ public final class WorkService {
             if (bot instanceof Servitor1Entity worker) worker.setWorkMode();
             double oldProgress = state.progress;
             int oldDone = state.done;
+            int oldBuild = state.depotBuildTicks;
             tickWorker(level, state, bot);
             if (!state.hasJob() && bot instanceof Mob mob) mob.getNavigation().stop();
             double moved = bot.distanceToSqr(state.previousX, state.previousY, state.previousZ);
-            if (moved > 0.01 || state.progress != oldProgress || state.done != oldDone) state.idleTicks = 0;
+            if (moved > 0.01 || state.progress != oldProgress || state.done != oldDone || state.depotBuildTicks != oldBuild) state.idleTicks = 0;
             else if (++state.idleTicks > 400) {
                 if (bot instanceof Mob mob) mob.getNavigation().stop();
                 pause(state, "trajet bloque — sac et journal conserves; /work resume");
@@ -129,6 +134,11 @@ public final class WorkService {
 
     /** Une unité de travail par tick. */
     private static void tickWorker(ServerLevel level, WorkState state, LivingEntity bot) {
+        // Infrastructure is a worker task; starting a selection never places or requires a chest.
+        if (state.buildingDepot || !state.hasDepot) {
+            WorkDepot.tick(level, state, bot);
+            return;
+        }
         // A0. travail fini : on vide le sac au depot avant de conclure
         if (state.finishing) {
             if (stepTowardDepot(level, state, bot)) {
@@ -322,17 +332,23 @@ public final class WorkService {
 
     // ---------------------------------------------------------------- déplacement
 
-    private static boolean visible(ServerLevel level, LivingEntity bot, BlockPos target) {
+    static boolean visible(ServerLevel level, LivingEntity bot, BlockPos target) {
         var hit = level.clip(new ClipContext(bot.getEyePosition(), Vec3.atCenterOf(target),
                 ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot));
         return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(target);
     }
 
     /** Native pathfinding to a reachable work position, never teleport or mine through a wall. */
-    private static boolean stepToward(ServerLevel level, WorkState state, LivingEntity bot, BlockPos target) {
+    static boolean stepToward(ServerLevel level, WorkState state, LivingEntity bot, BlockPos target) {
         if (!(bot instanceof Mob mob)) return false;
         if (level.getGameTime() < state.nextPathTick) return !mob.getNavigation().isDone();
         state.nextPathTick = level.getGameTime() + 20;
+        var path = findWorkPath(level, bot, target);
+        return path != null && path.canReach() && mob.getNavigation().moveTo(path, 1.0);
+    }
+
+    static net.minecraft.world.level.pathfinder.Path findWorkPath(ServerLevel level, LivingEntity bot, BlockPos target) {
+        if (!(bot instanceof Mob mob)) return null;
         // Multi-target vanilla path search can detour away from the target around walls.
         java.util.Set<BlockPos> stands = new java.util.HashSet<>();
         for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++)
@@ -346,20 +362,21 @@ public final class WorkService {
                         feet.getY() - bot.getY(), feet.getZ() + 0.5 - bot.getZ());
                 if (!level.noCollision(bot, box)) continue;
                 Vec3 eye = new Vec3(feet.getX() + 0.5, feet.getY() + bot.getEyeHeight(), feet.getZ() + 0.5);
-                if (eye.distanceToSqr(Vec3.atCenterOf(target)) > REACH * REACH) continue;
+                // Vanilla navigation finishes slightly before the node's exact centre.
+                // Keep a margin so arrival always leaves the worker within interaction reach.
+                if (eye.distanceToSqr(Vec3.atCenterOf(target)) > (REACH - 1.0) * (REACH - 1.0)) continue;
                 var hit = level.clip(new ClipContext(eye, Vec3.atCenterOf(target),
                         ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot));
                 if (hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(target)) stands.add(feet);
             }
-        if (stands.isEmpty()) return false;
-        var path = mob.getNavigation().createPath(stands, 0);
-        return path != null && path.canReach() && mob.getNavigation().moveTo(path, 1.0);
+        if (stands.isEmpty()) return null;
+        return mob.getNavigation().createPath(stands, 0);
     }
 
     /** Va au coffre et vide l'inventaire. Renvoie true quand c'est fait. */
-    private static boolean stepTowardDepot(ServerLevel level, WorkState state, LivingEntity bot) {
+    static boolean stepTowardDepot(ServerLevel level, WorkState state, LivingEntity bot) {
         if (!state.hasDepot) {
-            pause(state, "depot manquant — sac conserve");
+            WorkDepot.request(state);
             return false;
         }
         BlockPos depot = new BlockPos(state.depotX, state.depotY, state.depotZ);
@@ -374,7 +391,7 @@ public final class WorkService {
             total += s.getCount();
         }
         Container container = depotContainer(level, state);
-        if (container == null) { pause(state, "depot absent — sac conserve"); return false; }
+        if (container == null) { WorkDepot.request(state); return false; }
         List<ItemStack> left = insertAll(container, stacks);
         state.invSlots.clear(); state.invSlots.addAll(WorkInventory.copy(left));
         state.deposited += total - leftCount(left);
@@ -449,25 +466,8 @@ public final class WorkService {
     }
 
     private static boolean nextDepot(ServerLevel level, WorkState state) {
-        BlockPos cur = new BlockPos(state.depotX, state.depotY, state.depotZ);
-        for (int d = 1; d <= 16; d++) {
-            BlockPos[] candidates = {
-                    cur.offset(d, 0, 0), cur.offset(0, 0, d),
-                    cur.offset(-d, 0, 0), cur.offset(0, 0, -d)};
-            for (BlockPos candidate : candidates) {
-                if (safeDepot(level, candidate)
-                        && level.setBlock(candidate, Blocks.CHEST.defaultBlockState(), 3)) {
-                    state.depotX = candidate.getX();
-                    state.depotY = candidate.getY();
-                    state.depotZ = candidate.getZ();
-                    state.depotCount++;
-                    state.depots.add(candidate.immutable());
-                    state.setDirty();
-                    return true;
-                }
-            }
-        }
-        return false;
+        WorkDepot.request(state);
+        return true;
     }
 
     private static String describe(BlockPos pos, Container container) {
@@ -513,7 +513,7 @@ public final class WorkService {
         }
     }
 
-    private static double distanceSq(LivingEntity bot, BlockPos pos) {
+    static double distanceSq(LivingEntity bot, BlockPos pos) {
         return bot.getEyePosition().distanceToSqr(Vec3.atCenterOf(pos));
     }
 
@@ -522,8 +522,25 @@ public final class WorkService {
         if (servitor == null) {
             return false;
         }
-        BlockPos depot = new BlockPos(state.depotX, state.depotY, state.depotZ);
-        servitor.snapTo(depot.getX() + 1.5, depot.getY(), depot.getZ() + 0.5, 0.0f, 0.0f);
+        BlockPos anchor = state.hasDepot
+                ? new BlockPos(state.depotX + 1, state.depotY, state.depotZ)
+                : new BlockPos(state.originX, state.originY, state.originZ);
+        boolean placed = false;
+        // Bounded search. No floor or chest at the selection corner is required.
+        for (int scan = -1; scan < 128; scan++) {
+            int index = scan < 0 ? 0 : state.spawnSearchCursor++ % (13 * 13 * 21);
+            int plane = index / (13 * 13);
+            int dy = plane <= 4 ? plane : 4 - plane;
+            int cell = index % (13 * 13);
+            int dx = cell % 13 - 6, dz = cell / 13 - 6;
+            BlockPos feet = scan < 0 ? anchor : anchor.offset(dx, dy, dz);
+            if (!safeStand(level, feet)) continue;
+            servitor.snapTo(feet.getX() + 0.5, feet.getY(), feet.getZ() + 0.5, 0, 0);
+            if (!level.noCollision(servitor)) continue;
+            placed = true; break;
+        }
+        state.setDirty();
+        if (!placed) return false;
         servitor.setWorkMode();
         servitor.setPersistenceRequired();      // il ne disparait pas tout seul
         servitor.setCustomName(Component.literal("Servitor de chantier « " + state.jobName + " »"));
@@ -532,6 +549,7 @@ public final class WorkService {
         servitor.setItemSlot(EquipmentSlot.MAINHAND, toolStack(state));
         servitor.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
         state.servitorUuid = servitor.getUUID().toString();
+        state.awaitingServitor = false;
         return true;
     }
 
@@ -579,13 +597,13 @@ public final class WorkService {
         return state.cursorY >= state.minY;
     }
 
-    /**
-     * Démarre un chantier : pose le dépôt, équipe le Servitor, le met debout.
-     *
-     * @return l'état du chantier, ou {@code null} si le dépôt ou le Servitor n'a pas pu être mis en
-     *         place (on refuse de travailler dans ces conditions).
-     */
+    /** Accept the job independently of depot preparation. */
     public static WorkState start(ServerLevel level, String name, BlockPos a, BlockPos b, String toolId) {
+        return start(level, name, a, b, toolId, new BlockPos(Math.min(a.getX(), b.getX()) - 1,
+                Math.max(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()) - 2));
+    }
+
+    public static WorkState start(ServerLevel level, String name, BlockPos a, BlockPos b, String toolId, BlockPos origin) {
         WorkState state = WorkState.get(level);
         if (state.needsRecovery()) return null;
         if (state.jobName != null || !state.journal.isEmpty() || !state.invSlots.isEmpty()) {
@@ -609,7 +627,13 @@ public final class WorkService {
         state.done = 0;
         state.skipped = 0;
         state.deposited = 0;
-        state.depotCount = 1;
+        state.depotCount = 0;
+        state.hasDepot = false;
+        state.originX = origin.getX(); state.originY = origin.getY(); state.originZ = origin.getZ();
+        state.spawnSearchCursor = 0;
+        state.supplyChests = 64; state.supplySupports = 64;
+        state.awaitingServitor = true;
+        WorkDepot.request(state);
         state.lootBlocks = 0;
         state.lootLog.clear();
         state.depots.clear();
@@ -627,37 +651,9 @@ public final class WorkService {
         state.toolBlocks = 0;
         state.servitorUuid = "";
 
-        BlockPos depot = placeDepot(level, state);
-        if (depot == null) {
-            state.jobName = null;
-            state.lastStop = "aucun emplacement de depot supporte et non protege pres de la zone";
-            state.setDirty();
-            return null;
-        }
-        state.hasDepot = true;
-        state.depotX = depot.getX();
-        state.depotY = depot.getY();
-        state.depotZ = depot.getZ();
-        state.depots.add(depot.immutable());
-        if (!spawnServitor(level, state)) {
-            state.finished = true;
-            state.lastStop = "Servitor impossible a placer — depot conserve; /work resume";
-            state.setDirty();
-            return null;
-        }
+        if (!spawnServitor(level, state)) state.lastStop = "chantier accepte — preparation du depart du servitor";
         state.setDirty();
         return state;
-    }
-
-    private static BlockPos placeDepot(ServerLevel level, WorkState state) {
-        // Find supported ground beside the top of the zone, rather than a floating chest.
-        BlockPos base = new BlockPos(state.minX - 2, state.maxY, state.minZ - 2);
-        for (int dy = 3; dy >= -8; dy--) for (int dx = 0; dx <= 4; dx++) {
-            BlockPos candidate = base.offset(-dx, dy, 0);
-            if (safeDepot(level, candidate) && safeStand(level, candidate.east())
-                    && level.setBlock(candidate, Blocks.CHEST.defaultBlockState(), 3)) return candidate;
-        }
-        return null;
     }
 
     public static WorkState resume(ServerLevel level) {
@@ -675,11 +671,9 @@ public final class WorkService {
         state.finished = false;
         state.lastStop = "";
         if (state.cursorY < state.minY || state.rollbackStarted) state.finishing = true;
-        if (!spawnServitor(level, state)) {
-            state.finished = true;
-            state.setDirty();
-            return null;
-        }
+        state.spawnSearchCursor = 0;
+        state.awaitingServitor = true;
+        if (!spawnServitor(level, state)) state.lastStop = "chantier repris — recherche d'un depart sur";
         state.setDirty();
         return state;
     }
@@ -710,7 +704,7 @@ public final class WorkService {
         return true;
     }
 
-    private static void pause(WorkState state, String reason) {
+    static void pause(WorkState state, String reason) {
         state.finished = true; state.lastStop = reason; state.setDirty();
     }
 
@@ -720,16 +714,6 @@ public final class WorkService {
                 && level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir()
                 && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
                 && !ClaimIntegration.isClaimProtected(level, pos);
-    }
-
-    private static boolean safeDepot(ServerLevel level, BlockPos pos) {
-        if (!safeStand(level, pos)) return false;
-        // Keep chests independent: no automatic merging with an unrelated double chest.
-        for (Direction dir : Direction.Plane.HORIZONTAL) {
-            BlockPos neighbor = pos.relative(dir);
-            if (!level.hasChunkAt(neighbor) || level.getBlockState(neighbor).is(Blocks.CHEST)) return false;
-        }
-        return true;
     }
 
     public static void requestRollback(ServerLevel level, WorkState state, int count) {
