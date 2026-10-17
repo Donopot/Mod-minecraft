@@ -112,6 +112,8 @@ public final class WorkState extends SavedData {
 
     /** UUID du Servitor qui exécute ce chantier ("" = aucun). */
     public String servitorUuid = "";
+    /** Newly added workers may not be visible in the world's UUID lookup until the next tick. */
+    public transient net.minecraft.world.entity.LivingEntity pendingServitor;
 
     public final List<Entry> journal = new ArrayList<>();
 

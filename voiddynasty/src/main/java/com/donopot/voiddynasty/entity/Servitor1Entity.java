@@ -55,7 +55,7 @@ public class Servitor1Entity extends ChaosCultistEntity {
 
     @Override
     protected String clipIdle() {
-        return "walk";
+        return "idle";
     }
 
     @Override

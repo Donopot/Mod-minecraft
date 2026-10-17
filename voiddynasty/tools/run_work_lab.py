@@ -15,6 +15,7 @@ parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--missions',action='store_true',help='Also exercise real MCP mission tools; requires requirements-mcp.txt')
 parser.add_argument('--next-only',action='store_true',help='Focus on access/build scenarios only; implies --missions')
 parser.add_argument('--build-only',action='store_true',help='Focus on construction scenarios only; implies --next-only')
+parser.add_argument('--empty-only',action='store_true',help='Only run empty/exhausted selection regressions')
 parser.add_argument('--accept-eula',action='store_true',required=True,help='Explicit acceptance of Minecraft EULA for the disposable server')
 args=parser.parse_args()
 if args.build_only: args.next_only=True
@@ -27,6 +28,7 @@ b=json.loads(args.classpath_json.read_text(encoding='utf-8-sig'))
 jdk=args.jdk.resolve()/'bin';cp=os.pathsep.join([str(args.candidate.resolve()),*b['classpath']])
 test=repo/'voiddynasty/src/test/java/com/donopot/voiddynasty/work/WorkServerTest.java';classes=work/'test-mod-classes';classes.mkdir(exist_ok=True)
 test_sources=[test]
+test_sources.append(test.with_name('WorkEmptyServerTest.java'))
 if args.missions: test_sources.extend([test.with_name('MissionServerTest.java'),test.with_name('WorkNextServerTest.java')])
 r=subprocess.run([str(jdk/'javac.exe'),'--release','25','-proc:none','-encoding','UTF-8','-cp',cp,'-d',str(classes),*map(str,test_sources)],capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=60)
 (work/'server-test-compile.log').write_text(r.stdout+r.stderr,encoding='utf-8')
@@ -68,7 +70,14 @@ try:
  proc,rcon,output=launch()
  for cmd in ['forceload add 0 0 63 47','time set midnight','gamerule minecraft:advance_time false']:
   print(cmd,rcon.cmd(cmd),flush=True)
- if not args.next_only:
+ for phase in ['empty','noKit','noSpawn','large','stale','protected','carry']:
+  for suffix in ['Setup','Check']:
+   name=phase+suffix; result=rcon.cmd('emptycheck '+name); print(name,result,flush=True);results.append({'phase':name,'result':result})
+   if 'PASS '+name not in result: raise RuntimeError(result)
+   if suffix=='Setup':time.sleep(3 if phase=='carry' else 1)
+ result=rcon.cmd('emptycheck idle');print('idle',result,flush=True);results.append({'phase':'idle','result':result})
+ if 'PASS idle' not in result: raise RuntimeError(result)
+ if not args.next_only and not args.empty_only:
   time.sleep(3)
   run_phase(rcon,'rollback');run_phase(rcon,'mining')
   run_phase(rcon,'autoDepotSetup');time.sleep(5);run_phase(rcon,'autoDepotCheck')
@@ -93,7 +102,7 @@ try:
    (lab/'logs/latest.log').rename(lab/'logs/mission-before-restart.log')
    proc,rcon,output=launch();time.sleep(2)
    asyncio.run(after_restart(rcon,lab,mission_notes))
- if args.missions:
+ if args.missions and not args.empty_only:
   from work_next_acceptance import before_restart as next_before,after_restart as next_after
   asyncio.run(next_before(rcon,lab,mission_notes,skip_access=args.build_only))
   rcon.cmd('save-all flush');rcon.cmd('stop');proc.wait(timeout=45);rcon.sock.close();rcon=None;output.close()

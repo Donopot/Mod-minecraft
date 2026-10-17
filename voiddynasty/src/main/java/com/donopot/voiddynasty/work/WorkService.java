@@ -79,6 +79,7 @@ public final class WorkService {
                 state.finished = true;
                 MissionService.paused(state, "WORKER_DIED");
                 state.servitorUuid = "";
+                state.pendingServitor = null;
                 state.setDirty();
             }
         });
@@ -107,6 +108,31 @@ public final class WorkService {
                 continue;
             }
             if (!state.hasJob()) continue;
+            // Discover work before building infrastructure or waiting for a spawn position.
+            // An empty selection must finish even with no depot, no kit or no spawn ground.
+            WorkMission mission = MissionService.active(state);
+            boolean gathering = mission == null || (mission.build == null && !mission.terminal()
+                    && mission.collected < mission.amount);
+            if (gathering && !state.finishing && !state.goingToDepot) {
+                if (state.hasTarget) {
+                    BlockPos target = new BlockPos(state.targetX, state.targetY, state.targetZ);
+                    if (level.hasChunkAt(target) && level.getBlockState(target).isAir()) {
+                        state.hasTarget = false; state.progress = 0;
+                        state.accessRoute.clear(); state.accessBlock = null;
+                        advance(state); state.setDirty();
+                    }
+                }
+                if (!state.hasTarget && !pickTarget(level, state)) {
+                    if (!state.hasJob()) {
+                        LivingEntity stopped = servitor(level, state);
+                        if (stopped instanceof Mob mob) mob.getNavigation().stop();
+                        continue;
+                    }
+                    if (state.cursorY >= state.minY) continue; // Bounded scan; continue next tick.
+                    if (state.invSlots.isEmpty()) { conclude(level, state); continue; }
+                    state.finishing = true; state.setDirty(); // Existing carry must still be delivered.
+                }
+            }
             if (state.awaitingServitor && state.servitorUuid.isEmpty()) {
                 if (level.getGameTime() % 20 == 0) spawnServitor(level, state);
                 continue;
@@ -584,6 +610,9 @@ public final class WorkService {
         }
         try {
             Entity e = level.getEntityInAnyDimension(java.util.UUID.fromString(state.servitorUuid));
+            if (e != null) state.pendingServitor = null;
+            else if (state.pendingServitor != null && state.pendingServitor.getUUID().toString().equals(state.servitorUuid)
+                    && !state.pendingServitor.isRemoved() && state.pendingServitor.level() == level) e = state.pendingServitor;
             return e instanceof LivingEntity living && !living.isRemoved() ? living : null;
         } catch (IllegalArgumentException ex) {
             return null;
@@ -626,6 +655,7 @@ public final class WorkService {
         servitor.setItemSlot(EquipmentSlot.MAINHAND, toolStack(state));
         servitor.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
         state.servitorUuid = servitor.getUUID().toString();
+        state.pendingServitor = servitor;
         state.awaitingServitor = false;
         return true;
     }
@@ -637,6 +667,7 @@ public final class WorkService {
         }
         sweepOrphans(level);
         state.servitorUuid = "";
+        state.pendingServitor = null;
     }
 
     /** Only our tagged workers; never discard a player-renamed combat Servitor. */
@@ -653,6 +684,10 @@ public final class WorkService {
 
     static void conclude(ServerLevel level, WorkState state) {
         state.finished = true;
+        state.awaitingServitor = false;
+        state.buildingDepot = false; state.depotPlanned = false;
+        state.hasTarget = false; state.progress = 0;
+        state.accessRoute.clear(); state.accessBlock = null; state.placementTarget = null;
         MissionService.concluded(state);
         String verdict = "curseur termine (blocs proteges et butin laisses en place)";
         state.lastStop = "termine: " + state.done + " cassés, " + state.skipped + " laissés, "
@@ -661,6 +696,12 @@ public final class WorkService {
         if(mission!=null && mission.build!=null) state.lastStop=mission.status.equals("SUCCEEDED")
                 ? "Construction verifiee: "+mission.placed+" blocs poses; materiaux reserves consommes"
                 : "Recuperation du sac terminee; mission "+mission.status;
+        if (mission == null && state.done == 0 && state.journal.isEmpty() && state.invSlots.isEmpty()) {
+            state.lastStop = state.skipped == 0 ? "Zone vide: aucun bloc a miner; chantier termine."
+                    : "Aucun bloc autorise a miner; " + state.skipped + " blocs laisses intacts.";
+            // No resources, infrastructure, observations or receipts to reconcile for a truly empty job.
+            if (state.skipped == 0 && !state.hasDepot) state.jobName = null;
+        }
         discardServitor(level, state);
         state.setDirty();
     }

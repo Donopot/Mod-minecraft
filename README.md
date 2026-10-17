@@ -2,7 +2,7 @@
 
 ## Développement du servitor polyvalent
 
-La branche `codex/servitor-polyvalent` contient la **1.3.0-alpha.2** : collecte persistante, accès horizontal aux minerais, construction de deux plans avec matériaux réels, MCP typé et rollback. [Fonctionnement et limites](voiddynasty/docs/SERVITOR-POLYVALENT-ALPHA2.md) · [Exemple Hermes distant](voiddynasty/tools/hermes/README.md) · [Pack alpha de test](client-local/voiddynasty-1.3.0-alpha.2). Le pack 1.2.5 ci-dessous reste la référence publiée sur `main`.
+La version de développement **1.3.0-alpha.3** corrige la fin des zones vides, les servitors oubliés et l'animation de marche au repos. Elle conserve la collecte persistante, les accès horizontaux, la construction avec matériaux réels, MCP et rollback. [Correctif](voiddynasty/docs/SERVITOR-1.3.0-alpha.3.md) · [Fonctionnement et limites](voiddynasty/docs/SERVITOR-POLYVALENT-ALPHA2.md) · [Exemple Hermes distant](voiddynasty/tools/hermes/README.md) · [Pack alpha de test](client-local/voiddynasty-1.3.0-alpha.3). Le pack historique 1.2.5 reste disponible ci-dessous.
 
 ## Jouer en local, avec ou sans Rogue Trader
 
@@ -16,7 +16,7 @@ Ce dépôt réunit les projets de développement Minecraft et la passerelle Rogu
 
 | Dossier | Contenu |
 |---|---|
-| `voiddynasty/` | Mod principal 1.3.0-alpha.2 sur cette branche, flotte à six classes et missions du servitor. |
+| `voiddynasty/` | Mod principal 1.3.0-alpha.3, flotte à six classes et missions du servitor. |
 | `voiddynasty-bridge/` | Source unique du bridge Minecraft 0.7.1 : pad dynamique, coffres, armes et logistique. |
 | `voiddynasty-logistics/` | Suite 0.7.1 : adaptateur Rogue Trader, protocole, simulation, tests et assistant Windows. |
 | `onepiece/` | Port Fabric 26.3 : 40 fruits, 213 techniques, formes et revue des assets alpha.19. |
@@ -44,7 +44,7 @@ Monorepo des sources du mod Minecraft **VOID DYNASTY** et de son addon **Refit &
 
 ```bash
 # le mod
-cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.3.0-alpha.2.jar
+cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.3.0-alpha.3.jar
 
 # la bridge (nécessite le jar du mod dans voiddynasty-bridge/libs/)
 cd ../voiddynasty-bridge && ./gradlew build   # -> build/libs/voiddynasty_bridge-0.7.1.jar
