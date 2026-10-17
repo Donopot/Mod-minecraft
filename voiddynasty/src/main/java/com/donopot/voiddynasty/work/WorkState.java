@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -51,6 +52,13 @@ public final class WorkState extends SavedData {
     public boolean finished = false;
     public String lastStop = "";
 
+    // ---- coffre de depot et butin ----
+    public boolean hasDepot = false;
+    public int depotX, depotY, depotZ;
+    public int deposited = 0;      // objets mis en coffre
+    public int lootBlocks = 0;     // conteneurs inventories
+    public final List<String> lootLog = new ArrayList<>();
+
     public final List<Entry> journal = new ArrayList<>();
 
     public static final Codec<WorkState> CODEC =
@@ -68,6 +76,15 @@ public final class WorkState extends SavedData {
 
     public boolean hasJob() {
         return jobName != null && !finished;
+    }
+
+    /** Note un conteneur rencontré. Borné à 200 lignes : on veut un rapport, pas un dump. */
+    public void noteLoot(String line) {
+        lootBlocks++;
+        if (lootLog.size() < 200) {
+            lootLog.add(line);
+        }
+        setDirty();
     }
 
     /** Ajoute une entrée au journal en respectant la borne. */
@@ -93,6 +110,16 @@ public final class WorkState extends SavedData {
             job.putInt("done", s.done);
             job.putInt("skipped", s.skipped);
             job.putBoolean("finished", s.finished);
+            job.putInt("deposited", s.deposited);
+            job.putInt("loot_blocks", s.lootBlocks);
+            if (s.hasDepot) {
+                job.putIntArray("depot", new int[]{s.depotX, s.depotY, s.depotZ});
+            }
+            ListTag butin = new ListTag();
+            for (String line : s.lootLog) {
+                butin.add(StringTag.valueOf(line));
+            }
+            job.put("loot", butin);
             root.put("job", job);
         }
         if (!s.lastStop.isEmpty()) root.putString("last_stop", s.lastStop);
@@ -130,6 +157,17 @@ public final class WorkState extends SavedData {
             s.done = job.getInt("done").orElse(0);
             s.skipped = job.getInt("skipped").orElse(0);
             s.finished = job.getBoolean("finished").orElse(false);
+            s.deposited = job.getInt("deposited").orElse(0);
+            s.lootBlocks = job.getInt("loot_blocks").orElse(0);
+            int[] dp = job.getIntArray("depot").orElse(new int[]{0, 0, 0});
+            if (dp.length == 3 && !(dp[0] == 0 && dp[1] == 0 && dp[2] == 0)) {
+                s.hasDepot = true;
+                s.depotX = dp[0]; s.depotY = dp[1]; s.depotZ = dp[2];
+            }
+            ListTag butin = job.getList("loot").orElse(new ListTag());
+            for (int i = 0; i < butin.size(); i++) {
+                butin.getString(i).ifPresent(s.lootLog::add);
+            }
         }
         s.lastStop = root.getString("last_stop").orElse("");
         ListTag entries = root.getList("journal").orElse(new ListTag());

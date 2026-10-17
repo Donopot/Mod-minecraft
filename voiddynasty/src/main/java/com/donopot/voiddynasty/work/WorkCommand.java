@@ -35,6 +35,7 @@ public final class WorkCommand {
                                         .then(Commands.argument("coin2", BlockPosArgument.blockPos())
                                                 .executes(WorkCommand::start)))))
                 .then(Commands.literal("status").executes(WorkCommand::status))
+                .then(Commands.literal("loot").executes(WorkCommand::loot))
                 .then(Commands.literal("stop").executes(WorkCommand::stop))
                 .then(Commands.literal("rollback")
                         .executes(ctx -> rollback(ctx, Integer.MAX_VALUE))
@@ -48,8 +49,14 @@ public final class WorkCommand {
         BlockPos a = BlockPosArgument.getLoadedBlockPos(ctx, "coin1");
         BlockPos b = BlockPosArgument.getLoadedBlockPos(ctx, "coin2");
         WorkState state = WorkService.start(level, name, a, b);
+        if (state == null) {
+            ctx.getSource().sendFailure(Component.literal(
+                    "Chantier refuse : impossible de poser le coffre de depot au-dessus de la zone."));
+            return 0;
+        }
         ctx.getSource().sendSuccess(() -> Component.literal(
-                "Chantier « " + name + " » demarre : " + state.total + " positions, ordre haut vers bas."), true);
+                "Chantier « " + name + " » demarre : " + state.total + " positions, ordre haut vers bas."
+                        + " Depot en " + state.depotX + " " + state.depotY + " " + state.depotZ + "."), true);
         return 1;
     }
 
@@ -70,9 +77,27 @@ public final class WorkCommand {
                 + ") — " + state.done + " casses, " + state.skipped + " laisses"
                 + " | budget " + WorkService.budget() + " blocs/tick, "
                 + String.format("%.1f", WorkService.averageMs()) + " ms"
+                + " | depot " + (state.hasDepot ? state.depotX + " " + state.depotY + " " + state.depotZ : "aucun")
+                + (state.deposited > 0 ? " (" + state.deposited + " objets)" : "")
+                + " | butin " + state.lootBlocks + " conteneurs"
                 + " | journal " + state.journal.size();
         ctx.getSource().sendSuccess(() -> Component.literal(msg), false);
         return 1;
+    }
+
+    private static int loot(CommandContext<CommandSourceStack> ctx) {
+        WorkState state = WorkState.get(ctx.getSource().getLevel());
+        if (state.lootBlocks == 0) {
+            ctx.getSource().sendSuccess(() -> Component.literal(
+                    "Aucun conteneur rencontre. Les coffres sont releves, pas ouverts a la main."), false);
+            return 0;
+        }
+        ctx.getSource().sendSuccess(() -> Component.literal(
+                "Butin releve (" + state.lootBlocks + " conteneurs, rien de pris) :"), false);
+        for (String line : state.lootLog) {
+            ctx.getSource().sendSuccess(() -> Component.literal("  " + line), false);
+        }
+        return state.lootBlocks;
     }
 
     private static int stop(CommandContext<CommandSourceStack> ctx) {
@@ -82,6 +107,27 @@ public final class WorkCommand {
                 stopped ? "Chantier arrete. Journal conserve : /work rollback pour annuler."
                         : "Aucun chantier a arreter."), true);
         return stopped ? 1 : 0;
+    }
+
+    /** Vide le coffre de depot ; renvoie le nombre d'objets retires. */
+    private static int clearDepot(ServerLevel level, WorkState state) {
+        if (!state.hasDepot) {
+            return 0;
+        }
+        BlockPos depotPos = new BlockPos(state.depotX, state.depotY, state.depotZ);
+        if (!(level.getBlockEntity(depotPos) instanceof net.minecraft.world.Container depot)) {
+            return 0;
+        }
+        int removed = 0;
+        for (int i = 0; i < depot.getContainerSize(); i++) {
+            net.minecraft.world.item.ItemStack stack = depot.getItem(i);
+            if (!stack.isEmpty()) {
+                removed += stack.getCount();
+                depot.setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+            }
+        }
+        depot.setChanged();
+        return removed;
     }
 
     private static int rollback(CommandContext<CommandSourceStack> ctx, int count) {
@@ -100,11 +146,17 @@ public final class WorkCommand {
                 failed++;
             }
         }
+        // Le depot est vide : les blocs reviennent, donc les objets qu'ils ont produits aussi.
+        // Sans cela, miner puis annuler dupliquerait le butin.
+        int cleared = clearDepot(level, state);
+        state.deposited = 0;
         state.setDirty();
         final int r = restored;
         final int f = failed;
+        final int c = cleared;
         ctx.getSource().sendSuccess(() -> Component.literal(
                 "Rollback : " + r + " blocs restaures" + (f > 0 ? ", " + f + " echecs" : "")
+                        + ", depot vide de " + c + " objets (sinon duplication)"
                         + ". Journal restant : " + state.journal.size()), true);
         return restored;
     }

@@ -6,9 +6,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Exécuteur de chantier : casse la zone demandée, un bloc à la fois, dans un budget par tick.
@@ -21,10 +29,13 @@ import net.minecraft.world.level.block.state.BlockState;
  *   <li><b>Journal avant destruction</b> — l'état d'origine est écrit dans {@link WorkState} *avant*
  *       de casser le bloc. Si le serveur tombe entre les deux, on a au pire un bloc noté encore
  *       debout, jamais un bloc perdu sans trace.</li>
- *   <li><b>Ce qu'on ne casse pas</b> — incassables, fluides, blocs à entité (coffres, machines) et
- *       zones protégées sont laissés et comptés. On ne détruit pas un atelier ni le coffre de
- *       quelqu'un pour « finir la zone ».</li>
+ *   <li><b>Rien ne part au sol</b> — les drops sont calculés puis rangés dans un coffre de dépôt posé
+ *       par le chantier. Un objet tombé par terre est un objet perdu.</li>
  * </ul>
+ *
+ * <p>Ce qu'on ne casse pas : incassables, fluides, conteneurs (coffres, fourneaux, machines) et zones
+ * protégées. Les conteneurs sont <b>ouverts et inventoriés</b> — on relève leur contenu sans rien
+ * prendre ni casser.</p>
  *
  * <p>L'ordre de travail est <b>de haut en bas</b> : c'est l'ordre qui gère la gravité (sable,
  * gravier) sans qu'un bloc tombe sur le suivant, et qui évite d'ouvrir une poche de liquide par
@@ -32,11 +43,8 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public final class WorkService {
 
-    /** Budget maximum de blocs par tick. */
     private static final int BUDGET_MAX = 64;
-    /** Budget minimum, pour ne pas devenir inutilement lent sur une machine chargée. */
     private static final int BUDGET_MIN = 4;
-    /** Temps visé pour notre propre travail, en millisecondes. */
     private static final double TARGET_MS = 5.0;
 
     private static int budget = 24;
@@ -61,8 +69,8 @@ public final class WorkService {
         ServerLevel level = server.overworld();
         WorkState state = WorkState.get(level);
 
-        int made = 0;
         if (state.hasJob()) {
+            int made = 0;
             while (made < budget) {
                 if (!step(level, state)) {
                     break;
@@ -83,11 +91,6 @@ public final class WorkService {
         }
     }
 
-    /**
-     * Traite une position du curseur puis avance.
-     *
-     * @return {@code false} quand le chantier est terminé (ou plus de chantier).
-     */
     private static boolean step(ServerLevel level, WorkState state) {
         if (!state.hasJob()) {
             return false;
@@ -96,14 +99,15 @@ public final class WorkService {
         examine(level, state, pos);
         if (!advance(state)) {
             state.finished = true;
-            state.lastStop = "termine: " + state.done + " casses, " + state.skipped + " laisses";
+            state.lastStop = "termine: " + state.done + " casses, " + state.skipped + " laisses, "
+                    + state.deposited + " objets en coffre";
             state.setDirty();
             return false;
         }
         return true;
     }
 
-    /** Décide du sort d'un bloc : casser, laisser, ou ignorer. */
+    /** Décide du sort d'un bloc : casser, inventorier, ou laisser. */
     private static void examine(ServerLevel level, WorkState state, BlockPos pos) {
         BlockState blockState = level.getBlockState(pos);
         if (blockState.isAir()) {
@@ -114,12 +118,18 @@ public final class WorkService {
             state.skipped++;
             return;
         }
-        // 2. fluide : on ne l'ouvre pas, on le laisse et on le signale
+        // 2. fluide : on ne l'ouvre pas
         if (!blockState.getFluidState().isEmpty()) {
             state.skipped++;
             return;
         }
-        // 3. bloc à entité : coffre, machine du mod, fourneau — jamais à l'aveugle
+        // 3. conteneur : on l'ouvre, on relève, on ne prend rien et on ne casse pas
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof Container container) {
+            state.noteLoot(describe(pos, container));
+            state.skipped++;
+            return;
+        }
         if (blockState.hasBlockEntity()) {
             state.skipped++;
             return;
@@ -134,17 +144,124 @@ public final class WorkService {
             state.skipped++;
             return;
         }
-        // journal AVANT destruction
+        // journal AVANT destruction, drops AVANT destruction
+        List<ItemStack> drops = BlockBehaviourDrops.of(blockState, level, pos, be);
+        if (!drops.isEmpty() && !deposit(level, state, drops)) {
+            state.lastStop = "depot plein: " + state.done + " casses";
+            state.finished = true;
+            state.jobName = null;
+            state.setDirty();
+            return;
+        }
         CompoundTag saved = NbtUtils.writeBlockState(blockState);
         state.record(pos, saved, level.getGameTime());
-        level.destroyBlock(pos, true, null, 512);
+        level.destroyBlock(pos, false, null, 512);
         state.done++;
+    }
+
+    /** Petite indirection : garde l'appel aux drops en un seul endroit. */
+    private static final class BlockBehaviourDrops {
+        static List<ItemStack> of(BlockState state, ServerLevel level, BlockPos pos, BlockEntity be) {
+            return net.minecraft.world.level.block.Block.getDrops(state, level, pos, be);
+        }
+    }
+
+    /** Résume le contenu d'un conteneur, sans y toucher. */
+    private static String describe(BlockPos pos, Container container) {
+        StringBuilder sb = new StringBuilder("coffre ").append(pos.getX()).append(' ').append(pos.getY())
+                .append(' ').append(pos.getZ()).append(" : ");
+        List<String> parts = new ArrayList<>();
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack stack = container.getItem(i);
+            if (!stack.isEmpty()) {
+                parts.add(stack.getCount() + " " + stack.getHoverName().getString());
+            }
+        }
+        if (parts.isEmpty()) {
+            sb.append("vide");
+        } else {
+            sb.append(String.join(", ", parts));
+        }
+        return sb.toString();
+    }
+
+    // ---------------- dépôt ----------------
+
+    /**
+     * Range les drops dans le coffre de dépôt.
+     *
+     * @return {@code false} si le coffre est plein — le chantier s'arrête alors au lieu de laisser
+     *         des objets par terre.
+     */
+    private static boolean deposit(ServerLevel level, WorkState state, List<ItemStack> drops) {
+        Container depot = depotContainer(level, state);
+        if (depot == null) {
+            return false;
+        }
+        for (ItemStack stack : drops) {
+            if (stack.isEmpty()) {
+                continue;
+            }
+            ItemStack remaining = stack.copy();
+            // 1. compléter les piles existantes
+            for (int i = 0; i < depot.getContainerSize() && !remaining.isEmpty(); i++) {
+                ItemStack slot = depot.getItem(i);
+                if (!slot.isEmpty() && ItemStack.isSameItemSameComponents(slot, remaining)) {
+                    int space = Math.min(depot.getMaxStackSize(slot) - slot.getCount(), remaining.getCount());
+                    if (space > 0) {
+                        slot.grow(space);
+                        remaining.shrink(space);
+                        depot.setItem(i, slot);
+                    }
+                }
+            }
+            // 2. emplacements vides
+            for (int i = 0; i < depot.getContainerSize() && !remaining.isEmpty(); i++) {
+                if (depot.getItem(i).isEmpty()) {
+                    int put = Math.min(depot.getMaxStackSize(remaining), remaining.getCount());
+                    depot.setItem(i, remaining.copyWithCount(put));
+                    remaining.shrink(put);
+                }
+            }
+            if (!remaining.isEmpty()) {
+                depot.setChanged();
+                return false;
+            }
+            state.deposited += stack.getCount();
+        }
+        depot.setChanged();
+        return true;
+    }
+
+    private static Container depotContainer(ServerLevel level, WorkState state) {
+        if (!state.hasDepot) {
+            return null;
+        }
+        BlockEntity be = level.getBlockEntity(new BlockPos(state.depotX, state.depotY, state.depotZ));
+        return be instanceof Container container ? container : null;
+    }
+
+    /**
+     * Pose le coffre de dépôt au-dessus du coin du chantier, hors de la zone à creuser.
+     *
+     * @return la position du coffre, ou {@code null} si aucun emplacement libre n'a été trouvé.
+     */
+    private static BlockPos placeDepot(ServerLevel level, WorkState state) {
+        BlockPos base = new BlockPos(state.minX, state.maxY + 2, state.minZ);
+        for (int dy = 0; dy < 16; dy++) {
+            BlockPos candidate = base.above(dy);
+            if (level.getBlockState(candidate).isAir()) {
+                if (level.setBlock(candidate, Blocks.CHEST.defaultBlockState(), 3)) {
+                    return candidate;
+                }
+            }
+        }
+        return null;
     }
 
     private static boolean touchesFluid(ServerLevel level, BlockPos pos) {
         for (Direction d : Direction.values()) {
-            BlockPos near = pos.relative(d);
-            BlockState s = level.getBlockState(near);
+            BlockState s = level.getBlockState(pos.relative(d));
             if (!s.getFluidState().isEmpty()) {
                 return true;
             }
@@ -166,7 +283,12 @@ public final class WorkService {
         return state.cursorY >= state.minY;
     }
 
-    /** Démarre un chantier (remplace celui en cours). */
+    /**
+     * Démarre un chantier et pose son coffre de dépôt.
+     *
+     * @return l'état du chantier, ou {@code null} si le dépôt n'a pas pu être posé (on refuse de
+     *         travailler sans dépôt : les drops finiraient au sol et seraient perdus).
+     */
     public static WorkState start(ServerLevel level, String name, BlockPos a, BlockPos b) {
         WorkState state = WorkState.get(level);
         state.jobName = name;
@@ -184,19 +306,33 @@ public final class WorkService {
         state.total = (int) Math.min(Integer.MAX_VALUE, volume);
         state.done = 0;
         state.skipped = 0;
+        state.deposited = 0;
+        state.lootBlocks = 0;
+        state.lootLog.clear();
         state.finished = false;
         state.lastStop = "";
+
+        BlockPos depot = placeDepot(level, state);
+        if (depot == null) {
+            state.jobName = null;
+            state.setDirty();
+            return null;
+        }
+        state.hasDepot = true;
+        state.depotX = depot.getX();
+        state.depotY = depot.getY();
+        state.depotZ = depot.getZ();
         state.setDirty();
         return state;
     }
 
-    /** Arrête le chantier en cours sans perdre le journal. */
     public static boolean stop(ServerLevel level) {
         WorkState state = WorkState.get(level);
         if (!state.hasJob()) {
             return false;
         }
-        state.lastStop = "arrete: " + state.done + " casses, " + state.skipped + " laisses";
+        state.lastStop = "arrete: " + state.done + " casses, " + state.skipped + " laisses, "
+                + state.deposited + " objets en coffre";
         state.finished = true;
         state.jobName = null;
         state.setDirty();
