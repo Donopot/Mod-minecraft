@@ -1,0 +1,47 @@
+{
+  "pack_version": "1.3.0-alpha.3",
+  "channel": "alpha",
+  "base_version": "1.3.0-alpha.3",
+  "bridge_version": "0.7.1",
+  "minecraft": "26.3",
+  "fabric_loader": "0.19.5",
+  "java": 25,
+  "rogue_trader_required": false,
+  "base_source_commit": "77937f9776a3725f272df490a85c29f42058335a",
+  "base_source_tree_sha256": "02a016a55dd10967d559db7d33a682e97e87a9b20530911630b31ba0fa7f6bb9",
+  "base_source_tree_hash_format": "sha256(sorted relative path + NUL + sha256(canonical Git blob)); gradle.properties and src/main",
+  "files": [
+    {
+      "path": "mods/voiddynasty-1.3.0-alpha.3.jar",
+      "id": "voiddynasty",
+      "version": "1.3.0-alpha.3",
+      "bytes": 6779892,
+      "sha256": "2da2b688b3e88f1235b398b927411b7fdfe87078b967b0f716429fd736fe8cfb",
+      "license_metadata": "MIT"
+    },
+    {
+      "path": "mods/voiddynasty-bridge-0.7.1.jar",
+      "id": "voiddynasty_bridge",
+      "version": "0.7.1",
+      "bytes": 113984,
+      "sha256": "2a1cf6a8141a25e57cc92ec62ee06c79214875fa365a1a650ef1e2911330dac6",
+      "license_metadata": null
+    },
+    {
+      "path": "mods/fabric-api-0.162.0+26.3.jar",
+      "id": "fabric-api",
+      "version": "0.162.0+26.3",
+      "bytes": 1772377,
+      "sha256": "8626c189b702f466800b1c8ddac6203cf8a1e0bdaee75a5f9a33b18c2baa81b1",
+      "license_metadata": "Apache-2.0"
+    },
+    {
+      "path": "mods/geckolib-fabric-26.3-5.5.7.jar",
+      "id": "geckolib",
+      "version": "5.5.7",
+      "bytes": 1191230,
+      "sha256": "0e397991dae6e1aee9a342f80b740fe4fef6d161dc8abe694c6a555317163f82",
+      "license_metadata": "MIT"
+    }
+  ]
+}
