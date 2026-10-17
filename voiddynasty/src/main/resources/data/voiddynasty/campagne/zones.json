@@ -1,0 +1,604 @@
+{
+ "zones": [
+  {
+   "id": "cryoroom",
+   "zone": "cryoroom",
+   "niveau": 0,
+   "declencheur": [
+    316.0,
+    90.0,
+    111.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    316.0,
+    90.0,
+    111.0
+   ],
+   "titre": "Cryo-Room",
+   "etats": [
+    "cryoroom"
+   ],
+   "vagues": []
+  },
+  {
+   "id": "corridor1",
+   "zone": "corridor1",
+   "niveau": 1,
+   "declencheur": [
+    282.0,
+    65.0,
+    73.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    282.0,
+    65.0,
+    75.0
+   ],
+   "titre": "Service Corridor",
+   "etats": [
+    "corridor1"
+   ],
+   "vagues": [
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 276.0,
+     "y": 65.0,
+     "z": 53.0
+    }
+   ]
+  },
+  {
+   "id": "armoury",
+   "zone": "armoury",
+   "niveau": 2,
+   "declencheur": [
+    264.0,
+    89.0,
+    56.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    264.0,
+    89.0,
+    55.0
+   ],
+   "titre": "Armoury",
+   "etats": [
+    "armoury"
+   ],
+   "vagues": [
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 252.0,
+     "y": 89.0,
+     "z": 62.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 238.0,
+     "y": 89.0,
+     "z": 58.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 238.0,
+     "y": 89.0,
+     "z": 67.0
+    },
+    {
+     "mob": "cultist_4",
+     "mob_source": "cultist4",
+     "x": 226.0,
+     "y": 89.0,
+     "z": 58.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 207.0,
+     "y": 89.0,
+     "z": 59.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 191.0,
+     "y": 100.0,
+     "z": 71.0
+    }
+   ]
+  },
+  {
+   "id": "sanctum",
+   "zone": "sanctum",
+   "niveau": 3,
+   "declencheur": [
+    239.0,
+    100.0,
+    38.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    239.0,
+    100.0,
+    38.0
+   ],
+   "titre": null,
+   "etats": [],
+   "vagues": [
+    {
+     "mob": "cultist_boss",
+     "mob_source": "cultistboss",
+     "x": 249.0,
+     "y": 101.0,
+     "z": 9.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 246.0,
+     "y": 100.0,
+     "z": 20.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 246.0,
+     "y": 100.0,
+     "z": -1.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 241.0,
+     "y": 100.0,
+     "z": 24.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 222.0,
+     "y": 100.0,
+     "z": -5.0
+    }
+   ]
+  },
+  {
+   "id": "part2_serviceducts",
+   "zone": "part2/serviceducts",
+   "niveau": 5,
+   "declencheur": [
+    239.0,
+    100.0,
+    -33.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    239.0,
+    100.0,
+    -33.0
+   ],
+   "titre": "Service Ducts",
+   "etats": [
+    "ducts",
+    "ducts"
+   ],
+   "vagues": [
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 247.0,
+     "y": 100.0,
+     "z": -51.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 267.0,
+     "y": 100.0,
+     "z": -51.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 293.0,
+     "y": 100.0,
+     "z": -49.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 293.0,
+     "y": 100.0,
+     "z": -55.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 299.0,
+     "y": 100.0,
+     "z": -80.0
+    }
+   ]
+  },
+  {
+   "id": "part2_hanger1",
+   "zone": "part2/hanger1",
+   "niveau": 6,
+   "declencheur": [
+    180.0,
+    130.0,
+    -15.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    180.0,
+    130.0,
+    -15.0
+   ],
+   "titre": "Starboard Hanger",
+   "etats": [
+    "hanger1"
+   ],
+   "vagues": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 156.0,
+     "y": 161.0,
+     "z": -36.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 172.0,
+     "y": 130.0,
+     "z": -12.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 150.0,
+     "y": 130.0,
+     "z": -12.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 137.0,
+     "y": 139.0,
+     "z": -13.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 172.0,
+     "y": 139.0,
+     "z": -13.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 180.0,
+     "y": 161.0,
+     "z": -32.0
+    }
+   ]
+  },
+  {
+   "id": "part2_hanger2",
+   "zone": "part2/hanger2",
+   "niveau": 7,
+   "declencheur": [
+    170.0,
+    168.0,
+    -7.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    170.0,
+    168.0,
+    -7.0
+   ],
+   "titre": null,
+   "etats": [
+    "hanger2"
+   ],
+   "vagues": []
+  },
+  {
+   "id": "part2_porthanger",
+   "zone": "part2/porthanger",
+   "niveau": 8,
+   "declencheur": [
+    170.0,
+    168.0,
+    26.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    170.0,
+    168.0,
+    26.0
+   ],
+   "titre": "Port Hanger",
+   "etats": [
+    "porthanger"
+   ],
+   "vagues": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 151.0,
+     "y": 161.0,
+     "z": 30.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 180.0,
+     "y": 161.0,
+     "z": 53.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 160.0,
+     "y": 161.0,
+     "z": 53.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 154.0,
+     "y": 107.0,
+     "z": 41.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 153.0,
+     "y": 107.0,
+     "z": 54.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 142.0,
+     "y": 95.0,
+     "z": 47.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 147.0,
+     "y": 95.0,
+     "z": 42.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 140.0,
+     "y": 95.0,
+     "z": 52.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 139.0,
+     "y": 90.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 174.0,
+     "y": 130.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 174.0,
+     "y": 130.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 174.0,
+     "y": 130.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 170.0,
+     "y": 95.0,
+     "z": 47.0
+    }
+   ]
+  },
+  {
+   "id": "part2_crew",
+   "zone": "part2/crew",
+   "niveau": 10,
+   "declencheur": [
+    49.0,
+    143.0,
+    -10.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    49.0,
+    143.0,
+    -10.0
+   ],
+   "titre": "Crew Quaters",
+   "etats": [
+    "crew"
+   ],
+   "vagues": [
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 36.0,
+     "y": 123.0,
+     "z": -14.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 4.0,
+     "y": 123.0,
+     "z": -14.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 12.0,
+     "y": 123.0,
+     "z": -20.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": -9.0,
+     "y": 123.0,
+     "z": -16.0
+    }
+   ]
+  },
+  {
+   "id": "part2_exterior",
+   "zone": "part2/exterior",
+   "niveau": 12,
+   "declencheur": [
+    5.0,
+    64.0,
+    29.0
+   ],
+   "rayon": 2.0,
+   "reapparition": [
+    5.0,
+    64.0,
+    29.0
+   ],
+   "titre": null,
+   "etats": [
+    "space"
+   ],
+   "vagues": [
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -2.0,
+     "y": 69.0,
+     "z": 33.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -56.0,
+     "y": 67.0,
+     "z": 33.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -101.0,
+     "y": 71.0,
+     "z": 29.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -117.0,
+     "y": 81.0,
+     "z": 21.0
+    }
+   ]
+  }
+ ],
+ "portes": [
+  [
+   284,
+   65,
+   78,
+   280,
+   70,
+   78
+  ],
+  [
+   205,
+   101,
+   74,
+   201,
+   103,
+   74
+  ],
+  [
+   264,
+   101,
+   8,
+   264,
+   104,
+   10
+  ],
+  [
+   241,
+   100,
+   -16,
+   239,
+   104,
+   -16
+  ],
+  [
+   183,
+   130,
+   -20,
+   183,
+   134,
+   -21
+  ]
+ ],
+ "gamerules_source": {
+  "doMobSpawning": false,
+  "mobGriefing": false,
+  "keepInventory": true
+ }
+}

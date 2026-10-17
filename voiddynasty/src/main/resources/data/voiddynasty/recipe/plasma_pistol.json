@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:plasma_coil",
+    "voiddynasty:wires"
+  ],
+  "result": {
+    "id": "voiddynasty:plasma_pistol",
+    "count": 1
+  }
+}

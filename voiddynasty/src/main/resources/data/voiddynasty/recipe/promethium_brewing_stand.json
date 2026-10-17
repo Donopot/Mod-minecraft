@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "PFP",
+    "AAA"
+  ],
+  "key": {
+    "A": "voiddynasty:adamantium_plate",
+    "P": "voiddynasty:promethium",
+    "F": "minecraft:brewing_stand"
+  },
+  "result": {
+    "id": "voiddynasty:promethium_brewing_stand",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:adamantium_plate",
+    "voiddynasty:wax_seal"
+  ],
+  "result": {
+    "id": "voiddynasty:bolt_pistol",
+    "count": 1
+  }
+}

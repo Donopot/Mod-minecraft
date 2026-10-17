@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:adamantium_plate",
+    "voiddynasty:wires"
+  ],
+  "result": {
+    "id": "voiddynasty:shotgun",
+    "count": 1
+  }
+}

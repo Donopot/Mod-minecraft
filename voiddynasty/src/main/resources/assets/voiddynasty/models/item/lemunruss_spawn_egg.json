@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "voiddynasty:item/lemunruss_spawn_egg"
+  }
+}

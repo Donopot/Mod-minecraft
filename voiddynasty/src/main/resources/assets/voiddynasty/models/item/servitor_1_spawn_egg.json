@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "voiddynasty:item/servitor_1_spawn_egg"
+  }
+}

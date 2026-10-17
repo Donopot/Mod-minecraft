@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:iron_block",
+    "minecraft:gunpowder"
+  ],
+  "result": {
+    "id": "voiddynasty:heavy_bolt_shell",
+    "count": 4
+  }
+}

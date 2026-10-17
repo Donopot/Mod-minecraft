@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "voiddynasty:plasma_cell",
+    "minecraft:magma_cream"
+  ],
+  "result": {
+    "id": "voiddynasty:melta_cell",
+    "count": 4
+  }
+}

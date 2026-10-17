@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "voiddynasty:item/chaos_captain_spawn_egg"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "PFP",
+    "AAA"
+  ],
+  "key": {
+    "A": "voiddynasty:adamantium_plate",
+    "P": "voiddynasty:promethium",
+    "F": "minecraft:smoker"
+  },
+  "result": {
+    "id": "voiddynasty:promethium_smoker",
+    "count": 1
+  }
+}

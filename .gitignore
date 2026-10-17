@@ -1,0 +1,14 @@
+# sorties de build
+build/
+.gradle/
+run/
+out/
+
+# binaires locaux
+libs/*.jar
+!libs/README.md
+*.vox
+
+# divers
+*.log
+.DS_Store

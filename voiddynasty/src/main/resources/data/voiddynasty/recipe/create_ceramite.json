@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": "voiddynasty:silicon_carbide",
+    "b": "voiddynasty:titanium_ingot"
+  },
+  "result": {
+    "id": "voiddynasty:ceramite_ingot",
+    "count": 1
+  }
+}

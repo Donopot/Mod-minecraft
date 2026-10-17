@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:focus_lens",
+    "minecraft:iron_ingot"
+  ],
+  "result": {
+    "id": "voiddynasty:laz_pistol",
+    "count": 1
+  }
+}

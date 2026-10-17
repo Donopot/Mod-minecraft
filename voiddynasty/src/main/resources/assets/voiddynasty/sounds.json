@@ -1,0 +1,54 @@
+{
+  "item.bolter.fire": {
+    "sounds": [ { "name": "voiddynasty:boltgun_fire", "stream": false, "volume": 1.0, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.bolter.fire"
+  },
+  "item.bolt_pistol.fire": {
+    "sounds": [ { "name": "voiddynasty:boltgun_fire", "stream": false, "volume": 0.8, "pitch": 1.25 } ],
+    "subtitle": "subtitle.voiddynasty.item.bolt_pistol.fire"
+  },
+  "item.heavy_bolter.fire": {
+    "sounds": [ { "name": "voiddynasty:heavy_bolter_fire", "stream": false, "volume": 1.0, "pitch": 0.9 } ],
+    "subtitle": "subtitle.voiddynasty.item.heavy_bolter.fire"
+  },
+  "item.las_gun.fire": {
+    "sounds": [ { "name": "voiddynasty:las_gun_fire", "stream": false, "volume": 0.9, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.las_gun.fire"
+  },
+  "item.plasma_pistol.fire": {
+    "sounds": [ { "name": "voiddynasty:plasma_pistol_fire", "stream": false, "volume": 1.0, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.plasma_pistol.fire"
+  },
+  "item.plasma_incinerator.fire": {
+    "sounds": [ { "name": "voiddynasty:plasma_incinerator_fire", "stream": false, "volume": 1.0, "pitch": 0.85 } ],
+    "subtitle": "subtitle.voiddynasty.item.plasma_incinerator.fire"
+  },
+  "item.shotgun.fire": {
+    "sounds": [ { "name": "voiddynasty:shotgun_fire", "stream": false, "volume": 1.0, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.shotgun.fire"
+  },
+  "item.flamethrower.fire": {
+    "sounds": [ { "name": "voiddynasty:flamethrower_fire", "stream": false, "volume": 1.0, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.flamethrower.fire"
+  },
+  "item.melta.fire": {
+    "sounds": [ { "name": "voiddynasty:melta_fire", "stream": false, "volume": 1.0, "pitch": 0.9 } ],
+    "subtitle": "subtitle.voiddynasty.item.melta.fire"
+  },
+  "item.missile.fire": {
+    "sounds": [ { "name": "voiddynasty:missile_fire", "stream": false, "volume": 1.0, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.missile.fire"
+  },
+  "item.melee.swing": {
+    "sounds": [ { "name": "voiddynasty:sword_swing", "stream": false, "volume": 0.7, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.melee.swing"
+  },
+  "item.dry_fire": {
+    "sounds": [ { "name": "voiddynasty:dry_fire", "stream": false, "volume": 0.6, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.dry_fire"
+  },
+  "item.reload": {
+    "sounds": [ { "name": "voiddynasty:reload", "stream": false, "volume": 0.8, "pitch": 1.0 } ],
+    "subtitle": "subtitle.voiddynasty.item.reload"
+  }
+}

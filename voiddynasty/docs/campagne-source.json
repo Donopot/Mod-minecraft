@@ -1,0 +1,2207 @@
+{
+  "zones": [
+    {
+      "zone": "armoury",
+      "niveau": 2,
+      "titre": "Armoury",
+      "etats": [
+        "armoury"
+      ],
+      "waypoints": [
+        {
+          "x": 204.0,
+          "y": 102.0,
+          "z": 75.0,
+          "tags": "\"waypoint\",\"armoury1\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 252.0,
+          "y": 89.0,
+          "z": 62.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 238.0,
+          "y": 89.0,
+          "z": 58.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 238.0,
+          "y": 89.0,
+          "z": 67.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 226.0,
+          "y": 89.0,
+          "z": 58.0,
+          "mob": "cultist4",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 207.0,
+          "y": 89.0,
+          "z": 59.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 191.0,
+          "y": 100.0,
+          "z": 71.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "armoury2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 239.0,
+          "y": 103.0,
+          "z": 11.0,
+          "tags": "\"waypoint\",\"armoury1\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "corridor1",
+      "niveau": 1,
+      "titre": "Service Corridor",
+      "etats": [
+        "corridor1"
+      ],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 276.0,
+          "y": 65.0,
+          "z": 53.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "corridor2",
+      "niveau": null,
+      "titre": "Bridge Access",
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 286.0,
+          "y": 102.0,
+          "z": 6.0,
+          "tags": "\"waypoint\",\"corridor2\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "cryoroom",
+      "niveau": 0,
+      "titre": "Cryo-Room",
+      "etats": [
+        "cryoroom"
+      ],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "cryoroom2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "cryoroom3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 306.0,
+          "y": 91.0,
+          "z": 103.0,
+          "tags": "\"waypoint\",\"cryo1\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "cryoroom4",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 282.0,
+          "y": 66.0,
+          "z": 89.0,
+          "tags": "\"waypoint\",\"cryo2\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "cryoroom5",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "cryoroom6",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 292.0,
+          "y": 68.0,
+          "z": 79.0,
+          "tags": "\"waypoint\",\"cryo3\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "cryoroom7",
+      "niveau": 1,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/airlock",
+      "niveau": 11,
+      "titre": "Airlock Access",
+      "etats": [
+        "airlock"
+      ],
+      "waypoints": [
+        {
+          "x": 6.0,
+          "y": 67.0,
+          "z": 25.0,
+          "tags": "\"waypoint\",\"airlock\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": -15.0,
+          "y": 119.0,
+          "z": 34.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -15.0,
+          "y": 119.0,
+          "z": 34.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -15.0,
+          "y": 119.0,
+          "z": 34.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/airlock2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 5.0,
+          "y": 89.0,
+          "z": 29.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 5.0,
+          "y": 89.0,
+          "z": 29.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 5.0,
+          "y": 89.0,
+          "z": 29.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/crew",
+      "niveau": 10,
+      "titre": "Crew Quaters",
+      "etats": [
+        "crew"
+      ],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 36.0,
+          "y": 123.0,
+          "z": -14.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 4.0,
+          "y": 123.0,
+          "z": -14.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 12.0,
+          "y": 123.0,
+          "z": -20.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -9.0,
+          "y": 123.0,
+          "z": -16.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/crew2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": -31.0,
+          "y": 143.0,
+          "z": 29.0,
+          "tags": "\"waypoint\",\"airlockaccess\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/exterior",
+      "niveau": 12,
+      "titre": null,
+      "etats": [
+        "space"
+      ],
+      "waypoints": [
+        {
+          "x": -132.0,
+          "y": 81.0,
+          "z": 22.0,
+          "tags": "\"waypoint\",\"torpedo1\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": -2.0,
+          "y": 69.0,
+          "z": 33.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -56.0,
+          "y": 67.0,
+          "z": 33.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -101.0,
+          "y": 71.0,
+          "z": 29.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -117.0,
+          "y": 81.0,
+          "z": 21.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/exterior2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": -137.0,
+          "y": 79.0,
+          "z": 35.0,
+          "tags": "\"waypoint\",\"torpedo2\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/gunnery",
+      "niveau": 9,
+      "titre": "Gunnery Decks",
+      "etats": [
+        "gunnery"
+      ],
+      "waypoints": [
+        {
+          "x": 49.0,
+          "y": 143.0,
+          "z": 27.0,
+          "tags": "\"waypoint\",\"gunnery\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 122.0,
+          "y": 113.0,
+          "z": 24.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 108.0,
+          "y": 113.0,
+          "z": 24.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 96.0,
+          "y": 113.0,
+          "z": 24.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 96.0,
+          "y": 113.0,
+          "z": 24.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/gunnery2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 87.0,
+          "y": 122.0,
+          "z": 30.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 77.0,
+          "y": 122.0,
+          "z": 30.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 67.0,
+          "y": 122.0,
+          "z": 30.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/gunnery3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 67.0,
+          "y": 143.0,
+          "z": 34.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 54.0,
+          "y": 143.0,
+          "z": 34.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/gunnery4",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 49.0,
+          "y": 143.0,
+          "z": -11.0,
+          "tags": "\"waypoint\",\"gunnery2\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/hanger1",
+      "niveau": 6,
+      "titre": "Starboard Hanger",
+      "etats": [
+        "hanger1"
+      ],
+      "waypoints": [
+        {
+          "x": 170.0,
+          "y": 169.0,
+          "z": -11.0,
+          "tags": "\"waypoint\",\"hanger2\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 156.0,
+          "y": 161.0,
+          "z": -36.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 172.0,
+          "y": 130.0,
+          "z": -12.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 150.0,
+          "y": 130.0,
+          "z": -12.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 137.0,
+          "y": 139.0,
+          "z": -13.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 172.0,
+          "y": 139.0,
+          "z": -13.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 180.0,
+          "y": 161.0,
+          "z": -32.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/hanger2",
+      "niveau": 7,
+      "titre": null,
+      "etats": [
+        "hanger2"
+      ],
+      "waypoints": [
+        {
+          "x": 166.0,
+          "y": 169.0,
+          "z": 16.0,
+          "tags": "\"waypoint\",\"hanger3\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/hanger3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 170.0,
+          "y": 169.0,
+          "z": 27.0,
+          "tags": "\"waypoint\",\"hanger4\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/lift",
+      "niveau": 15,
+      "titre": null,
+      "etats": [
+        "lift"
+      ],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 186.0,
+          "y": 77.0,
+          "z": -5.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 186.0,
+          "y": 77.0,
+          "z": 12.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 177.0,
+          "y": 109.0,
+          "z": -4.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/part4/bridge",
+      "niveau": 19,
+      "titre": null,
+      "etats": [
+        "bridge"
+      ],
+      "waypoints": [
+        {
+          "x": 428.0,
+          "y": 288.0,
+          "z": 9.0,
+          "tags": "\"waypoint\",\"bridge\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 492.0,
+          "y": 281.0,
+          "z": 8.0,
+          "mob": "demonprince",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 473.0,
+          "y": 268.0,
+          "z": 19.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 474.0,
+          "y": 268.0,
+          "z": 19.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 472.0,
+          "y": 268.0,
+          "z": 19.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 412.0,
+          "y": 268.0,
+          "z": 8.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 493.0,
+          "y": 268.0,
+          "z": -2.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 493.0,
+          "y": 268.0,
+          "z": -1.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 493.0,
+          "y": 268.0,
+          "z": -3.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 545.0,
+          "y": 278.0,
+          "z": 33.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 545.0,
+          "y": 278.0,
+          "z": -25.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/part4/bridge2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/part4/bridge3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/part4/bridge4",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 497.0,
+          "y": 260.0,
+          "z": -2.0,
+          "tags": "\"waypoint\",\"bridge2\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/part4/endgame",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/part4/finalduct",
+      "niveau": 20,
+      "titre": null,
+      "etats": [
+        "finalduct"
+      ],
+      "waypoints": [
+        {
+          "x": 536.0,
+          "y": 253.0,
+          "z": 9.0,
+          "tags": "\"waypoint\",\"finalduct\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 499.0,
+          "y": 256.0,
+          "z": 9.0,
+          "mob": "hellbrute",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/part4/hall",
+      "niveau": 18,
+      "titre": null,
+      "etats": [
+        "hall"
+      ],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/part4/hall2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 491.0,
+          "y": 257.0,
+          "z": 61.0,
+          "tags": "\"waypoint\",\"hall\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 405.0,
+          "y": 221.0,
+          "z": 98.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 406.0,
+          "y": 221.0,
+          "z": 98.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 452.0,
+          "y": 221.0,
+          "z": 70.0,
+          "mob": "chaosdreadnought",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 456.0,
+          "y": 221.0,
+          "z": 70.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 450.0,
+          "y": 221.0,
+          "z": 70.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/part4/hall3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 443.0,
+          "y": 257.0,
+          "z": 52.0,
+          "tags": "\"waypoint\",\"hall2\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/part4/hall4",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/part4/marinesummon",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": "position de la zone",
+          "y": "position de la zone",
+          "z": "position de la zone",
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": "position de la zone",
+          "y": "position de la zone",
+          "z": "position de la zone",
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": "position de la zone",
+          "y": "position de la zone",
+          "z": "position de la zone",
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": "position de la zone",
+          "y": "position de la zone",
+          "z": "position de la zone",
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/part4/reactor",
+      "niveau": 21,
+      "titre": null,
+      "etats": [
+        "reactor"
+      ],
+      "waypoints": [
+        {
+          "x": 608.0,
+          "y": 217.0,
+          "z": 8.0,
+          "tags": "\"waypoint\",\"reactorw1\""
+        },
+        {
+          "x": 589.0,
+          "y": 129.0,
+          "z": 62.0,
+          "tags": "\"waypoint\",\"reactorw2\""
+        },
+        {
+          "x": 536.0,
+          "y": 140.0,
+          "z": 8.0,
+          "tags": "\"waypoint\",\"reactorw3\""
+        },
+        {
+          "x": 598.0,
+          "y": 194.0,
+          "z": -54.0,
+          "tags": "\"waypoint\",\"reactorw4\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 556.0,
+          "y": 225.0,
+          "z": 58.0,
+          "mob": "helldrake",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 549.0,
+          "y": 132.0,
+          "z": -58.0,
+          "mob": "helldrake",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 573.0,
+          "y": 222.0,
+          "z": 14.0,
+          "mob": "chaosdreadnought",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 573.0,
+          "y": 220.0,
+          "z": 3.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 584.0,
+          "y": 126.0,
+          "z": 45.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 589.0,
+          "y": 190.0,
+          "z": 92.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 597.0,
+          "y": 236.0,
+          "z": -61.0,
+          "mob": "chaosdreadnought",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": "595 214 9",
+          "y": "595 214 9",
+          "z": "595 214 9",
+          "mob": "marine1",
+          "ancrage": "595 214 9"
+        },
+        {
+          "x": "595 214 9",
+          "y": "595 214 9",
+          "z": "595 214 9",
+          "mob": "marine1",
+          "ancrage": "595 214 9"
+        },
+        {
+          "x": "595 214 9",
+          "y": "595 214 9",
+          "z": "595 214 9",
+          "mob": "marine2",
+          "ancrage": "595 214 9"
+        },
+        {
+          "x": "595 214 9",
+          "y": "595 214 9",
+          "z": "595 214 9",
+          "mob": "marine3",
+          "ancrage": "595 214 9"
+        },
+        {
+          "x": "646 226 9",
+          "y": "646 226 9",
+          "z": "646 226 9",
+          "mob": "marine1",
+          "ancrage": "646 226 9"
+        },
+        {
+          "x": "646 226 9",
+          "y": "646 226 9",
+          "z": "646 226 9",
+          "mob": "marine1",
+          "ancrage": "646 226 9"
+        },
+        {
+          "x": "646 226 9",
+          "y": "646 226 9",
+          "z": "646 226 9",
+          "mob": "marine2",
+          "ancrage": "646 226 9"
+        },
+        {
+          "x": "646 226 9",
+          "y": "646 226 9",
+          "z": "646 226 9",
+          "mob": "marine3",
+          "ancrage": "646 226 9"
+        },
+        {
+          "x": "596 236 78",
+          "y": "596 236 78",
+          "z": "596 236 78",
+          "mob": "marine1",
+          "ancrage": "596 236 78"
+        },
+        {
+          "x": "596 236 78",
+          "y": "596 236 78",
+          "z": "596 236 78",
+          "mob": "marine1",
+          "ancrage": "596 236 78"
+        },
+        {
+          "x": "596 236 78",
+          "y": "596 236 78",
+          "z": "596 236 78",
+          "mob": "marine2",
+          "ancrage": "596 236 78"
+        },
+        {
+          "x": "596 236 78",
+          "y": "596 236 78",
+          "z": "596 236 78",
+          "mob": "marine3",
+          "ancrage": "596 236 78"
+        },
+        {
+          "x": "523 190 98",
+          "y": "523 190 98",
+          "z": "523 190 98",
+          "mob": "marine1",
+          "ancrage": "523 190 98"
+        },
+        {
+          "x": "523 190 98",
+          "y": "523 190 98",
+          "z": "523 190 98",
+          "mob": "marine1",
+          "ancrage": "523 190 98"
+        },
+        {
+          "x": "523 190 98",
+          "y": "523 190 98",
+          "z": "523 190 98",
+          "mob": "marine2",
+          "ancrage": "523 190 98"
+        },
+        {
+          "x": "523 190 98",
+          "y": "523 190 98",
+          "z": "523 190 98",
+          "mob": "marine3",
+          "ancrage": "523 190 98"
+        },
+        {
+          "x": "524 137 8",
+          "y": "524 137 8",
+          "z": "524 137 8",
+          "mob": "marine1",
+          "ancrage": "524 137 8"
+        },
+        {
+          "x": "524 137 8",
+          "y": "524 137 8",
+          "z": "524 137 8",
+          "mob": "marine1",
+          "ancrage": "524 137 8"
+        },
+        {
+          "x": "524 137 8",
+          "y": "524 137 8",
+          "z": "524 137 8",
+          "mob": "marine2",
+          "ancrage": "524 137 8"
+        },
+        {
+          "x": "524 137 8",
+          "y": "524 137 8",
+          "z": "524 137 8",
+          "mob": "marine3",
+          "ancrage": "524 137 8"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/promenade",
+      "niveau": 14,
+      "titre": null,
+      "etats": [
+        "promenade"
+      ],
+      "waypoints": [
+        {
+          "x": 170.0,
+          "y": 134.0,
+          "z": 8.0,
+          "tags": "\"waypoint\",\"promenade\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": -89.0,
+          "y": 124.0,
+          "z": 3.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -89.0,
+          "y": 124.0,
+          "z": 2.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -89.0,
+          "y": 124.0,
+          "z": 4.0,
+          "mob": "cultist3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -89.0,
+          "y": 124.0,
+          "z": 1.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -89.0,
+          "y": 124.0,
+          "z": 5.0,
+          "mob": "cultist4",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -89.0,
+          "y": 124.0,
+          "z": 6.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -99.0,
+          "y": 124.0,
+          "z": 7.0,
+          "mob": "cultistboss",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -82.0,
+          "y": 124.0,
+          "z": 3.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -82.0,
+          "y": 124.0,
+          "z": 2.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -82.0,
+          "y": 124.0,
+          "z": 4.0,
+          "mob": "cultist3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -82.0,
+          "y": 124.0,
+          "z": 1.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -82.0,
+          "y": 124.0,
+          "z": 5.0,
+          "mob": "cultist4",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -82.0,
+          "y": 124.0,
+          "z": 6.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/promenda2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": -42.0,
+          "y": 124.0,
+          "z": 8.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -42.0,
+          "y": 124.0,
+          "z": 9.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -42.0,
+          "y": 124.0,
+          "z": 7.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -42.0,
+          "y": 124.0,
+          "z": 6.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -42.0,
+          "y": 124.0,
+          "z": 10.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -42.0,
+          "y": 124.0,
+          "z": 11.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -43.0,
+          "y": 124.0,
+          "z": 10.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -43.0,
+          "y": 124.0,
+          "z": 8.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/promenda3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 79.0,
+          "y": 124.0,
+          "z": 10.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 79.0,
+          "y": 124.0,
+          "z": 11.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 79.0,
+          "y": 124.0,
+          "z": 9.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 79.0,
+          "y": 124.0,
+          "z": 8.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 77.0,
+          "y": 124.0,
+          "z": 8.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 77.0,
+          "y": 124.0,
+          "z": 10.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/promenda4",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 149.0,
+          "y": 124.0,
+          "z": 5.0,
+          "mob": "chaosdreadnought",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 149.0,
+          "y": 124.0,
+          "z": 13.0,
+          "mob": "chaosdreadnought",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/storage",
+      "niveau": 16,
+      "titre": null,
+      "etats": [
+        "storage"
+      ],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/storage2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 327.0,
+          "y": 69.0,
+          "z": 72.0,
+          "tags": "\"waypoint\",\"storage\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 391.0,
+          "y": 44.0,
+          "z": 9.0,
+          "mob": "forgefiend",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/storage3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 329.0,
+          "y": 68.0,
+          "z": 138.0,
+          "tags": "\"waypoint\",\"storage1\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/storage4",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/torpedo",
+      "niveau": 13,
+      "titre": null,
+      "etats": [
+        "torpedo"
+      ],
+      "waypoints": [
+        {
+          "x": -204.0,
+          "y": 92.0,
+          "z": 41.0,
+          "tags": "\"waypoint\",\"torpedo3\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": -167.0,
+          "y": 77.0,
+          "z": 43.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -167.0,
+          "y": 77.0,
+          "z": 42.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -167.0,
+          "y": 77.0,
+          "z": 44.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -198.0,
+          "y": 77.0,
+          "z": 43.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -198.0,
+          "y": 77.0,
+          "z": 42.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -198.0,
+          "y": 77.0,
+          "z": 44.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/torpedo2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": -203.0,
+          "y": 92.0,
+          "z": -11.0,
+          "tags": "\"waypoint\",\"torpedo4\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": -197.0,
+          "y": 90.0,
+          "z": 30.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -197.0,
+          "y": 90.0,
+          "z": 31.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -203.0,
+          "y": 90.0,
+          "z": 7.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -203.0,
+          "y": 90.0,
+          "z": -4.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/torpedo3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": -160.0,
+          "y": 93.0,
+          "z": -4.0,
+          "tags": "\"waypoint\",\"torpedo5\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": -191.0,
+          "y": 90.0,
+          "z": -12.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -191.0,
+          "y": 90.0,
+          "z": -4.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -166.0,
+          "y": 90.0,
+          "z": -4.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -167.0,
+          "y": 90.0,
+          "z": -4.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -165.0,
+          "y": 90.0,
+          "z": -4.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/torpedo4",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": -182.0,
+          "y": 125.0,
+          "z": 9.0,
+          "tags": "\"waypoint\",\"torpedo6\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": -171.0,
+          "y": 102.0,
+          "z": 9.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -176.0,
+          "y": 104.0,
+          "z": 26.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -170.0,
+          "y": 118.0,
+          "z": 7.0,
+          "mob": "marine3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/torpedo5",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": -179.0,
+          "y": 123.0,
+          "z": 9.0,
+          "mob": "marinecaptain",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -167.0,
+          "y": 123.0,
+          "z": 14.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": -167.0,
+          "y": 123.0,
+          "z": 3.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/part3/torpedo6",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": []
+    },
+    {
+      "zone": "part2/part3/warp",
+      "niveau": 17,
+      "titre": null,
+      "etats": [
+        "warp"
+      ],
+      "waypoints": [
+        {
+          "x": 307.0,
+          "y": 226.0,
+          "z": 78.0,
+          "tags": "\"waypoint\",\"warp\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 275.0,
+          "y": 187.0,
+          "z": 168.0,
+          "mob": "helldrake",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 273.0,
+          "y": 175.0,
+          "z": 191.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 274.0,
+          "y": 175.0,
+          "z": 191.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 272.0,
+          "y": 175.0,
+          "z": 191.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 389.0,
+          "y": 179.0,
+          "z": 190.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 389.0,
+          "y": 179.0,
+          "z": 191.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 343.0,
+          "y": 198.0,
+          "z": 128.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 288.0,
+          "y": 221.0,
+          "z": 97.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 294.0,
+          "y": 226.0,
+          "z": 68.0,
+          "mob": "raptor",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/porthanger",
+      "niveau": 8,
+      "titre": "Port Hanger",
+      "etats": [
+        "porthanger"
+      ],
+      "waypoints": [
+        {
+          "x": 131.0,
+          "y": 91.0,
+          "z": 30.0,
+          "tags": "\"waypoint\",\"port1\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 151.0,
+          "y": 161.0,
+          "z": 30.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 180.0,
+          "y": 161.0,
+          "z": 53.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 160.0,
+          "y": 161.0,
+          "z": 53.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 154.0,
+          "y": 107.0,
+          "z": 41.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 153.0,
+          "y": 107.0,
+          "z": 54.0,
+          "mob": "marine1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 142.0,
+          "y": 95.0,
+          "z": 47.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 147.0,
+          "y": 95.0,
+          "z": 42.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 140.0,
+          "y": 95.0,
+          "z": 52.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 139.0,
+          "y": 90.0,
+          "z": 30.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 174.0,
+          "y": 130.0,
+          "z": 30.0,
+          "mob": "cultist3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 174.0,
+          "y": 130.0,
+          "z": 30.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 174.0,
+          "y": 130.0,
+          "z": 30.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 144.0,
+          "y": 139.0,
+          "z": 29.0,
+          "mob": "cultist3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 144.0,
+          "y": 139.0,
+          "z": 29.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 144.0,
+          "y": 139.0,
+          "z": 29.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 144.0,
+          "y": 139.0,
+          "z": 29.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 170.0,
+          "y": 95.0,
+          "z": 47.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/serviceducts",
+      "niveau": 5,
+      "titre": "Service Ducts",
+      "etats": [
+        "ducts",
+        "ducts"
+      ],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 247.0,
+          "y": 100.0,
+          "z": -51.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 267.0,
+          "y": 100.0,
+          "z": -51.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 293.0,
+          "y": 100.0,
+          "z": -49.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 293.0,
+          "y": 100.0,
+          "z": -55.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 299.0,
+          "y": 100.0,
+          "z": -80.0,
+          "mob": "servitor3",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/serviceducts2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 292.0,
+          "y": 132.0,
+          "z": -89.0,
+          "mob": "servitor2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 290.0,
+          "y": 132.0,
+          "z": -82.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 267.0,
+          "y": 132.0,
+          "z": -84.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 267.0,
+          "y": 132.0,
+          "z": -86.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 255.0,
+          "y": 132.0,
+          "z": -85.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "part2/serviceducts3",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 184.0,
+          "y": 132.0,
+          "z": -22.0,
+          "tags": "\"waypoint\",\"hanger1\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 237.0,
+          "y": 130.0,
+          "z": -40.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 237.0,
+          "y": 130.0,
+          "z": -40.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 237.0,
+          "y": 130.0,
+          "z": -40.0,
+          "mob": "marine2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 205.0,
+          "y": 130.0,
+          "z": -30.0,
+          "mob": "servitor1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 205.0,
+          "y": 130.0,
+          "z": -30.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 205.0,
+          "y": 130.0,
+          "z": -30.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "sanctum",
+      "niveau": 3,
+      "titre": null,
+      "etats": [],
+      "waypoints": [],
+      "apparitions": [
+        {
+          "x": 249.0,
+          "y": 101.0,
+          "z": 9.0,
+          "mob": "cultistboss",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 246.0,
+          "y": 100.0,
+          "z": 20.0,
+          "mob": "cultist3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 246.0,
+          "y": 100.0,
+          "z": -1.0,
+          "mob": "cultist3",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 241.0,
+          "y": 100.0,
+          "z": 24.0,
+          "mob": "cultist2",
+          "ancrage": "position de la zone"
+        },
+        {
+          "x": 222.0,
+          "y": 100.0,
+          "z": -5.0,
+          "mob": "cultist1",
+          "ancrage": "position de la zone"
+        }
+      ]
+    },
+    {
+      "zone": "sanctum2",
+      "niveau": null,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 261.0,
+          "y": 103.0,
+          "z": 7.0,
+          "tags": "\"waypoint\",\"sanctum2\""
+        }
+      ],
+      "apparitions": []
+    },
+    {
+      "zone": "sanctum3",
+      "niveau": 4,
+      "titre": null,
+      "etats": [],
+      "waypoints": [
+        {
+          "x": 240.0,
+          "y": 102.0,
+          "z": -21.0,
+          "tags": "\"waypoint\",\"serviceduct\""
+        }
+      ],
+      "apparitions": [
+        {
+          "x": 288.0,
+          "y": 101.0,
+          "z": 9.0,
+          "mob": "chaosdreadnought",
+          "ancrage": "position de la zone"
+        }
+      ]
+    }
+  ],
+  "respawns": {
+    "0": {
+      "x": 316.0,
+      "y": 90.0,
+      "z": 111.0
+    },
+    "1": {
+      "x": 282.0,
+      "y": 65.0,
+      "z": 75.0
+    },
+    "3": {
+      "x": 239.0,
+      "y": 100.0,
+      "z": 38.0
+    },
+    "2": {
+      "x": 264.0,
+      "y": 89.0,
+      "z": 55.0
+    },
+    "4": {
+      "x": 273.0,
+      "y": 101.0,
+      "z": 9.0
+    },
+    "5": {
+      "x": 239.0,
+      "y": 100.0,
+      "z": -33.0
+    },
+    "6": {
+      "x": 180.0,
+      "y": 130.0,
+      "z": -15.0
+    },
+    "7": {
+      "x": 170.0,
+      "y": 168.0,
+      "z": -7.0
+    },
+    "8": {
+      "x": 170.0,
+      "y": 168.0,
+      "z": 26.0
+    },
+    "9": {
+      "x": 129.0,
+      "y": 90.0,
+      "z": 31.0
+    },
+    "10": {
+      "x": 49.0,
+      "y": 143.0,
+      "z": -10.0
+    },
+    "11": {
+      "x": -31.0,
+      "y": 143.0,
+      "z": 29.0
+    },
+    "12": {
+      "x": 5.0,
+      "y": 64.0,
+      "z": 29.0
+    },
+    "13": {
+      "x": -147.0,
+      "y": 77.0,
+      "z": 42.0
+    },
+    "14": {
+      "x": -134.0,
+      "y": 124.0,
+      "z": 8.0
+    },
+    "15": {
+      "x": 174.0,
+      "y": 123.0,
+      "z": 9.0
+    },
+    "16": {
+      "x": 185.0,
+      "y": 44.0,
+      "z": 8.0
+    },
+    "17": {
+      "x": 327.0,
+      "y": 65.0,
+      "z": 145.0
+    },
+    "18": {
+      "x": 314.0,
+      "y": 221.0,
+      "z": 79.0
+    },
+    "19": {
+      "x": 502.0,
+      "y": 268.0,
+      "z": 21.0
+    },
+    "20": {
+      "x": 481.0,
+      "y": 256.0,
+      "z": -2.0
+    },
+    "21": {
+      "x": 535.0,
+      "y": 220.0,
+      "z": 9.0
+    }
+  },
+  "problemes": []
+}

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": { "X": "voiddynasty:adamantium_plate" },
+  "pattern": [ "XXX", "X X" ],
+  "result": { "id": "voiddynasty:space_marine_helmet" }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "TPT",
+    "TFT"
+  ],
+  "key": {
+    "A": "voiddynasty:adamantium_plate",
+    "T": "voiddynasty:titanium_ingot",
+    "P": "voiddynasty:plasma_coil",
+    "F": "voiddynasty:focus_lens"
+  },
+  "result": {
+    "id": "voiddynasty:mining_rig",
+    "count": 1
+  }
+}

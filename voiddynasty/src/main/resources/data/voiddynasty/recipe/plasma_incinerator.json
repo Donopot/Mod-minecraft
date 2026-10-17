@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:plasma_coil",
+    "voiddynasty:plasma_coil",
+    "voiddynasty:adamantium_plate"
+  ],
+  "result": {
+    "id": "voiddynasty:plasma_incinerator",
+    "count": 1
+  }
+}

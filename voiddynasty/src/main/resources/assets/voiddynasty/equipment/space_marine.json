@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "voiddynasty:space_marine"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "voiddynasty:space_marine"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "voiddynasty:space_marine"
+      }
+    ]
+  }
+}

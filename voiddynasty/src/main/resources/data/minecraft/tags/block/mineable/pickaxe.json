@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "voiddynasty:black_ceramite_block",
+    "voiddynasty:blue_ceramite_block",
+    "voiddynasty:ceramite_block",
+    "voiddynasty:ceramite_ore",
+    "voiddynasty:deepslate_ceramite_ore",
+    "voiddynasty:dark_green_ceramite_block",
+    "voiddynasty:green_ceramite_block",
+    "voiddynasty:light_blue_ceramite_block",
+    "voiddynasty:pink_ceramite_block",
+    "voiddynasty:red_ceramite_block",
+    "voiddynasty:white_ceramite_block",
+    "voiddynasty:yellow_ceramite_block"
+  ]
+}

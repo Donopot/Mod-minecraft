@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "voiddynasty:terminator"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "voiddynasty:terminator"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "voiddynasty:terminator"
+      }
+    ]
+  }
+}

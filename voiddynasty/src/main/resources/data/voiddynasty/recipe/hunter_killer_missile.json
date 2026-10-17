@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:warhead",
+    "voiddynasty:adamantium_plate"
+  ],
+  "result": {
+    "id": "voiddynasty:hunter_killer_missile",
+    "count": 1
+  }
+}

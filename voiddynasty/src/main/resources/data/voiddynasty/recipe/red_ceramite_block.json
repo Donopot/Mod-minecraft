@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "xxx",
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": "voiddynasty:red_ceramite_ingot"
+  },
+  "result": {
+    "id": "voiddynasty:red_ceramite_block",
+    "count": 1
+  }
+}

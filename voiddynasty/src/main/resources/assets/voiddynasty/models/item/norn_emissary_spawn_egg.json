@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "voiddynasty:item/norn_emissary_spawn_egg"
+  }
+}

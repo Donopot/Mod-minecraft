@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "experience": 1.0,
+  "cookingtime": 200,
+  "ingredient": [
+    "voiddynasty:ceramite_ore",
+    "voiddynasty:deepslate_ceramite_ore"
+  ],
+  "result": {
+    "id": "voiddynasty:titanium_ingot",
+    "count": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:adamantium_plate",
+    "voiddynasty:plasma_coil",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "voiddynasty:powersword",
+    "count": 1
+  }
+}

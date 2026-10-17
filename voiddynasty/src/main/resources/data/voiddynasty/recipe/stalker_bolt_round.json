@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "voiddynasty:bolt_shell",
+    "minecraft:gold_ingot"
+  ],
+  "result": {
+    "id": "voiddynasty:stalker_bolt_round",
+    "count": 4
+  }
+}

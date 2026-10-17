@@ -1,0 +1,22 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "component": "voiddynasty:reloading",
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "voiddynasty:item/powersword_reloading"
+    },
+    "on_false": {
+      "type": "minecraft:condition",
+      "component": "voiddynasty:recoil",
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "voiddynasty:item/powersword_recoil"
+      },
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "voiddynasty:item/powersword"
+      }
+    }
+  }
+}

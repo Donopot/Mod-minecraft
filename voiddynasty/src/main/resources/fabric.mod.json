@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "voiddynasty",
+	"version": "${version}",
+	"name": "Void Dynasty",
+	"description": "Warhammer 40k-inspired Fabric mod: pilotable frigate, Mortuary World mission, and a boltgun.",
+	"authors": [
+		"Donopot (via Hermes / universal-modder)"
+	],
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.donopot.voiddynasty.VoidDynastyMod"
+		],
+		"client": [
+			"com.donopot.voiddynasty.client.VoidDynastyModClient"
+		]
+	},
+	"mixins": [
+		"voiddynasty.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*",
+		"geckolib": "*"
+	}
+}

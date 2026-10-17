@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:adamantium_plate",
+    "voiddynasty:adamantium_plate",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "voiddynasty:power_hammer",
+    "count": 1
+  }
+}

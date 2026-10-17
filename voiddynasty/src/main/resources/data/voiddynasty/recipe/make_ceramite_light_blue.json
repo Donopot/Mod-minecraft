@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "voiddynasty:ceramite_ingot",
+    "minecraft:light_blue_dye"
+  ],
+  "result": {
+    "id": "voiddynasty:light_blue_ceramite_ingot",
+    "count": 1
+  }
+}

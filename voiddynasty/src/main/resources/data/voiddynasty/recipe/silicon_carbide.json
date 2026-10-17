@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:sand",
+    "minecraft:coal"
+  ],
+  "result": {
+    "id": "voiddynasty:silicon_carbide",
+    "count": 2
+  }
+}

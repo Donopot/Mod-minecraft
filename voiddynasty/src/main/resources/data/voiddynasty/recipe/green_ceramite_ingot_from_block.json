@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "voiddynasty:green_ceramite_block"
+  ],
+  "result": {
+    "id": "voiddynasty:green_ceramite_ingot",
+    "count": 9
+  }
+}

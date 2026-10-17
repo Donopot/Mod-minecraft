@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "PCP",
+    "AAA"
+  ],
+  "key": {
+    "A": "voiddynasty:adamantium_plate",
+    "P": "voiddynasty:promethium",
+    "C": "minecraft:barrel"
+  },
+  "result": {
+    "id": "voiddynasty:super_container",
+    "count": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:adamantium_plate",
+    "voiddynasty:wires",
+    "voiddynasty:wax_seal"
+  ],
+  "result": {
+    "id": "voiddynasty:boltgun",
+    "count": 1
+  }
+}

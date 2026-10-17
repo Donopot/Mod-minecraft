@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "voiddynasty:item/red_ceramite_ingot"
+  }
+}

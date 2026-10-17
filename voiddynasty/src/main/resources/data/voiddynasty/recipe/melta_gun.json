@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:plasma_coil",
+    "voiddynasty:adamantium_plate",
+    "voiddynasty:melta_cell"
+  ],
+  "result": {
+    "id": "voiddynasty:melta_gun",
+    "count": 1
+  }
+}

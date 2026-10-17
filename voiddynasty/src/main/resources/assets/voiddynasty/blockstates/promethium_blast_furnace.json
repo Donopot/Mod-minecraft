@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=east,lit=false": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    },
+    "facing=east,lit=true": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    },
+    "facing=north,lit=false": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    },
+    "facing=north,lit=true": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    },
+    "facing=south,lit=false": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    },
+    "facing=south,lit=true": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    },
+    "facing=west,lit=false": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    },
+    "facing=west,lit=true": {
+      "model": "voiddynasty:block/promethium_blast_furnace"
+    }
+  }
+}

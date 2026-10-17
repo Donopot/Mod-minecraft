@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "voiddynasty:ceramite_ingot",
+    "minecraft:green_dye",
+    "minecraft:black_dye"
+  ],
+  "result": {
+    "id": "voiddynasty:dark_green_ceramite_ingot",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "iii",
+    "isi",
+    "iii"
+  ],
+  "key": {
+    "i": "minecraft:iron_ingot",
+    "s": "minecraft:iron_block"
+  },
+  "result": {
+    "id": "voiddynasty:adamantium_plate",
+    "count": 2
+  }
+}

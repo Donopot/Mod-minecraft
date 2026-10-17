@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "voiddynasty:adamantium_plate",
+    "voiddynasty:focus_lens",
+    "voiddynasty:wires"
+  ],
+  "result": {
+    "id": "voiddynasty:las_gun",
+    "count": 1
+  }
+}

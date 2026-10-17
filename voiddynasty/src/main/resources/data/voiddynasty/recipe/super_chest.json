@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "PCP",
+    "AAA"
+  ],
+  "key": {
+    "A": "voiddynasty:adamantium_plate",
+    "P": "voiddynasty:promethium",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "voiddynasty:super_chest",
+    "count": 1
+  }
+}

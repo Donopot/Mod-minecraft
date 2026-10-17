@@ -1,0 +1,4490 @@
+{
+ "zones": [
+  {
+   "zone": "armoury",
+   "repliques": [
+    "Power Armour Located",
+    "Waypoint Added",
+    "Crew Lifesigns Undetected",
+    "Blessed be thy men who lay down",
+    "their lives in the defence of the imperium",
+    "Let their sacrifice be not in vain"
+   ],
+   "titres": [
+    "Armoury"
+   ],
+   "waypoints": [
+    {
+     "x": 204.0,
+     "y": 102.0,
+     "z": 75.0,
+     "tags": [
+      "waypoint",
+      "armoury1"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 252.0,
+     "y": 89.0,
+     "z": 62.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 238.0,
+     "y": 89.0,
+     "z": 58.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 238.0,
+     "y": 89.0,
+     "z": 67.0
+    },
+    {
+     "mob": "cultist_4",
+     "mob_source": "cultist4",
+     "x": 226.0,
+     "y": 89.0,
+     "z": 58.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 207.0,
+     "y": 89.0,
+     "z": 59.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 191.0,
+     "y": 100.0,
+     "z": 71.0
+    }
+   ],
+   "objets": [
+    {
+     "x": 212.0,
+     "y": 91.0,
+     "z": 58.0,
+     "nom": "Laz Gun",
+     "objet": "las_gun"
+    },
+    {
+     "x": 204.0,
+     "y": 101.0,
+     "z": 76.0,
+     "nom_source": "armure de puissance",
+     "objet": "space_marine_boots"
+    },
+    {
+     "x": 204.0,
+     "y": 101.0,
+     "z": 76.0,
+     "nom_source": "armure de puissance",
+     "objet": "space_marine_leggings"
+    },
+    {
+     "x": 204.0,
+     "y": 101.0,
+     "z": 76.0,
+     "nom_source": "armure de puissance",
+     "objet": "space_marine_chestplate"
+    },
+    {
+     "x": 204.0,
+     "y": 101.0,
+     "z": 76.0,
+     "nom_source": "armure de puissance",
+     "objet": "space_marine_helmet"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "armoury",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    2
+   ]
+  },
+  {
+   "zone": "armoury2",
+   "repliques": [
+    "Combat Readiness Achieved",
+    "Bless the Omnissaiah, Bless Holy Terra",
+    "Traitors detected within the holy sanctum",
+    "You are the sword of the emperor",
+    "Cleanse the Unpure."
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 239.0,
+     "y": 103.0,
+     "z": 11.0,
+     "tags": [
+      "waypoint",
+      "armoury1"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [
+    {
+     "x": 219.0,
+     "y": 102.0,
+     "z": 68.0,
+     "nom": "Bolt Pistol",
+     "objet": "bolt_pistol"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "corridor1",
+   "repliques": [],
+   "titres": [
+    "Service Corridor"
+   ],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 276.0,
+     "y": 65.0,
+     "z": 53.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "corridor1",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    1
+   ]
+  },
+  {
+   "zone": "corridor2",
+   "repliques": [
+    "Past this door is the main Bridge",
+    "access. Once there more data",
+    "can be gathered about the ship's",
+    "status."
+   ],
+   "titres": [
+    "Bridge Access"
+   ],
+   "waypoints": [
+    {
+     "x": 286.0,
+     "y": 102.0,
+     "z": 6.0,
+     "tags": [
+      "waypoint",
+      "corridor2"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "sanctum",
+     5
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "cryoroom",
+   "repliques": [
+    "Cryo-Reanimation Successful.",
+    "I am BioProcessor XVII, your",
+    "asigned servo skull."
+   ],
+   "titres": [
+    "Cryo-Room"
+   ],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [
+    [
+     "cryoroom2",
+     10,
+     "s"
+    ]
+   ],
+   "pose_compteur": [
+    [
+     "cryoroom",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    0
+   ]
+  },
+  {
+   "zone": "cryoroom2",
+   "repliques": [
+    "Running Diagnostics:",
+    "Crew Lifesigns: Offline",
+    "Geller Field: Offline",
+    "Life Support: Online",
+    "Navigation: Online",
+    "Destination: <ACCESS DENIED>"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [
+    [
+     "cryoroom3",
+     10,
+     "s"
+    ]
+   ],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "cryoroom3",
+   "repliques": [
+    "Hostile Boarders Detected",
+    "Combat Preporations Advised:",
+    "Punch Ammo Crates, any form of",
+    "Damage will open them, even laz fire"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 306.0,
+     "y": 91.0,
+     "z": 103.0,
+     "tags": [
+      "waypoint",
+      "cryo1"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "cryoroom4",
+   "repliques": [
+    "Viable Weapon Located",
+    "Waypoint Added"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 282.0,
+     "y": 66.0,
+     "z": 89.0,
+     "tags": [
+      "waypoint",
+      "cryo2"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [
+    {
+     "x": 281.0,
+     "y": 66.0,
+     "z": 89.0,
+     "nom": "Laz Pistol",
+     "objet": "laz_pistol"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "cryoroom",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "cryoroom5",
+   "repliques": [
+    "Left-Click to Fire",
+    "Right-Click to Zoom",
+    "Shoot the crates for more ammo"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [
+    [
+     "cryoroom6",
+     15,
+     "s"
+    ]
+   ],
+   "pose_compteur": [
+    [
+     "cryoroom",
+     6
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "cryoroom6",
+   "repliques": [
+    "Lazer Grid Access Panel Located",
+    "Hit with Laz-Fire to open"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 292.0,
+     "y": 68.0,
+     "z": 79.0,
+     "tags": [
+      "waypoint",
+      "cryo3"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "cryoroom7",
+   "repliques": [
+    "Route to Armoury Established",
+    "Proceed with Caution",
+    "The Emperor Protects"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [
+    {
+     "x": 285.0,
+     "y": 66.0,
+     "z": 65.0,
+     "nom": "ChainSword",
+     "objet": "chainsword"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": [
+    1
+   ]
+  },
+  {
+   "zone": "part2/airlock",
+   "repliques": [
+    "Airlock Located Multiple",
+    "Decks below your Position"
+   ],
+   "titres": [
+    "Airlock Access"
+   ],
+   "waypoints": [
+    {
+     "x": 6.0,
+     "y": 67.0,
+     "z": 25.0,
+     "tags": [
+      "waypoint",
+      "airlock"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -15.0,
+     "y": 119.0,
+     "z": 34.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -15.0,
+     "y": 119.0,
+     "z": 34.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -15.0,
+     "y": 119.0,
+     "z": 34.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "airlock",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    11
+   ]
+  },
+  {
+   "zone": "part2/airlock2",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 5.0,
+     "y": 89.0,
+     "z": 29.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 5.0,
+     "y": 89.0,
+     "z": 29.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 5.0,
+     "y": 89.0,
+     "z": 29.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "airlock",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/crew",
+   "repliques": [
+    "No crew lifesigns detected",
+    "within the quaters. Expect a",
+    "massacre"
+   ],
+   "titres": [
+    "Crew Quaters"
+   ],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 36.0,
+     "y": 123.0,
+     "z": -14.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 4.0,
+     "y": 123.0,
+     "z": -14.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 12.0,
+     "y": 123.0,
+     "z": -20.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": -9.0,
+     "y": 123.0,
+     "z": -16.0
+    }
+   ],
+   "objets": [
+    {
+     "x": -34.0,
+     "y": 135.0,
+     "z": -13.0,
+     "nom": "Bolt Gun",
+     "objet": "boltgun"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "crew",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    10
+   ]
+  },
+  {
+   "zone": "part2/crew2",
+   "repliques": [
+    "Honour the Fallen",
+    "Access to Secondary Control Located",
+    "Via Exterior Airlock",
+    "Your Suit will Protect you",
+    "But stay close to the ship"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": -31.0,
+     "y": 143.0,
+     "z": 29.0,
+     "tags": [
+      "waypoint",
+      "airlockaccess"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "crew",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/exterior",
+   "repliques": [
+    "Prow Airlock Waypoint Added",
+    "Do not fall into the Warp"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": -132.0,
+     "y": 81.0,
+     "z": 22.0,
+     "tags": [
+      "waypoint",
+      "torpedo1"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -2.0,
+     "y": 69.0,
+     "z": 33.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -56.0,
+     "y": 67.0,
+     "z": 33.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -101.0,
+     "y": 71.0,
+     "z": 29.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": -117.0,
+     "y": 81.0,
+     "z": 21.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "space",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    12
+   ]
+  },
+  {
+   "zone": "part2/exterior2",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": -137.0,
+     "y": 79.0,
+     "z": 35.0,
+     "tags": [
+      "waypoint",
+      "torpedo2"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "space",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/gunnery",
+   "repliques": [
+    "Proceed with Caution",
+    "The Gunnery Decks house many",
+    "Hostile Servitors"
+   ],
+   "titres": [
+    "Gunnery Decks"
+   ],
+   "waypoints": [
+    {
+     "x": 49.0,
+     "y": 143.0,
+     "z": 27.0,
+     "tags": [
+      "waypoint",
+      "gunnery"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 122.0,
+     "y": 113.0,
+     "z": 24.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 108.0,
+     "y": 113.0,
+     "z": 24.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 96.0,
+     "y": 113.0,
+     "z": 24.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 96.0,
+     "y": 113.0,
+     "z": 24.0
+    }
+   ],
+   "objets": [
+    {
+     "x": 125.0,
+     "y": 91.0,
+     "z": 34.0,
+     "nom": "ShotGun",
+     "objet": "shotgun"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "gunnery",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    9
+   ]
+  },
+  {
+   "zone": "part2/gunnery2",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 87.0,
+     "y": 122.0,
+     "z": 30.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 77.0,
+     "y": 122.0,
+     "z": 30.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 67.0,
+     "y": 122.0,
+     "z": 30.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "gunnery",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/gunnery3",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 67.0,
+     "y": 143.0,
+     "z": 34.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 54.0,
+     "y": 143.0,
+     "z": 34.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "gunnery",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/gunnery4",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 49.0,
+     "y": 143.0,
+     "z": -11.0,
+     "tags": [
+      "waypoint",
+      "gunnery2"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "gunnery",
+     4
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/hanger1",
+   "repliques": [
+    "Dorsal Promenade Access Located",
+    "Two Levels up, Waypoint Added"
+   ],
+   "titres": [
+    "Starboard Hanger"
+   ],
+   "waypoints": [
+    {
+     "x": 170.0,
+     "y": 169.0,
+     "z": -11.0,
+     "tags": [
+      "waypoint",
+      "hanger2"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 156.0,
+     "y": 161.0,
+     "z": -36.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 172.0,
+     "y": 130.0,
+     "z": -12.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 150.0,
+     "y": 130.0,
+     "z": -12.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 137.0,
+     "y": 139.0,
+     "z": -13.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 172.0,
+     "y": 139.0,
+     "z": -13.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 180.0,
+     "y": 161.0,
+     "z": -32.0
+    }
+   ],
+   "objets": [
+    {
+     "x": 133.0,
+     "y": 131.0,
+     "z": -38.0,
+     "nom": "Stalker Bolt Rifle",
+     "objet": "stalker_bolt_rifle"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "hanger1",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    6
+   ]
+  },
+  {
+   "zone": "part2/hanger2",
+   "repliques": [
+    "Dorsal Promenade Sealed",
+    "Calculating alternative route: FAILED",
+    "SOLOUTION: Locate secondary control",
+    "at prow to override lockdown."
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 166.0,
+     "y": 169.0,
+     "z": 16.0,
+     "tags": [
+      "waypoint",
+      "hanger3"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "hanger2",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    7
+   ]
+  },
+  {
+   "zone": "part2/hanger3",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 170.0,
+     "y": 169.0,
+     "z": 27.0,
+     "tags": [
+      "waypoint",
+      "hanger4"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "hanger2",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/lift",
+   "repliques": [
+    "This Lift Shaft leads to",
+    "The Storage Bays, From there",
+    "is a Service Duct to the Bridge"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 186.0,
+     "y": 77.0,
+     "z": -5.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 186.0,
+     "y": 77.0,
+     "z": 12.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 177.0,
+     "y": 109.0,
+     "z": -4.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "lift",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    15
+   ]
+  },
+  {
+   "zone": "part2/part3/part4/bridge",
+   "repliques": [
+    "Clear The Bridge, Then",
+    "Reach the Main Consol at all Costs"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 428.0,
+     "y": 288.0,
+     "z": 9.0,
+     "tags": [
+      "waypoint",
+      "bridge"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "daemon_prince",
+     "mob_source": "demonprince",
+     "x": 492.0,
+     "y": 281.0,
+     "z": 8.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 473.0,
+     "y": 268.0,
+     "z": 19.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 474.0,
+     "y": 268.0,
+     "z": 19.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 472.0,
+     "y": 268.0,
+     "z": 19.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 412.0,
+     "y": 268.0,
+     "z": 8.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 493.0,
+     "y": 268.0,
+     "z": -2.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 493.0,
+     "y": 268.0,
+     "z": -1.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 493.0,
+     "y": 268.0,
+     "z": -3.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 545.0,
+     "y": 278.0,
+     "z": 33.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 545.0,
+     "y": 278.0,
+     "z": -25.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "bridge",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    19
+   ]
+  },
+  {
+   "zone": "part2/part3/part4/bridge2",
+   "repliques": [
+    "Now Activate the Consol"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "bridge",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/bridge3",
+   "repliques": [
+    "ACCESSING FLIGHT LOG",
+    "DESTINATION: Cadia Evacuation Fleet"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [
+    [
+     "part2/part3/part4/bridge4",
+     3,
+     "s"
+    ]
+   ],
+   "pose_compteur": [
+    [
+     "bridge",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/bridge4",
+   "repliques": [
+    "This Ship is on course to intercept",
+    "an Evac Fleet, It must be stopped by any means.",
+    "Service Ducts below your position will Lead",
+    "to the Reactor Core. Overload it to Scuttle the Ship"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 497.0,
+     "y": 260.0,
+     "z": -2.0,
+     "tags": [
+      "waypoint",
+      "bridge2"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/endgame",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/finalduct",
+   "repliques": [
+    "Reactor access Clear",
+    "Good Luck Brother"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 536.0,
+     "y": 253.0,
+     "z": 9.0,
+     "tags": [
+      "waypoint",
+      "finalduct"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_hellbrute",
+     "mob_source": "hellbrute",
+     "x": 499.0,
+     "y": 256.0,
+     "z": 9.0
+    }
+   ],
+   "objets": [
+    {
+     "x": 522.0,
+     "y": 253.0,
+     "z": 9.0,
+     "nom": "Power Hammer",
+     "objet": "power_hammer"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "finalduct",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    20
+   ]
+  },
+  {
+   "zone": "part2/part3/part4/hall",
+   "repliques": [
+    "Signs of Geller-Field Failure",
+    "Large parts of this area are",
+    "Consumed by Warp Mutations"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [
+    {
+     "x": 321.0,
+     "y": 224.0,
+     "z": 79.0,
+     "nom": "Power Sword",
+     "objet": "powersword"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "hall",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    18
+   ]
+  },
+  {
+   "zone": "part2/part3/part4/hall2",
+   "repliques": [
+    "This area is almost Unrecognisable",
+    "The bridge is above your position",
+    "Waypoint Added."
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 491.0,
+     "y": 257.0,
+     "z": 61.0,
+     "tags": [
+      "waypoint",
+      "hall"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 405.0,
+     "y": 221.0,
+     "z": 98.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 406.0,
+     "y": 221.0,
+     "z": 98.0
+    },
+    {
+     "mob": "chaos_dreadnought",
+     "mob_source": "chaosdreadnought",
+     "x": 452.0,
+     "y": 221.0,
+     "z": 70.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 456.0,
+     "y": 221.0,
+     "z": 70.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 450.0,
+     "y": 221.0,
+     "z": 70.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "hall",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/hall3",
+   "repliques": [
+    "Schematics suggest a service",
+    "duct should be ahead."
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 443.0,
+     "y": 257.0,
+     "z": 52.0,
+     "tags": [
+      "waypoint",
+      "hall2"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "hall",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/hall4",
+   "repliques": [
+    "They have Tainted the Emperor's",
+    "Flawless Design. Purge Them All."
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "hall",
+     5
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/marinesummon",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/part4/reactor",
+   "repliques": [
+    "There are Four Control Pannels",
+    "Once all are Destroyed, the reactor will overheat",
+    "Waypoint Added."
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 608.0,
+     "y": 217.0,
+     "z": 8.0,
+     "tags": [
+      "waypoint",
+      "reactorw1"
+     ]
+    },
+    {
+     "x": 589.0,
+     "y": 129.0,
+     "z": 62.0,
+     "tags": [
+      "waypoint",
+      "reactorw2"
+     ]
+    },
+    {
+     "x": 536.0,
+     "y": 140.0,
+     "z": 8.0,
+     "tags": [
+      "waypoint",
+      "reactorw3"
+     ]
+    },
+    {
+     "x": 598.0,
+     "y": 194.0,
+     "z": -54.0,
+     "tags": [
+      "waypoint",
+      "reactorw4"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_helldrake",
+     "mob_source": "helldrake",
+     "x": 556.0,
+     "y": 225.0,
+     "z": 58.0
+    },
+    {
+     "mob": "chaos_helldrake",
+     "mob_source": "helldrake",
+     "x": 549.0,
+     "y": 132.0,
+     "z": -58.0
+    },
+    {
+     "mob": "chaos_dreadnought",
+     "mob_source": "chaosdreadnought",
+     "x": 573.0,
+     "y": 222.0,
+     "z": 14.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 573.0,
+     "y": 220.0,
+     "z": 3.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 595.0,
+     "y": 214.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 595.0,
+     "y": 214.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 595.0,
+     "y": 214.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 595.0,
+     "y": 214.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 646.0,
+     "y": 226.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 646.0,
+     "y": 226.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 646.0,
+     "y": 226.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 646.0,
+     "y": 226.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 596.0,
+     "y": 236.0,
+     "z": 78.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 596.0,
+     "y": 236.0,
+     "z": 78.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 596.0,
+     "y": 236.0,
+     "z": 78.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 596.0,
+     "y": 236.0,
+     "z": 78.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 523.0,
+     "y": 190.0,
+     "z": 98.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 523.0,
+     "y": 190.0,
+     "z": 98.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 523.0,
+     "y": 190.0,
+     "z": 98.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 523.0,
+     "y": 190.0,
+     "z": 98.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 524.0,
+     "y": 137.0,
+     "z": 8.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 524.0,
+     "y": 137.0,
+     "z": 8.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 524.0,
+     "y": 137.0,
+     "z": 8.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 524.0,
+     "y": 137.0,
+     "z": 8.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 584.0,
+     "y": 126.0,
+     "z": 45.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 589.0,
+     "y": 190.0,
+     "z": 92.0
+    },
+    {
+     "mob": "chaos_dreadnought",
+     "mob_source": "chaosdreadnought",
+     "x": 597.0,
+     "y": 236.0,
+     "z": -61.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "reactor",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    21
+   ]
+  },
+  {
+   "zone": "part2/part3/promenade",
+   "repliques": [
+    "Onwards Brother, For the",
+    "Emperor!"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 170.0,
+     "y": 134.0,
+     "z": 8.0,
+     "tags": [
+      "waypoint",
+      "promenade"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": -89.0,
+     "y": 124.0,
+     "z": 3.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": -89.0,
+     "y": 124.0,
+     "z": 2.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": -89.0,
+     "y": 124.0,
+     "z": 4.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": -89.0,
+     "y": 124.0,
+     "z": 1.0
+    },
+    {
+     "mob": "cultist_4",
+     "mob_source": "cultist4",
+     "x": -89.0,
+     "y": 124.0,
+     "z": 5.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": -89.0,
+     "y": 124.0,
+     "z": 6.0
+    },
+    {
+     "mob": "cultist_boss",
+     "mob_source": "cultistboss",
+     "x": -99.0,
+     "y": 124.0,
+     "z": 7.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": -82.0,
+     "y": 124.0,
+     "z": 3.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": -82.0,
+     "y": 124.0,
+     "z": 2.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": -82.0,
+     "y": 124.0,
+     "z": 4.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": -82.0,
+     "y": 124.0,
+     "z": 1.0
+    },
+    {
+     "mob": "cultist_4",
+     "mob_source": "cultist4",
+     "x": -82.0,
+     "y": 124.0,
+     "z": 5.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": -82.0,
+     "y": 124.0,
+     "z": 6.0
+    }
+   ],
+   "objets": [
+    {
+     "x": -138.0,
+     "y": 126.0,
+     "z": 8.0,
+     "nom": "Hunter-Killer Missile",
+     "objet": "hunter_killer_missile"
+    },
+    {
+     "x": -138.0,
+     "y": 126.0,
+     "z": 9.0,
+     "nom": "Hunter-Killer Missile",
+     "objet": "hunter_killer_missile"
+    },
+    {
+     "x": -138.0,
+     "y": 126.0,
+     "z": 7.0,
+     "nom": "Hunter-Killer Missile",
+     "objet": "hunter_killer_missile"
+    },
+    {
+     "x": -144.0,
+     "y": 126.0,
+     "z": 6.0,
+     "nom": "Plasma Ammo",
+     "objet": "plasma_cell"
+    },
+    {
+     "x": -144.0,
+     "y": 126.0,
+     "z": 6.0,
+     "nom": "Plasma Ammo",
+     "objet": "plasma_cell"
+    },
+    {
+     "x": -144.0,
+     "y": 126.0,
+     "z": 12.0,
+     "nom": "Bolt Ammo",
+     "objet": "bolt_shell"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "promenade",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    14
+   ]
+  },
+  {
+   "zone": "part2/part3/promenda2",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": -42.0,
+     "y": 124.0,
+     "z": 8.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": -42.0,
+     "y": 124.0,
+     "z": 9.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": -42.0,
+     "y": 124.0,
+     "z": 7.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": -42.0,
+     "y": 124.0,
+     "z": 6.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": -42.0,
+     "y": 124.0,
+     "z": 10.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": -42.0,
+     "y": 124.0,
+     "z": 11.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": -43.0,
+     "y": 124.0,
+     "z": 10.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": -43.0,
+     "y": 124.0,
+     "z": 8.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "promenade",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/promenda3",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 79.0,
+     "y": 124.0,
+     "z": 10.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 79.0,
+     "y": 124.0,
+     "z": 11.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 79.0,
+     "y": 124.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 79.0,
+     "y": 124.0,
+     "z": 8.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 77.0,
+     "y": 124.0,
+     "z": 8.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": 77.0,
+     "y": 124.0,
+     "z": 10.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "promenade",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/promenda4",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "chaos_dreadnought",
+     "mob_source": "chaosdreadnought",
+     "x": 149.0,
+     "y": 124.0,
+     "z": 5.0
+    },
+    {
+     "mob": "chaos_dreadnought",
+     "mob_source": "chaosdreadnought",
+     "x": 149.0,
+     "y": 124.0,
+     "z": 13.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "promenade",
+     4
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/storage",
+   "repliques": [
+    "Bridge Access at the Far end",
+    "of this Hall."
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [
+    {
+     "x": 205.0,
+     "y": 45.0,
+     "z": 9.0,
+     "nom": "Plasma Rifle",
+     "objet": "plasma_incinerator"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "storage",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    16
+   ]
+  },
+  {
+   "zone": "part2/part3/storage2",
+   "repliques": [
+    "WARP BEAST DETECTED",
+    "EVASIVE ROUTE FOUND",
+    "WAYPOINT ADDED",
+    "PROCEED TO REAR OF PORT SIDE",
+    "UPPER BAY"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 327.0,
+     "y": 69.0,
+     "z": 72.0,
+     "tags": [
+      "waypoint",
+      "storage"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_forgefiend",
+     "mob_source": "forgefiend",
+     "x": 391.0,
+     "y": 44.0,
+     "z": 9.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "storage",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/storage3",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 329.0,
+     "y": 68.0,
+     "z": 138.0,
+     "tags": [
+      "waypoint",
+      "storage1"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [
+    {
+     "x": 328.0,
+     "y": 66.0,
+     "z": 112.0,
+     "nom": "Hunter-Killer Missile",
+     "objet": "hunter_killer_missile"
+    },
+    {
+     "x": 325.0,
+     "y": 66.0,
+     "z": 112.0,
+     "nom": "Hunter-Killer Missile",
+     "objet": "hunter_killer_missile"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "storage",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/storage4",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/torpedo",
+   "repliques": [
+    "Secondary Control is Located",
+    "At the top of this Chamber.",
+    "Expect Heavy Resistance"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": -204.0,
+     "y": 92.0,
+     "z": 41.0,
+     "tags": [
+      "waypoint",
+      "torpedo3"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -167.0,
+     "y": 77.0,
+     "z": 43.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": -167.0,
+     "y": 77.0,
+     "z": 42.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -167.0,
+     "y": 77.0,
+     "z": 44.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -198.0,
+     "y": 77.0,
+     "z": 43.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -198.0,
+     "y": 77.0,
+     "z": 42.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -198.0,
+     "y": 77.0,
+     "z": 44.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "torpedo",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    13
+   ]
+  },
+  {
+   "zone": "part2/part3/torpedo2",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": -203.0,
+     "y": 92.0,
+     "z": -11.0,
+     "tags": [
+      "waypoint",
+      "torpedo4"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": -197.0,
+     "y": 90.0,
+     "z": 30.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": -197.0,
+     "y": 90.0,
+     "z": 31.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": -203.0,
+     "y": 90.0,
+     "z": 7.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": -203.0,
+     "y": 90.0,
+     "z": -4.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "torpedo",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/torpedo3",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": -160.0,
+     "y": 93.0,
+     "z": -4.0,
+     "tags": [
+      "waypoint",
+      "torpedo5"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": -191.0,
+     "y": 90.0,
+     "z": -12.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -191.0,
+     "y": 90.0,
+     "z": -4.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": -166.0,
+     "y": 90.0,
+     "z": -4.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": -167.0,
+     "y": 90.0,
+     "z": -4.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": -165.0,
+     "y": 90.0,
+     "z": -4.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "torpedo",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/torpedo4",
+   "repliques": [
+    "Secondary Control Above your Position."
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": -182.0,
+     "y": 125.0,
+     "z": 9.0,
+     "tags": [
+      "waypoint",
+      "torpedo6"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": -171.0,
+     "y": 102.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -176.0,
+     "y": 104.0,
+     "z": 26.0
+    },
+    {
+     "mob": "chaos_marine_3",
+     "mob_source": "marine3",
+     "x": -170.0,
+     "y": 118.0,
+     "z": 7.0
+    }
+   ],
+   "objets": [
+    {
+     "x": -170.0,
+     "y": 119.0,
+     "z": 9.0,
+     "nom": "Plasma Pistol",
+     "objet": "plasma_pistol"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "torpedo",
+     4
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/torpedo5",
+   "repliques": [],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "chaos_captain",
+     "mob_source": "marinecaptain",
+     "x": -179.0,
+     "y": 123.0,
+     "z": 9.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -167.0,
+     "y": 123.0,
+     "z": 14.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": -167.0,
+     "y": 123.0,
+     "z": 3.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "torpedo",
+     5
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/torpedo6",
+   "repliques": [
+    "Unlock the Doors at the Pannel",
+    "Service only ends in Death"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "torpedo",
+     6
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/part3/warp",
+   "repliques": [
+    "Airlock Located into Repentance Halls",
+    "On the Upper Decks.",
+    "Waypoint Added, Use Gantry System."
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 307.0,
+     "y": 226.0,
+     "z": 78.0,
+     "tags": [
+      "waypoint",
+      "warp"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_helldrake",
+     "mob_source": "helldrake",
+     "x": 275.0,
+     "y": 187.0,
+     "z": 168.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 273.0,
+     "y": 175.0,
+     "z": 191.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 274.0,
+     "y": 175.0,
+     "z": 191.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 272.0,
+     "y": 175.0,
+     "z": 191.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 389.0,
+     "y": 179.0,
+     "z": 190.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 389.0,
+     "y": 179.0,
+     "z": 191.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 343.0,
+     "y": 198.0,
+     "z": 128.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 288.0,
+     "y": 221.0,
+     "z": 97.0
+    },
+    {
+     "mob": "chaos_raptor",
+     "mob_source": "raptor",
+     "x": 294.0,
+     "y": 226.0,
+     "z": 68.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "warp",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    17
+   ]
+  },
+  {
+   "zone": "part2/porthanger",
+   "repliques": [
+    "Multiple Targets on lower levels",
+    "Ranged Engagement Advised"
+   ],
+   "titres": [
+    "Port Hanger"
+   ],
+   "waypoints": [
+    {
+     "x": 131.0,
+     "y": 91.0,
+     "z": 30.0,
+     "tags": [
+      "waypoint",
+      "port1"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 151.0,
+     "y": 161.0,
+     "z": 30.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 180.0,
+     "y": 161.0,
+     "z": 53.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 160.0,
+     "y": 161.0,
+     "z": 53.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 154.0,
+     "y": 107.0,
+     "z": 41.0
+    },
+    {
+     "mob": "chaos_marine_1",
+     "mob_source": "marine1",
+     "x": 153.0,
+     "y": 107.0,
+     "z": 54.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 142.0,
+     "y": 95.0,
+     "z": 47.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 147.0,
+     "y": 95.0,
+     "z": 42.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 140.0,
+     "y": 95.0,
+     "z": 52.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 139.0,
+     "y": 90.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 174.0,
+     "y": 130.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 174.0,
+     "y": 130.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 174.0,
+     "y": 130.0,
+     "z": 30.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 144.0,
+     "y": 139.0,
+     "z": 29.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 170.0,
+     "y": 95.0,
+     "z": 47.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "porthanger",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    8
+   ]
+  },
+  {
+   "zone": "part2/serviceducts",
+   "repliques": [
+    "These Ducts Link to the Hanger Bays",
+    "From there the Dorsal Promenade will lead",
+    "to the bridge",
+    "Be cautious, servitors in this region",
+    "may be corrupted by deamons",
+    "the Emperor protects."
+   ],
+   "titres": [
+    "Service Ducts"
+   ],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 247.0,
+     "y": 100.0,
+     "z": -51.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 267.0,
+     "y": 100.0,
+     "z": -51.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 293.0,
+     "y": 100.0,
+     "z": -49.0
+    },
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 293.0,
+     "y": 100.0,
+     "z": -55.0
+    },
+    {
+     "mob": "servitor_3",
+     "mob_source": "servitor3",
+     "x": 299.0,
+     "y": 100.0,
+     "z": -80.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "ducts",
+     1
+    ],
+    [
+     "ducts",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    5
+   ]
+  },
+  {
+   "zone": "part2/serviceducts2",
+   "repliques": [
+    "These ducts cycle oxygen",
+    "throughout the ship. Caution advised.",
+    "The traitor war engine suggets",
+    "Heritic Astartes are present.",
+    "PURGE THEM."
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "servitor_2",
+     "mob_source": "servitor2",
+     "x": 292.0,
+     "y": 132.0,
+     "z": -89.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 290.0,
+     "y": 132.0,
+     "z": -82.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 267.0,
+     "y": 132.0,
+     "z": -84.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 267.0,
+     "y": 132.0,
+     "z": -86.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 255.0,
+     "y": 132.0,
+     "z": -85.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "ducts",
+     2
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "part2/serviceducts3",
+   "repliques": [
+    "Hanger Access Located",
+    "Waypoint Added"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 184.0,
+     "y": 132.0,
+     "z": -22.0,
+     "tags": [
+      "waypoint",
+      "hanger1"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 237.0,
+     "y": 130.0,
+     "z": -40.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 237.0,
+     "y": 130.0,
+     "z": -40.0
+    },
+    {
+     "mob": "chaos_marine_2",
+     "mob_source": "marine2",
+     "x": 237.0,
+     "y": 130.0,
+     "z": -40.0
+    },
+    {
+     "mob": "servitor_1",
+     "mob_source": "servitor1",
+     "x": 205.0,
+     "y": 130.0,
+     "z": -30.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 205.0,
+     "y": 130.0,
+     "z": -30.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 205.0,
+     "y": 130.0,
+     "z": -30.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "ducts",
+     3
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "sanctum",
+   "repliques": [
+    "BURN THE WITCH"
+   ],
+   "titres": [],
+   "waypoints": [],
+   "apparitions": [
+    {
+     "mob": "cultist_boss",
+     "mob_source": "cultistboss",
+     "x": 249.0,
+     "y": 101.0,
+     "z": 9.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 246.0,
+     "y": 100.0,
+     "z": 20.0
+    },
+    {
+     "mob": "cultist_3",
+     "mob_source": "cultist3",
+     "x": 246.0,
+     "y": 100.0,
+     "z": -1.0
+    },
+    {
+     "mob": "cultist_2",
+     "mob_source": "cultist2",
+     "x": 241.0,
+     "y": 100.0,
+     "z": 24.0
+    },
+    {
+     "mob": "cultist_1",
+     "mob_source": "cultist1",
+     "x": 222.0,
+     "y": 100.0,
+     "z": -5.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "sanctum",
+     2
+    ]
+   ],
+   "pose_niveau": [
+    3
+   ]
+  },
+  {
+   "zone": "sanctum2",
+   "repliques": [
+    "Victory!",
+    "Route to Bridge Mapped,",
+    "Waypoint Added"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 261.0,
+     "y": 103.0,
+     "z": 7.0,
+     "tags": [
+      "waypoint",
+      "sanctum2"
+     ]
+    }
+   ],
+   "apparitions": [],
+   "objets": [
+    {
+     "x": 277.0,
+     "y": 103.0,
+     "z": 9.0,
+     "nom": "Flame Thrower",
+     "objet": "flamethrower"
+    }
+   ],
+   "appels_differes": [],
+   "pose_compteur": [
+    [
+     "sanctum",
+     4
+    ]
+   ],
+   "pose_niveau": []
+  },
+  {
+   "zone": "sanctum3",
+   "repliques": [
+    "RETREAT",
+    "SERVICE DUCT LOCATED"
+   ],
+   "titres": [],
+   "waypoints": [
+    {
+     "x": 240.0,
+     "y": 102.0,
+     "z": -21.0,
+     "tags": [
+      "waypoint",
+      "serviceduct"
+     ]
+    }
+   ],
+   "apparitions": [
+    {
+     "mob": "chaos_dreadnought",
+     "mob_source": "chaosdreadnought",
+     "x": 288.0,
+     "y": 101.0,
+     "z": 9.0
+    }
+   ],
+   "objets": [],
+   "appels_differes": [],
+   "pose_compteur": [],
+   "pose_niveau": [
+    4
+   ]
+  }
+ ],
+ "regles": [
+  {
+   "position": [
+    302.0,
+    100.0,
+    -97.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "ducts",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/serviceducts2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    242.0,
+    132.0,
+    -74.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "ducts",
+   "compteur_valeur": 2,
+   "appelle": [
+    "part2/serviceducts3"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    239.0,
+    100.0,
+    -33.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "ducts",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/serviceducts"
+   ],
+   "pose_compteur": [
+    [
+     "ducts",
+     1
+    ]
+   ],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    180.0,
+    130.0,
+    -15.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "hanger1",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/hanger1"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -34.0,
+    143.0,
+    -10.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "crew",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/crew2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    49.0,
+    143.0,
+    -10.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "crew",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/crew"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    170.0,
+    168.0,
+    -7.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "hanger2",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/hanger2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -160.0,
+    90.0,
+    -5.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 3.0
+   },
+   "compteur_zone": "torpedo",
+   "compteur_valeur": 3,
+   "appelle": [
+    "part2/part3/torpedo4"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -202.0,
+    90.0,
+    -4.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 3.0
+   },
+   "compteur_zone": "torpedo",
+   "compteur_valeur": 2,
+   "appelle": [
+    "part2/part3/torpedo3"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    481.0,
+    256.0,
+    -2.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "finalduct",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/part4/finalduct"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -172.0,
+    124.0,
+    8.0
+   ],
+   "condition": {
+    "type": "sans_ennemi",
+    "type_source": "zombie",
+    "rayon": 20.0
+   },
+   "compteur_zone": "torpedo",
+   "compteur_valeur": 5,
+   "appelle": [
+    "part2/part3/torpedo6"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -134.0,
+    124.0,
+    8.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 10.0
+   },
+   "compteur_zone": "promenade",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/promenade"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -68.0,
+    124.0,
+    8.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 10.0
+   },
+   "compteur_zone": "promenade",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/part3/promenda2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    13.0,
+    124.0,
+    8.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 10.0
+   },
+   "compteur_zone": "promenade",
+   "compteur_valeur": 2,
+   "appelle": [
+    "part2/part3/promenda3"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    125.0,
+    124.0,
+    8.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 10.0
+   },
+   "compteur_zone": "promenade",
+   "compteur_valeur": 3,
+   "appelle": [
+    "part2/part3/promenda4"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    185.0,
+    44.0,
+    8.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 15.0
+   },
+   "compteur_zone": "storage",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/storage"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    314.0,
+    44.0,
+    8.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 10.0
+   },
+   "compteur_zone": "storage",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/part3/storage2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    174.0,
+    123.0,
+    9.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 3.0
+   },
+   "compteur_zone": "lift",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/lift"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    239.0,
+    100.0,
+    9.0
+   ],
+   "condition": {
+    "type": "sans_ennemi",
+    "type_source": "zombie",
+    "rayon": 20.0
+   },
+   "compteur_zone": "sanctum",
+   "compteur_valeur": 1,
+   "appelle": [
+    "sanctum2"
+   ],
+   "pose_compteur": [
+    [
+     "sanctum",
+     3
+    ]
+   ],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    430.0,
+    285.0,
+    9.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "bridge",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/part3/part4/bridge2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    535.0,
+    250.0,
+    9.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "finalduct",
+   "compteur_valeur": 1,
+   "appelle": [],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": [
+    "finalduct"
+   ]
+  },
+  {
+   "position": [
+    535.0,
+    220.0,
+    9.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "reactor",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/part4/reactor"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    165.0,
+    168.0,
+    16.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "hanger2",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/hanger3"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -164.0,
+    123.0,
+    18.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 3.0
+   },
+   "compteur_zone": "torpedo",
+   "compteur_valeur": 4,
+   "appelle": [
+    "part2/part3/torpedo5"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -131.0,
+    79.0,
+    21.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "space",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/exterior2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    502.0,
+    268.0,
+    21.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "bridge",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/part4/bridge"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    170.0,
+    168.0,
+    26.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "porthanger",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/porthanger"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    49.0,
+    143.0,
+    27.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "gunnery",
+   "compteur_valeur": 3,
+   "appelle": [
+    "part2/gunnery4"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -31.0,
+    143.0,
+    29.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 4.0
+   },
+   "compteur_zone": "airlock",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/airlock"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    5.0,
+    64.0,
+    29.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "space",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/exterior"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    129.0,
+    90.0,
+    31.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 4.0
+   },
+   "compteur_zone": "gunnery",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/gunnery"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    72.0,
+    138.0,
+    34.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 4.0
+   },
+   "compteur_zone": "gunnery",
+   "compteur_valeur": 2,
+   "appelle": [
+    "part2/gunnery3"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -205.0,
+    90.0,
+    37.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 3.0
+   },
+   "compteur_zone": "torpedo",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/part3/torpedo2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    14.0,
+    98.0,
+    38.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 4.0
+   },
+   "compteur_zone": "airlock",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/airlock2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    239.0,
+    100.0,
+    38.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "sanctum",
+   "compteur_valeur": 0,
+   "appelle": [
+    "sanctum"
+   ],
+   "pose_compteur": [
+    [
+     "sanctum",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    3
+   ],
+   "tue": []
+  },
+  {
+   "position": [
+    97.0,
+    112.0,
+    39.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 4.0
+   },
+   "compteur_zone": "gunnery",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/gunnery2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    -147.0,
+    77.0,
+    44.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "torpedo",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/torpedo"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    441.0,
+    255.0,
+    47.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "hall",
+   "compteur_valeur": 3,
+   "appelle": [
+    "part2/part3/part4/hall4"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    264.0,
+    89.0,
+    56.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "armoury",
+   "compteur_valeur": 0,
+   "appelle": [
+    "armoury"
+   ],
+   "pose_compteur": [
+    [
+     "armoury",
+     1
+    ]
+   ],
+   "pose_niveau": [
+    1
+   ],
+   "tue": []
+  },
+  {
+   "position": [
+    491.0,
+    254.0,
+    56.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "hall",
+   "compteur_valeur": 2,
+   "appelle": [
+    "part2/part3/part4/hall3"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    282.0,
+    65.0,
+    73.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "corridor1",
+   "compteur_valeur": 0,
+   "appelle": [
+    "corridor1"
+   ],
+   "pose_compteur": [
+    [
+     "corridor1",
+     1
+    ]
+   ],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    327.0,
+    65.0,
+    77.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 10.0
+   },
+   "compteur_zone": "storage",
+   "compteur_valeur": 2,
+   "appelle": [
+    "part2/part3/storage3"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    314.0,
+    221.0,
+    79.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 3.0
+   },
+   "compteur_zone": "hall",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/part4/hall"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    395.0,
+    221.0,
+    79.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "hall",
+   "compteur_valeur": 1,
+   "appelle": [
+    "part2/part3/part4/hall2"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    316.0,
+    90.0,
+    111.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 2.0
+   },
+   "compteur_zone": "cryoroom",
+   "compteur_valeur": 0,
+   "appelle": [
+    "cryoroom"
+   ],
+   "pose_compteur": [
+    [
+     "cryoroom",
+     1
+    ]
+   ],
+   "pose_niveau": [],
+   "tue": []
+  },
+  {
+   "position": [
+    327.0,
+    65.0,
+    145.0
+   ],
+   "condition": {
+    "type": "joueur_proche",
+    "rayon": 5.0
+   },
+   "compteur_zone": "warp",
+   "compteur_valeur": 0,
+   "appelle": [
+    "part2/part3/warp"
+   ],
+   "pose_compteur": [],
+   "pose_niveau": [],
+   "tue": []
+  }
+ ],
+ "portes": [
+  {
+   "tag": "airlock1",
+   "condition_zone": "airlock",
+   "condition_valeur": 2,
+   "regions": [
+    [
+     4,
+     67,
+     27,
+     5,
+     64,
+     27
+    ]
+   ],
+   "sons": [],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": null
+  },
+  {
+   "tag": "door1",
+   "condition_zone": null,
+   "condition_valeur": null,
+   "regions": [
+    [
+     284,
+     65,
+     78,
+     280,
+     70,
+     78
+    ]
+   ],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [
+    "cryoroom7"
+   ],
+   "tue": [
+    "cryo3"
+   ],
+   "compte_retire": null
+  },
+  {
+   "tag": "door10",
+   "condition_zone": "bridge",
+   "condition_valeur": 1,
+   "regions": [],
+   "sons": [],
+   "appelle": [
+    "part2/part3/part4/bridge3"
+   ],
+   "tue": [],
+   "compte_retire": null
+  },
+  {
+   "tag": "door11",
+   "condition_zone": "bridge",
+   "condition_valeur": 3,
+   "regions": [
+    [
+     493,
+     258,
+     -4,
+     493,
+     256,
+     0
+    ]
+   ],
+   "sons": [],
+   "appelle": [],
+   "tue": [
+    "bridge2"
+   ],
+   "compte_retire": null
+  },
+  {
+   "tag": "door2",
+   "condition_zone": null,
+   "condition_valeur": null,
+   "regions": [
+    [
+     205,
+     101,
+     74,
+     201,
+     103,
+     74
+    ]
+   ],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [
+    "armoury2"
+   ],
+   "tue": [
+    "armoury1"
+   ],
+   "compte_retire": null
+  },
+  {
+   "tag": "door3",
+   "condition_zone": "sanctum",
+   "condition_valeur": 4,
+   "regions": [
+    [
+     264,
+     101,
+     8,
+     264,
+     104,
+     10
+    ],
+    [
+     264,
+     101,
+     8,
+     264,
+     104,
+     10
+    ]
+   ],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [
+    "corridor2"
+   ],
+   "tue": [
+    "sanctum2"
+   ],
+   "compte_retire": null
+  },
+  {
+   "tag": "door4",
+   "condition_zone": "sanctum",
+   "condition_valeur": 5,
+   "regions": [
+    [
+     241,
+     100,
+     -16,
+     239,
+     104,
+     -16
+    ]
+   ],
+   "sons": [],
+   "appelle": [
+    "sanctum3"
+   ],
+   "tue": [],
+   "compte_retire": null
+  },
+  {
+   "tag": "door5",
+   "condition_zone": "ducts",
+   "condition_valeur": 3,
+   "regions": [
+    [
+     183,
+     130,
+     -20,
+     183,
+     133,
+     -21
+    ]
+   ],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [],
+   "tue": [
+    "hanger1"
+   ],
+   "compte_retire": null
+  },
+  {
+   "tag": "door6",
+   "condition_zone": "space",
+   "condition_valeur": 2,
+   "regions": [
+    [
+     -144,
+     77,
+     36,
+     -138,
+     79,
+     36
+    ]
+   ],
+   "sons": [],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": null
+  },
+  {
+   "tag": "door7",
+   "condition_zone": "torpedo",
+   "condition_valeur": 5,
+   "regions": [
+    [
+     173,
+     146,
+     2,
+     173,
+     124,
+     15
+    ],
+    [
+     125,
+     146,
+     2,
+     125,
+     124,
+     15
+    ],
+    [
+     13,
+     146,
+     2,
+     13,
+     124,
+     15
+    ],
+    [
+     -67,
+     146,
+     1,
+     -67,
+     124,
+     16
+    ],
+    [
+     -147,
+     146,
+     2,
+     -147,
+     124,
+     15
+    ]
+   ],
+   "sons": [],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": null
+  },
+  {
+   "tag": "door8",
+   "condition_zone": "storage",
+   "condition_valeur": 3,
+   "regions": [
+    [
+     326,
+     67,
+     140,
+     328,
+     65,
+     140
+    ]
+   ],
+   "sons": [],
+   "appelle": [
+    "part2/part3/storage4"
+   ],
+   "tue": [],
+   "compte_retire": null
+  },
+  {
+   "tag": "door9",
+   "condition_zone": "warp",
+   "condition_valeur": 1,
+   "regions": [
+    [
+     311,
+     224,
+     76,
+     311,
+     221,
+     82
+    ]
+   ],
+   "sons": [],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": null
+  },
+  {
+   "tag": "reactor1",
+   "condition_zone": "reactor",
+   "condition_valeur": 1,
+   "regions": [],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": [
+    "reactorcore",
+    "reactorcore",
+    1
+   ]
+  },
+  {
+   "tag": "reactor2",
+   "condition_zone": "reactor",
+   "condition_valeur": 1,
+   "regions": [],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": [
+    "reactorcore",
+    "reactorcore",
+    1
+   ]
+  },
+  {
+   "tag": "reactor3",
+   "condition_zone": "reactor",
+   "condition_valeur": 1,
+   "regions": [],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": [
+    "reactorcore",
+    "reactorcore",
+    1
+   ]
+  },
+  {
+   "tag": "reactor4",
+   "condition_zone": "reactor",
+   "condition_valeur": 1,
+   "regions": [],
+   "sons": [
+    "block.beacon.deactivate"
+   ],
+   "appelle": [],
+   "tue": [],
+   "compte_retire": [
+    "reactorcore",
+    "reactorcore",
+    1
+   ]
+  }
+ ],
+ "tick": {
+  "regles_sans_position": [
+   {
+    "compteur_zone": "cryoroom",
+    "compteur_valeur": 2,
+    "appelle": "cryoroom4"
+   },
+   {
+    "compteur_zone": "cryoroom",
+    "compteur_valeur": 5,
+    "appelle": "cryoroom5"
+   }
+  ],
+  "regles_entite": [
+   {
+    "tag": "cryo2",
+    "rayon": 3.0,
+    "pose_compteur": [
+     "cryoroom",
+     5
+    ]
+   }
+  ],
+  "reinitialisation": {
+   "position": [
+    380.0,
+    105.0,
+    -366.0
+   ],
+   "rayon": 10.0
+  },
+  "power_armour": {
+   "slot": 103,
+   "objet_source": "minecraft:diamond_helmet",
+   "max_health": 40.0
+  },
+  "reacteur": {
+   "barre": "reactor",
+   "compteur": "reactorcore",
+   "objectif": "reactorcore",
+   "nom": "Reactor Core",
+   "max": 16,
+   "depart": 4
+  },
+  "fin": {
+   "compteur": "reactorcore",
+   "objectif": "reactorcore",
+   "seuil": 0,
+   "zone": "part2/part3/part4/endgame",
+   "teleport": [
+    610.0,
+    251.0,
+    -55.0
+   ],
+   "sons": [
+    "entity.ender_dragon.death",
+    "entity.generic.explode"
+   ],
+   "aveuglement": true,
+   "titre": "THANKS FOR PLAYING",
+   "remet_compteur": [
+    "reactorcore",
+    "reactorcore",
+    4
+   ]
+  }
+ },
+ "verre_rouge_chargement": [
+  [
+   284,
+   65,
+   78,
+   280,
+   70,
+   78
+  ],
+  [
+   205,
+   101,
+   74,
+   201,
+   103,
+   74
+  ],
+  [
+   264,
+   101,
+   8,
+   264,
+   104,
+   10
+  ],
+  [
+   241,
+   100,
+   -16,
+   239,
+   104,
+   -16
+  ],
+  [
+   183,
+   130,
+   -20,
+   183,
+   134,
+   -21
+  ]
+ ],
+ "reapparitions": {
+  "0": [
+   316.0,
+   90.0,
+   111.0
+  ],
+  "1": [
+   282.0,
+   65.0,
+   75.0
+  ],
+  "3": [
+   239.0,
+   100.0,
+   38.0
+  ],
+  "2": [
+   264.0,
+   89.0,
+   55.0
+  ],
+  "4": [
+   273.0,
+   101.0,
+   9.0
+  ],
+  "5": [
+   239.0,
+   100.0,
+   -33.0
+  ],
+  "6": [
+   180.0,
+   130.0,
+   -15.0
+  ],
+  "7": [
+   170.0,
+   168.0,
+   -7.0
+  ],
+  "8": [
+   170.0,
+   168.0,
+   26.0
+  ],
+  "9": [
+   129.0,
+   90.0,
+   31.0
+  ],
+  "10": [
+   49.0,
+   143.0,
+   -10.0
+  ],
+  "11": [
+   -31.0,
+   143.0,
+   29.0
+  ],
+  "12": [
+   5.0,
+   64.0,
+   29.0
+  ],
+  "13": [
+   -147.0,
+   77.0,
+   42.0
+  ],
+  "14": [
+   -134.0,
+   124.0,
+   8.0
+  ],
+  "15": [
+   174.0,
+   123.0,
+   9.0
+  ],
+  "16": [
+   185.0,
+   44.0,
+   8.0
+  ],
+  "17": [
+   327.0,
+   65.0,
+   145.0
+  ],
+  "18": [
+   314.0,
+   221.0,
+   79.0
+  ],
+  "19": [
+   502.0,
+   268.0,
+   21.0
+  ],
+  "20": [
+   481.0,
+   256.0,
+   -2.0
+  ],
+  "21": [
+   535.0,
+   220.0,
+   9.0
+  ]
+ },
+ "gamerules_source": {
+  "spawn_mobs": false,
+  "mob_griefing": false,
+  "keep_inventory": true
+ }
+}

@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=east,lit=false": {
+      "model": "voiddynasty:block/promethium_smoker"
+    },
+    "facing=east,lit=true": {
+      "model": "voiddynasty:block/promethium_smoker"
+    },
+    "facing=north,lit=false": {
+      "model": "voiddynasty:block/promethium_smoker"
+    },
+    "facing=north,lit=true": {
+      "model": "voiddynasty:block/promethium_smoker"
+    },
+    "facing=south,lit=false": {
+      "model": "voiddynasty:block/promethium_smoker"
+    },
+    "facing=south,lit=true": {
+      "model": "voiddynasty:block/promethium_smoker"
+    },
+    "facing=west,lit=false": {
+      "model": "voiddynasty:block/promethium_smoker"
+    },
+    "facing=west,lit=true": {
+      "model": "voiddynasty:block/promethium_smoker"
+    }
+  }
+}

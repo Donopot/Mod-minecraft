@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "voiddynasty:warhead",
+    "minecraft:iron_ingot"
+  ],
+  "result": {
+    "id": "voiddynasty:missile_ammo",
+    "count": 4
+  }
+}

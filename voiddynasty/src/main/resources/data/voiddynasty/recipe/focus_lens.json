@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:glass",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "id": "voiddynasty:focus_lens",
+    "count": 2
+  }
+}
