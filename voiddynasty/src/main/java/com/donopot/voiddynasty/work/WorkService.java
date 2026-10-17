@@ -77,6 +77,7 @@ public final class WorkService {
                 state.lastStop = "servitor tue (" + source.getLocalizedDeathMessage(entity).getString()
                         + ") apres " + state.done + " blocs — journal conserve, /work resume pour reprendre";
                 state.finished = true;
+                MissionService.paused(state, "WORKER_DIED");
                 state.servitorUuid = "";
                 state.setDirty();
             }
@@ -119,10 +120,12 @@ public final class WorkService {
             double oldProgress = state.progress;
             int oldDone = state.done;
             int oldBuild = state.depotBuildTicks;
+            int oldX = state.cursorX, oldY = state.cursorY, oldZ = state.cursorZ;
             tickWorker(level, state, bot);
             if (!state.hasJob() && bot instanceof Mob mob) mob.getNavigation().stop();
             double moved = bot.distanceToSqr(state.previousX, state.previousY, state.previousZ);
-            if (moved > 0.01 || state.progress != oldProgress || state.done != oldDone || state.depotBuildTicks != oldBuild) state.idleTicks = 0;
+            if (moved > 0.01 || state.progress != oldProgress || state.done != oldDone || state.depotBuildTicks != oldBuild
+                    || oldX != state.cursorX || oldY != state.cursorY || oldZ != state.cursorZ) state.idleTicks = 0;
             else if (++state.idleTicks > 400) {
                 if (bot instanceof Mob mob) mob.getNavigation().stop();
                 pause(state, "trajet bloque — sac et journal conserves; /work resume");
@@ -134,6 +137,7 @@ public final class WorkService {
 
     /** Une unité de travail par tick. */
     private static void tickWorker(ServerLevel level, WorkState state, LivingEntity bot) {
+        if (MissionService.tick(level, state, bot)) return;
         // Infrastructure is a worker task; starting a selection never places or requires a chest.
         if (state.buildingDepot || !state.hasDepot) {
             WorkDepot.tick(level, state, bot);
@@ -202,7 +206,9 @@ public final class WorkService {
             BlockPos pos = new BlockPos(state.cursorX, state.cursorY, state.cursorZ);
             if (!loadedNeighborhood(level, pos)) { pause(state, "chunk decharge — /work resume"); return false; }
             BlockState blockState = level.getBlockState(pos);
-            if (!blockState.isAir() && !skip(level, state, pos, blockState)) {
+            WorkMission mission = MissionService.active(state);
+            if (!blockState.isAir() && (mission == null || MissionService.matches(mission, blockState))
+                    && !skip(level, state, pos, blockState)) {
                 state.hasTarget = true;
                 state.targetX = pos.getX();
                 state.targetY = pos.getY();
@@ -273,7 +279,9 @@ public final class WorkService {
         ItemStack tool = toolStack(state);
 
         // Revalidate after travel/mining delay, before touching the block or ledger.
-        if (blockState.isAir() || skip(level, state, pos, blockState)) {
+        WorkMission mission = MissionService.active(state);
+        if (blockState.isAir() || (mission != null && !MissionService.matches(mission, blockState))
+                || skip(level, state, pos, blockState)) {
             state.hasTarget = false; advance(state); state.setDirty(); return;
         }
 
@@ -311,6 +319,7 @@ public final class WorkService {
         entry.drops = WorkInventory.copy(drops);
         entry.dropsKnown = true;
         state.journal.add(entry);
+        MissionService.mined(state, drops);
         state.invSlots.clear(); state.invSlots.addAll(replacement);
         state.done++;
         state.hasTarget = false;
@@ -574,8 +583,9 @@ public final class WorkService {
         return n;
     }
 
-    private static void conclude(ServerLevel level, WorkState state) {
+    static void conclude(ServerLevel level, WorkState state) {
         state.finished = true;
+        MissionService.concluded(state);
         String verdict = "curseur termine (blocs proteges et butin laisses en place)";
         state.lastStop = "termine: " + state.done + " cassés, " + state.skipped + " laissés, "
                 + state.deposited + " objets en coffre — " + verdict;
@@ -611,6 +621,7 @@ public final class WorkService {
             return null;
         }
         sweepOrphans(level);             // jamais deux Servitors pour un chantier
+        state.missionId = "";
         state.jobName = name;
         state.minX = Math.min(a.getX(), b.getX());
         state.minY = Math.min(a.getY(), b.getY());
@@ -659,6 +670,8 @@ public final class WorkService {
     public static WorkState resume(ServerLevel level) {
         WorkState state = WorkState.get(level);
         if (state.needsRecovery() || state.rollbackRemaining > 0) return null;
+        WorkMission mission = MissionService.active(state);
+        if (mission != null && mission.terminal() && !(state.finishing && !state.invSlots.isEmpty())) return null;
         if (state.jobName == null || state.total == 0 || (state.rollbackStarted && state.invSlots.isEmpty())
                 || (state.cursorY < state.minY && state.invSlots.isEmpty())) {
             return null;
@@ -669,6 +682,7 @@ public final class WorkService {
         discardServitor(level, state);
         state.idleTicks = 0; state.nextPathTick = 0;
         state.finished = false;
+        if (mission != null && !mission.terminal()) { mission.status = "PREPARING"; mission.reason = ""; }
         state.lastStop = "";
         if (state.cursorY < state.minY || state.rollbackStarted) state.finishing = true;
         state.spawnSearchCursor = 0;
@@ -681,6 +695,7 @@ public final class WorkService {
     public static boolean stop(ServerLevel level) {
         WorkState state = WorkState.get(level);
         state.rollbackRemaining = 0;
+        MissionService.paused(state, "OPERATOR_PAUSE");
         if (!state.hasJob()) { discardServitor(level, state); state.setDirty(); return false; }
         discardServitor(level, state);
         state.lastStop = "arrete: " + state.done + " cassés, " + state.skipped + " laissés, "
@@ -705,7 +720,8 @@ public final class WorkService {
     }
 
     static void pause(WorkState state, String reason) {
-        state.finished = true; state.lastStop = reason; state.setDirty();
+        state.finished = true; state.lastStop = reason;
+        MissionService.paused(state, reason); state.setDirty();
     }
 
     private static boolean safeStand(ServerLevel level, BlockPos pos) {
@@ -719,6 +735,7 @@ public final class WorkService {
     public static void requestRollback(ServerLevel level, WorkState state, int count) {
         if (state.needsRecovery()) return;
         stop(level);
+        MissionService.invalidate(state);
         discardServitor(level, state);
         state.finished = true;
         state.rollbackStarted = true;
@@ -781,7 +798,10 @@ public final class WorkService {
     /** Explicitly release rollback history. Never throw away carried resources. */
     public static boolean commit(ServerLevel level, WorkState state) {
         if (state.needsRecovery() || state.hasJob() || state.rollbackRemaining > 0 || !state.invSlots.isEmpty()) return false;
+        WorkMission mission = MissionService.active(state);
+        if (mission != null && !mission.terminal()) return false;
         discardServitor(level, state);
+        state.missionId = "";
         state.journal.clear(); state.depots.clear();
         state.jobName = null; state.hasDepot = false; state.rollbackStarted = false;
         state.tool = ItemStack.EMPTY; state.toolId = "";

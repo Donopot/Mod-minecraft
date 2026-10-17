@@ -5,23 +5,20 @@ Chaque outil est **déterministe** et renvoie ce qu'il a observé, jamais une in
 Aucune commande arbitraire n'est exposée : `command` est limité à une liste blanche.
 
 Lancement manuel :   python3 mcp_vd.py
-Entrée de configuration Hermes (config.yaml) :
+Exécuter avec le Python de l'environnement MCP et VD_SERVER_DIR pointant vers
+le dossier du serveur Minecraft local. Voir docs/SERVITOR-POLYVALENT.md pour
+les quatre outils du rôle servitor et les limites de cette première version.
 
-    mcp_servers:
-      voiddynasty:
-        command: "/opt/hermes/.venv/bin/python3"
-        args: ["/opt/data/workspace/an-Ee6I54/r/voiddynasty/tools/mcp_vd.py"]
-        timeout: 300
-
-Écrit contre MCP Python SDK 2.0 (`mcp.server.MCPServer` + `add_tool`).
+Compatible avec MCP Python SDK 1.30.0 (voir requirements-mcp.txt).
 """
 import sys
 
-from mcp.server import MCPServer
+from mcp.server.fastmcp import FastMCP
+from pydantic import StrictInt
 
 import vd_core
 
-server = MCPServer("voiddynasty")
+server = FastMCP("voiddynasty", log_level="WARNING")
 
 
 def tool_server_status() -> dict:
@@ -58,9 +55,36 @@ def tool_command(cmd: str) -> dict:
     return vd_core.command(cmd)
 
 
+def tool_servitor_capabilities(dimension: str = "overworld") -> dict:
+    """Return the server's supported mission types, resources and limits before planning work."""
+    return vd_core.servitor_capabilities(dimension)
+
+
+def tool_servitor_gather(request_id: str, item: str, amount: StrictInt, zone_min: list[StrictInt],
+                         zone_max: list[StrictInt], destination: list[StrictInt], origin: list[StrictInt],
+                         dimension: str = "overworld") -> dict:
+    """Have the physical servitor gather a quantity from matching blocks in an explicit zone and deliver it
+    to a single chest/barrel. No tunnels/stairs yet. Reuse request_id unchanged after timeout; poll the returned
+    mission UUID until SUCCEEDED, INCOMPLETE or PAUSED. Acceptance alone is not success."""
+    return vd_core.servitor_gather(request_id,item,amount,zone_min,zone_max,destination,origin,dimension)
+
+
+def tool_servitor_mission_status(mission_id: str = "current", dimension: str = "overworld") -> dict:
+    """Read persistent mission state, actual collected/delivered counters and reason for any pause."""
+    return vd_core.servitor_mission_status(mission_id,dimension)
+
+
+def tool_servitor_mission_control(mission_id: str, action: str, dimension: str = "overworld") -> dict:
+    """Pause, resume, cancel, deposit, rollback or close the specified mission. Cancel keeps resources and receipts.
+    After cancellation, deposit recovers carried resources in the worker depot. Rollback stops work and recovers drops before restoring blocks; poll rollback_state until COMPLETE or FAILED. Close requires a terminal mission and empty carry; it explicitly releases rollback history."""
+    return vd_core.servitor_mission_control(mission_id,action,dimension)
+
+
 for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest"),
                 (tool_scan_zone, "scan_zone"), (tool_place_ship, "place_ship"),
-                (tool_fleet, "fleet"), (tool_command, "command")):
+                (tool_fleet, "fleet"), (tool_command, "command"),
+                (tool_servitor_capabilities, "servitor_capabilities"), (tool_servitor_gather, "servitor_gather"),
+                (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     server.add_tool(fn, name=nom)
 
 

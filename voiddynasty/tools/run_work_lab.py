@@ -12,6 +12,7 @@ parser.add_argument('--jdk',type=Path,required=True)
 parser.add_argument('--minecraft',type=Path,required=True)
 parser.add_argument('--dependencies',type=Path,required=True,help='Directory containing Fabric API, GeckoLib and optional bridge JARs')
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--missions',action='store_true',help='Also exercise real MCP mission tools; requires requirements-mcp.txt')
 parser.add_argument('--accept-eula',action='store_true',required=True,help='Explicit acceptance of Minecraft EULA for the disposable server')
 args=parser.parse_args()
 repo=Path(__file__).resolve().parents[2];work=args.output.resolve();work.mkdir(parents=True,exist_ok=True)
@@ -21,7 +22,9 @@ from run_local_tests import Rcon,reserve
 b=json.loads(args.classpath_json.read_text(encoding='utf-8-sig'))
 jdk=args.jdk.resolve()/'bin';cp=os.pathsep.join([str(args.candidate.resolve()),*b['classpath']])
 test=repo/'voiddynasty/src/test/java/com/donopot/voiddynasty/work/WorkServerTest.java';classes=work/'test-mod-classes';classes.mkdir(exist_ok=True)
-r=subprocess.run([str(jdk/'javac.exe'),'--release','25','-proc:none','-encoding','UTF-8','-cp',cp,'-d',str(classes),str(test)],capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=60)
+test_sources=[test]
+if args.missions: test_sources.append(test.with_name('MissionServerTest.java'))
+r=subprocess.run([str(jdk/'javac.exe'),'--release','25','-proc:none','-encoding','UTF-8','-cp',cp,'-d',str(classes),*map(str,test_sources)],capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=60)
 (work/'server-test-compile.log').write_text(r.stdout+r.stderr,encoding='utf-8')
 if r.returncode:print(r.stdout+r.stderr);raise SystemExit(1)
 lab=work/('lab-'+uuid.uuid4().hex);lab.mkdir();mods=lab/'mods';mods.mkdir()
@@ -30,7 +33,7 @@ for p in args.dependencies.glob('*.jar'):
 shutil.copy2(args.candidate,mods/'voiddynasty-candidate.jar')
 with zipfile.ZipFile(mods/'work-test.jar','w',zipfile.ZIP_DEFLATED) as z:
  for p in classes.rglob('*.class'):z.write(p,p.relative_to(classes).as_posix())
- z.writestr('fabric.mod.json',json.dumps({'schemaVersion':1,'id':'work-test','version':'1','environment':'server','entrypoints':{'main':['com.donopot.voiddynasty.work.WorkServerTest']},'depends':{'voiddynasty':'*','fabric-api':'*'}}))
+ z.writestr('fabric.mod.json',json.dumps({'schemaVersion':1,'id':'work-test','version':'1','environment':'server','entrypoints':{'main':['com.donopot.voiddynasty.work.'+p.stem for p in test_sources]},'depends':{'voiddynasty':'*','fabric-api':'*'}}))
 reservations=[reserve(),reserve()];port,rport=[x[1] for x in reservations];password=secrets.token_urlsafe(32)
 props={'server-ip':'127.0.0.1','server-port':port,'enable-rcon':'true','rcon.port':rport,'rcon.password':password,'online-mode':'false','level-name':'work-test-world','level-type':'minecraft:flat','generate-structures':'false','generator-settings':json.dumps({'layers':[{'block':'minecraft:bedrock','height':1}],'biome':'minecraft:plains'}),'spawn-protection':0,'view-distance':4,'simulation-distance':4,'pause-when-empty-seconds':0,'sync-chunk-writes':'true','max-players':1}
 (lab/'server.properties').write_text(''.join(f'{k}={v}\n' for k,v in props.items()))
@@ -41,6 +44,7 @@ launch_args=['-Xmx2G','-Dfabric.gameJarPath='+str(exact['game']),'-cp',os.pathse
 for sock,_ in reservations:sock.close()
 (work/'latest-lab.txt').write_text(str(lab));print('LAB',lab,flush=True)
 results=[]
+mission_notes={}
 def run_phase(rcon,name):
  result=rcon.cmd('workcheck '+name);print(name,result,flush=True);results.append({'phase':name,'result':result})
  if 'PASS '+name not in result:raise RuntimeError(result)
@@ -76,9 +80,18 @@ try:
  # Ensure readiness log belongs to the new child, not the stopped session.
  (lab/'logs/latest.log').rename(lab/'logs/first-run.log')
  proc,rcon,output=launch();time.sleep(2);run_phase(rcon,'restartCheck')
+ if args.missions:
+  import asyncio
+  from mission_acceptance import before_restart,after_restart
+  asyncio.run(before_restart(rcon,lab,mission_notes))
+  rcon.cmd('save-all flush');rcon.cmd('stop');proc.wait(timeout=45);rcon.sock.close();rcon=None;output.close()
+  (lab/'logs/latest.log').rename(lab/'logs/mission-before-restart.log')
+  proc,rcon,output=launch();time.sleep(2)
+  asyncio.run(after_restart(rcon,lab,mission_notes))
  print('ALL SERVER PHASES PASS',flush=True)
 finally:
  (lab/'report.local.json').write_text(json.dumps(results,indent=2))
+ if args.missions: (lab/'mission-report.local.json').write_text(json.dumps(mission_notes,indent=2))
  if proc is not None and proc.poll() is None:
   if rcon is not None:
    try:rcon.cmd('stop')

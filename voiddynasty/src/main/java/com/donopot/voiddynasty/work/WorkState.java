@@ -59,6 +59,8 @@ public final class WorkState extends SavedData {
     public int skipped = 0;
     public boolean finished = false;
     public String lastStop = "";
+    public String missionId = "";
+    public final List<WorkMission> missions = new ArrayList<>();
 
     // ---- cible en cours ----
     public boolean hasTarget = false;
@@ -152,7 +154,7 @@ public final class WorkState extends SavedData {
 
     private static WorkState restore(CompoundTag tag, List<ItemStack> bag, ItemStack tool,
                                      List<List<ItemStack>> receipts) {
-        if (tag.getInt("schema").orElse(0) != 2 && tag.getInt("schema").orElse(0) != 3) throw new IllegalArgumentException("Unknown work schema");
+        if (tag.getInt("schema").orElse(0) < 2 || tag.getInt("schema").orElse(0) > 4) throw new IllegalArgumentException("Unknown work schema");
         WorkState s = fromTag(tag, false);
         if (s.jobName == null && (!bag.isEmpty() || !s.journal.isEmpty()))
             throw new IllegalArgumentException("Orphan work inventory or journal");
@@ -226,7 +228,11 @@ public final class WorkState extends SavedData {
 
     private static CompoundTag toTag(WorkState s) {
         CompoundTag root = new CompoundTag();
-        root.putInt("schema", 3);
+        root.putInt("schema", 4);
+        root.putString("mission_id", s.missionId);
+        ListTag missions = new ListTag();
+        for (WorkMission mission : s.missions) missions.add(mission.save());
+        root.put("missions", missions);
         if (s.jobName != null) {
             CompoundTag job = new CompoundTag();
             job.putString("name", s.jobName);
@@ -385,6 +391,17 @@ public final class WorkState extends SavedData {
             }
         }
         s.lastStop = root.getString("last_stop").orElse("");
+        s.missionId = root.getString("mission_id").orElse("");
+        ListTag missions = root.getList("missions").orElse(new ListTag());
+        if (missions.size() > MissionService.HISTORY_MAX) throw new IllegalArgumentException("Mission history exceeds limit");
+        java.util.Set<String> ids = new java.util.HashSet<>(), requests = new java.util.HashSet<>();
+        for (int i = 0; i < missions.size(); i++) {
+            WorkMission mission = WorkMission.load(missions.getCompound(i).orElseThrow());
+            if (!ids.add(mission.id) || !requests.add(mission.requestId)) throw new IllegalArgumentException("Duplicate mission identity");
+            s.missions.add(mission);
+        }
+        if (!s.missionId.isEmpty() && (!ids.contains(s.missionId) || !s.missionId.equals(s.jobName)))
+            throw new IllegalArgumentException("Detached active mission");
         ListTag entries = root.getList("journal").orElse(new ListTag());
         for (int i = 0; i < entries.size(); i++) {
             CompoundTag t = entries.getCompound(i).orElse(null);

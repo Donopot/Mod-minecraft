@@ -41,6 +41,7 @@ public final class WorkCommand {
                                 .then(Commands.argument("coin1", BlockPosArgument.blockPos())
                                         .then(Commands.argument("coin2", BlockPosArgument.blockPos())
                                                 .executes(WorkCommand::start)))))
+                .then(MissionCommand.tree())
                 .then(Commands.literal("status").executes(WorkCommand::status))
                 .then(Commands.literal("stop").executes(WorkCommand::stop))
                 .then(Commands.literal("resume").executes(WorkCommand::resume))

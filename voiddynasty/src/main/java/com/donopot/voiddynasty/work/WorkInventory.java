@@ -1,6 +1,7 @@
 package com.donopot.voiddynasty.work;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.Container;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,5 +52,31 @@ public final class WorkInventory {
             if (left != 0) return null;
         }
         return result;
+    }
+
+    public record Transfer(List<ItemStack> bag, List<ItemStack> container, int count) {}
+
+    /** Plan a capped delivery, respecting the real destination's stack limits, without mutations. */
+    public static Transfer transfer(List<ItemStack> bag, Container destination,
+                                    java.util.function.Predicate<ItemStack> matches, int limit) {
+        List<ItemStack> source = copy(bag), target = new ArrayList<>();
+        for (int i = 0; i < destination.getContainerSize(); i++) target.add(destination.getItem(i).copy());
+        int moved = 0;
+        for (ItemStack stack : source) {
+            if (stack.isEmpty() || !matches.test(stack)) continue;
+            for (int pass = 0; pass < 2 && moved < limit; pass++) {
+                for (int i = 0; i < target.size() && !stack.isEmpty() && moved < limit; i++) {
+                    ItemStack slot = target.get(i);
+                    if (pass == 0 ? slot.isEmpty() || !ItemStack.isSameItemSameComponents(slot, stack) : !slot.isEmpty()) continue;
+                    int capacity = Math.min(destination.getMaxStackSize(stack), stack.getMaxStackSize());
+                    int put = Math.min(Math.min(limit - moved, stack.getCount()), Math.max(0, capacity - slot.getCount()));
+                    if (put <= 0) continue;
+                    if (slot.isEmpty()) target.set(i, stack.copyWithCount(put)); else slot.grow(put);
+                    stack.shrink(put); moved += put;
+                }
+            }
+        }
+        source.removeIf(ItemStack::isEmpty);
+        return new Transfer(source, target, moved);
     }
 }

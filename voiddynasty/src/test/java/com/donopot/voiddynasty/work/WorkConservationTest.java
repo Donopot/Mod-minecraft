@@ -14,6 +14,9 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Blocks;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import net.minecraft.world.SimpleContainer;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
 
 /** Standalone native Minecraft tests; no player world or game process required. */
 public final class WorkConservationTest {
@@ -23,6 +26,9 @@ public final class WorkConservationTest {
         checks++; System.out.println("PASS " + name);
     }
     private static ItemStack stack(Item item, int count) { return new ItemStack(item, count); }
+    private static JsonObject spec() {
+        return JsonParser.parseString("{\"schema\":1,\"type\":\"GATHER\",\"request_id\":\"unit-1\",\"item\":\"minecraft:diamond\",\"amount\":3,\"min\":[1,64,1],\"max\":[3,64,1],\"destination\":[8,64,1],\"origin\":[0,64,0]}").getAsJsonObject();
+    }
     public static void main(String[] args) {
         SharedConstants.tryDetectVersion(); Bootstrap.bootStrap();
         // Standalone bootstrap has no datapack component binding; explicitly bind fixture defaults.
@@ -101,6 +107,41 @@ public final class WorkConservationTest {
         check(migrated.invCount() == 5 && migrated.invSlots.getFirst().is(Items.DIAMOND), "legacy counts migrate without deletion");
         inv.add(StringTag.valueOf("missing:unknown|7"));
         check(WorkState.CODEC.parse(ops, legacy).getOrThrow().needsRecovery(), "unresolvable legacy item locks without deleting inventory");
+        SimpleContainer destination = new SimpleContainer(2);
+        destination.setItem(0, stack(Items.DIAMOND, 5)); destination.setItem(1, stack(Items.EMERALD, 64));
+        var transfer = WorkInventory.transfer(List.of(stack(Items.DIAMOND, 7)), destination, s -> s.is(Items.DIAMOND), 3);
+        check(transfer.count() == 3 && transfer.bag().getFirst().getCount() == 4 && transfer.container().getFirst().getCount() == 8,
+                "mission delivery caps quantity and preserves surplus");
+        check(destination.getItem(0).getCount() == 5 && transfer.container().get(1).getCount() == 64, "delivery planning preserves original and unrelated chest contents");
+        destination.setItem(0, stack(Items.DIAMOND, 64));
+        check(WorkInventory.transfer(List.of(named), destination, s -> true, 2).count() == 0, "full destination transfers nothing without losing named carry");
+        destination.setItem(0, ItemStack.EMPTY);
+        var nameTransfer = WorkInventory.transfer(List.of(named), destination, s -> true, 1);
+        check(ItemStack.isSameItemSameComponents(nameTransfer.container().getFirst(), named)
+                && nameTransfer.bag().getFirst().getCount() == 1, "capped delivery retains exact components on both sides");
+        WorkMission mission = MissionService.parse(spec());
+        check(mission.sameRequest(MissionService.parse(spec())), "mission request identity ignores generated mission UUID");
+        JsonObject changed = spec(); changed.addProperty("amount", 4);
+        check(!mission.sameRequest(MissionService.parse(changed)), "changed quantity is not an idempotent replay");
+        for (String field : List.of("fraction", "huge", "unknown")) {
+            JsonObject invalid = spec();
+            if (field.equals("fraction")) invalid.addProperty("amount", 1.5);
+            if (field.equals("huge")) { invalid.add("min", JsonParser.parseString("[-29999984,-2048,-29999984]")); invalid.add("max", JsonParser.parseString("[29999984,2047,29999984]")); }
+            if (field.equals("unknown")) invalid.addProperty("execute", "fill everything");
+            boolean rejected = false; try { MissionService.parse(invalid); } catch (RuntimeException expected) { rejected = true; }
+            check(rejected, "invalid mission rejected: " + field);
+        }
+        WorkState missionState = new WorkState(); missionState.jobName = mission.id; missionState.missionId = mission.id;
+        missionState.missions.add(mission); mission.status = "DELIVERING"; mission.collected = 5; mission.delivered = 2;
+        var missionEncoded = WorkState.CODEC.encodeStart(ops, missionState).getOrThrow();
+        WorkState missionLoaded = WorkState.CODEC.parse(ops, missionEncoded).getOrThrow();
+        WorkMission resumed = MissionService.active(missionLoaded);
+        check(resumed != null && resumed.id.equals(mission.id) && resumed.status.equals("PAUSED") && resumed.reason.equals("SERVER_RESTART"),
+                "mission identity persists and restart requires explicit resume");
+        check(resumed.collected == 5 && resumed.delivered == 2 && resumed.destination.equals(mission.destination), "partial delivery progress and destination persist");
+        missionState.jobName = null; missionState.missionId = ""; mission.status = "SUCCEEDED"; mission.delivered = 3;
+        WorkState archived = WorkState.CODEC.parse(ops, WorkState.CODEC.encodeStart(ops, missionState).getOrThrow()).getOrThrow();
+        check(archived.missions.size() == 1 && archived.missions.getFirst().status.equals("SUCCEEDED"), "closed request history survives without active job");
         System.out.println("WORK CONSERVATION: " + checks + " checks passed");
     }
 }
