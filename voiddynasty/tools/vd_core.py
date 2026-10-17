@@ -20,7 +20,7 @@ WORLD = os.environ.get("VD_WORLD_DIR", os.path.join(MC_DIR, "world8"))
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 
 # commandes acceptées par l'outil générique : volontairement étroit.
-ALLOWED = ("fleet ", "vdyntest ", "list", "save-all", "say ", "time ", "weather ", "forceload ")
+ALLOWED = ("fleet ", "vdyntest ", "work ", "list", "save-all", "say ", "time ", "weather ", "forceload ")
 
 
 def _props():

@@ -43,6 +43,8 @@ import com.donopot.voiddynasty.registry.ModItems;
 import com.donopot.voiddynasty.registry.ModMenuTypes;
 import com.donopot.voiddynasty.registry.ModSounds;
 import com.donopot.voiddynasty.terrain.TerrainDamageManager;
+import com.donopot.voiddynasty.work.WorkCommand;
+import com.donopot.voiddynasty.work.WorkService;
 import com.donopot.voiddynasty.weapon.WeaponService;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.ModInitializer;
@@ -194,6 +196,8 @@ public class VoidDynastyMod implements ModInitializer {
             LOGGER.info("[voiddynasty] SERVER_STARTED (version={})", server.getServerVersion());
         });
 
+        WorkService.init();
+
         CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> {
             dispatcher.register(
                     Commands.literal("voiddynasty")
@@ -202,6 +206,7 @@ public class VoidDynastyMod implements ModInitializer {
             CruiserCommand.register(dispatcher);
             FrigateCommand.register(dispatcher);
             FleetCommand.register(dispatcher);
+            WorkCommand.register(dispatcher);
             MortuaryCommand.register(dispatcher);
             MissionCommand.register(dispatcher);
             com.donopot.voiddynasty.campagne.CampagneCommand.register(dispatcher);

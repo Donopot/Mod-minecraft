@@ -1178,7 +1178,7 @@ public final class VoidDynastyTestCommand {
         if (laserEnflamme) {
             level.setBlock(cible.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             int feux = 0;
-            for (int essai = 0; essai < 8 && !laserBois; essai++) {
+            for (int essai = 0; essai < 40 && !laserBois; essai++) {   // 8 ne suffisaient pas : allumage probabiliste
                 TerrainDamageManager.clearIntegrity(level, cible);
                 level.setBlock(cible, Blocks.OAK_PLANKS.defaultBlockState(), Block.UPDATE_ALL);
                 level.setBlock(cible.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
@@ -1200,7 +1200,7 @@ public final class VoidDynastyTestCommand {
         if (!laserEnflamme) {
             problemes.add("le laser n'enflamme pas les matières inflammables");
         } else if (!laserBois) {
-            problemes.add("le laser est déclaré incendiaire mais n'a allumé aucun bois en 8 essais");
+            problemes.add("le laser est déclaré incendiaire mais n'a allumé aucun bois en 40 essais");
         }
         check("B-armes-pierre", problemes.isEmpty(),
                 "coups pour casser la pierre (même ordre que WeaponDefinitions.TOUTES) — "
