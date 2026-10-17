@@ -45,6 +45,14 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
 }
 
+// Les deux classes de src/test sont des programmes autonomes avec main() (WorkConservationTest)
+// ou un mod de test jetable (WorkServerTest), pas des tests JUnit. Gradle voyait des sources
+// dans src/test sans aucun test reconnu et faisait echouer `./gradlew build`. On garde les
+// classes la ou les outils les attendent, on demande juste a Gradle de ne pas s'en plaindre.
+tasks.withType(Test).configureEach {
+	it.failOnNoDiscoveredTests = false
+}
+
 java {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
