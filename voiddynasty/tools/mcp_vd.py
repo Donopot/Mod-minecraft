@@ -62,11 +62,24 @@ def tool_servitor_capabilities(dimension: str = "overworld") -> dict:
 
 def tool_servitor_gather(request_id: str, item: str, amount: StrictInt, zone_min: list[StrictInt],
                          zone_max: list[StrictInt], destination: list[StrictInt], origin: list[StrictInt],
-                         dimension: str = "overworld") -> dict:
+                         dimension: str = "overworld", access: str = "surface") -> dict:
     """Have the physical servitor gather a quantity from matching blocks in an explicit zone and deliver it
-    to a single chest/barrel. No tunnels/stairs yet. Reuse request_id unchanged after timeout; poll the returned
+    to a single chest/barrel. access=excavate opts into up to 256 horizontal access blocks inside the zone;
+    no stairs yet. Reuse request_id unchanged after timeout; poll the returned
     mission UUID until SUCCEEDED, INCOMPLETE or PAUSED. Acceptance alone is not success."""
-    return vd_core.servitor_gather(request_id,item,amount,zone_min,zone_max,destination,origin,dimension)
+    return vd_core.servitor_gather(request_id,item,amount,zone_min,zone_max,destination,origin,dimension,access)
+
+
+def tool_servitor_build_estimate(blueprint: str, material: str, anchor: list[StrictInt], source: list[StrictInt], origin: list[StrictInt], dimension: str="overworld") -> dict:
+    """Read-only estimate: required real materials and site problems for a supported versioned blueprint."""
+    return vd_core.servitor_build_estimate(blueprint,material,anchor,source,origin,dimension)
+
+
+def tool_servitor_build(request_id: str, blueprint: str, material: str, anchor: list[StrictInt], source: list[StrictInt], origin: list[StrictInt], dimension: str="overworld") -> dict:
+    """Reserve all real plain materials from a single source chest/barrel, build the blueprint physically,
+    then verify every block. Source must be outside the site. Cancellation retains unspent carry;
+    rollback removes unchanged placed blocks and refunds their exact costs. Never close before rollback review."""
+    return vd_core.servitor_build(request_id,blueprint,material,anchor,source,origin,dimension)
 
 
 def tool_servitor_mission_status(mission_id: str = "current", dimension: str = "overworld") -> dict:
@@ -84,8 +97,10 @@ for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest
                 (tool_scan_zone, "scan_zone"), (tool_place_ship, "place_ship"),
                 (tool_fleet, "fleet"), (tool_command, "command"),
                 (tool_servitor_capabilities, "servitor_capabilities"), (tool_servitor_gather, "servitor_gather"),
+                (tool_servitor_build_estimate,"servitor_build_estimate"),(tool_servitor_build,"servitor_build"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
-    server.add_tool(fn, name=nom)
+    if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
+        server.add_tool(fn, name=nom)
 
 
 if __name__ == "__main__":

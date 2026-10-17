@@ -181,6 +181,10 @@ public final class WorkService {
 
         // C. à portée ?
         if (distanceSq(bot, target) > REACH * REACH || !visible(level, bot, target)) {
+            if(WorkAccess.enabled(state)) {
+                if(!state.accessRoute.isEmpty() || !stepToward(level,state,bot,target)) WorkAccess.tick(level,state,bot,target);
+                return;
+            }
             // Filet de securite : si marcher ne change rien pendant 40 ticks, on abandonne
             // cette cible (elle sera comptee comme laissee) au lieu de figer le chantier.
             if (state.idleTicks > 40) {
@@ -265,7 +269,7 @@ public final class WorkService {
     }
 
     /** Durée de casse en secondes, formule du jeu ramenée à la cadence machine. */
-    private static double breakSeconds(ServerLevel level, WorkState state, BlockPos pos, BlockState blockState) {
+    static double breakSeconds(ServerLevel level, WorkState state, BlockPos pos, BlockState blockState) {
         float hardness = blockState.getDestroySpeed(level, pos);
         if (hardness < 0) {
             return Double.MAX_VALUE;
@@ -284,6 +288,10 @@ public final class WorkService {
 
     /** Verified mutation, then receipt and inventory update on the same server thread. */
     private static void breakTarget(ServerLevel level, WorkState state, LivingEntity bot, BlockPos pos) {
+        breakTarget(level,state,bot,pos,false);
+    }
+
+    static void breakTarget(ServerLevel level, WorkState state, LivingEntity bot, BlockPos pos, boolean access) {
         if (!loadedNeighborhood(level, pos)) { pause(state, "chunk decharge avant casse — /work resume"); return; }
         BlockState blockState = level.getBlockState(pos);
         BlockEntity be = level.getBlockEntity(pos);
@@ -291,9 +299,11 @@ public final class WorkService {
 
         // Revalidate after travel/mining delay, before touching the block or ledger.
         WorkMission mission = MissionService.active(state);
-        if (blockState.isAir() || (mission != null && !MissionService.matches(mission, blockState))
+        if (blockState.isAir() || (access ? !WorkAccess.enabled(state) || !WorkAccess.safe(level,state,pos)
+                : mission != null && !MissionService.matches(mission, blockState))
                 || skip(level, state, pos, blockState)) {
-            state.hasTarget = false; advance(state); state.setDirty(); return;
+            if(access) {state.accessRoute.clear();state.accessBlock=null;state.progress=0;}
+            else {state.hasTarget=false;advance(state);} state.setDirty(); return;
         }
 
         // Drops seulement si l'outil en main sait récolter ce bloc (règle du jeu).
@@ -333,9 +343,11 @@ public final class WorkService {
         MissionService.mined(state, drops);
         state.invSlots.clear(); state.invSlots.addAll(replacement);
         state.done++;
-        state.hasTarget = false;
+        boolean wasTarget=state.hasTarget && state.targetX==pos.getX() && state.targetY==pos.getY() && state.targetZ==pos.getZ();
+        if(!access || wasTarget) state.hasTarget = false;
         state.progress = 0.0;
-        advance(state);
+        if(access) {mission.accessMined++;state.accessBlock=null;}
+        if(!access || wasTarget) advance(state);
         if (!state.tool.isEmpty() && state.tool.getMaxDamage() > 0) {
             state.tool.setDamageValue(state.tool.getDamageValue() + 1);
             state.toolDamage = state.tool.getDamageValue();
@@ -353,19 +365,23 @@ public final class WorkService {
     // ---------------------------------------------------------------- déplacement
 
     static boolean visible(ServerLevel level, LivingEntity bot, BlockPos target) {
+        return visibleFrom(level,bot,bot.getEyePosition(),target);
+    }
+
+    private static boolean visibleFrom(ServerLevel level,LivingEntity bot,Vec3 eye,BlockPos target) {
         // Un joueur mine un bloc par la face qu'il voit, pas par son centre : un bloc
         // dont le centre est occupe par un voisin reste minable si une face est degagee.
         // Tester le seul centre bloquait le servitor debout sur le cube qu'il minait.
-        if (visibleAt(level, bot, Vec3.atCenterOf(target))) return true;
+        if (visibleAt(level, bot, eye, Vec3.atCenterOf(target))) return true;
         for (Direction d : Direction.values()) {
-            if (visibleAt(level, bot, Vec3.atCenterOf(target).add(
+            if (visibleAt(level, bot, eye, Vec3.atCenterOf(target).add(
                     d.getStepX() * 0.49, d.getStepY() * 0.49, d.getStepZ() * 0.49))) return true;
         }
         return false;
     }
 
-    private static boolean visibleAt(ServerLevel level, LivingEntity bot, Vec3 point) {
-        var hit = level.clip(new ClipContext(bot.getEyePosition(), point,
+    private static boolean visibleAt(ServerLevel level, LivingEntity bot, Vec3 eye, Vec3 point) {
+        var hit = level.clip(new ClipContext(eye, point,
                 ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot));
         return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(new BlockPos(
                 (int) Math.floor(point.x), (int) Math.floor(point.y), (int) Math.floor(point.z)));
@@ -381,26 +397,54 @@ public final class WorkService {
     }
 
     static net.minecraft.world.level.pathfinder.Path findWorkPath(ServerLevel level, LivingEntity bot, BlockPos target) {
+        return findWorkPath(level,bot,target,false);
+    }
+
+    static void stepToPlacement(ServerLevel level,WorkState state,LivingEntity bot,BlockPos target) {
+        // A freshly spawned/restarted worker has not completed its first ground physics tick.
+        if(!(bot instanceof Mob mob) || !bot.onGround()) return;
+        var current=mob.getNavigation().getPath();
+        if(target.equals(state.placementTarget) && current!=null && current.canReach() && current.isDone() && current.getEndNode()!=null) {
+            var node=current.getEndNode();double offset=Math.floor(bot.getBbWidth()+1.0)*.5;
+            Vec3 center=new Vec3(node.x+offset,node.y,node.z+offset);
+            // Navigation can finish short of a corner's sight line. Complete its final safe step
+            // with the native move controller; collision and gravity remain fully active.
+            if(bot.position().distanceToSqr(center)>.04) {
+                var box=bot.getBoundingBox().move(center.subtract(bot.position()));
+                if(level.noCollision(bot,box) && !box.intersects(new net.minecraft.world.phys.AABB(target))) {
+                    mob.getMoveControl().setWantedPosition(center.x,center.y,center.z,1.0);return;
+                }
+            }
+        }
+        if(level.getGameTime()<state.nextPathTick) return;
+        state.nextPathTick=level.getGameTime()+20;
+        var path=findWorkPath(level,bot,target,true);
+        if(path==null || !path.canReach()) {
+            pause(state,"BUILD_NO_SAFE_PATH");state.lastStop="BUILD_NO_SAFE_PATH: "+bot.position()+" -> "+target.toShortString()+"; path="+(path==null?"none":path.canReach()+"/"+path.getNodeCount());
+        } else {state.placementTarget=target.immutable();mob.getNavigation().moveTo(path,1.0);}
+    }
+
+    private static net.minecraft.world.level.pathfinder.Path findWorkPath(ServerLevel level, LivingEntity bot, BlockPos target,boolean placement) {
         if (!(bot instanceof Mob mob)) return null;
         // Multi-target vanilla path search can detour away from the target around walls.
         java.util.Set<BlockPos> stands = new java.util.HashSet<>();
         for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++)
-            for (int dy = -2; dy <= 1; dy++) {
+            for (int dy = placement ? -4 : -2; dy <= 1; dy++) {
                 BlockPos feet = target.offset(dx, dy, dz);
                 if (!level.hasChunkAt(feet) || !level.hasChunkAt(feet.below())) continue;
                 if (!level.getBlockState(feet.below()).isFaceSturdy(level, feet.below(), Direction.UP)) continue;
                 if (!level.getBlockState(feet).getFluidState().isEmpty()
                         || !level.getBlockState(feet.above()).getFluidState().isEmpty()) continue;
-                var box = bot.getBoundingBox().move(feet.getX() + 0.5 - bot.getX(),
-                        feet.getY() - bot.getY(), feet.getZ() + 0.5 - bot.getZ());
+                double nodeOffset=placement?Math.floor(bot.getBbWidth()+1.0)*.5:0.5;
+                var box = bot.getBoundingBox().move(feet.getX() + nodeOffset - bot.getX(),
+                        feet.getY() - bot.getY(), feet.getZ() + nodeOffset - bot.getZ());
                 if (!level.noCollision(bot, box)) continue;
-                Vec3 eye = new Vec3(feet.getX() + 0.5, feet.getY() + bot.getEyeHeight(), feet.getZ() + 0.5);
+                if(placement && box.intersects(new net.minecraft.world.phys.AABB(target))) continue;
+                Vec3 eye = new Vec3(feet.getX() + nodeOffset, feet.getY() + bot.getEyeHeight(), feet.getZ() + nodeOffset);
                 // Vanilla navigation finishes slightly before the node's exact centre.
                 // Keep a margin so arrival always leaves the worker within interaction reach.
                 if (eye.distanceToSqr(Vec3.atCenterOf(target)) > (REACH - 1.0) * (REACH - 1.0)) continue;
-                var hit = level.clip(new ClipContext(eye, Vec3.atCenterOf(target),
-                        ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot));
-                if (hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(target)) stands.add(feet);
+                if (visibleFrom(level,bot,eye,target)) stands.add(feet);
             }
         if (stands.isEmpty()) return null;
         return mob.getNavigation().createPath(stands, 0);
@@ -517,13 +561,13 @@ public final class WorkService {
         return sb.toString();
     }
 
-    private static boolean loadedNeighborhood(ServerLevel level, BlockPos pos) {
+    static boolean loadedNeighborhood(ServerLevel level, BlockPos pos) {
         if (!level.hasChunkAt(pos)) return false;
         for (Direction direction : Direction.values()) if (!level.hasChunkAt(pos.relative(direction))) return false;
         return true;
     }
 
-    private static boolean touchesFluid(ServerLevel level, BlockPos pos) {
+    static boolean touchesFluid(ServerLevel level, BlockPos pos) {
         for (Direction d : Direction.values()) {
             if (!level.getBlockState(pos.relative(d)).getFluidState().isEmpty()) {
                 return true;
@@ -613,6 +657,10 @@ public final class WorkService {
         String verdict = "curseur termine (blocs proteges et butin laisses en place)";
         state.lastStop = "termine: " + state.done + " cassés, " + state.skipped + " laissés, "
                 + state.deposited + " objets en coffre — " + verdict;
+        WorkMission mission=MissionService.active(state);
+        if(mission!=null && mission.build!=null) state.lastStop=mission.status.equals("SUCCEEDED")
+                ? "Construction verifiee: "+mission.placed+" blocs poses; materiaux reserves consommes"
+                : "Recuperation du sac terminee; mission "+mission.status;
         discardServitor(level, state);
         state.setDirty();
     }
@@ -674,6 +722,7 @@ public final class WorkService {
         state.depots.clear();
         state.rollbackStarted = false;
         state.rollbackRemaining = 0;
+        state.accessRoute.clear();state.accessBlock=null;state.placementTarget=null;
         state.hasTarget = false;
         state.progress = 0.0;
         state.goingToDepot = false;
@@ -705,6 +754,7 @@ public final class WorkService {
         }
         discardServitor(level, state);
         state.idleTicks = 0; state.nextPathTick = 0;
+        state.accessRoute.clear();state.accessBlock=null;state.placementTarget=null;state.progress=0;
         state.finished = false;
         if (mission != null && !mission.terminal()) { mission.status = "PREPARING"; mission.reason = ""; }
         state.lastStop = "";
@@ -775,6 +825,17 @@ public final class WorkService {
         if (!entry.dropsKnown) { rollbackFailure(state, "ancien journal sans recus de ressources"); return; }
         if (!level.hasChunkAt(entry.pos) || ClaimIntegration.isClaimProtected(level, entry.pos)) {
             rollbackFailure(state, "bloc decharge ou protege"); return;
+        }
+        if(entry.placed!=null) {
+            BlockState placed=NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK),entry.placed);
+            BlockState original=NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK),entry.state);
+            if(placed.isAir() || placed.hasBlockEntity() || !original.isAir() || !level.getBlockState(entry.pos).equals(placed)) {rollbackFailure(state,"construction modifiee; remboursement refuse");return;}
+            List<ItemStack> refunded=WorkInventory.insert(state.invSlots,WorkState.INV_SLOTS,entry.drops);
+            if(refunded==null) {rollbackFailure(state,"sac plein pour remboursement; deposer puis redemander rollback");return;}
+            if(!level.setBlock(entry.pos,original,2|16)) {rollbackFailure(state,"retrait de construction refuse");return;}
+            state.invSlots.clear();state.invSlots.addAll(refunded);state.journal.removeLast();state.done=Math.max(0,state.done-1);state.rollbackRemaining--;
+            state.lastStop=state.journal.isEmpty()?"Rollback de construction termine; materiaux rembourses dans le sac":"rollback: journal "+state.journal.size()+" recus restants";
+            state.setDirty();return;
         }
         if (!level.getBlockState(entry.pos).isAir()) {
             rollbackFailure(state, "bloc modifie depuis la casse en " + entry.pos.toShortString()); return;

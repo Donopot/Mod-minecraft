@@ -244,10 +244,11 @@ def servitor_capabilities(dimension="overworld"):
     return _mission_call("capabilities", dimension)
 
 
-def servitor_gather(request_id, item, amount, zone_min, zone_max, destination, origin, dimension="overworld"):
+def servitor_gather(request_id, item, amount, zone_min, zone_max, destination, origin, dimension="overworld", access="surface"):
     """Submit a bounded gather mission. Reuse request_id for retries of the exact same request."""
     try:
         _dimension(dimension)
+        if access not in ("surface","excavate"): raise ValueError("Use surface or excavate access")
         if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", request_id):
             raise ValueError("request_id must have 1..64 letters, digits, underscores or hyphens")
         if not isinstance(item, str) or not re.fullmatch(r"(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+", item):
@@ -264,11 +265,38 @@ def servitor_gather(request_id, item, amount, zone_min, zone_max, destination, o
             if all(lo <= n <= hi for lo,n,hi in zip(mn,point,mx)):
                 raise ValueError("Destination and support must be outside mining zone")
         payload = {"schema":1,"type":"GATHER","request_id":request_id,"item":item if ":" in item else "minecraft:"+item,
-                   "amount":amount,"min":mn,"max":mx,"destination":target,"origin":start}
+                   "amount":amount,"min":mn,"max":mx,"destination":target,"origin":start,"access":access}
     except (ValueError, TypeError) as error:
         return {"ok":False,"error":"INVALID_ARGUMENT","detail":str(error)}
     encoded = base64.urlsafe_b64encode(json.dumps(payload,separators=(",", ":")).encode()).decode().rstrip("=")
     return _mission_call("submit " + encoded, dimension)
+
+
+def _build_request(request_id, blueprint, material, anchor, source, origin):
+    if not isinstance(request_id,str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}",request_id): raise ValueError("Invalid request id")
+    if blueprint not in ("platform_3x3_v1","shelter_5x5_v1"): raise ValueError("Unsupported blueprint")
+    if material not in ("minecraft:cobblestone","minecraft:stone","minecraft:oak_planks","minecraft:spruce_planks"): raise ValueError("Unsupported building material")
+    return {"schema":1,"type":"BUILD","request_id":request_id,"blueprint":blueprint,"material":material,
+            "anchor":_position(anchor),"source":_position(source),"origin":_position(origin)}
+
+
+def _build_call(operation,request_id,blueprint,material,anchor,source,origin,dimension):
+    try:
+        _dimension(dimension)
+        payload=_build_request(request_id,blueprint,material,anchor,source,origin)
+    except (ValueError,TypeError) as error: return {"ok":False,"error":"INVALID_ARGUMENT","detail":str(error)}
+    encoded=base64.urlsafe_b64encode(json.dumps(payload,separators=(",",":")).encode()).decode().rstrip("=")
+    return _mission_call(operation+" "+encoded,dimension)
+
+
+def servitor_build_estimate(blueprint,material,anchor,source,origin,dimension="overworld"):
+    """Read-only estimate and site validation, without reserving items or creating a mission."""
+    return _build_call("estimate","estimate",blueprint,material,anchor,source,origin,dimension)
+
+
+def servitor_build(request_id,blueprint,material,anchor,source,origin,dimension="overworld"):
+    """Reserve real materials from source, physically build the versioned plan and verify it."""
+    return _build_call("submit",request_id,blueprint,material,anchor,source,origin,dimension)
 
 
 def servitor_mission_status(mission_id="current", dimension="overworld"):
@@ -291,4 +319,5 @@ def servitor_mission_control(mission_id, action, dimension="overworld"):
 
 
 TOOLS_MAP.update({"servitor_capabilities":servitor_capabilities,"servitor_gather":servitor_gather,
+                  "servitor_build_estimate":servitor_build_estimate,"servitor_build":servitor_build,
                   "servitor_mission_status":servitor_mission_status,"servitor_mission_control":servitor_mission_control})

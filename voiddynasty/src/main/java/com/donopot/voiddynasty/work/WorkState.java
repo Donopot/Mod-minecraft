@@ -42,6 +42,8 @@ public final class WorkState extends SavedData {
         public final long tick;
         public List<ItemStack> drops = List.of();
         public boolean dropsKnown;
+        /** Non-null for placement receipts: rollback removes this exact state and refunds drops (cost). */
+        public CompoundTag placed;
 
         public Entry(BlockPos pos, CompoundTag state, long tick) {
             this.pos = pos;
@@ -82,6 +84,9 @@ public final class WorkState extends SavedData {
     public transient double previousX, previousY, previousZ;
     public transient int idleTicks;
     public transient long nextPathTick;
+    public final transient List<BlockPos> accessRoute = new ArrayList<>();
+    public transient BlockPos accessBlock;
+    public transient BlockPos placementTarget;
     public String recoveryProblem = "";
     private CompoundTag recoveryPayload;
 
@@ -154,7 +159,7 @@ public final class WorkState extends SavedData {
 
     private static WorkState restore(CompoundTag tag, List<ItemStack> bag, ItemStack tool,
                                      List<List<ItemStack>> receipts) {
-        if (tag.getInt("schema").orElse(0) < 2 || tag.getInt("schema").orElse(0) > 4) throw new IllegalArgumentException("Unknown work schema");
+        if (tag.getInt("schema").orElse(0) < 2 || tag.getInt("schema").orElse(0) > 5) throw new IllegalArgumentException("Unknown work schema");
         WorkState s = fromTag(tag, false);
         if (s.jobName == null && (!bag.isEmpty() || !s.journal.isEmpty()))
             throw new IllegalArgumentException("Orphan work inventory or journal");
@@ -228,7 +233,7 @@ public final class WorkState extends SavedData {
 
     private static CompoundTag toTag(WorkState s) {
         CompoundTag root = new CompoundTag();
-        root.putInt("schema", 4);
+        root.putInt("schema", 5);
         root.putString("mission_id", s.missionId);
         ListTag missions = new ListTag();
         for (WorkMission mission : s.missions) missions.add(mission.save());
@@ -296,6 +301,7 @@ public final class WorkState extends SavedData {
             t.put("state", e.state);
             t.putLong("tick", e.tick);
             t.putBoolean("drops_known", e.dropsKnown);
+            if(e.placed!=null) t.put("placed",e.placed);
             entries.add(t);
         }
         root.put("journal", entries);
@@ -413,6 +419,7 @@ public final class WorkState extends SavedData {
             long tick = t.getLong("tick").orElse(0L);
             Entry entry = new Entry(pos, st, tick);
             entry.dropsKnown = t.getBoolean("drops_known").orElse(false);
+            if(t.contains("placed")) {entry.placed=t.getCompound("placed").orElseThrow();if(!entry.dropsKnown) throw new IllegalArgumentException("Unknown placement cost");}
             s.journal.add(entry);
         }
         return s;

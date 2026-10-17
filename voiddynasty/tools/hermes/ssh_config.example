@@ -1,0 +1,11 @@
+# On the Hermes host, merge this named entry into your SSH client configuration.
+Host minecraft-servitor
+    HostName REPLACE_WITH_MINECRAFT_HOST
+    User REPLACE_WITH_WINDOWS_SSH_USER
+    Port 22
+    IdentityFile ~/.ssh/voiddynasty_servitor
+    IdentitiesOnly yes
+    BatchMode yes
+    StrictHostKeyChecking yes
+    ServerAliveInterval 30
+    ServerAliveCountMax 3

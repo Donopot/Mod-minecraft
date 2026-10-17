@@ -55,10 +55,13 @@ public final class MissionService {
 
     public static JsonObject capabilities() {
         JsonObject out = new JsonObject(); out.addProperty("ok", true); out.addProperty("api_version", 1);
-        JsonArray types = new JsonArray(); types.add("GATHER"); out.add("mission_types", types);
+        JsonArray types = new JsonArray(); types.add("GATHER"); types.add("BUILD"); out.add("mission_types", types);
         JsonArray resources = new JsonArray(); SOURCES.keySet().forEach(resources::add); out.add("gather_items", resources);
         out.addProperty("max_volume", 32768); out.addProperty("max_amount", 4096);
-        out.addProperty("prospection", "Only matching blocks in the supplied zone; no tunnels or stairs yet");
+        out.addProperty("prospection", "Optional access=excavate clears a bounded horizontal 3x2 passage inside the authorized zone; no stairs yet");
+        out.addProperty("access_max_blocks",WorkAccess.MAX_BLOCKS);
+        JsonArray plans=new JsonArray();BuildPlan.IDS.stream().sorted().forEach(plans::add);out.add("blueprints",plans);
+        JsonArray materials=new JsonArray();BuildPlan.MATERIALS.stream().sorted().forEach(materials::add);out.add("build_materials",materials);
         return out;
     }
 
@@ -77,7 +80,9 @@ public final class MissionService {
     }
 
     public static WorkMission parse(JsonObject obj) {
-        if (!obj.keySet().equals(Set.of("schema", "type", "request_id", "item", "amount", "min", "max", "destination", "origin")))
+        if(obj.has("type") && obj.get("type").getAsString().equals("BUILD")) return parseBuild(obj);
+        Set<String> fields=new HashSet<>(obj.keySet());fields.remove("access");
+        if (!fields.equals(Set.of("schema", "type", "request_id", "item", "amount", "min", "max", "destination", "origin")))
             throw new IllegalArgumentException("Invalid or missing mission fields");
         if (integer(obj.get("schema")) != 1 || !obj.get("type").getAsString().equals("GATHER"))
             throw new IllegalArgumentException("Unsupported mission schema/type");
@@ -93,8 +98,27 @@ public final class MissionService {
         if (volume > 32768) throw new IllegalArgumentException("Zone exceeds 32768 blocks");
         BlockPos destination = position(obj.get("destination")), origin = position(obj.get("origin"));
         WorkMission m = new WorkMission(UUID.randomUUID().toString(), request, item, count, min, max, destination, origin);
+        m.access=obj.has("access")?obj.get("access").getAsString():"surface";
+        if(!Set.of("surface","excavate").contains(m.access)) throw new IllegalArgumentException("Use surface or excavate access");
         if (contains(m, destination) || contains(m, destination.below())) throw new IllegalArgumentException("Destination and its support must be outside the mining zone");
         return m;
+    }
+
+    private static WorkMission parseBuild(JsonObject obj) {
+        if(!obj.keySet().equals(Set.of("schema","type","request_id","blueprint","material","anchor","source","origin")) || integer(obj.get("schema"))!=1) throw new IllegalArgumentException("Invalid build fields/schema");
+        String request=obj.get("request_id").getAsString();if(!request.matches("[A-Za-z0-9_-]{1,64}")) throw new IllegalArgumentException("Invalid request id");
+        BuildPlan plan=new BuildPlan(obj.get("blueprint").getAsString(),obj.get("material").getAsString(),position(obj.get("anchor")));
+        BlockPos source=position(obj.get("source")),origin=position(obj.get("origin"));
+        WorkMission m=new WorkMission(UUID.randomUUID().toString(),request,plan.material(),plan.blocks().size(),plan.anchor(),plan.max(),source,origin);m.build=plan;
+        if(contains(m,source) || contains(m,source.below())) throw new IllegalArgumentException("Material source must be outside build site");
+        return m;
+    }
+
+    public static JsonObject estimate(ServerLevel level,JsonObject request) {
+        WorkMission m;try {m=parse(request);} catch(RuntimeException e) {return error("INVALID_SPEC",e.getMessage());}
+        if(m.build==null) return error("INVALID_SPEC","Estimate requires BUILD");
+        JsonObject out=new JsonObject();out.addProperty("ok",true);out.addProperty("blueprint",m.build.blueprint());out.addProperty("material",m.item);out.addProperty("required",m.amount);
+        out.add("min",positionJson(m.min));out.add("max",positionJson(m.max));out.addProperty("site_problem",BuildService.validate(level,m));return out;
     }
 
     private static boolean contains(WorkMission m, BlockPos p) {
@@ -102,7 +126,7 @@ public final class MissionService {
                 && p.getZ() >= m.min.getZ() && p.getZ() <= m.max.getZ();
     }
 
-    private static Container destination(ServerLevel level, WorkMission m) {
+    static Container destination(ServerLevel level, WorkMission m) {
         if (!level.hasChunkAt(m.destination) || ClaimIntegration.isClaimProtected(level, m.destination)) return null;
         var be = level.getBlockEntity(m.destination);
         if (be instanceof ChestBlockEntity && level.getBlockState(m.destination).getValue(ChestBlock.TYPE) != ChestType.SINGLE) return null;
@@ -126,6 +150,7 @@ public final class MissionService {
         if (destination(level, proposed) == null) return error("INVALID_DESTINATION", "Loaded unprotected chest or barrel required");
         if (level.isOutsideBuildHeight(proposed.origin) || !level.getWorldBorder().isWithinBounds(proposed.origin))
             return error("INVALID_ORIGIN", "Origin outside dimension bounds");
+        if(proposed.build!=null) {String invalid=BuildService.validate(level,proposed);if(!invalid.isEmpty()) return error(invalid,"Build site refused before reserving resources");}
         WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin);
         if (started == null) return error("START_REFUSED", s.lastStop);
         s.missions.add(proposed); s.missionId = proposed.id;
@@ -197,6 +222,7 @@ public final class MissionService {
     static void concluded(WorkState s) {
         WorkMission m = active(s);
         if (m == null || m.status.equals("CANCELLED")) return;
+        if(m.build!=null) {m.status=m.placed==m.amount?"SUCCEEDED":"INCOMPLETE";m.reason=m.status.equals("SUCCEEDED")?"":"BUILD_UNFINISHED";return;}
         m.status = m.delivered >= m.amount ? "SUCCEEDED" : "INCOMPLETE";
         m.reason = m.status.equals("SUCCEEDED") ? "" : s.cursorY < s.minY ? "SOURCE_EXHAUSTED" : "STOPPED_BEFORE_GOAL";
     }
@@ -213,6 +239,7 @@ public final class MissionService {
     /** True means this tick was consumed by delivery/completion rather than another mining action. */
     static boolean tick(ServerLevel level, WorkState s, LivingEntity bot) {
         WorkMission m = active(s); if (m == null || m.status.equals("CANCELLED")) return false;
+        if(m.build!=null) {if(m.terminal()) return false;BuildService.tick(level,s,bot,m);return true;}
         if (m.delivered >= m.amount) {
             m.status = "STORING_REMAINDER";
             if (s.invSlots.isEmpty()) WorkService.conclude(level, s); else s.finishing = true;

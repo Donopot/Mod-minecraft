@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "voiddynasty-servitor": {
+      "command": "ssh",
+      "args": [
+        "-T",
+        "-o", "BatchMode=yes",
+        "minecraft-servitor",
+        "powershell.exe", "-NoLogo", "-NoProfile", "-NonInteractive",
+        "-File", "C:/VoidDynasty/start-servitor-mcp.ps1"
+      ]
+    }
+  }
+}

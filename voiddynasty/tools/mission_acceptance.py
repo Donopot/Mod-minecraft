@@ -12,7 +12,7 @@ from mcp.client.stdio import stdio_client
 
 @asynccontextmanager
 async def connection(lab):
-    params = StdioServerParameters(command=sys.executable, args=[str(Path(__file__).with_name('mcp_vd.py'))],
+    params = StdioServerParameters(command=sys.executable, args=[str(Path(__file__).with_name('mcp_vd.py')),'--servitor-only'],
                                    env={**os.environ, 'VD_SERVER_DIR':str(lab)})
     async with stdio_client(params) as streams:
         async with ClientSession(*streams) as session:
@@ -60,9 +60,9 @@ async def before_restart(rcon, lab, notes):
     fixture(rcon,notes,'setup')
     async with connection(lab) as session:
         names={t.name for t in (await session.list_tools()).tools}
-        check(notes,'actual_mcp_tool_discovery',{'servitor_capabilities','servitor_gather','servitor_mission_status','servitor_mission_control'}<=names)
+        check(notes,'actual_mcp_tool_discovery',names=={'servitor_capabilities','servitor_gather','servitor_mission_status','servitor_mission_control','servitor_build','servitor_build_estimate'})
         caps=await call(session,'servitor_capabilities')
-        check(notes,'server_reports_actual_capabilities',caps['ok'] and caps['mission_types']==['GATHER'] and 'minecraft:diamond' in caps['gather_items'])
+        check(notes,'server_reports_actual_capabilities',caps['ok'] and caps['mission_types']==['GATHER','BUILD'] and 'minecraft:diamond' in caps['gather_items'])
         invalid=await session.call_tool('servitor_gather',spec('bad-boolean',amount=True))
         check(notes,'sdk_rejects_boolean_quantity',invalid.isError)
         unsupported=await call(session,'servitor_gather',**spec('unsupported',item='minecraft:nether_star'))

@@ -47,6 +47,29 @@ class MissionToolsTest(unittest.TestCase):
         spec = json.loads(base64.urlsafe_b64decode(encoded+'='*((-len(encoded))%4)))
         self.assertEqual(spec['min'], [1,64,1])
 
+    def test_excavation_requires_valid_explicit_mode(self):
+        with patch.object(core,'rcon') as transport:
+            self.assertEqual(core.servitor_gather(**self.valid(access='anywhere'))['error'],'INVALID_ARGUMENT')
+            transport.assert_not_called()
+        with patch.object(core,'_mission_call',return_value={'ok':True}) as transport:
+            core.servitor_gather(**self.valid(access='excavate'))
+        encoded=transport.call_args.args[0].split(' ',1)[1]
+        self.assertEqual(json.loads(base64.urlsafe_b64decode(encoded+'='*((-len(encoded))%4)))['access'],'excavate')
+
+    def test_build_and_estimate_use_typed_encoded_requests(self):
+        arguments=dict(blueprint='platform_3x3_v1',material='minecraft:cobblestone',anchor=[20,64,20],source=[15,64,20],origin=[16,64,20])
+        with patch.object(core,'_mission_call',return_value={'ok':True}) as transport:
+            core.servitor_build_estimate(**arguments)
+            self.assertTrue(transport.call_args.args[0].startswith('estimate '))
+            core.servitor_build(request_id='build-one',**arguments)
+        encoded=transport.call_args.args[0].split(' ',1)[1]
+        payload=json.loads(base64.urlsafe_b64decode(encoded+'='*((-len(encoded))%4)))
+        self.assertEqual(payload['type'],'BUILD');self.assertEqual(payload['request_id'],'build-one')
+        for changes in [dict(blueprint='house run stop'),dict(material='minecraft:tnt'),dict(anchor=[True,64,20]),dict(dimension='overworld run stop')]:
+            with patch.object(core,'rcon') as network:
+                self.assertEqual(core.servitor_build(request_id='build-one',**{**arguments,**changes})['error'],'INVALID_ARGUMENT')
+                network.assert_not_called()
+
     def test_bad_uuid_or_action_never_touch_server(self):
         with patch.object(core, 'rcon') as transport:
             self.assertEqual(core.servitor_mission_status('current run stop')['error'], 'INVALID_ARGUMENT')

@@ -1,5 +1,7 @@
 # Servitor polyvalent — première étape
 
+Cette page décrit la 1.3.0-alpha.1. Voir [la 1.3.0-alpha.2](SERVITOR-POLYVALENT-ALPHA2.md) pour les accès horizontaux, la construction depuis un plan et les exemples Hermes distant.
+
 Branche : `codex/servitor-polyvalent`. Version : **1.3.0-alpha.1**. Date : 17 octobre 2026.
 
 Le premier jalon exécute une mission de collecte bornée : le servitor physique cherche les blocs correspondants dans une zone explicite, les mine avec le butin natif, puis livre la quantité demandée dans un coffre simple ou un tonneau désigné. Il conserve son sac, ses reçus de minage et sa mission après un redémarrage propre. Le dépôt de chantier est toujours construit par le servitor ; sélectionner une zone ne demande pas de dépôt préalable. Le coffre de livraison final doit déjà exister.

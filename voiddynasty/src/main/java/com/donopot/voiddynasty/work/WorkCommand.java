@@ -110,6 +110,13 @@ public final class WorkCommand {
             ctx.getSource().sendSuccess(() -> Component.literal(msg), false);
             return 0;
         }
+        WorkMission mission=MissionService.active(state);
+        if(mission!=null && mission.build!=null) {
+            String construction="Construction "+mission.build.blueprint()+" | "+mission.status+" | poses effectuees "+mission.placed+"/"+mission.amount
+                    +" | materiaux reserves: "+mission.materialsReserved+" | sac "+state.invCount()+" objets | journal "+state.journal.size()
+                    +" | rollback "+state.rollbackRemaining+" | "+state.lastStop;
+            ctx.getSource().sendSuccess(()->Component.literal(construction),false);return 1;
+        }
         long remaining = WorkService.remaining(state);
         long processed = Math.max(0, (long) state.total - remaining);
         int pct = state.total == 0 ? 0 : (int) (processed * 100 / state.total);

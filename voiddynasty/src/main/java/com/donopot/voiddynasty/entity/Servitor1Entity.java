@@ -24,6 +24,8 @@ public class Servitor1Entity extends ChaosCultistEntity {
         setTarget(null);
         setNoAi(false);
         setCanPickUpLoot(false);
+        // Work routes can need a long detour to exit a mined passage and reach the depot.
+        getNavigation().setRequiredPathLength(64.0f);
         getNavigation().stop();
     }
 

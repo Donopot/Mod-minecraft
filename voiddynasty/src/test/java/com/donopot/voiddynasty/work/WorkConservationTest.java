@@ -142,6 +142,26 @@ public final class WorkConservationTest {
         missionState.jobName = null; missionState.missionId = ""; mission.status = "SUCCEEDED"; mission.delivered = 3;
         WorkState archived = WorkState.CODEC.parse(ops, WorkState.CODEC.encodeStart(ops, missionState).getOrThrow()).getOrThrow();
         check(archived.missions.size() == 1 && archived.missions.getFirst().status.equals("SUCCEEDED"), "closed request history survives without active job");
+        JsonObject excavation=spec();excavation.addProperty("access","excavate");
+        check(!MissionService.parse(excavation).sameRequest(MissionService.parse(spec())),"excavation consent is part of request identity");
+        BuildPlan platform=new BuildPlan("platform_3x3_v1","minecraft:cobblestone",new BlockPos(20,64,20));
+        BuildPlan house=new BuildPlan("shelter_5x5_v1","minecraft:oak_planks",new BlockPos(20,64,20));
+        check(platform.blocks().size()==9 && house.blocks().size()==94 && new HashSet<>(house.blocks()).size()==94,"versioned plan counts are exact and positions unique");
+        check(!house.blocks().contains(house.anchor().offset(1,1,0)) && !house.blocks().contains(house.anchor().offset(2,2,0)),"house entrance fits physical servitor width");
+        JsonObject buildJson=JsonParser.parseString("{\"schema\":1,\"type\":\"BUILD\",\"request_id\":\"build-unit\",\"blueprint\":\"platform_3x3_v1\",\"material\":\"minecraft:cobblestone\",\"anchor\":[20,64,20],\"source\":[15,64,20],\"origin\":[16,64,20]}").getAsJsonObject();
+        WorkMission build=MissionService.parse(buildJson);build.status="BUILDING";build.materialsReserved=true;build.collected=9;build.placed=1;build.delivered=1;
+        WorkState building=new WorkState();building.jobName=build.id;building.missionId=build.id;building.missions.add(build);building.invSlots.add(stack(Items.COBBLESTONE,8));
+        WorkState.Entry placement=new WorkState.Entry(platform.anchor(),NbtUtils.writeBlockState(Blocks.AIR.defaultBlockState()),10);
+        placement.placed=NbtUtils.writeBlockState(Blocks.COBBLESTONE.defaultBlockState());placement.dropsKnown=true;placement.drops=List.of(stack(Items.COBBLESTONE,1));building.journal.add(placement);
+        WorkState restoredBuild=WorkState.CODEC.parse(ops,WorkState.CODEC.encodeStart(ops,building).getOrThrow()).getOrThrow();
+        WorkMission restoredMission=MissionService.active(restoredBuild);
+        check(restoredMission.build.equals(platform) && restoredMission.materialsReserved && restoredMission.placed==1 && restoredMission.status.equals("PAUSED"),"build plan, reservation and progress persist and require explicit resume");
+        check(restoredBuild.invCount()==8 && restoredBuild.journal.getFirst().placed!=null && restoredBuild.journal.getFirst().drops.getFirst().is(Items.COBBLESTONE),"placement refund receipt and unspent materials survive codecs");
+        check(WorkInventory.insert(restoredBuild.invSlots,36,restoredBuild.journal.getFirst().drops).getFirst().getCount()==9,"placement refund restores conserved total without mining loot debit");
+        ItemStack namedMaterial=stack(Items.COBBLESTONE,9);namedMaterial.set(DataComponents.CUSTOM_NAME,Component.literal("Keep me"));
+        check(WorkInventory.debit(List.of(namedMaterial),List.of(platform.cost(9)))==null,"construction cannot consume named material as plain blocks");
+        buildJson.addProperty("material","minecraft:tnt");boolean rejectedBuild=false;try {MissionService.parse(buildJson);}catch(IllegalArgumentException e) {rejectedBuild=true;}
+        check(rejectedBuild,"unsafe or unsupported build blocks refused before execution");
         System.out.println("WORK CONSERVATION: " + checks + " checks passed");
     }
 }
