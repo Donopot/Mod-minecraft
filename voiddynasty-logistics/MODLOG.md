@@ -1,3 +1,10 @@
+# 2026-10-17 — pack client local 0.7.1
+
+- Added `client-local/voiddynasty-0.7.1/mods/` with the exact four JARs: six-ship VOID DYNASTY base, canonical bridge, Fabric API and GeckoLib.
+- Included original licence texts, hashes, manifest and a guide for solo play without Rogue Trader.
+- Verified the exact pack in an isolated Fabric transformer with seven transformed targets and 30 inventory/pad assertions; missing RT configuration is handled by the background client worker.
+- Builder supports an identically hashed base JAR after a filename change. Nine build-provenance tests pass. No game main, world or normal installation was modified.
+
 # 2026-10-17 — bridge unique 0.7.1
 
 - Removed the duplicate Minecraft Java/resources from `fabric-adapter/src`; the Git history preserves them.

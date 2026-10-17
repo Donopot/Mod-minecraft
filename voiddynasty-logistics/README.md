@@ -1,3 +1,7 @@
+# Pack Minecraft seul
+
+Pour jouer sans Rogue Trader, utiliser [le dossier client-local](../client-local/voiddynasty-0.7.1) : quatre JAR, dépendances incluses, à copier dans `mods`. L’assistant Windows décrit ci-dessous sert à l’installation des deux jeux ; il n’est pas nécessaire pour ce mode local.
+
 # Update 0.7.1 — one Minecraft bridge source
 
 The Minecraft sources live only in [../voiddynasty-bridge](../voiddynasty-bridge). Build both adapters, verify them, then build the assistant from this directory. Keep the sibling folders together when cloning or extracting the source package. The dynamic fleet list and its network relay are retained. Delivery protocol and receipts are unchanged. This patch is built and tested locally; in-game visual acceptance remains pending.

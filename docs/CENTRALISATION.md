@@ -20,7 +20,9 @@ La compilation privée utilisée pendant le développement dépend d’une confi
 
 ## Périmètre publié
 
-Le dépôt reçoit les sources, configurations de compilation, schémas, tests et documents. Les laboratoires, comptes de lanceur, jetons, sauvegardes, JAR Forge de référence, bibliothèques de jeux et paquets compilés sont exclus. Le projet tiers universal-modder reste une référence externe ; il n’est pas recopié dans ce monorepo.
+Le dépôt reçoit les sources, configurations de compilation, schémas, tests et documents. Le dossier versionné [client-local](../client-local) ajoute, à la demande de l’utilisateur, les quatre JAR permettant de jouer à VOID DYNASTY en solo sans Rogue Trader, ainsi que les licences et empreintes correspondantes. L’exception Git pour ces binaires est limitée à ce dossier.
+
+Les laboratoires, comptes de lanceur, jetons, sauvegardes, JAR Forge de référence, bibliothèques de jeux et autres paquets compilés restent exclus. Les binaires et ressources privées de One Piece ne sont pas publiés. Le projet tiers universal-modder reste une référence externe ; il n’est pas recopié dans ce monorepo.
 
 ## Vérifications de la copie publiée
 

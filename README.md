@@ -1,5 +1,9 @@
 # Mod-minecraft — sources des mods
 
+## Jouer en local, avec ou sans Rogue Trader
+
+[Pack client VOID DYNASTY 0.7.1](client-local/voiddynasty-0.7.1) : les quatre JAR à copier dans `mods`, avec le guide, les dépendances, licences et empreintes. Cible : Minecraft Java 26.3, Fabric Loader 0.19.5, Java 25. Le contenu Minecraft fonctionne sans Rogue Trader ; les livraisons vers RT nécessitent son lancement.
+
 ## Sources centralisées
 
 Ce dépôt réunit les projets de développement Minecraft et la passerelle Rogue Trader.
@@ -13,7 +17,7 @@ Ce dépôt réunit les projets de développement Minecraft et la passerelle Rogu
 
 Le bridge Minecraft est construit uniquement depuis `voiddynasty-bridge/`. La copie de sources dans `voiddynasty-logistics/fabric-adapter/` a été retirée ; l’assistant et les tests utilisent le projet unique. [Organisation et versions](docs/CENTRALISATION.md).
 
-Les JAR de mods, bibliothèques de jeux, ressources visuelles binaires privées, mondes et données d’exécution restent locaux. One Piece fournit un manifeste et un importeur pour rétablir ses ressources depuis le paquet privé correspondant. Les droits existants de chaque composant sont conservés ; cette centralisation ne les remplace pas par une nouvelle licence.
+Le dossier `client-local/` publie uniquement les quatre JAR nécessaires à VOID DYNASTY, à la demande de l’utilisateur. Les bibliothèques de jeux, ressources privées de One Piece, mondes et données d’exécution restent locaux. One Piece fournit un manifeste et un importeur pour rétablir ses ressources depuis le paquet privé correspondant. Les droits existants de chaque composant sont conservés ; cette centralisation ne les remplace pas par une nouvelle licence.
 
 ---
 

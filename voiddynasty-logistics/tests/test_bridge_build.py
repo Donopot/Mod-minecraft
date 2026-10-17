@@ -84,6 +84,17 @@ class BridgeBuildTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "base mod changed"):
             self.validate()
 
+    def test_renamed_base_requires_identical_bytes(self):
+        renamed = self.root / "renamed-base.jar"
+        renamed.write_bytes(self.original.read_bytes())
+        self.original.unlink()
+        result = validated_payload(self.build, self.artifact, self.project, base_jar=renamed)
+        self.assertEqual(result["original_sha256"], sha256(renamed))
+        with renamed.open("ab") as stream:
+            stream.write(b"modified")
+        with self.assertRaisesRegex(ValueError, "base mod changed"):
+            validated_payload(self.build, self.artifact, self.project, base_jar=renamed)
+
     def test_package_sources_have_one_bridge_and_no_private_outputs(self):
         files = source_files()
         self.assertFalse((ROOT / "fabric-adapter/src").exists())

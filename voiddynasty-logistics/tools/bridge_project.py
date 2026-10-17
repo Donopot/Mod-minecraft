@@ -37,7 +37,7 @@ def validate_base_jar(path):
     return sha256(path)
 
 
-def validated_payload(build_file, artifact, project=BRIDGE):
+def validated_payload(build_file, artifact, project=BRIDGE, *, base_jar=None):
     """Reject an old copy, stale sources, altered JAR or changed base before packaging."""
     build = json.loads(build_file.read_text(encoding="utf-8"))
     if Path(build.get("bridge_project", "")).resolve() != project.resolve():
@@ -50,7 +50,7 @@ def validated_payload(build_file, artifact, project=BRIDGE):
         metadata = json.loads(archive.read("fabric.mod.json"))
     if metadata.get("id") != "voiddynasty_bridge" or metadata.get("version") != version(project):
         raise ValueError("Companion metadata differs from the canonical project")
-    original = Path(build["original"])
+    original = Path(base_jar) if base_jar is not None else Path(build["original"])
     if validate_base_jar(original) != build["original_sha256"]:
         raise ValueError("The base mod changed since companion compilation")
     return build
