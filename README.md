@@ -2,7 +2,9 @@
 
 ## Jouer en local, avec ou sans Rogue Trader
 
-[Pack client VOID DYNASTY 0.7.1](client-local/voiddynasty-0.7.1) : les quatre JAR à copier dans `mods`, avec le guide, les dépendances, licences et empreintes. Cible : Minecraft Java 26.3, Fabric Loader 0.19.5, Java 25. Le contenu Minecraft fonctionne sans Rogue Trader ; les livraisons vers RT nécessitent son lancement.
+[Pack client VOID DYNASTY 1.2.4](client-local/voiddynasty-1.2.4) : les quatre JAR à copier dans `mods`, avec le guide, les dépendances, licences et empreintes. Cible : Minecraft Java 26.3, Fabric Loader 0.19.5, Java 25. Le contenu Minecraft fonctionne sans Rogue Trader ; les livraisons vers RT nécessitent son lancement.
+
+Le [servitor 1.2.4](voiddynasty/docs/SERVITOR-1.2.4.md) conserve les ressources et les reçus de rollback, puis utilise la navigation native. Le pack conserve le bridge 0.7.1.
 
 ## Sources centralisées
 
@@ -10,7 +12,7 @@ Ce dépôt réunit les projets de développement Minecraft et la passerelle Rogu
 
 | Dossier | Contenu |
 |---|---|
-| `voiddynasty/` | Mod principal et flotte à six classes, conservés depuis le commit initial. |
+| `voiddynasty/` | Mod principal 1.2.4, flotte à six classes et servitor de chantier. |
 | `voiddynasty-bridge/` | Source unique du bridge Minecraft 0.7.1 : pad dynamique, coffres, armes et logistique. |
 | `voiddynasty-logistics/` | Suite 0.7.1 : adaptateur Rogue Trader, protocole, simulation, tests et assistant Windows. |
 | `onepiece/` | Port Fabric 26.3 : 40 fruits, 213 techniques, formes et revue des assets alpha.19. |
@@ -38,7 +40,7 @@ Monorepo des sources du mod Minecraft **VOID DYNASTY** et de son addon **Refit &
 
 ```bash
 # le mod
-cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.0.0.jar
+cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.2.4.jar
 
 # la bridge (nécessite le jar du mod dans voiddynasty-bridge/libs/)
 cd ../voiddynasty-bridge && ./gradlew build   # -> build/libs/voiddynasty_bridge-0.7.1.jar

@@ -9,16 +9,10 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Commandes de chantier.
@@ -30,7 +24,9 @@ import net.minecraft.world.level.block.state.BlockState;
  *   /work resume                          reprend au curseur après un arrêt
  *   /work tool &lt;item&gt;                     change l'outil du Servitor
  *   /work loot                            relève des conteneurs rencontrés
- *   /work rollback [n]                    annule les n dernières casses
+ *   /work rollback [n]                    annule les n dernières casses, un bloc par tick
+ *   /work commit                          abandonne le rollback, sac vide requis
+ *   /work deposit                         vide le sac sans miner d'autre bloc
  * </pre>
  */
 public final class WorkCommand {
@@ -49,6 +45,24 @@ public final class WorkCommand {
                 .then(Commands.literal("stop").executes(WorkCommand::stop))
                 .then(Commands.literal("resume").executes(WorkCommand::resume))
                 .then(Commands.literal("loot").executes(WorkCommand::loot))
+                .then(Commands.literal("deposit").executes(ctx -> {
+                    WorkState state = WorkService.deposit(ctx.getSource().getLevel());
+                    if (state == null) {
+                        ctx.getSource().sendFailure(Component.literal("Depot impossible: sac vide, rollback actif ou trajet de depart bloque."));
+                        return 0;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.literal("Retour au depot uniquement; aucun nouveau bloc ne sera mine."), true);
+                    return 1;
+                }))
+                .then(Commands.literal("commit").executes(ctx -> {
+                    WorkState state = WorkState.get(ctx.getSource().getLevel());
+                    if (!WorkService.commit(ctx.getSource().getLevel(), state)) {
+                        ctx.getSource().sendFailure(Component.literal("Validation refusee: arreter le chantier et vider le sac (/work deposit) d'abord."));
+                        return 0;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.literal(state.lastStop), true);
+                    return 1;
+                }))
                 .then(Commands.literal("tool")
                         .then(Commands.argument("item", StringArgumentType.string())
                                 .executes(WorkCommand::tool)))
@@ -68,7 +82,7 @@ public final class WorkCommand {
         WorkState state = WorkService.start(level, name, a, b, tool);
         if (state == null) {
             ctx.getSource().sendFailure(Component.literal(
-                    "Chantier refuse : impossible de poser le depot ou de faire apparaitre le Servitor."));
+                    "Chantier refuse : " + WorkState.get(level).lastStop + " (voir /work status)."));
             return 0;
         }
         ctx.getSource().sendSuccess(() -> Component.literal(
@@ -82,7 +96,11 @@ public final class WorkCommand {
     private static int status(CommandContext<CommandSourceStack> ctx) {
         ServerLevel level = ctx.getSource().getLevel();
         WorkState state = WorkState.get(level);
-        if (!state.hasJob()) {
+        if (state.needsRecovery()) {
+            ctx.getSource().sendFailure(Component.literal(state.lastStop + ": " + state.recoveryProblem));
+            return 0;
+        }
+        if (state.jobName == null) {
             String msg = state.lastStop.isEmpty()
                     ? "Aucun chantier en cours."
                     : "Aucun chantier en cours. Dernier : " + state.lastStop
@@ -98,7 +116,7 @@ public final class WorkCommand {
                 ? "cible " + state.targetX + " " + state.targetY + " " + state.targetZ
                         + String.format(" (%.1fs)", state.progress)
                 : "pas de cible";
-        String msg = "« " + state.jobName + " » " + pct + " % (" + processed + "/" + state.total + ")"
+        String msg = "« " + state.jobName + " » " + (state.hasJob() ? "actif " : "arrete ") + pct + " % (" + processed + "/" + state.total + ")"
                 + " — " + state.done + " casses, " + state.skipped + " laisses"
                 + " | outil " + toolName + " (" + (state.toolBlocks) + " blocs)"
                 + " | sac " + state.invSlots.size() + "/" + WorkState.INV_SLOTS
@@ -106,7 +124,8 @@ public final class WorkCommand {
                 + " | " + target
                 + " | depot " + state.depositSummary()
                 + " | butin " + state.lootBlocks
-                + " | journal " + state.journal.size()
+                + " | journal " + state.journal.size() + " | rollback " + state.rollbackRemaining
+                + " | " + state.lastStop
                 + " | " + String.format("%.2f", WorkService.lastMs()) + " ms/tick";
         ctx.getSource().sendSuccess(() -> Component.literal(msg), false);
         return 1;
@@ -136,7 +155,9 @@ public final class WorkCommand {
             ctx.getSource().sendFailure(Component.literal("Outil inconnu : " + raw));
             return 0;
         }
-        WorkService.setTool(level, state, id.toString());
+        if (!WorkService.setTool(level, state, id.toString())) {
+            ctx.getSource().sendFailure(Component.literal(state.lastStop)); return 0;
+        }
         ctx.getSource().sendSuccess(() -> Component.literal(
                 "Outil du Servitor : " + id + " (usure remise a zero)."), true);
         return 1;
@@ -166,54 +187,16 @@ public final class WorkCommand {
         return stopped ? 1 : 0;
     }
 
-    /** Vide le dépôt ; renvoie le nombre d'objets retirés. */
-    private static int clearDepot(ServerLevel level, WorkState state) {
-        if (!state.hasDepot) {
-            return 0;
-        }
-        BlockPos depotPos = new BlockPos(state.depotX, state.depotY, state.depotZ);
-        if (!(level.getBlockEntity(depotPos) instanceof net.minecraft.world.Container depot)) {
-            return 0;
-        }
-        int removed = 0;
-        for (int i = 0; i < depot.getContainerSize(); i++) {
-            ItemStack stack = depot.getItem(i);
-            if (!stack.isEmpty()) {
-                removed += stack.getCount();
-                depot.setItem(i, ItemStack.EMPTY);
-            }
-        }
-        depot.setChanged();
-        return removed;
-    }
-
     private static int rollback(CommandContext<CommandSourceStack> ctx, int count) {
         ServerLevel level = ctx.getSource().getLevel();
         WorkState state = WorkState.get(level);
-        int restored = 0;
-        int failed = 0;
-        while (restored + failed < count && !state.journal.isEmpty()) {
-            WorkState.Entry entry = state.journal.remove(state.journal.size() - 1);
-            try {
-                CompoundTag tag = entry.state;
-                BlockState old = NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK), tag);
-                level.setBlock(entry.pos, old, 3);
-                restored++;
-            } catch (Exception e) {
-                failed++;
-            }
+        if (state.needsRecovery()) {
+            ctx.getSource().sendFailure(Component.literal(state.lastStop)); return 0;
         }
-        // Les blocs reviennent, donc les objets qu'ils ont produits aussi : le dépôt est vidé.
-        int cleared = clearDepot(level, state);
-        state.deposited = 0;
-        state.setDirty();
-        final int r = restored;
-        final int f = failed;
-        final int c = cleared;
+        WorkService.requestRollback(level, state, count);
         ctx.getSource().sendSuccess(() -> Component.literal(
-                "Rollback : " + r + " blocs restaures" + (f > 0 ? ", " + f + " echecs" : "")
-                        + ", depot vide de " + c + " objets (sinon duplication)"
-                        + ". Journal restant : " + state.journal.size()), true);
-        return restored;
+                "Rollback demande pour " + state.rollbackRemaining + " blocs, un par tick. "
+                + "Ressources exactes requises dans le sac ou les depots; /work status pour suivre."), true);
+        return 1;
     }
 }

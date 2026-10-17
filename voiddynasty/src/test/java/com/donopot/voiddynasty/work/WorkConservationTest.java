@@ -1,0 +1,99 @@
+package com.donopot.voiddynasty.work;
+
+import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.Blocks;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/** Standalone native Minecraft tests; no player world or game process required. */
+public final class WorkConservationTest {
+    private static int checks;
+    private static void check(boolean ok, String name) {
+        if (!ok) throw new AssertionError(name);
+        checks++; System.out.println("PASS " + name);
+    }
+    private static ItemStack stack(Item item, int count) { return new ItemStack(item, count); }
+    public static void main(String[] args) {
+        SharedConstants.tryDetectVersion(); Bootstrap.bootStrap();
+        // Standalone bootstrap has no datapack component binding; explicitly bind fixture defaults.
+        for (Item item : BuiltInRegistries.ITEM) item.builtInRegistryHolder().bindComponents(
+                DataComponentMap.builder().set(DataComponents.MAX_STACK_SIZE, 64).build());
+        Items.IRON_PICKAXE.builtInRegistryHolder().bindComponents(DataComponentMap.builder()
+                .set(DataComponents.MAX_STACK_SIZE, 1).set(DataComponents.MAX_DAMAGE, 250)
+                .set(DataComponents.DAMAGE, 0).build());
+        Items.ENDER_PEARL.builtInRegistryHolder().bindComponents(DataComponentMap.builder()
+                .set(DataComponents.MAX_STACK_SIZE, 16).build());
+        List<ItemStack> full = new ArrayList<>();
+        BuiltInRegistries.ITEM.stream().filter(i -> i != Items.AIR && i != Items.DIAMOND)
+                .limit(36).forEach(i -> full.add(stack(i, 1)));
+        check(WorkInventory.insert(full, 36, List.of(stack(Items.DIAMOND, 1))) == null,
+                "36 incompatible partial stacks reject new type without loss");
+        check(full.size() == 36 && full.stream().allMatch(s -> s.getCount() == 1), "rejection leaves original unchanged");
+        List<ItemStack> merged = WorkInventory.insert(List.of(stack(Items.DIAMOND, 63)), 1, List.of(stack(Items.DIAMOND, 1)));
+        check(merged != null && merged.getFirst().getCount() == 64, "compatible partial stack merges");
+        check(WorkInventory.insert(List.of(stack(Items.DIAMOND, 63)), 1, List.of(stack(Items.DIAMOND, 2))) == null,
+                "partial insertion cannot silently discard overflow");
+        check(WorkInventory.insert(List.of(stack(Items.ENDER_PEARL, 16)), 1, List.of(stack(Items.ENDER_PEARL, 1))) == null,
+                "native 16 item stack limit respected");
+        check(WorkInventory.insert(List.of(), 1, List.of(stack(Items.IRON_PICKAXE, 2))) == null,
+                "unstackable tool requires two slots");
+        ItemStack named = stack(Items.DIAMOND, 2);
+        named.set(DataComponents.CUSTOM_NAME, Component.literal("Chantier test"));
+        check(WorkInventory.insert(List.of(named), 1, List.of(stack(Items.DIAMOND, 1))) == null,
+                "different components do not merge");
+        List<ItemStack> input = List.of(named, stack(Items.DIAMOND, 7), stack(Items.EMERALD, 5));
+        List<ItemStack> debited = WorkInventory.debit(input, List.of(stack(Items.DIAMOND, 3)));
+        check(debited != null && debited.get(1).getCount() == 4 && debited.get(0).getCount() == 2
+                && debited.get(2).getCount() == 5, "partial rollback preserves named and unrelated resources");
+        check(input.get(1).getCount() == 7, "debit plan does not mutate original");
+        check(WorkInventory.debit(input, List.of(stack(Items.DIAMOND, 8))) == null, "missing output refuses rollback");
+        check(WorkInventory.debit(input, List.of(stack(Items.DIAMOND, 4), stack(Items.DIAMOND, 4))) == null,
+                "repeated receipt requests cannot double count a slot");
+        AtomicBoolean restored = new AtomicBoolean(), written = new AtomicBoolean();
+        check(!WorkRollback.apply(input, List.of(stack(Items.DIAMOND, 8)), () -> { restored.set(true); return true; },
+                after -> written.set(true)) && !restored.get() && !written.get(), "missing resources never restore block");
+        check(!WorkRollback.apply(input, List.of(stack(Items.DIAMOND, 1)), () -> false,
+                after -> written.set(true)) && !written.get(), "failed block mutation never debits inventory");
+        check(WorkRollback.apply(input, List.of(stack(Items.DIAMOND, 1)), () -> true,
+                after -> { check(after.get(1).getCount() == 6, "successful rollback debits exact count"); written.set(true); }),
+                "successful transaction completes");
+        var state = new WorkState(); state.jobName = "test"; state.finished = true;
+        state.invSlots.add(named); state.invSlots.add(stack(Items.IRON_PICKAXE, 1));
+        state.invSlots.get(1).setDamageValue(91); state.tool = state.invSlots.get(1).copy();
+        state.hasDepot = true; state.depots.add(BlockPos.ZERO); state.depots.add(new BlockPos(4, 0, 0));
+        state.rollbackStarted = true;
+        var entry = new WorkState.Entry(new BlockPos(1, 2, 3), NbtUtils.writeBlockState(Blocks.DIAMOND_ORE.defaultBlockState()), 7);
+        entry.dropsKnown = true; entry.drops = List.of(named.copy()); state.journal.add(entry);
+        var ops = RegistryOps.create(NbtOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+        var encoded = WorkState.CODEC.encodeStart(ops, state).getOrThrow();
+        WorkState loaded = WorkState.CODEC.parse(ops, encoded).getOrThrow();
+        check(ItemStack.matches(named, loaded.invSlots.getFirst()), "save reload preserves full named stack");
+        check(loaded.invSlots.get(1).getDamageValue() == 91 && loaded.tool.getDamageValue() == 91, "save reload preserves tool wear");
+        check(loaded.hasDepot && loaded.depots.equals(state.depots), "all depots and origin depot persist");
+        check(loaded.journal.getFirst().dropsKnown && ItemStack.matches(named, loaded.journal.getFirst().drops.getFirst()),
+                "exact rollback receipt persists");
+        check(loaded.rollbackStarted && !loaded.hasJob(), "restart cannot automatically resume mining after rollback");
+        CompoundTag corrupt = ((CompoundTag) encoded).copy(); corrupt.remove("inventory");
+        WorkState locked = WorkState.CODEC.parse(ops, corrupt).getOrThrow();
+        check(locked.needsRecovery() && !locked.hasJob(), "malformed modern data locks instead of becoming empty legacy inventory");
+        check(WorkState.CODEC.encodeStart(ops, locked).getOrThrow().equals(corrupt), "quarantine retains original NBT fields");
+        CompoundTag legacy = new CompoundTag(), job = new CompoundTag(); job.putString("name", "legacy");
+        ListTag inv = new ListTag(); inv.add(StringTag.valueOf("minecraft:diamond|5")); job.put("inv", inv);
+        legacy.put("job", job);
+        WorkState migrated = WorkState.CODEC.parse(ops, legacy).getOrThrow();
+        check(migrated.invCount() == 5 && migrated.invSlots.getFirst().is(Items.DIAMOND), "legacy counts migrate without deletion");
+        inv.add(StringTag.valueOf("missing:unknown|7"));
+        check(WorkState.CODEC.parse(ops, legacy).getOrThrow().needsRecovery(), "unresolvable legacy item locks without deleting inventory");
+        System.out.println("WORK CONSERVATION: " + checks + " checks passed");
+    }
+}

@@ -1,5 +1,7 @@
 # AGENT DE CHANTIER — conception
 
+État livré : [socle Servitor 1.2.4 et limites vérifiées](SERVITOR-1.2.4.md). Les sections suivantes restent une conception, incluant des objectifs futurs.
+
 *Établi le 17/10/2026. Demande de Donopot : « une IA à qui je donne une zone, il mine tout,
 en prenant en compte tous les soucis que ça peut occasionner », généralisable à l'agriculture
 et à la construction.*

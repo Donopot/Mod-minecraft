@@ -19,9 +19,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,8 +41,8 @@ import java.util.List;
  *   <li><b>Portée</b> — un bloc à plus de {@link #REACH} blocs n'est pas miné : le Servitor s'en
  *       approche d'abord, de bloc en bloc, en ne marchant que sur des cases libres.</li>
  *   <li><b>Outil</b> — sans pioche, la pierre ne donne <b>rien</b> et prend cinq fois plus de temps
- *       (règle du jeu). L'outil s'use d'un point par bloc et casse ; il en reprend une dans son
- *       inventaire, sinon le chantier s'arrête.</li>
+ *       (règle du jeu). Le chantier s'arrête si l'outil ne permet pas de récolter le bloc.
+ *       L'outil s'use, et l'opérateur fournit son remplacement lorsqu'il casse.</li>
  *   <li><b>Durée</b> — le temps de casse vient de {@code dureté × 1,5 / vitesse de l'outil}, la
  *       formule du jeu, divisée par {@link #SPEED_MULT} : c'est une machine, pas un homme.</li>
  *   <li><b>Inventaire réel</b> — 36 emplacements. Plein, il marche jusqu'au coffre de dépôt et
@@ -56,9 +59,6 @@ public final class WorkService {
     private static final double SPEED_MULT = 4.0;
 
     private static double lastMs = 0.0;
-    /** Ticks sans un seul bloc casse, pour detecter un Servitor bloque. */
-    private static int stallTicks = 0;
-    private static int lastDone = -1;
 
     private WorkService() {}
 
@@ -70,7 +70,8 @@ public final class WorkService {
             if (server == null) {
                 return;
             }
-            WorkState state = WorkState.get(server.overworld());
+            if (!(entity.level() instanceof ServerLevel deathLevel)) return;
+            WorkState state = WorkState.get(deathLevel);
             if (state.hasJob() && !state.servitorUuid.isEmpty()
                     && entity.getUUID().toString().equals(state.servitorUuid)) {
                 state.lastStop = "servitor tue (" + source.getLocalizedDeathMessage(entity).getString()
@@ -98,33 +99,30 @@ public final class WorkService {
 
     private static void endTick(MinecraftServer server) {
         long start = System.nanoTime();
-        ServerLevel level = server.overworld();
-        WorkState state = WorkState.get(level);
-        if (state.hasJob()) {
-            LivingEntity bot = servitor(level, state);
-            if (bot == null) {
-                state.lastStop = "servitor introuvable — /work resume";
-                state.finished = true;
-                state.setDirty();
-            } else {
-                tickWorker(level, state, bot);
-                // Garde-fou : un chantier qui ne casse plus rien depuis 10 s est bloque.
-                if (state.done != lastDone) {
-                    lastDone = state.done;
-                    stallTicks = 0;
-                } else if (++stallTicks > 200) {
-                    stallTicks = 0;
-                    state.lastStop = "servitor bloque apres " + state.done + " blocs"
-                            + (state.hasTarget ? " (cible " + state.targetX + " " + state.targetY + " "
-                            + state.targetZ + " hors d'atteinte)" : "")
-                            + " — /work resume pour relancer";
-                    state.finished = true;
-                    state.setDirty();
-                }
+        for (ServerLevel level : server.getAllLevels()) {
+            WorkState state = WorkState.get(level);
+            if (state.rollbackRemaining > 0) {
+                rollbackTick(level, state);
+                continue;
             }
-        } else {
-            stallTicks = 0;
-            lastDone = -1;
+            if (!state.hasJob()) continue;
+            LivingEntity bot = servitor(level, state);
+            if (bot == null || bot.level() != level) {
+                pause(state, "servitor absent ou dimension incorrecte — /work resume");
+                continue;
+            }
+            if (bot instanceof Servitor1Entity worker) worker.setWorkMode();
+            double oldProgress = state.progress;
+            int oldDone = state.done;
+            tickWorker(level, state, bot);
+            if (!state.hasJob() && bot instanceof Mob mob) mob.getNavigation().stop();
+            double moved = bot.distanceToSqr(state.previousX, state.previousY, state.previousZ);
+            if (moved > 0.01 || state.progress != oldProgress || state.done != oldDone) state.idleTicks = 0;
+            else if (++state.idleTicks > 400) {
+                if (bot instanceof Mob mob) mob.getNavigation().stop();
+                pause(state, "trajet bloque — sac et journal conserves; /work resume");
+            }
+            state.previousX = bot.getX(); state.previousY = bot.getY(); state.previousZ = bot.getZ();
         }
         lastMs = lastMs * 0.8 + ((System.nanoTime() - start) / 1_000_000.0) * 0.2;
     }
@@ -149,6 +147,7 @@ public final class WorkService {
         // B. quelle cible ?
         if (!state.hasTarget) {
             if (!pickTarget(level, state)) {
+                if (state.cursorY >= state.minY) return; // scan budget exhausted, continue next tick
                 if (state.invSlots.isEmpty()) {
                     conclude(level, state);
                 } else {
@@ -159,6 +158,7 @@ public final class WorkService {
             }
         }
         BlockPos target = new BlockPos(state.targetX, state.targetY, state.targetZ);
+        if (!level.hasChunkAt(target)) { pause(state, "chunk cible decharge — /work resume"); return; }
         BlockState blockState = level.getBlockState(target);
         if (blockState.isAir()) {
             state.hasTarget = false;
@@ -166,12 +166,13 @@ public final class WorkService {
         }
 
         // C. à portée ?
-        if (distanceSq(bot, target) > REACH * REACH) {
-            stepToward(level, bot, target);
+        if (distanceSq(bot, target) > REACH * REACH || !visible(level, bot, target)) {
+            stepToward(level, state, bot, target);
             return;
         }
 
         // D. le temps de casse est-il écoulé ?
+        if (bot instanceof Mob mob) mob.getNavigation().stop();
         double needed = breakSeconds(level, state, target, blockState);
         state.progress += SPEED_MULT / 20.0;
         if (state.progress < needed) {
@@ -184,11 +185,12 @@ public final class WorkService {
 
     /** Choisit la prochaine cible en avançant le curseur, en sautant ce qu'on ne touche pas. */
     private static boolean pickTarget(ServerLevel level, WorkState state) {
-        while (true) {
+        for (int scan = 0; scan < 64; scan++) {
             if (state.cursorY < state.minY) {
                 return false;
             }
             BlockPos pos = new BlockPos(state.cursorX, state.cursorY, state.cursorZ);
+            if (!loadedNeighborhood(level, pos)) { pause(state, "chunk decharge — /work resume"); return false; }
             BlockState blockState = level.getBlockState(pos);
             if (!blockState.isAir() && !skip(level, state, pos, blockState)) {
                 state.hasTarget = true;
@@ -198,10 +200,10 @@ public final class WorkService {
                 state.progress = 0.0;
                 return true;
             }
-            if (!advance(state)) {
-                return false;
-            }
+            state.setDirty();
+            if (!advance(state)) return false;
         }
+        return false;
     }
 
     /** Doit-on laisser ce bloc tranquille ? Renvoie true si on le saute. */
@@ -253,16 +255,25 @@ public final class WorkService {
         return hardness * (correct ? 1.5 : 5.0);
     }
 
-    /** Casse la cible : journal d'abord, drops ensuite, usure de l'outil. */
+    /** Verified mutation, then receipt and inventory update on the same server thread. */
     private static void breakTarget(ServerLevel level, WorkState state, LivingEntity bot, BlockPos pos) {
+        if (!loadedNeighborhood(level, pos)) { pause(state, "chunk decharge avant casse — /work resume"); return; }
         BlockState blockState = level.getBlockState(pos);
         BlockEntity be = level.getBlockEntity(pos);
         ItemStack tool = toolStack(state);
 
+        // Revalidate after travel/mining delay, before touching the block or ledger.
+        if (blockState.isAir() || skip(level, state, pos, blockState)) {
+            state.hasTarget = false; advance(state); state.setDirty(); return;
+        }
+
         // Drops seulement si l'outil en main sait récolter ce bloc (règle du jeu).
-        boolean canHarvest = tool.isEmpty()
-                ? !blockState.requiresCorrectToolForDrops()
-                : tool.isCorrectToolForDrops(blockState);
+        boolean canHarvest = !blockState.requiresCorrectToolForDrops()
+                || (!tool.isEmpty() && tool.isCorrectToolForDrops(blockState));
+        if (!canHarvest) {
+            pause(state, "outil inadapte — bloc conserve; /work tool puis resume, ou deposit pour vider le sac");
+            return;
+        }
         List<ItemStack> drops = canHarvest
                 ? Block.getDrops(blockState, level, pos, be, bot, tool)
                 : List.of();
@@ -275,30 +286,34 @@ public final class WorkService {
             return;
         }
 
+        if (state.journal.size() >= WorkState.JOURNAL_MAX) {
+            state.finishing = !state.invSlots.isEmpty();
+            pause(state, "journal plein — deposer le sac puis /work commit avant un nouveau chantier"); return;
+        }
+        List<ItemStack> replacement = WorkInventory.insert(state.invSlots, WorkState.INV_SLOTS, drops);
+        if (replacement == null) { state.goingToDepot = true; state.setDirty(); return; }
         CompoundTag saved = NbtUtils.writeBlockState(blockState);
-        state.record(pos, saved, level.getGameTime());
-        level.destroyBlock(pos, false, null, 512);
+        // A rejected mutation creates neither resources nor a rollback entry.
+        if (!level.destroyBlock(pos, false, null, 512)) {
+            pause(state, "casse refusee — ressources et journal inchanges"); return;
+        }
+        WorkState.Entry entry = new WorkState.Entry(pos.immutable(), saved, level.getGameTime());
+        entry.drops = WorkInventory.copy(drops);
+        entry.dropsKnown = true;
+        state.journal.add(entry);
+        state.invSlots.clear(); state.invSlots.addAll(replacement);
         state.done++;
         state.hasTarget = false;
         state.progress = 0.0;
-
-        if (!drops.isEmpty()) {
-            invInsert(state, drops);
-        }
-
-        // Usure de l'outil.
-        if (!state.toolId.isEmpty()) {
-            state.toolDamage++;
+        advance(state);
+        if (!state.tool.isEmpty() && state.tool.getMaxDamage() > 0) {
+            state.tool.setDamageValue(state.tool.getDamageValue() + 1);
+            state.toolDamage = state.tool.getDamageValue();
             state.toolBlocks++;
-            ItemStack updated = toolStack(state);
-            if (updated.getMaxDamage() > 0 && state.toolDamage >= updated.getMaxDamage()) {
-                state.toolId = "";
-                state.toolDamage = 0;
-                if (!takePickaxe(state)) {
-                    state.lastStop = "pioche cassee apres " + state.done + " blocs — /work tool pour en donner une";
-                    state.finished = true;
-                    state.setDirty();
-                }
+            if (state.toolDamage >= state.tool.getMaxDamage()) {
+                state.tool = ItemStack.EMPTY; state.toolId = ""; state.toolDamage = 0;
+                // Do not consume journalled output as a tool: rollback needs those exact drops.
+                pause(state, "pioche cassee — /work tool pour fournir un outil operateur");
             }
         }
         bot.setItemSlot(EquipmentSlot.MAINHAND, toolStack(state));
@@ -307,61 +322,50 @@ public final class WorkService {
 
     // ---------------------------------------------------------------- déplacement
 
-    /**
-     * Avance d'une case vers la cible — et seulement si ça rapproche.
-     *
-     * <p>Le piège que ça évite : prendre la première case libre venue fait grimper le Servitor
-     * indéfiniment quand la cible est sous lui. Ici, chaque pas doit réduire la distance, sinon on
-     * ne bouge pas.</p>
-     *
-     * @return true si un pas a été fait.
-     */
-    private static boolean stepToward(ServerLevel level, LivingEntity bot, BlockPos target) {
-        BlockPos from = bot.blockPosition();
-        double best = blockDistance(from, target);
-        BlockPos pick = null;
-        double bestD = best;
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                for (int dy = -1; dy <= 1; dy++) {
-                    if (dx == 0 && dy == 0 && dz == 0) {
-                        continue;
-                    }
-                    BlockPos cand = from.offset(dx, dy, dz);
-                    if (!level.getBlockState(cand).isAir() || !level.getBlockState(cand.above()).isAir()) {
-                        continue;
-                    }
-                    double d = blockDistance(cand, target);
-                    if (d < bestD) {
-                        bestD = d;
-                        pick = cand;
-                    }
-                }
-            }
-        }
-        if (pick == null) {
-            return false;
-        }
-        bot.snapTo(pick.getX() + 0.5, pick.getY(), pick.getZ() + 0.5, bot.getYRot(), 0.0f);
-        return true;
+    private static boolean visible(ServerLevel level, LivingEntity bot, BlockPos target) {
+        var hit = level.clip(new ClipContext(bot.getEyePosition(), Vec3.atCenterOf(target),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot));
+        return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(target);
     }
 
-    private static double blockDistance(BlockPos a, BlockPos b) {
-        double dx = a.getX() - b.getX();
-        double dy = a.getY() - b.getY();
-        double dz = a.getZ() - b.getZ();
-        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    /** Native pathfinding to a reachable work position, never teleport or mine through a wall. */
+    private static boolean stepToward(ServerLevel level, WorkState state, LivingEntity bot, BlockPos target) {
+        if (!(bot instanceof Mob mob)) return false;
+        if (level.getGameTime() < state.nextPathTick) return !mob.getNavigation().isDone();
+        state.nextPathTick = level.getGameTime() + 20;
+        // Multi-target vanilla path search can detour away from the target around walls.
+        java.util.Set<BlockPos> stands = new java.util.HashSet<>();
+        for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++)
+            for (int dy = -2; dy <= 1; dy++) {
+                BlockPos feet = target.offset(dx, dy, dz);
+                if (!level.hasChunkAt(feet) || !level.hasChunkAt(feet.below())) continue;
+                if (!level.getBlockState(feet.below()).isFaceSturdy(level, feet.below(), Direction.UP)) continue;
+                if (!level.getBlockState(feet).getFluidState().isEmpty()
+                        || !level.getBlockState(feet.above()).getFluidState().isEmpty()) continue;
+                var box = bot.getBoundingBox().move(feet.getX() + 0.5 - bot.getX(),
+                        feet.getY() - bot.getY(), feet.getZ() + 0.5 - bot.getZ());
+                if (!level.noCollision(bot, box)) continue;
+                Vec3 eye = new Vec3(feet.getX() + 0.5, feet.getY() + bot.getEyeHeight(), feet.getZ() + 0.5);
+                if (eye.distanceToSqr(Vec3.atCenterOf(target)) > REACH * REACH) continue;
+                var hit = level.clip(new ClipContext(eye, Vec3.atCenterOf(target),
+                        ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot));
+                if (hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(target)) stands.add(feet);
+            }
+        if (stands.isEmpty()) return false;
+        var path = mob.getNavigation().createPath(stands, 0);
+        return path != null && path.canReach() && mob.getNavigation().moveTo(path, 1.0);
     }
 
     /** Va au coffre et vide l'inventaire. Renvoie true quand c'est fait. */
     private static boolean stepTowardDepot(ServerLevel level, WorkState state, LivingEntity bot) {
         if (!state.hasDepot) {
-            state.goingToDepot = false;
-            return true;
+            pause(state, "depot manquant — sac conserve");
+            return false;
         }
         BlockPos depot = new BlockPos(state.depotX, state.depotY, state.depotZ);
-        if (distanceSq(bot, depot) > REACH * REACH) {
-            stepToward(level, bot, depot);
+        if (!level.hasChunkAt(depot)) { pause(state, "depot decharge — sac conserve"); return false; }
+        if (distanceSq(bot, depot) > REACH * REACH || !visible(level, bot, depot)) {
+            stepToward(level, state, bot, depot);
             return false;
         }
         List<ItemStack> stacks = invToStacks(state);
@@ -369,27 +373,14 @@ public final class WorkService {
         for (ItemStack s : stacks) {
             total += s.getCount();
         }
-        List<ItemStack> left = stacks;
-        for (int guard = 0; guard < 16 && !left.isEmpty(); guard++) {
-            Container container = depotContainer(level, state);
-            if (container == null) {
-                break;
-            }
-            left = insertAll(container, left);
-            if (left.isEmpty()) {
-                break;
-            }
-            if (!nextDepot(level, state)) {
-                break;
-            }
-        }
-        state.invSlots.clear();
-        for (ItemStack s : left) {
-            invInsert(state, List.of(s));
-        }
+        Container container = depotContainer(level, state);
+        if (container == null) { pause(state, "depot absent — sac conserve"); return false; }
+        List<ItemStack> left = insertAll(container, stacks);
+        state.invSlots.clear(); state.invSlots.addAll(WorkInventory.copy(left));
         state.deposited += total - leftCount(left);
-        state.goingToDepot = false;
+        state.goingToDepot = !left.isEmpty();
         state.lastStop = "";
+        if (!left.isEmpty() && !nextDepot(level, state)) pause(state, "depots pleins — sac conserve");
         state.setDirty();
         return left.isEmpty();
     }
@@ -405,100 +396,14 @@ public final class WorkService {
     // ---------------------------------------------------------------- inventaire
 
     private static boolean fits(WorkState state, List<ItemStack> drops) {
-        int free = WorkState.INV_SLOTS - state.invSlots.size();
-        int room = free * 64;
-        for (String slot : state.invSlots) {
-            room += 64 - WorkState.countOf(slot);
-        }
-        int need = 0;
-        for (ItemStack s : drops) {
-            need += s.getCount();
-        }
-        return need <= room;
-    }
-
-    private static void invInsert(WorkState state, List<ItemStack> drops) {
-        for (ItemStack stack : drops) {
-            String id = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-            int remaining = stack.getCount();
-            // compléter les piles existantes
-            for (int i = 0; i < state.invSlots.size() && remaining > 0; i++) {
-                String slot = state.invSlots.get(i);
-                if (WorkState.idOf(slot).equals(id)) {
-                    int have = WorkState.countOf(slot);
-                    int put = Math.min(64 - have, remaining);
-                    if (put > 0) {
-                        state.invSlots.set(i, id + "|" + (have + put));
-                        remaining -= put;
-                    }
-                }
-            }
-            // nouvelles piles
-            while (remaining > 0 && state.invSlots.size() < WorkState.INV_SLOTS) {
-                int put = Math.min(64, remaining);
-                state.invSlots.add(id + "|" + put);
-                remaining -= put;
-            }
-        }
-        state.setDirty();
+        return WorkInventory.insert(state.invSlots, WorkState.INV_SLOTS, drops) != null;
     }
 
     private static List<ItemStack> invToStacks(WorkState state) {
-        List<ItemStack> out = new ArrayList<>();
-        for (String slot : state.invSlots) {
-            Identifier id = Identifier.tryParse(WorkState.idOf(slot));
-            if (id == null) {
-                continue;
-            }
-            Item item = BuiltInRegistries.ITEM.getValue(id);
-            if (item == null || item == Items.AIR) {
-                continue;
-            }
-            out.add(new ItemStack(item, WorkState.countOf(slot)));
-        }
-        return out;
+        return WorkInventory.copy(state.invSlots);
     }
 
-    /** Prend une pioche dans l'inventaire, s'il y en a une. */
-    private static boolean takePickaxe(WorkState state) {
-        for (int i = 0; i < state.invSlots.size(); i++) {
-            String slot = state.invSlots.get(i);
-            String id = WorkState.idOf(slot);
-            if (!id.endsWith("_pickaxe")) {
-                continue;
-            }
-            int count = WorkState.countOf(slot);
-            if (count <= 1) {
-                state.invSlots.remove(i);
-            } else {
-                state.invSlots.set(i, id + "|" + (count - 1));
-            }
-            state.toolId = id;
-            state.toolDamage = 0;
-            state.setDirty();
-            return true;
-        }
-        return false;
-    }
-
-    private static ItemStack toolStack(WorkState state) {
-        if (state.toolId.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        Identifier id = Identifier.tryParse(state.toolId);
-        if (id == null) {
-            return ItemStack.EMPTY;
-        }
-        Item item = BuiltInRegistries.ITEM.getValue(id);
-        if (item == null || item == Items.AIR) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack stack = new ItemStack(item);
-        if (state.toolDamage > 0) {
-            stack.setDamageValue(state.toolDamage);
-        }
-        return stack;
-    }
+    private static ItemStack toolStack(WorkState state) { return state.tool.copy(); }
 
     // ---------------------------------------------------------------- dépôt
 
@@ -550,12 +455,13 @@ public final class WorkService {
                     cur.offset(d, 0, 0), cur.offset(0, 0, d),
                     cur.offset(-d, 0, 0), cur.offset(0, 0, -d)};
             for (BlockPos candidate : candidates) {
-                if (level.getBlockState(candidate).isAir()
+                if (safeDepot(level, candidate)
                         && level.setBlock(candidate, Blocks.CHEST.defaultBlockState(), 3)) {
                     state.depotX = candidate.getX();
                     state.depotY = candidate.getY();
                     state.depotZ = candidate.getZ();
                     state.depotCount++;
+                    state.depots.add(candidate.immutable());
                     state.setDirty();
                     return true;
                 }
@@ -576,6 +482,12 @@ public final class WorkService {
         }
         sb.append(parts.isEmpty() ? "vide" : String.join(", ", parts));
         return sb.toString();
+    }
+
+    private static boolean loadedNeighborhood(ServerLevel level, BlockPos pos) {
+        if (!level.hasChunkAt(pos)) return false;
+        for (Direction direction : Direction.values()) if (!level.hasChunkAt(pos.relative(direction))) return false;
+        return true;
     }
 
     private static boolean touchesFluid(ServerLevel level, BlockPos pos) {
@@ -602,10 +514,7 @@ public final class WorkService {
     }
 
     private static double distanceSq(LivingEntity bot, BlockPos pos) {
-        double dx = bot.getX() - (pos.getX() + 0.5);
-        double dy = bot.getY() + 0.9 - (pos.getY() + 0.5);
-        double dz = bot.getZ() - (pos.getZ() + 0.5);
-        return dx * dx + dy * dy + dz * dz;
+        return bot.getEyePosition().distanceToSqr(Vec3.atCenterOf(pos));
     }
 
     private static boolean spawnServitor(ServerLevel level, WorkState state) {
@@ -615,12 +524,13 @@ public final class WorkService {
         }
         BlockPos depot = new BlockPos(state.depotX, state.depotY, state.depotZ);
         servitor.snapTo(depot.getX() + 1.5, depot.getY(), depot.getZ() + 0.5, 0.0f, 0.0f);
-        servitor.setNoAi(true);                 // il travaille, il ne chasse pas le joueur
+        servitor.setWorkMode();
         servitor.setPersistenceRequired();      // il ne disparait pas tout seul
         servitor.setCustomName(Component.literal("Servitor de chantier « " + state.jobName + " »"));
         servitor.setCustomNameVisible(true);
-        level.addFreshEntity(servitor);
+        if (!level.noCollision(servitor) || !level.addFreshEntity(servitor)) return false;
         servitor.setItemSlot(EquipmentSlot.MAINHAND, toolStack(state));
+        servitor.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
         state.servitorUuid = servitor.getUUID().toString();
         return true;
     }
@@ -634,12 +544,11 @@ public final class WorkService {
         state.servitorUuid = "";
     }
 
-    /** Retire tous les Servitors de chantier du monde (orphelins d'un ancien build compris). */
+    /** Only our tagged workers; never discard a player-renamed combat Servitor. */
     public static int sweepOrphans(ServerLevel level) {
         int n = 0;
         for (net.minecraft.world.entity.Entity e : level.getAllEntities()) {
-            if (e instanceof Servitor1Entity s && s.getCustomName() != null
-                    && s.getCustomName().getString().startsWith("Servitor de chantier")) {
+            if (e instanceof Servitor1Entity s && s.entityTags().contains("voiddynasty_work")) {
                 e.discard();
                 n++;
             }
@@ -649,31 +558,11 @@ public final class WorkService {
 
     private static void conclude(ServerLevel level, WorkState state) {
         state.finished = true;
-        long volume = (long) (state.maxX - state.minX + 1) * (state.maxY - state.minY + 1)
-                * (state.maxZ - state.minZ + 1);
-        int left = volume <= 100_000 ? countRemaining(level, state) : -1;
-        String verdict = left < 0 ? "reste non verifie (zone trop grande)"
-                : left == 0 ? "zone vide, verifie"
-                : left + " blocs restent — voir /work status et le journal";
+        String verdict = "curseur termine (blocs proteges et butin laisses en place)";
         state.lastStop = "termine: " + state.done + " cassés, " + state.skipped + " laissés, "
                 + state.deposited + " objets en coffre — " + verdict;
         discardServitor(level, state);
         state.setDirty();
-    }
-
-    /** Compte les blocs non vides restants dans la zone (une passe, au moment de conclure). */
-    private static int countRemaining(ServerLevel level, WorkState state) {
-        int left = 0;
-        for (int y = state.minY; y <= state.maxY; y++) {
-            for (int z = state.minZ; z <= state.maxZ; z++) {
-                for (int x = state.minX; x <= state.maxX; x++) {
-                    if (!level.getBlockState(new BlockPos(x, y, z)).isAir()) {
-                        left++;
-                    }
-                }
-            }
-        }
-        return left;
     }
 
     /** Avance le curseur : X, puis Z, puis Y de haut en bas. */
@@ -698,6 +587,11 @@ public final class WorkService {
      */
     public static WorkState start(ServerLevel level, String name, BlockPos a, BlockPos b, String toolId) {
         WorkState state = WorkState.get(level);
+        if (state.needsRecovery()) return null;
+        if (state.jobName != null || !state.journal.isEmpty() || !state.invSlots.isEmpty()) {
+            state.lastStop = "chantier precedent conserve — /work resume, rollback ou commit";
+            return null;
+        }
         sweepOrphans(level);             // jamais deux Servitors pour un chantier
         state.jobName = name;
         state.minX = Math.min(a.getX(), b.getX());
@@ -718,7 +612,9 @@ public final class WorkService {
         state.depotCount = 1;
         state.lootBlocks = 0;
         state.lootLog.clear();
-        state.invSlots.clear();
+        state.depots.clear();
+        state.rollbackStarted = false;
+        state.rollbackRemaining = 0;
         state.hasTarget = false;
         state.progress = 0.0;
         state.goingToDepot = false;
@@ -726,6 +622,7 @@ public final class WorkService {
         state.finished = false;
         state.lastStop = "";
         state.toolId = toolId;
+        state.tool = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(toolId)));
         state.toolDamage = 0;
         state.toolBlocks = 0;
         state.servitorUuid = "";
@@ -733,6 +630,7 @@ public final class WorkService {
         BlockPos depot = placeDepot(level, state);
         if (depot == null) {
             state.jobName = null;
+            state.lastStop = "aucun emplacement de depot supporte et non protege pres de la zone";
             state.setDirty();
             return null;
         }
@@ -740,8 +638,10 @@ public final class WorkService {
         state.depotX = depot.getX();
         state.depotY = depot.getY();
         state.depotZ = depot.getZ();
+        state.depots.add(depot.immutable());
         if (!spawnServitor(level, state)) {
-            state.jobName = null;
+            state.finished = true;
+            state.lastStop = "Servitor impossible a placer — depot conserve; /work resume";
             state.setDirty();
             return null;
         }
@@ -750,27 +650,31 @@ public final class WorkService {
     }
 
     private static BlockPos placeDepot(ServerLevel level, WorkState state) {
-        BlockPos base = new BlockPos(state.minX, state.maxY + 2, state.minZ);
-        for (int dy = 0; dy < 16; dy++) {
-            BlockPos candidate = base.above(dy);
-            if (level.getBlockState(candidate).isAir()
-                    && level.setBlock(candidate, Blocks.CHEST.defaultBlockState(), 3)) {
-                return candidate;
-            }
+        // Find supported ground beside the top of the zone, rather than a floating chest.
+        BlockPos base = new BlockPos(state.minX - 2, state.maxY, state.minZ - 2);
+        for (int dy = 3; dy >= -8; dy--) for (int dx = 0; dx <= 4; dx++) {
+            BlockPos candidate = base.offset(-dx, dy, 0);
+            if (safeDepot(level, candidate) && safeStand(level, candidate.east())
+                    && level.setBlock(candidate, Blocks.CHEST.defaultBlockState(), 3)) return candidate;
         }
         return null;
     }
 
     public static WorkState resume(ServerLevel level) {
         WorkState state = WorkState.get(level);
-        if (state.jobName == null || state.total == 0 || state.cursorY < state.minY) {
+        if (state.needsRecovery() || state.rollbackRemaining > 0) return null;
+        if (state.jobName == null || state.total == 0 || (state.rollbackStarted && state.invSlots.isEmpty())
+                || (state.cursorY < state.minY && state.invSlots.isEmpty())) {
             return null;
         }
         if (state.hasJob()) {
             return state;
         }
+        discardServitor(level, state);
+        state.idleTicks = 0; state.nextPathTick = 0;
         state.finished = false;
         state.lastStop = "";
+        if (state.cursorY < state.minY || state.rollbackStarted) state.finishing = true;
         if (!spawnServitor(level, state)) {
             state.finished = true;
             state.setDirty();
@@ -782,9 +686,8 @@ public final class WorkService {
 
     public static boolean stop(ServerLevel level) {
         WorkState state = WorkState.get(level);
-        if (!state.hasJob()) {
-            return false;
-        }
+        state.rollbackRemaining = 0;
+        if (!state.hasJob()) { discardServitor(level, state); state.setDirty(); return false; }
         discardServitor(level, state);
         state.lastStop = "arrete: " + state.done + " cassés, " + state.skipped + " laissés, "
                 + state.deposited + " objets en coffre";
@@ -795,7 +698,9 @@ public final class WorkService {
 
     /** Change l'outil du Servitor en cours de chantier. */
     public static boolean setTool(ServerLevel level, WorkState state, String toolId) {
+        if (state.needsRecovery()) return false;
         state.toolId = toolId;
+        state.tool = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(toolId)));
         state.toolDamage = 0;
         LivingEntity bot = servitor(level, state);
         if (bot != null) {
@@ -805,15 +710,118 @@ public final class WorkService {
         return true;
     }
 
-    public static long remaining(WorkState state) {
-        if (!state.hasJob()) {
-            return 0;
+    private static void pause(WorkState state, String reason) {
+        state.finished = true; state.lastStop = reason; state.setDirty();
+    }
+
+    private static boolean safeStand(ServerLevel level, BlockPos pos) {
+        return level.hasChunkAt(pos) && level.hasChunkAt(pos.below())
+                && level.getWorldBorder().isWithinBounds(pos)
+                && level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir()
+                && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
+                && !ClaimIntegration.isClaimProtected(level, pos);
+    }
+
+    private static boolean safeDepot(ServerLevel level, BlockPos pos) {
+        if (!safeStand(level, pos)) return false;
+        // Keep chests independent: no automatic merging with an unrelated double chest.
+        for (Direction dir : Direction.Plane.HORIZONTAL) {
+            BlockPos neighbor = pos.relative(dir);
+            if (!level.hasChunkAt(neighbor) || level.getBlockState(neighbor).is(Blocks.CHEST)) return false;
         }
+        return true;
+    }
+
+    public static void requestRollback(ServerLevel level, WorkState state, int count) {
+        if (state.needsRecovery()) return;
+        stop(level);
+        discardServitor(level, state);
+        state.finished = true;
+        state.rollbackStarted = true;
+        state.rollbackRemaining = Math.min(count, state.journal.size());
+        state.lastStop = "rollback en cours — /work status";
+        state.setDirty();
+    }
+
+    private static void rollbackTick(ServerLevel level, WorkState state) {
+        // One transaction per tick; no 50,000-block command stall.
+        if (state.journal.isEmpty()) { state.rollbackRemaining = 0; state.setDirty(); return; }
+        WorkState.Entry entry = state.journal.getLast();
+        if (!entry.dropsKnown) { rollbackFailure(state, "ancien journal sans recus de ressources"); return; }
+        if (!level.hasChunkAt(entry.pos) || ClaimIntegration.isClaimProtected(level, entry.pos)) {
+            rollbackFailure(state, "bloc decharge ou protege"); return;
+        }
+        if (!level.getBlockState(entry.pos).isAir()) {
+            rollbackFailure(state, "bloc modifie depuis la casse en " + entry.pos.toShortString()); return;
+        }
+        List<Container> containers = new ArrayList<>();
+        List<ItemStack> before = WorkInventory.copy(state.invSlots);
+        int bagSize = before.size();
+        for (BlockPos depot : state.depots) {
+            if (!level.hasChunkAt(depot) || ClaimIntegration.isClaimProtected(level, depot)) {
+                rollbackFailure(state, "depot decharge ou protege"); return;
+            }
+            if (level.getBlockEntity(depot) instanceof Container container) {
+                containers.add(container);
+                for (int i = 0; i < container.getContainerSize(); i++) before.add(container.getItem(i).copy());
+            }
+        }
+        BlockState old = NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK), entry.state);
+        if (old.isAir() || old.hasBlockEntity()) { rollbackFailure(state, "etat original invalide"); return; }
+        int beforeBagCount = state.invCount();
+        boolean restored = WorkRollback.apply(before, entry.drops,
+                () -> level.setBlock(entry.pos, old, 2 | 16), after -> {
+                    state.invSlots.clear();
+                    for (int i = 0; i < bagSize; i++) if (!after.get(i).isEmpty()) state.invSlots.add(after.get(i));
+                    int offset = bagSize;
+                    for (Container container : containers) {
+                        for (int i = 0; i < container.getContainerSize(); i++) container.setItem(i, after.get(offset++));
+                        container.setChanged();
+                    }
+                });
+        if (!restored) { rollbackFailure(state, "ressources manquantes ou restauration refusee"); return; }
+        int fromBag = beforeBagCount - state.invCount();
+        state.deposited = Math.max(0, state.deposited - Math.max(0, leftCount(entry.drops) - fromBag));
+        state.journal.removeLast();
+        state.done = Math.max(0, state.done - 1);
+        state.rollbackRemaining--;
+        state.lastStop = "rollback: " + state.rollbackRemaining + " demandes restantes; journal " + state.journal.size();
+        state.setDirty();
+    }
+
+    private static void rollbackFailure(WorkState state, String reason) {
+        state.rollbackRemaining = 0;
+        pause(state, "rollback arrete: " + reason + " — ressources et recu conserves");
+    }
+
+    /** Explicitly release rollback history. Never throw away carried resources. */
+    public static boolean commit(ServerLevel level, WorkState state) {
+        if (state.needsRecovery() || state.hasJob() || state.rollbackRemaining > 0 || !state.invSlots.isEmpty()) return false;
+        discardServitor(level, state);
+        state.journal.clear(); state.depots.clear();
+        state.jobName = null; state.hasDepot = false; state.rollbackStarted = false;
+        state.tool = ItemStack.EMPTY; state.toolId = "";
+        state.lastStop = "chantier valide — ressources laissees dans les depots; rollback abandonne";
+        state.setDirty(); return true;
+    }
+
+    /** Deposit-only recovery from any pause, without breaking another block. */
+    public static WorkState deposit(ServerLevel level) {
+        WorkState state = WorkState.get(level);
+        if (state.needsRecovery() || state.rollbackRemaining > 0 || state.jobName == null || state.invSlots.isEmpty())
+            return null;
+        stop(level);
+        state.finishing = true;
+        return resume(level);
+    }
+
+    public static long remaining(WorkState state) {
+        if (state.cursorY < state.minY) return 0;
         long width = state.maxX - state.minX + 1;
         long depth = state.maxZ - state.minZ + 1;
-        long layers = state.cursorY - state.minY;
+        long layers = state.cursorY - state.minY + 1L;
         return layers * width * depth
-                + (long) (state.cursorZ - state.minZ) * width
-                + (state.cursorX - state.minX);
+                - (long) (state.cursorZ - state.minZ) * width
+                - (state.cursorX - state.minX);
     }
 }

@@ -9,6 +9,7 @@
 	],
 	"license": "MIT",
 	"environment": "*",
+	"accessWidener": "voiddynasty.accesswidener",
 	"entrypoints": {
 		"main": [
 			"com.donopot.voiddynasty.VoidDynastyMod"

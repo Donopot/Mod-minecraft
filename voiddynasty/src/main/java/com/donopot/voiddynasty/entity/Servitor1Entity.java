@@ -12,6 +12,31 @@ import net.minecraft.world.level.Level;
  */
 public class Servitor1Entity extends ChaosCultistEntity {
 
+    private boolean workMode;
+
+    /** Keep native navigation/move controls, remove combat and wandering only for workers. */
+    public void setWorkMode() {
+        if (workMode) return;
+        workMode = true;
+        addTag("voiddynasty_work");
+        goalSelector.removeAllGoals(goal -> true);
+        targetSelector.removeAllGoals(goal -> true);
+        setTarget(null);
+        setNoAi(false);
+        setCanPickUpLoot(false);
+        getNavigation().stop();
+    }
+
+    @Override
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+        super.readAdditionalSaveData(input);
+        if (entityTags().contains("voiddynasty_work")) {
+            setWorkMode();
+            // Loaded workers stay still until the operator explicitly resumes the saved job.
+            setNoAi(true);
+        }
+    }
+
     public Servitor1Entity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }

@@ -1,6 +1,14 @@
 package com.donopot.voiddynasty.work;
 
 import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -32,6 +40,8 @@ public final class WorkState extends SavedData {
         public final BlockPos pos;
         public final CompoundTag state;
         public final long tick;
+        public List<ItemStack> drops = List.of();
+        public boolean dropsKnown;
 
         public Entry(BlockPos pos, CompoundTag state, long tick) {
             this.pos = pos;
@@ -60,8 +70,20 @@ public final class WorkState extends SavedData {
     public int toolDamage = 0;
     public int toolBlocks = 0;           // blocs cassés avec l'outil courant
 
-    // ---- inventaire (36 emplacements, "id|count") ----
-    public final List<String> invSlots = new ArrayList<>();
+    // ---- inventaire exact (composants inclus, 36 emplacements) ----
+    public final List<ItemStack> invSlots = new ArrayList<>();
+    public ItemStack tool = ItemStack.EMPTY;
+    public final List<BlockPos> depots = new ArrayList<>();
+    public int rollbackRemaining;
+    public boolean rollbackStarted;
+    // Runtime watchdog: movement and work progress both count, per dimension/job.
+    public transient double previousX, previousY, previousZ;
+    public transient int idleTicks;
+    public transient long nextPathTick;
+    public String recoveryProblem = "";
+    private CompoundTag recoveryPayload;
+
+    public boolean needsRecovery() { return recoveryPayload != null; }
 
     // ---- depot ----
     public boolean hasDepot = false;
@@ -81,8 +103,60 @@ public final class WorkState extends SavedData {
 
     public final List<Entry> journal = new ArrayList<>();
 
-    public static final Codec<WorkState> CODEC =
-            CompoundTag.CODEC.xmap(WorkState::fromTag, WorkState::toTag);
+    private static final Codec<WorkState> MODERN = RecordCodecBuilder.create(i -> i.group(
+            CompoundTag.CODEC.fieldOf("metadata").forGetter(WorkState::toTag),
+            ItemStack.CODEC.listOf().fieldOf("inventory").forGetter(s -> s.invSlots),
+            ItemStack.OPTIONAL_CODEC.fieldOf("tool_stack").forGetter(s -> s.tool),
+            ItemStack.CODEC.listOf().listOf().fieldOf("receipts").forGetter(
+                    s -> s.journal.stream().map(e -> e.drops).toList())
+    ).apply(i, WorkState::restore));
+
+    // A malformed v2 payload must never fall back to an empty legacy inventory.
+    private static final Codec<WorkState> LEGACY = CompoundTag.CODEC.flatXmap(tag -> {
+        if (tag.contains("metadata")) return DataResult.error(() -> "Invalid work inventory v2; recovery required");
+        try { return DataResult.success(fromTag(tag, true)); }
+        catch (RuntimeException e) { return DataResult.error(() -> "Legacy work inventory: " + e.getMessage()); }
+    }, s -> DataResult.success(toTag(s)));
+    private static final Codec<WorkState> FORMAT = Codec.either(MODERN, LEGACY)
+            .xmap(e -> e.map(s -> s, s -> s), s -> Either.left(s));
+
+    /** SavedDataStorage may replace a failed decode with a new state. Preserve and lock instead. */
+    public static final Codec<WorkState> CODEC = new Codec<>() {
+        @Override public <T> DataResult<T> encode(WorkState state, DynamicOps<T> ops, T prefix) {
+            return state.needsRecovery() ? CompoundTag.CODEC.encode(state.recoveryPayload, ops, prefix)
+                    : FORMAT.encode(state, ops, prefix);
+        }
+        @Override public <T> DataResult<Pair<WorkState, T>> decode(DynamicOps<T> ops, T input) {
+            String problem;
+            try {
+                var result = FORMAT.decode(ops, input);
+                if (result.result().isPresent()) return result;
+                problem = result.error().map(e -> e.message()).orElse("Invalid work data");
+            } catch (RuntimeException e) { problem = e.toString(); }
+            final String reason = problem;
+            return CompoundTag.CODEC.parse(ops, input).map(raw -> {
+                WorkState locked = new WorkState();
+                locked.recoveryPayload = raw.copy();
+                locked.recoveryProblem = reason;
+                locked.finished = true;
+                locked.lastStop = "Donnees de chantier incompatibles: original conserve, intervention requise";
+                return Pair.of(locked, ops.empty());
+            });
+        }
+    };
+
+    private static WorkState restore(CompoundTag tag, List<ItemStack> bag, ItemStack tool,
+                                     List<List<ItemStack>> receipts) {
+        if (tag.getInt("schema").orElse(0) != 2) throw new IllegalArgumentException("Unknown work schema");
+        WorkState s = fromTag(tag, false);
+        if (s.jobName == null && (!bag.isEmpty() || !s.journal.isEmpty()))
+            throw new IllegalArgumentException("Orphan work inventory or journal");
+        if (receipts.size() != s.journal.size()) throw new IllegalArgumentException("Receipt count mismatch");
+        s.invSlots.addAll(WorkInventory.copy(bag));
+        s.tool = tool.copy();
+        for (int n = 0; n < receipts.size(); n++) s.journal.get(n).drops = WorkInventory.copy(receipts.get(n));
+        return s;
+    }
 
     public static final SavedDataType<WorkState> TYPE = new SavedDataType<>(
             Identifier.fromNamespaceAndPath("voiddynasty", "work_state"),
@@ -107,10 +181,9 @@ public final class WorkState extends SavedData {
     }
 
     public void record(BlockPos pos, CompoundTag state, long tick) {
+        if (journal.size() >= JOURNAL_MAX) throw new IllegalStateException("Work journal full");
         journal.add(new Entry(pos, state, tick));
-        while (journal.size() > JOURNAL_MAX) {
-            journal.remove(0);
-        }
+
         setDirty();
     }
 
@@ -126,9 +199,7 @@ public final class WorkState extends SavedData {
     /** Poids total de l'inventaire (pour le rapport). */
     public int invCount() {
         int n = 0;
-        for (String slot : invSlots) {
-            n += countOf(slot);
-        }
+        for (ItemStack slot : invSlots) n += slot.getCount();
         return n;
     }
 
@@ -150,6 +221,7 @@ public final class WorkState extends SavedData {
 
     private static CompoundTag toTag(WorkState s) {
         CompoundTag root = new CompoundTag();
+        root.putInt("schema", 2);
         if (s.jobName != null) {
             CompoundTag job = new CompoundTag();
             job.putString("name", s.jobName);
@@ -177,11 +249,15 @@ public final class WorkState extends SavedData {
             if (!s.servitorUuid.isEmpty()) {
                 job.putString("servitor", s.servitorUuid);
             }
-            ListTag inv = new ListTag();
-            for (String slot : s.invSlots) {
-                inv.add(StringTag.valueOf(slot));
+            ListTag depots = new ListTag();
+            for (BlockPos pos : s.depots) {
+                CompoundTag depot = new CompoundTag();
+                depot.putLong("pos", pos.asLong());
+                depots.add(depot);
             }
-            job.put("inv", inv);
+            job.put("depots", depots);
+            job.putInt("rollback_remaining", s.rollbackRemaining);
+            job.putBoolean("rollback_started", s.rollbackStarted);
             ListTag butin = new ListTag();
             for (String line : s.lootLog) {
                 butin.add(StringTag.valueOf(line));
@@ -198,13 +274,14 @@ public final class WorkState extends SavedData {
             t.putLong("pos", e.pos.asLong());
             t.put("state", e.state);
             t.putLong("tick", e.tick);
+            t.putBoolean("drops_known", e.dropsKnown);
             entries.add(t);
         }
         root.put("journal", entries);
         return root;
     }
 
-    private static WorkState fromTag(CompoundTag root) {
+    private static WorkState fromTag(CompoundTag root, boolean legacy) {
         WorkState s = new WorkState();
         CompoundTag job = root.getCompound("job").orElse(null);
         if (job != null) {
@@ -241,14 +318,38 @@ public final class WorkState extends SavedData {
             s.lootBlocks = job.getInt("loot_blocks").orElse(0);
             s.servitorUuid = job.getString("servitor").orElse("");
             int[] dp = job.getIntArray("depot").orElse(new int[]{0, 0, 0});
-            if (dp.length == 3 && !(dp[0] == 0 && dp[1] == 0 && dp[2] == 0)) {
+            if (dp.length == 3 && job.contains("depot")) {
                 s.hasDepot = true;
                 s.depotX = dp[0]; s.depotY = dp[1]; s.depotZ = dp[2];
             }
             ListTag inv = job.getList("inv").orElse(new ListTag());
-            for (int i = 0; i < inv.size() && s.invSlots.size() < INV_SLOTS; i++) {
-                inv.getString(i).ifPresent(s.invSlots::add);
+            if (legacy) {
+                for (int i = 0; i < inv.size(); i++) {
+                    String raw = inv.getString(i).orElseThrow();
+                    Identifier id = Identifier.tryParse(idOf(raw));
+                    int count = countOf(raw);
+                    if (id == null || !BuiltInRegistries.ITEM.containsKey(id) || count <= 0)
+                        throw new IllegalArgumentException("Unrecoverable legacy stack: " + raw);
+                    s.invSlots.add(new ItemStack(BuiltInRegistries.ITEM.getValue(id), count));
+                }
+                Identifier toolId = Identifier.tryParse(s.toolId);
+                if (toolId != null && BuiltInRegistries.ITEM.containsKey(toolId)) {
+                    s.tool = new ItemStack(BuiltInRegistries.ITEM.getValue(toolId));
+                    s.tool.setDamageValue(s.toolDamage);
+                }
             }
+            ListTag depots = job.getList("depots").orElse(new ListTag());
+            for (int i = 0; i < depots.size(); i++) {
+                CompoundTag d = depots.getCompound(i).orElseThrow();
+                BlockPos pos = BlockPos.of(d.getLong("pos").orElseThrow());
+                if (s.depots.contains(pos)) throw new IllegalArgumentException("Duplicate depot");
+                s.depots.add(pos);
+            }
+            if (s.depots.isEmpty() && s.hasDepot) s.depots.add(new BlockPos(s.depotX, s.depotY, s.depotZ));
+            s.rollbackRemaining = 0; // Explicit request required after restart, including rollback.
+            s.rollbackStarted = job.getBoolean("rollback_started").orElse(false);
+            // Restart requires an explicit resume; do not continue destructive work during loading.
+            s.finished = true;
             ListTag butin = job.getList("loot").orElse(new ListTag());
             for (int i = 0; i < butin.size(); i++) {
                 butin.getString(i).ifPresent(s.lootLog::add);
@@ -264,7 +365,9 @@ public final class WorkState extends SavedData {
             BlockPos pos = BlockPos.of(t.getLong("pos").orElse(0L));
             CompoundTag st = t.getCompound("state").orElse(new CompoundTag());
             long tick = t.getLong("tick").orElse(0L);
-            s.journal.add(new Entry(pos, st, tick));
+            Entry entry = new Entry(pos, st, tick);
+            entry.dropsKnown = t.getBoolean("drops_known").orElse(false);
+            s.journal.add(entry);
         }
         return s;
     }
