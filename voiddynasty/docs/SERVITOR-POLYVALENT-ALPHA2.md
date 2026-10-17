@@ -2,6 +2,8 @@
 
 Version **1.3.0-alpha.2**, branche `codex/servitor-polyvalent`. Cette version complète le [premier jalon de missions](SERVITOR-POLYVALENT.md) avec l'accès horizontal aux minerais et la construction de plans prédéfinis à partir de matériaux réels.
 
+[Pack alpha de test](../../client-local/voiddynasty-1.3.0-alpha.2) · [Validation : 207 contrôles et 13 cas Python](../../client-local/voiddynasty-1.3.0-alpha.2/VALIDATION.md), avec trois redémarrages complets du serveur. Le raccordement à Hermes reste un exemple à adapter, conformément au choix du joueur.
+
 ## Accès aux minerais
 
 `servitor_gather` accepte désormais `access`, qui vaut `surface` par défaut. Le mode historique ne casse que les blocs de la ressource demandée. Le mode **`excavate` doit être explicitement choisi** pour autoriser le dégagement de roche dans la zone sélectionnée.

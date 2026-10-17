@@ -53,7 +53,7 @@ async def before_restart(rcon,lab,notes,skip_access=False):
             check(notes,'access_rollback_complete',result['rollback_state']=='COMPLETE')
             fixture(rcon,notes,'accessRollback')
             await call(session,'servitor_mission_control',mission_id=mid,action='close')
-    
+
         fixture(rcon,notes,'buildSetup');fixture(rcon,notes,'noMaterials')
         request=build_spec('mcp-platform')
         fixture(rcon,notes,'occupySite')
