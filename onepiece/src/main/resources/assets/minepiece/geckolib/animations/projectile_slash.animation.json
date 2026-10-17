@@ -1,0 +1,269 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"center_slash": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"idle1": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"center_slash": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"idle2": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"center_slash": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"group": {
+					"rotation": {
+						"vector": [0, 0, -10]
+					}
+				}
+			}
+		},
+		"idle3": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"center_slash": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"group": {
+					"rotation": {
+						"vector": [0, 0, -20]
+					}
+				}
+			}
+		},
+		"idle4": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"center_slash": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"group": {
+					"rotation": {
+						"vector": [0, 0, 10]
+					}
+				}
+			}
+		},
+		"idle5": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"center_slash": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"group": {
+					"rotation": {
+						"vector": [0, 0, 20]
+					}
+				}
+			}
+		},
+		"idle6": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"center_slash": {
+					"scale": {
+						"vector": [1, 1, "math.random(1,1.1)"]
+					}
+				},
+				"group2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"vertical": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"group": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"center_slash2": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				}
+			}
+		},
+		"vertical1": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"group": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"center_slash2": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				}
+			}
+		},
+		"vertical2": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"group": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"center_slash2": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"rotation": {
+						"vector": [0, 0, -10]
+					}
+				}
+			}
+		},
+		"vertical3": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"group": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"center_slash2": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"rotation": {
+						"vector": [0, 0, -20]
+					}
+				}
+			}
+		},
+		"vertical4": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"group": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"center_slash2": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"rotation": {
+						"vector": [0, 0, 10]
+					}
+				}
+			}
+		},
+		"vertical5": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"group": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"center_slash2": {
+					"scale": {
+						"vector": ["math.random(0.5,1)", "math.random(0.5,1)", "math.random(0.5,1)"]
+					}
+				},
+				"group2": {
+					"rotation": {
+						"vector": [0, 0, 20]
+					}
+				}
+			}
+		},
+		"vertical6": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"group": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"center_slash2": {
+					"scale": {
+						"vector": [1, 1, "math.random(1,1.1)"]
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,55 @@
+{
+  "dimensions": {
+    "minecraft:overworld": {
+      "type": "opworldlike:one_piece_overworld",
+      "generator": {
+        "type": "opworldlike:one_piece",
+        "settings": "minecraft:overworld",
+        "biome_source": {
+          "type": "opworldlike:one_piece",
+          "ocean": "minecraft:ocean",
+          "deep_ocean": "minecraft:deep_ocean",
+          "red_line": "minecraft:stony_peaks",
+          "plains": "minecraft:plains",
+          "forest": "minecraft:forest",
+          "jungle": "minecraft:jungle",
+          "savanna": "minecraft:savanna",
+          "desert": "minecraft:desert",
+          "snowy_plains": "minecraft:snowy_plains",
+          "snowy_slopes": "minecraft:snowy_slopes",
+          "frozen_peaks": "minecraft:frozen_peaks",
+          "jagged_peaks": "minecraft:jagged_peaks",
+          "ice_spikes": "minecraft:ice_spikes",
+          "frozen_ocean": "minecraft:frozen_ocean",
+          "mangrove_swamp": "minecraft:mangrove_swamp",
+          "cherry_grove": "minecraft:cherry_grove",
+          "meadow": "minecraft:meadow",
+          "stony_shore": "minecraft:stony_shore",
+          "stony_peaks": "minecraft:basalt_deltas",
+          "calm_belt": "opworldlike:calm_belt"
+        }
+      }
+    },
+    "minecraft:the_nether": {
+      "type": "minecraft:the_nether",
+      "generator": {
+        "type": "minecraft:noise",
+        "biome_source": {
+          "type": "minecraft:multi_noise",
+          "preset": "minecraft:nether"
+        },
+        "settings": "minecraft:nether"
+      }
+    },
+    "minecraft:the_end": {
+      "type": "minecraft:the_end",
+      "generator": {
+        "type": "minecraft:noise",
+        "biome_source": {
+          "type": "minecraft:the_end"
+        },
+        "settings": "minecraft:end"
+      }
+    }
+  }
+}

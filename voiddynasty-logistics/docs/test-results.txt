@@ -1,0 +1,75 @@
+VOID DYNASTY initial milestone verification
+Simulation tests; no in-game validation.
+
+$ python -m unittest discover -s tests -v
+test_63_ingots_rejected_64_accepted (test_bridge.DomainTests.test_63_ingots_rejected_64_accepted) ... ok
+test_cancel_after_commit_cannot_refund (test_bridge.DomainTests.test_cancel_after_commit_cannot_refund) ... ok
+test_cancel_is_durable_before_refund (test_bridge.DomainTests.test_cancel_is_durable_before_refund) ... ok
+test_cancel_tombstone_prevents_delayed_prepare (test_bridge.DomainTests.test_cancel_tombstone_prevents_delayed_prepare) ... ok
+test_client_cannot_set_reward (test_bridge.DomainTests.test_client_cannot_set_reward) ... ok
+test_commit_before_authenticated_handshake_rejected (test_bridge.DomainTests.test_commit_before_authenticated_handshake_rejected) ... ok
+test_delivery_reload_surplus_and_duplicate_commits (test_bridge.DomainTests.test_delivery_reload_surplus_and_duplicate_commits) ... ok
+test_double_click_preserves_delivery_id (test_bridge.DomainTests.test_double_click_preserves_delivery_id) ... ok
+test_failed_receiver_save_does_not_acknowledge_reward (test_bridge.DomainTests.test_failed_receiver_save_does_not_acknowledge_reward) ... ok
+test_failed_reservation_save_prevents_commit (test_bridge.DomainTests.test_failed_reservation_save_prevents_commit) ... ok
+test_ledger_does_not_grow_without_bound (test_bridge.DomainTests.test_ledger_does_not_grow_without_bound) ... ok
+test_loading_old_mc_save_blocks_remote_receipt (test_bridge.DomainTests.test_loading_old_mc_save_blocks_remote_receipt) ... ok
+test_loading_old_rt_save_blocks_known_receipt (test_bridge.DomainTests.test_loading_old_rt_save_blocks_known_receipt) ... ok
+test_lost_commit_reply_recovered_after_restart (test_bridge.DomainTests.test_lost_commit_reply_recovered_after_restart) ... ok
+test_lost_prepare_record_with_reserved_cargo_requires_recovery (test_bridge.DomainTests.test_lost_prepare_record_with_reserved_cargo_requires_recovery) ... ok
+test_lost_prepare_reply_retries_same_id (test_bridge.DomainTests.test_lost_prepare_reply_retries_same_id) ... ok
+test_no_commit_without_local_reservation (test_bridge.DomainTests.test_no_commit_without_local_reservation) ... ok
+test_old_checkpoint_blocked (test_bridge.DomainTests.test_old_checkpoint_blocked) ... ok
+test_old_session_after_reload_blocked (test_bridge.DomainTests.test_old_session_after_reload_blocked) ... ok
+test_only_one_prepared_delivery (test_bridge.DomainTests.test_only_one_prepared_delivery) ... ok
+test_payload_mismatch_for_same_delivery (test_bridge.DomainTests.test_payload_mismatch_for_same_delivery) ... ok
+test_remote_commit_requires_prepare (test_bridge.DomainTests.test_remote_commit_requires_prepare) ... ok
+test_unavailable_blocks_new_prepare (test_bridge.DomainTests.test_unavailable_blocks_new_prepare) ... ok
+test_unicode_token_rejected_without_crashing (test_bridge.DomainTests.test_unicode_token_rejected_without_crashing) ... ok
+test_unknown_status_does_not_refund (test_bridge.DomainTests.test_unknown_status_does_not_refund) ... ok
+test_wrong_identity_blocked (test_bridge.DomainTests.test_wrong_identity_blocked) ... ok
+test_wrong_token_and_mission_hash (test_bridge.DomainTests.test_wrong_token_and_mission_hash) ... ok
+test_lost_commit_reply_over_tcp_then_reconnect (test_bridge.NetworkTests.test_lost_commit_reply_over_tcp_then_reconnect) ... ok
+test_partial_bytes_do_not_extend_valid_message_deadline (test_bridge.NetworkTests.test_partial_bytes_do_not_extend_valid_message_deadline) ... ok
+test_real_tcp_delivery (test_bridge.NetworkTests.test_real_tcp_delivery) ... ok
+test_rejects_second_connection (test_bridge.NetworkTests.test_rejects_second_connection) ... ok
+test_tcp_fragmented_hello_and_batched_requests (test_bridge.NetworkTests.test_tcp_fragmented_hello_and_batched_requests) ... ok
+test_wrong_token_is_rejected_and_connection_closes (test_bridge.NetworkTests.test_wrong_token_is_rejected_and_connection_closes) ... ok
+test_boolean_count_and_float_mission_version_rejected (test_bridge.ProtocolTests.test_boolean_count_and_float_mission_version_rejected) ... ok
+test_incompatible_version (test_bridge.ProtocolTests.test_incompatible_version) ... ok
+test_invalid_response_types_and_correlations (test_bridge.ProtocolTests.test_invalid_response_types_and_correlations) ... ok
+test_malformed_json_duplicate_keys_non_object_and_bad_utf8 (test_bridge.ProtocolTests.test_malformed_json_duplicate_keys_non_object_and_bad_utf8) ... ok
+test_size_boundary_and_oversize (test_bridge.ProtocolTests.test_size_boundary_and_oversize) ... ok
+test_tcp_fragmentation_and_coalescing (test_bridge.ProtocolTests.test_tcp_fragmentation_and_coalescing) ... ok
+test_existing_real_receipt_migrates_without_reward_or_identity_changes (test_delivery.DeliveryBuildTests.test_existing_real_receipt_migrates_without_reward_or_identity_changes) ... ok
+test_live_server_withholds_ack_until_main_thread_finishes (test_delivery.DeliveryBuildTests.test_live_server_withholds_ack_until_main_thread_finishes) ... ok
+test_native_cargo_archive_checks_entity_and_blueprint (test_delivery.DeliveryBuildTests.test_native_cargo_archive_checks_entity_and_blueprint) ... ok
+test_native_cargo_reader_accepts_actual_game_archive (test_delivery.DeliveryBuildTests.test_native_cargo_reader_accepts_actual_game_archive) ... ok
+test_real_csharp_ledger_dedup_and_rollback (test_delivery.DeliveryBuildTests.test_real_csharp_ledger_dedup_and_rollback) ... ok
+test_actual_java_client_clears_campaign_on_menu_snapshot (test_diagnostic.DiagnosticInteropTests.test_actual_java_client_clears_campaign_on_menu_snapshot) ... ok
+test_actual_java_client_expires_repeated_game_snapshot (test_diagnostic.DiagnosticInteropTests.test_actual_java_client_expires_repeated_game_snapshot) ... ok
+test_actual_java_client_reads_actual_csharp_server (test_diagnostic.DiagnosticInteropTests.test_actual_java_client_reads_actual_csharp_server) ... ok
+test_archive_with_duplicate_bridge_key_is_rejected (test_diagnostic.DiagnosticInteropTests.test_archive_with_duplicate_bridge_key_is_rejected) ... ok
+test_csharp_rejects_duplicate_keys_and_delivery_commands (test_diagnostic.DiagnosticInteropTests.test_csharp_rejects_duplicate_keys_and_delivery_commands) ... ok
+test_csharp_rejects_wrong_token_then_accepts_new_client (test_diagnostic.DiagnosticInteropTests.test_csharp_rejects_wrong_token_then_accepts_new_client) ... ok
+test_csharp_serves_only_published_snapshot_after_auth (test_diagnostic.DiagnosticInteropTests.test_csharp_serves_only_published_snapshot_after_auth) ... ok
+test_native_save_load_use_ui_entrypoints_and_wait_for_callback_and_ready (test_diagnostic.DiagnosticInteropTests.test_native_save_load_use_ui_entrypoints_and_wait_for_callback_and_ready) ... ok
+test_per_save_state_round_trip_preserves_native_settings (test_diagnostic.DiagnosticInteropTests.test_per_save_state_round_trip_preserves_native_settings) ... ok
+test_saved_archive_reads_namespaced_state_and_missing_baseline (test_diagnostic.DiagnosticInteropTests.test_saved_archive_reads_namespaced_state_and_missing_baseline) ... ok
+test_real_install_restore_failure_guards (test_installer.InstallerTests.test_real_install_restore_failure_guards) ... ok
+test_fabric_weaving_and_real_inventories (test_refit.RefitTests.test_fabric_weaving_and_real_inventories) ... ok
+test_refit_models_resolve_and_remain_bounded (test_refit.RefitTests.test_refit_models_resolve_and_remain_bounded) ... ok
+
+----------------------------------------------------------------------
+Ran 57 tests in 27.352s
+
+OK
+
+Exit code: 0
+
+$ python -m void_bridge demo
+SIMULATION ONLY | 65 iron ingots | deliberate lost commit reply
+Reply lost after reward saved. Cargo locked; reconnecting with same delivery ID.
+PASS | reload: 1 surplus ingot, 0 reserved, 10 logistics points, one receipt
+
+Exit code: 0

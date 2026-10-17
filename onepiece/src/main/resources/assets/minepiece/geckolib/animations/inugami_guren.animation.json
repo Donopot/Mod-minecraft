@@ -1,0 +1,32 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"body": {
+					"rotation": {
+						"vector": ["0+math.cos(query.anim_time*180)*4", 0, 0]
+					}
+				},
+				"ago_shita": {
+					"rotation": {
+						"vector": ["22.5+math.cos(query.anim_time*180)*20", 0, 0]
+					}
+				},
+				"left_ear": {
+					"rotation": {
+						"vector": [0, 0, "-5-math.cos(query.anim_time*180)*10"]
+					}
+				},
+				"right_ear": {
+					"rotation": {
+						"vector": [0, 0, "5+math.cos(query.anim_time*180)*10"]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

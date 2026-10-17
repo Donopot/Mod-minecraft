@@ -1,0 +1,19 @@
+{
+  "protocol_version": 1,
+  "type": "delivery_prepare",
+  "message_id": "00000000-0000-4000-8000-000000000011",
+  "session_id": "00000000-0000-4000-8000-000000000001",
+  "pair_id": "00000000-0000-4000-8000-000000000002",
+  "campaign_id": "00000000-0000-4000-8000-000000000003",
+  "world_id": "00000000-0000-4000-8000-000000000004",
+  "checkpoint_id": "00000000-0000-4000-8000-000000000005",
+  "delivery_id": "00000000-0000-4000-8000-000000000020",
+  "mission_id": "logistics_first_delivery",
+  "mission_version": 1,
+  "cargo": [
+    {
+      "item_id": "minecraft:iron_ingot",
+      "count": 64
+    }
+  ]
+}

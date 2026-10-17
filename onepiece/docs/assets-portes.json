@@ -1,0 +1,282 @@
+{
+ "_particules_yami_pika": {
+  "ajoutes": [
+   "minepiece/lang/en_us.json",
+   "minepiece/lang/fr_fr.json",
+   "minepiece/particles/dark.json",
+   "minepiece/particles/light_large.json",
+   "minepiece/particles/light_small.json",
+   "minepiece/textures/particle/particle_dark_1.png",
+   "minepiece/textures/particle/particle_dark_10.png",
+   "minepiece/textures/particle/particle_dark_11.png",
+   "minepiece/textures/particle/particle_dark_12.png",
+   "minepiece/textures/particle/particle_dark_13.png",
+   "minepiece/textures/particle/particle_dark_14.png",
+   "minepiece/textures/particle/particle_dark_15.png",
+   "minepiece/textures/particle/particle_dark_2.png",
+   "minepiece/textures/particle/particle_dark_3.png",
+   "minepiece/textures/particle/particle_dark_4.png",
+   "minepiece/textures/particle/particle_dark_5.png",
+   "minepiece/textures/particle/particle_dark_6.png",
+   "minepiece/textures/particle/particle_dark_7.png",
+   "minepiece/textures/particle/particle_dark_8.png",
+   "minepiece/textures/particle/particle_dark_9.png",
+   "minepiece/textures/particle/particle_light_large_1.png",
+   "minepiece/textures/particle/particle_light_large_2.png",
+   "minepiece/textures/particle/particle_light_large_3.png",
+   "minepiece/textures/particle/particle_light_large_4.png",
+   "minepiece/textures/particle/particle_light_large_5.png",
+   "minepiece/textures/particle/particle_light_small_1.png",
+   "minepiece/textures/particle/particle_light_small_2.png",
+   "minepiece/textures/particle/particle_light_small_3.png",
+   "minepiece/textures/particle/particle_light_small_4.png",
+   "minepiece/textures/particle/particle_light_small_5.png"
+  ],
+  "octets": 276554
+ },
+ "aro_aro": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_aro_aro.png"
+  ],
+  "octets": 292
+ },
+ "batto_batto": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_batto_batto.png"
+  ],
+  "octets": 257
+ },
+ "bisu_bisu": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_bisu_bisu.png"
+  ],
+  "octets": 247
+ },
+ "bomu_bomu": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_bomu_bomu.png"
+  ],
+  "octets": 326
+ },
+ "gomu_gomu": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_gomu_gomu.png"
+  ],
+  "octets": 352
+ },
+ "goro_goro": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_goro_goro.png"
+  ],
+  "octets": 335
+ },
+ "gura_gura": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_gura_gura.png"
+  ],
+  "octets": 345
+ },
+ "hie_hie": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_hie_hie.png"
+  ],
+  "octets": 365
+ },
+ "hito_hito_daibutsu": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_hitohito_daibutsu.png"
+  ],
+  "octets": 271
+ },
+ "horo_horo": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_horo_horo.png"
+  ],
+  "octets": 313
+ },
+ "imu": {
+  "ajoutes": [
+   "minepiece/geckolib/animations/imu.animation.json",
+   "minepiece/geckolib/models/imu.geo.json",
+   "minepiece/textures/entities/imu.png",
+   "minepiece/textures/entities/imu_arrow.png",
+   "minepiece/textures/item/devil_fruit_imu.png"
+  ],
+  "octets": 137682
+ },
+ "inu_inu_okuchi_no_makami": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_inu_inu_okuchi_no_makami.png",
+   "minepiece/textures/item/devil_fruit_inu_inu_wolf.png"
+  ],
+  "octets": 875
+ },
+ "kage_kage": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_kage_kage.png"
+  ],
+  "octets": 334
+ },
+ "kira_kira": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_kira_kira.png"
+  ],
+  "octets": 396
+ },
+ "kiro_kiro": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_kiro_kiro.png"
+  ],
+  "octets": 247
+ },
+ "magu_magu": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_magu_magu.png"
+  ],
+  "octets": 383
+ },
+ "mera_mera": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_mera_mera.png"
+  ],
+  "octets": 295
+ },
+ "mero_mero": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_mero_mero.png"
+  ],
+  "octets": 364
+ },
+ "mochi_mochi": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_mochi_mochi.png"
+  ],
+  "octets": 367
+ },
+ "moku_moku": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_moku_moku.png"
+  ],
+  "octets": 349
+ },
+ "mori_mori": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_mori_mori.png"
+  ],
+  "octets": 337
+ },
+ "neko_neko_leopard": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_neko_neko_leopard.png",
+   "minepiece/textures/item/devil_fruit_neko_neko_sabertiger.png"
+  ],
+  "octets": 641
+ },
+ "nikyu_nikyu": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_nikyu_nikyu.png",
+   "minepiece/textures/item/icon_nikyu_nikyu_blue.png"
+  ],
+  "octets": 644
+ },
+ "ope_ope": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_ope_ope.png"
+  ],
+  "octets": 311
+ },
+ "pika_pika": {
+  "ajoutes": [
+   "minepiece/textures/block/tex_pikapika_animation.png",
+   "minepiece/textures/block/tex_pikapika_animation.png.mcmeta",
+   "minepiece/textures/item/devil_fruit_pika_pika.png"
+  ],
+  "octets": 7186
+ },
+ "riki_riki": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_riki_riki.png"
+  ],
+  "octets": 389
+ },
+ "ryu_ryu_brachiosaurus": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_ryu_ryu_brachiosaurus.png",
+   "minepiece/textures/item/devil_fruit_ryu_ryu_pachycephalosaurus.png",
+   "minepiece/textures/item/devil_fruit_ryu_ryu_pteranodon.png"
+  ],
+  "octets": 1014
+ },
+ "soru_soru": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_soru_soru.png"
+  ],
+  "octets": 285
+ },
+ "suna_suna": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_suna_suna.png"
+  ],
+  "octets": 504
+ },
+ "supa_supa": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_supa_supa.png"
+  ],
+  "octets": 565
+ },
+ "tori_tori_phoenix": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_tori_tori_phoenix.png"
+  ],
+  "octets": 258
+ },
+ "uo_uo_seiryu": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_uo_uo_seiryu.png"
+  ],
+  "octets": 275
+ },
+ "ushi_ushi_giraffe": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_ushi_ushi_bison.png",
+   "minepiece/textures/item/devil_fruit_ushi_ushi_giraffe.png"
+  ],
+  "octets": 814
+ },
+ "uta_uta": {
+  "ajoutes": [
+   "minepiece/geckolib/animations/clothes_uta.animation.json",
+   "minepiece/geckolib/animations/clothes_uta2.animation.json",
+   "minepiece/geckolib/animations/uta.animation.json",
+   "minepiece/geckolib/models/clothes_uta.geo.json",
+   "minepiece/geckolib/models/clothes_uta2.geo.json",
+   "minepiece/geckolib/models/uta.geo.json",
+   "minepiece/textures/block/uta_lance.png",
+   "minepiece/textures/block/uta_shield.png",
+   "minepiece/textures/entities/uta.png",
+   "minepiece/textures/item/clothes_uta.png",
+   "minepiece/textures/item/clothes_uta2.png",
+   "minepiece/textures/item/devil_fruit_uta_uta.png",
+   "minepiece/textures/item/icon_clothes_uta2_body.png",
+   "minepiece/textures/item/icon_clothes_uta2_helmet.png",
+   "minepiece/textures/item/icon_clothes_uta2_leggins.png",
+   "minepiece/textures/item/icon_clothes_uta_body.png",
+   "minepiece/textures/item/icon_clothes_uta_boots.png",
+   "minepiece/textures/item/icon_clothes_uta_helmet.png"
+  ],
+  "octets": 226672
+ },
+ "yami_yami": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_yami_yami.png"
+  ],
+  "octets": 313
+ },
+ "zushi_zushi": {
+  "ajoutes": [
+   "minepiece/textures/item/devil_fruit_zushi_zushi.png"
+  ],
+  "octets": 257
+ }
+}

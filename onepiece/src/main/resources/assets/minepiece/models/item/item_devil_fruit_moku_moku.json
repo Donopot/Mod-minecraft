@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minepiece:item/item_devil_fruit_moku_moku"
+  }
+}

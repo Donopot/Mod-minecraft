@@ -1,0 +1,38 @@
+VOID DYNASTY — Assistant 0.7.0 (alpha)
+
+1. Extraire le ZIP, puis ouvrir VOID-DYNASTY-Assistant-0.7.0.exe.
+2. Fermer les deux jeux et renseigner leurs dossiers dans l'assistant.
+3. Selectionner eventuellement le monde Minecraft et la sauvegarde RT correspondante :
+   ils seront copies avant l'installation. Les anciens fichiers de mods sont toujours sauvegardes.
+4. Verifier le bilan, puis cliquer Sauvegarder et installer.
+5. Suivre Jouer et entretien. Dans Minecraft : /voidbridge assistant.
+
+Pre-requis : Windows avec .NET Framework 4.8 (normalement present sur Windows 10/11),
+Minecraft 26.3, Fabric 0.19.5, Fabric API 0.162.0+26.3, GeckoLib 5.5.7,
+Java 25 gere par le lanceur, VOID DYNASTY original 1.0.0,
+Rogue Trader 1.6.1.514 dont l'assemblage est reconnu par cette alpha.
+Le paquet contient uniquement notre assistant et nos deux modules embarques.
+L'original VOID DYNASTY, les dependances et les jeux doivent deja etre disponibles.
+Aucun telechargement, compte, service Python ou droit administrateur n'est requis par l'assistant.
+Un dossier protege peut toutefois refuser l'ecriture : choisir une instance accessible.
+
+Mise a jour / reparation : ouvrir l'assistant et refaire Verification puis Installation.
+Restauration / retrait : onglet Jouer et entretien, choisir un journal puis l'operation.
+Les fichiers modifies entre-temps sont proteges : l'operation s'arrete si leur empreinte differe.
+L'original VOID DYNASTY reste lors du retrait du pont. Les sauvegardes de partie ne sont
+jamais restaurees ou supprimees automatiquement. Garder une copie d'un monde contenant le depot
+avant de retirer le compagnon, pour eviter de perdre les blocs inconnus lors du prochain chargement.
+
+Sauvegardes et journaux : %LOCALAPPDATA%\VoidDynastyBridge\Installer\backups
+Les preferences sont conservees a cote. Le jeton du pont n'est ni inclus ni affiche.
+L'installeur n'associe pas une campagne a votre place : cette approbation se fait dans RT.
+Une association existante doit garder le meme monde et sa derniere sauvegarde REWARD_COMMITTED.
+
+Nouveautes 0.7.0 : pad a onglets, coffres synchronises et pages accessibles, rayon laser visible,
+impacts de bolts plus compacts, plasma plus lisible et nouveaux modeles industriels.
+Les transferts et le rendu doivent encore etre verifies dans votre partie.
+
+Etat : lien, persistance et premiere livraison historique confirmes en jeu.
+Les 14 cargaisons natives et les nouveaux guides attendent leur validation complete en jeu.
+Installeur et code du mod realises avec l'assistance de Codex.
+L'executable n'est pas signe numeriquement : aucune signature d'editeur n'est fournie.

@@ -1,0 +1,255 @@
+fruit;nom_source;genre;trace_port;ou
+aro_aro;AroAroPassive1;à classer;AUCUNE;
+aro_aro;AroAroSkillArrow;technique (classe de compétence);AUCUNE;
+aro_aro;AroAroSkillCombo;technique (classe de compétence);AUCUNE;
+aro_aro;AroAroSkillMove;technique (classe de compétence);AUCUNE;
+aro_aro;GearOnEffectActiveTick;à classer;AUCUNE;
+aro_aro;LogicMoveAround;logique;AUCUNE;
+aro_aro;SkillAroAro;technique (classe de compétence);AUCUNE;
+batto_batto;SkillBattoBatto;technique (classe de compétence);AUCUNE;
+bisu_bisu;SkillBisuBisu;technique (classe de compétence);AUCUNE;
+bomu_bomu;SkillBomuBomu;technique (classe de compétence);AUCUNE;
+gomu_gomu;AIGomuArm;IA de mob;AUCUNE;
+gomu_gomu;EntityGomuArmEntity;entité;code (nom exact);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+gomu_gomu;EntityGomuArmModel;modèle;code (nom exact);src/main/java/net/mcreator/minepiece/entity/model/EntityGomuArmModel.java
+gomu_gomu;EntityGomuArmRenderer;rendu;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+gomu_gomu;GomuArmStrike;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+gomu_gomu;GomuArmStrike$Strike;à classer;AUCUNE;
+gomu_gomu;GomuGomuBazooka;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+gomu_gomu;GomuGomuGatling;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+gomu_gomu;GomuGomuRocket;à classer;AUCUNE;
+gomu_gomu;GomuGomunoPistol;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+gomu_gomu;SkillGomuGomu;technique (classe de compétence);AUCUNE;
+goro_goro;SkillGoroGoro;technique (classe de compétence);AUCUNE;
+goro_goro;SkillGoroGoroPassive1;technique (classe de compétence);AUCUNE;
+gura_gura;SkillGuraGura;technique (classe de compétence);AUCUNE;
+hie_hie;AIRichie;IA de mob;AUCUNE;
+hie_hie;GetShieldBlockValue;procédure;AUCUNE;
+hie_hie;NoteShield;procédure;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+hie_hie;SkillHieHie;technique (classe de compétence);AUCUNE;
+hito_hito_daibutsu;ModelhitoHitoDaibutsuHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+hito_hito_daibutsu;ModelhitoHitoDaibutsuHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+hito_hito_daibutsu;SkillHitoHitoDaibutsu;technique (classe de compétence);AUCUNE;
+horo_horo;SkillHoroHoro;technique (classe de compétence);AUCUNE;
+horo_horo;SkillTokuHoro;technique (classe de compétence);AUCUNE;
+imu;AIImu;IA de mob;AUCUNE;
+imu;AIMusoDonatsu;IA de mob;AUCUNE;
+imu;ImuArrow;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+imu;SkillImu;technique (classe de compétence);AUCUNE;
+inu_inu_okuchi_no_makami;AIAkainu;IA de mob;AUCUNE;
+inu_inu_okuchi_no_makami;AIInuarashi;IA de mob;AUCUNE;
+inu_inu_okuchi_no_makami;AttackContinue;procédure;AUCUNE;
+inu_inu_okuchi_no_makami;InugamiGuren;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+inu_inu_okuchi_no_makami;ModelinuInuOkuchinomakamiHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+inu_inu_okuchi_no_makami;ModelinuInuWolfHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+inu_inu_okuchi_no_makami;ModelinuInuWolfHumanbeastSlim;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+inu_inu_okuchi_no_makami;SkillInuInuOkuchinoMakami;technique (classe de compétence);AUCUNE;
+inu_inu_okuchi_no_makami;SkillInuInuWolf;technique (classe de compétence);AUCUNE;
+inu_inu_wolf;AIAkainu;IA de mob;AUCUNE;
+inu_inu_wolf;AIInuarashi;IA de mob;AUCUNE;
+inu_inu_wolf;AIWolfProjectile;IA de mob;AUCUNE;
+inu_inu_wolf;AttackContinue;procédure;AUCUNE;
+inu_inu_wolf;InugamiGuren;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+inu_inu_wolf;ModelinuInuOkuchinomakamiHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+inu_inu_wolf;ModelinuInuWolfHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+inu_inu_wolf;ModelinuInuWolfHumanbeastSlim;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+inu_inu_wolf;SkillInuInuOkuchinoMakami;technique (classe de compétence);AUCUNE;
+inu_inu_wolf;SkillInuInuWolf;technique (classe de compétence);AUCUNE;
+inu_inu_wolf;WolfPursuit;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+inu_inu_wolf;WolfPursuit$Chase;à classer;AUCUNE;
+inu_inu_wolf;WolfStrike;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+kage_kage;Kagero;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+kage_kage;KageroMaguMagu;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+kage_kage;SkillKageKage;technique (classe de compétence);AUCUNE;
+kage_kage;TsunoTokage;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+kira_kira;SkillKiraKira;technique (classe de compétence);AUCUNE;
+kiro_kiro;KiroKiroOverhead;à classer;AUCUNE;
+kiro_kiro;SkillKiroKiro;technique (classe de compétence);AUCUNE;
+magu_magu;KageroMaguMagu;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+magu_magu;SkillMaguMagu;technique (classe de compétence);AUCUNE;
+mera_mera;SkillMeraMera;technique (classe de compétence);AUCUNE;
+mero_mero;SkillMeroMero;technique (classe de compétence);AUCUNE;
+mochi_mochi;MochiBuild;procédure;code (nom exact);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+mochi_mochi;SkillMochiMochi;technique (classe de compétence);AUCUNE;
+mochi_mochi;YakiMochi;procédure;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+mochi_mochi;ZanGiriMochi;procédure;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+moku_moku;SkillMokuMoku;technique (classe de compétence);AUCUNE;
+mori_mori;AIGeckoMoria;IA de mob;AUCUNE;
+mori_mori;ModelmoriMoriFlower;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+mori_mori;MoriMoriAssault;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+mori_mori;MoriMoriRoot;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+mori_mori;MoriMoriRoot1;à classer;AUCUNE;
+mori_mori;MoriMoriRoot2;à classer;AUCUNE;
+mori_mori;MoriMoriRootGiant;à classer;AUCUNE;
+mori_mori;MoriMoriRootSurroundings;à classer;AUCUNE;
+mori_mori;MoriMoriRootSurroundingsStrong;à classer;AUCUNE;
+mori_mori;OmoriKaryudon;à classer;AUCUNE;
+mori_mori;SkillMoriMori;technique (classe de compétence);AUCUNE;
+neko_neko_leopard;AINekomamushi;IA de mob;AUCUNE;
+neko_neko_leopard;ModelnekonekoLeopardHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_leopard;ModelnekonekoLeopardHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_leopard;ModelnekonekoSabertigerHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_leopard;SkillNekoNekoLeopard;technique (classe de compétence);AUCUNE;
+neko_neko_leopard;SkillNekoNekoSaberTiger;technique (classe de compétence);AUCUNE;
+neko_neko_sabertiger;AINekomamushi;IA de mob;AUCUNE;
+neko_neko_sabertiger;ModelnekonekoLeopardHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_sabertiger;ModelnekonekoLeopardHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_sabertiger;ModelnekonekoSabertigerHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_sabertiger;SkillNekoNekoLeopard;technique (classe de compétence);AUCUNE;
+neko_neko_sabertiger;SkillNekoNekoSaberTiger;technique (classe de compétence);AUCUNE;
+neko_neko_sabertiger;AINekomamushi;IA de mob;AUCUNE;
+neko_neko_sabertiger;ModelnekonekoLeopardHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_sabertiger;ModelnekonekoLeopardHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_sabertiger;ModelnekonekoSabertigerHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+neko_neko_sabertiger;SkillNekoNekoLeopard;technique (classe de compétence);AUCUNE;
+neko_neko_sabertiger;SkillNekoNekoSaberTiger;technique (classe de compétence);AUCUNE;
+nikyu_nikyu;NikyuNikyuRightClick;à classer;AUCUNE;
+nikyu_nikyu;SkillAssaultNikyuNikyu;technique (classe de compétence);AUCUNE;
+nikyu_nikyu;SkillNikyuNikyu;technique (classe de compétence);AUCUNE;
+nikyu_nikyu;SkillNikyuNikyuPassive;technique (classe de compétence);AUCUNE;
+ope_ope;ModMobEquipmentDropEvents;gestionnaire d'événements;code (nom exact);src/main/java/br/com/oneminepiece/opworldlike/OmpWorld.java
+ope_ope;OpeRoom;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+ope_ope;OpeRoom$Room;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+ope_ope;ScopedIslandReplacementCatalog;à classer;code (nom exact);src/main/java/br/com/oneminepiece/opworldlike/worldgen/ScopedIslandReplacementCatalog.java
+ope_ope;ScopedIslandReplacementCatalog$SourceReference;à classer;code (nom normalisé);src/main/java/br/com/oneminepiece/opworldlike/worldgen/ScopedIslandReplacementCatalog.java
+ope_ope;SkillOpeOpe;technique (classe de compétence);AUCUNE;
+ope_ope;StoneOpeOpe;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+pika_pika;SkillPikaPika;technique (classe de compétence);AUCUNE;
+pika_pika;SkillPikaPikaPassive1;technique (classe de compétence);AUCUNE;
+riki_riki;IslandDominionBonusEvents$DeathDorikiSnapshot;gestionnaire d'événements;code (nom normalisé);src/main/java/br/com/oneminepiece/opworldlike/claim/IslandDominionBonusEvents.java
+riki_riki;SkillRikiRiki;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;AIRyuma;IA de mob;AUCUNE;
+ryu_ryu_brachiosaurus;AIShiryu;IA de mob;AUCUNE;
+ryu_ryu_brachiosaurus;KaenRyuo;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+ryu_ryu_brachiosaurus;KairyuIpponzeoi;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;Karyudon;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;LogicCanUseRyuo;logique;AUCUNE;
+ryu_ryu_brachiosaurus;ModelryuRyuBrachiosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuBrachiosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuPachycephalosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuPachycephalosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuPteranodonHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModeluouoSeiryuHumanBeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;OmoriKaryudon;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;RyunoIbuki;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;RyunoKagizume;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;RyuseiKazan;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+ryu_ryu_brachiosaurus;SkillRyuRyuBrachiosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;SkillRyuRyuPachycephalosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;SkillRyuRyuPteranodon;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;SkillUoUoSeiryu;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;AIRyuma;IA de mob;AUCUNE;
+ryu_ryu_brachiosaurus;AIShiryu;IA de mob;AUCUNE;
+ryu_ryu_brachiosaurus;KaenRyuo;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+ryu_ryu_brachiosaurus;KairyuIpponzeoi;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;Karyudon;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;LogicCanUseRyuo;logique;AUCUNE;
+ryu_ryu_brachiosaurus;ModelryuRyuBrachiosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuBrachiosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuPachycephalosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuPachycephalosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModelryuRyuPteranodonHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;ModeluouoSeiryuHumanBeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_brachiosaurus;OmoriKaryudon;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;RyunoIbuki;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;RyunoKagizume;à classer;AUCUNE;
+ryu_ryu_brachiosaurus;RyuseiKazan;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+ryu_ryu_brachiosaurus;SkillRyuRyuBrachiosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;SkillRyuRyuPachycephalosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;SkillRyuRyuPteranodon;technique (classe de compétence);AUCUNE;
+ryu_ryu_brachiosaurus;SkillUoUoSeiryu;technique (classe de compétence);AUCUNE;
+ryu_ryu_pachycephalosaurus;AIRyuma;IA de mob;AUCUNE;
+ryu_ryu_pachycephalosaurus;AIShiryu;IA de mob;AUCUNE;
+ryu_ryu_pachycephalosaurus;KaenRyuo;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+ryu_ryu_pachycephalosaurus;KairyuIpponzeoi;à classer;AUCUNE;
+ryu_ryu_pachycephalosaurus;Karyudon;à classer;AUCUNE;
+ryu_ryu_pachycephalosaurus;LogicCanUseRyuo;logique;AUCUNE;
+ryu_ryu_pachycephalosaurus;ModelryuRyuBrachiosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pachycephalosaurus;ModelryuRyuBrachiosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pachycephalosaurus;ModelryuRyuPachycephalosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pachycephalosaurus;ModelryuRyuPachycephalosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pachycephalosaurus;ModelryuRyuPteranodonHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pachycephalosaurus;ModeluouoSeiryuHumanBeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pachycephalosaurus;OmoriKaryudon;à classer;AUCUNE;
+ryu_ryu_pachycephalosaurus;RyunoIbuki;à classer;AUCUNE;
+ryu_ryu_pachycephalosaurus;RyunoKagizume;à classer;AUCUNE;
+ryu_ryu_pachycephalosaurus;RyuseiKazan;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+ryu_ryu_pachycephalosaurus;SkillRyuRyuBrachiosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_pachycephalosaurus;SkillRyuRyuPachycephalosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_pachycephalosaurus;SkillRyuRyuPteranodon;technique (classe de compétence);AUCUNE;
+ryu_ryu_pachycephalosaurus;SkillUoUoSeiryu;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;AIRyuma;IA de mob;AUCUNE;
+ryu_ryu_pteranodon;AIShiryu;IA de mob;AUCUNE;
+ryu_ryu_pteranodon;KaenRyuo;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+ryu_ryu_pteranodon;KairyuIpponzeoi;à classer;AUCUNE;
+ryu_ryu_pteranodon;Karyudon;à classer;AUCUNE;
+ryu_ryu_pteranodon;LogicCanUseRyuo;logique;AUCUNE;
+ryu_ryu_pteranodon;ModelryuRyuBrachiosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuBrachiosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuPachycephalosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuPachycephalosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuPteranodonHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModeluouoSeiryuHumanBeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;OmoriKaryudon;à classer;AUCUNE;
+ryu_ryu_pteranodon;RyunoIbuki;à classer;AUCUNE;
+ryu_ryu_pteranodon;RyunoKagizume;à classer;AUCUNE;
+ryu_ryu_pteranodon;RyuseiKazan;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+ryu_ryu_pteranodon;SkillRyuRyuBrachiosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;SkillRyuRyuPachycephalosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;SkillRyuRyuPteranodon;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;SkillUoUoSeiryu;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;AIRyuma;IA de mob;AUCUNE;
+ryu_ryu_pteranodon;AIShiryu;IA de mob;AUCUNE;
+ryu_ryu_pteranodon;KaenRyuo;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+ryu_ryu_pteranodon;KairyuIpponzeoi;à classer;AUCUNE;
+ryu_ryu_pteranodon;Karyudon;à classer;AUCUNE;
+ryu_ryu_pteranodon;LogicCanUseRyuo;logique;AUCUNE;
+ryu_ryu_pteranodon;ModelryuRyuBrachiosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuBrachiosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuPachycephalosaurusHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuPachycephalosaurusHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModelryuRyuPteranodonHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;ModeluouoSeiryuHumanBeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ryu_ryu_pteranodon;OmoriKaryudon;à classer;AUCUNE;
+ryu_ryu_pteranodon;RyunoIbuki;à classer;AUCUNE;
+ryu_ryu_pteranodon;RyunoKagizume;à classer;AUCUNE;
+ryu_ryu_pteranodon;RyuseiKazan;à classer;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitBehaviours.java
+ryu_ryu_pteranodon;SkillRyuRyuBrachiosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;SkillRyuRyuPachycephalosaurus;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;SkillRyuRyuPteranodon;technique (classe de compétence);AUCUNE;
+ryu_ryu_pteranodon;SkillUoUoSeiryu;technique (classe de compétence);AUCUNE;
+soru_soru;SkillSoruPassive;technique (classe de compétence);AUCUNE;
+soru_soru;SkillSoruSoru;technique (classe de compétence);AUCUNE;
+suna_suna;SkillSunaSuna;technique (classe de compétence);AUCUNE;
+supa_supa;ModelsupasupaForm2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+supa_supa;ModelsupasupaForm22;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+supa_supa;SkillSupaSupa;technique (classe de compétence);AUCUNE;
+tori_tori_phoenix;ModeltoritoriPhoenixHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+tori_tori_phoenix;ModeltoritoriPhoenixHumanbeastFly;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+tori_tori_phoenix;SkillToriToriPhoenix;technique (classe de compétence);AUCUNE;
+uo_uo_seiryu;ModeluouoSeiryuHumanBeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+uo_uo_seiryu;SkillUoUoSeiryu;technique (classe de compétence);AUCUNE;
+uo_uo_seiryu;Dispatcher / Générique;à classer;AUCUNE;
+ushi_ushi_giraffe;AINekomamushi;IA de mob;AUCUNE;
+ushi_ushi_giraffe;AIRokushiki;IA de mob;AUCUNE;
+ushi_ushi_giraffe;AttackSpeedZushiZushi;procédure;AUCUNE;
+ushi_ushi_giraffe;Jushigan;procédure;code (nom exact);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+ushi_ushi_giraffe;ModelushiUshiGiraffeHumanbeast;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ushi_ushi_giraffe;ModelushiUshiGiraffeHumanbeast2;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/client/DevilFruitClientInit.java
+ushi_ushi_giraffe;SelectRokushiki;procédure;AUCUNE;
+ushi_ushi_giraffe;Shakushi;procédure;AUCUNE;
+ushi_ushi_giraffe;SkillRokushiki;technique (classe de compétence);AUCUNE;
+ushi_ushi_giraffe;SkillUshiUshiGiraffe;technique (classe de compétence);AUCUNE;
+ushi_ushi_giraffe;SkillZushiZushi;technique (classe de compétence);AUCUNE;
+ushi_ushi_giraffe;TobuShigan;procédure;code (nom normalisé);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+ushi_ushi_giraffe;TobuShiganProcedure$1;procédure;AUCUNE;
+ushi_ushi_giraffe;Yurushitene;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/procedures/DevilFruitRegistry.java
+uta_uta;AIHaruta;IA de mob;AUCUNE;
+uta_uta;AIUta;IA de mob;AUCUNE;
+uta_uta;Amputation;à classer;code (nom exact);src/main/java/net/mcreator/minepiece/command/DevilFruitTestCommands.java
+uta_uta;Amputation$Section;à classer;AUCUNE;
+uta_uta;LevelMutationMixin;à classer;code (nom exact);src/main/java/br/com/oneminepiece/opworldlike/mixin/LevelMutationMixin.java
+uta_uta;SkillUtaUta;technique (classe de compétence);AUCUNE;
+yami_yami;SkillYamiYami;technique (classe de compétence);AUCUNE;
+zushi_zushi;AttackSpeedZushiZushi;procédure;AUCUNE;
+zushi_zushi;SkillZushiZushi;technique (classe de compétence);AUCUNE;

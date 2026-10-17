@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Live repeatable delivery request v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "message_id",
+    "token",
+    "session_id",
+    "campaign_id",
+    "world_id",
+    "pair_id",
+    "checkpoint_id",
+    "delivery_id",
+    "known_state",
+    "mission_hash",
+    "payload_hash",
+    "item_id",
+    "protocol_version",
+    "count",
+    "completed_count",
+    "last_receipt_id"
+  ],
+  "properties": {
+    "type": {
+      "enum": [
+        "inspect",
+        "propose_pair",
+        "status",
+        "prepare",
+        "commit"
+      ]
+    },
+    "message_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "session_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "campaign_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "world_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "pair_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "checkpoint_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "delivery_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "known_state": {
+      "enum": [
+        "IDLE",
+        "DRAFT",
+        "RESERVED",
+        "SETTLED"
+      ]
+    },
+    "mission_hash": {
+      "const": "25d9c810b7a4c5f979d01301d09db38e5f84b2e6bb27449a9ac5c7326eff0323"
+    },
+    "payload_hash": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "item_id": {
+      "const": "minecraft:iron_ingot"
+    },
+    "protocol_version": {
+      "const": 3
+    },
+    "count": {
+      "const": 64
+    },
+    "completed_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "last_receipt_id": {
+      "type": "string",
+      "maxLength": 36
+    }
+  }
+}

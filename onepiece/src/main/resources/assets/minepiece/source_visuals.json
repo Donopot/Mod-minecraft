@@ -1,0 +1,414 @@
+{
+  "source_jar_sha256": "f9ecbb8f86148a01def15f1efd20bc33775a2a3633287a4a69fde183a4d09704",
+  "bindings": [
+    {
+      "profiles": [
+        "hiken"
+      ],
+      "model": "fist_small",
+      "texture": "flame_tiger",
+      "source": "HikenProcedure -> FIST; FistLayer DATA_move>=0"
+    },
+    {
+      "profiles": [
+        "icepartisan"
+      ],
+      "model": "partisan",
+      "texture": "tex_ice",
+      "source": "IceBlockPartisanProcedure -> ENTITY_PARTISAN; EntityPartisanEntity texture"
+    },
+    {
+      "profiles": [
+        "pheasantbeak"
+      ],
+      "model": "phoenix",
+      "texture": "tex_ice",
+      "source": "IceBlockPheasantBeakProcedure -> ENTITY_BIRD; EntityBirdEntity texture",
+      "scale": 0.35,
+      "y": -1.9
+    },
+    {
+      "profiles": [
+        "goro_raigo"
+      ],
+      "model": "ball_maximum",
+      "texture": "tex_white2",
+      "source": "Raigo -> METEOR DATA_mode=1 setTexture(tex_white2); original radius19.05 normalised to1.905 blocks",
+      "scale": 0.1
+    },
+    {
+      "profiles": [
+        "daienkai",
+        "mera_charge_ball"
+      ],
+      "model": "rubble",
+      "texture": "flame_tiger",
+      "source": "DaiEnkaiEntei -> ENTITY_FLAME_BALL DATA_mode=0 default DATA_model=0 -> EntityFlameBallLayer flame_tiger; radius matched to the animated flame envelope",
+      "scale": 2,
+      "y": -0.5
+    },
+    {
+      "profiles": [
+        "desertspada",
+        "desertlaspada"
+      ],
+      "model": "projectile_slash",
+      "texture": "slash_sand",
+      "source": "DesertSpada/DesertLaSpada -> PROJECTILE_SLASH.setTexture(slash_sand)"
+    },
+    {
+      "profiles": [
+        "whitevine"
+      ],
+      "model": "tornado",
+      "texture": "slash_white",
+      "source": "WhiteVine -> TORNADO.setTexture(slash_white)",
+      "yaw": 0
+    },
+    {
+      "profiles": [
+        "darkmatter"
+      ],
+      "model": "rubble",
+      "texture": "tex_black",
+      "source": "DarkMatter -> ENTITY_DARK_BALL / EntityDarkBallModel",
+      "y": -0.5
+    },
+    {
+      "profiles": [
+        "b01_sand_slash"
+      ],
+      "model": "entity_slash",
+      "texture": "slash_sand",
+      "source": "Barjan -> ENTITY_SLASH.setTexture(slash_sand)",
+      "animation": "source_slash_attack",
+      "scale": 0.7
+    },
+    {
+      "profiles": [
+        "b01_sand_wave"
+      ],
+      "model": "tornado",
+      "texture": "slash_sand",
+      "source": "GroundDeath -> TORNADO.setTexture(slash_sand)",
+      "scale": 0.18,
+      "yaw": 0
+    },
+    {
+      "profiles": [
+        "b02_air_crack",
+        "b02_quake_radial"
+      ],
+      "model": "crack",
+      "texture": "crack",
+      "source": "Gekishin/Kabutowari/Kaishin -> ENTITY_CRACK / crack",
+      "animation": "source_crack_attack",
+      "scale": 0.5
+    },
+    {
+      "profiles": [
+        "b02_quake_sweep"
+      ],
+      "model": "entity_slash",
+      "texture": "slash_white",
+      "source": "AttackSweep -> ENTITY_SWEEP.setTexture(slash_white); source weapon texture branch remains explicit white adaptation",
+      "animation": "source_slash_attack",
+      "scale": 0.5
+    },
+    {
+      "profiles": [
+        "darkball"
+      ],
+      "model": "source_dark_ball",
+      "texture": "tex_black",
+      "source": "DarkBall -> ENTITY_BALL / EntityBallRenderer / Modelball",
+      "scale": 6
+    },
+    {
+      "profiles": [
+        "b02_meteor",
+        "b02_meteorsmall"
+      ],
+      "model": "ball_maximum",
+      "texture": "meteor",
+      "source": "MeteorSmall/FujitoraMeteor -> METEOR / MeteorModel; original radius19.05 normalised",
+      "scale": 0.1
+    },
+    {
+      "profiles": [
+        "b02_rubble",
+        "b02_stoneopeope"
+      ],
+      "model": "rubble",
+      "texture": "tex_stone",
+      "source": "FujitoraRubble/StoneOpeOpe -> RUBBLE.setTexture(tex_stone)",
+      "y": -0.5
+    },
+    {
+      "profiles": [
+        "b02_padho",
+        "b02_ursusshock"
+      ],
+      "model": "pad",
+      "texture": "tex_white",
+      "source": "PadHo/UrsusShock -> PAD; PadLayer tex_white",
+      "scale": 1.2
+    },
+    {
+      "profiles": [
+        "b03_mochi_donut"
+      ],
+      "model": "muso_donatsu",
+      "texture": "tex_white3",
+      "source": "MusoDonatsu -> ENTITY_MUSO_DONATSU default texture",
+      "scale": 0.55
+    },
+    {
+      "profiles": [
+        "b03_mochi_yakimochi"
+      ],
+      "model": "fist_small",
+      "texture": "tex_black",
+      "source": "YakiMochi -> FIST.setTexture(tex_black)"
+    },
+    {
+      "profiles": [
+        "b03_riki_sweep"
+      ],
+      "model": "projectile_slash",
+      "texture": "slash_white",
+      "source": "GalleonLariat -> PROJECTILE_SWEEP; clear base replaced by visible white material adaptation",
+      "scale": 0.55
+    },
+    {
+      "profiles": [
+        "b03_supa_projectileslash"
+      ],
+      "model": "projectile_slash",
+      "texture": "slash_white",
+      "source": "SkillProjectileSlash -> PROJECTILE_SLASH; non-Haki visible slash adaptation"
+    },
+    {
+      "profiles": [
+        "b03_riki_stonethrowing",
+        "b03_riki_stonethrowinglarge"
+      ],
+      "model": "rock_fragment",
+      "texture": "rock_fragment",
+      "source": "StoneThrowing -> ROCK_FRAGMENT default texture",
+      "y": -0.5
+    },
+    {
+      "profiles": [
+        "b04_aro_arrow"
+      ],
+      "model": "aroaro_arrow",
+      "texture": "aroaro_arrow",
+      "source": "AroAroSkillArrow -> ENTITY_ARROW default model/texture; fifteen-degree presentation tilt for first-person readability",
+      "scale": 0.45,
+      "pitch": 15
+    },
+    {
+      "profiles": [
+        "b04_aro_move",
+        "b04_aro_passive"
+      ],
+      "model": "aroaro_arrow",
+      "texture": "aroaro_arrow",
+      "source": "AroAroSkillMove/Passive -> ENTITY_ARROW arrow1, body translation bounded",
+      "scale": 0.4,
+      "animation": "source_aro_move"
+    },
+    {
+      "profiles": [
+        "b04_aro_combo"
+      ],
+      "model": "aroaro_arrow",
+      "texture": "aroaro_arrow",
+      "source": "AroAroSkillCombo -> ENTITY_ARROW attack1_1/attack1_2, body translation bounded",
+      "scale": 0.3,
+      "animation": "source_aro_attack1"
+    },
+    {
+      "profiles": [
+        "b04_horo_negativehollow"
+      ],
+      "model": "ghost1",
+      "texture": "ghost1_1",
+      "source": "SkillNegativeHollow -> ENTITY_NEGATIVE_HOLLOW / ghost1 variant 1; centre at flying projectile origin",
+      "yaw": 0,
+      "scale": 0.85,
+      "y": -0.95
+    },
+    {
+      "profiles": [
+        "b04_horo_minihollow",
+        "b04_horo_tokuhoro"
+      ],
+      "model": "ghost2",
+      "texture": "ghost1_2",
+      "source": "SkillMiniHollow/SkillTokuHoro -> ENTITY_MINI_HOLLOW / ghost1 random variant retained as 2; centred on projectile",
+      "yaw": 0,
+      "scale": 0.85,
+      "y": -0.62
+    },
+    {
+      "profiles": [
+        "b04_mero_rotatekick"
+      ],
+      "model": "entity_slash",
+      "texture": "slash_white",
+      "source": "RotateKick -> ENTITY_SWEEP.setTexture(slash_white)",
+      "animation": "source_slash_attack",
+      "scale": 0.45
+    },
+    {
+      "profiles": [
+        "b05_soru_attacksweep"
+      ],
+      "model": "entity_slash",
+      "texture": "slash_white",
+      "source": "AttackSweep -> ENTITY_SWEEP.setTexture(slash_white)",
+      "animation": "source_slash_attack",
+      "scale": 0.6
+    },
+    {
+      "profiles": [
+        "b05_uta_noteattack",
+        "b05_uta_notelaser"
+      ],
+      "model": "note_3d",
+      "texture": "haki_purple",
+      "source": "NoteAttack/NoteLaser -> ENTITY_NOTE; five source colours selected stably by client entity ID; compact projectile presentation",
+      "scale": 0.8,
+      "y": -0.5
+    },
+    {
+      "profiles": [
+        "b05_uta_posing",
+        "b05_uta_guard"
+      ],
+      "model": "rubble",
+      "texture": "haki_yellow",
+      "source": "Posing/NoteShield -> ENTITY_IMPACT_WAVE.setTexture(haki_yellow); compact native core plus readable score ring",
+      "scale": 0.18,
+      "additive": true
+    },
+    {
+      "profiles": [
+        "b06_wolf_slash"
+      ],
+      "model": "jabra_wolf_projectile",
+      "texture": "jabra_wolf_projectile",
+      "source": "Wolf Rankyaku/LupusFall -> ENTITY_WOLF_PROJECTILE default",
+      "scale": 3,
+      "y": -0.5
+    },
+    {
+      "profiles": [
+        "b06_bird_slash"
+      ],
+      "model": "projectile_slash",
+      "texture": "projectile_slash_gaicho",
+      "source": "RankyakuGaicho -> PROJECTILE_SLASH.setTexture(projectile_slash_gaicho)",
+      "scale": 3
+    },
+    {
+      "profiles": [
+        "b06_net"
+      ],
+      "model": "jabra_wolf_projectile",
+      "texture": "jabra_wolf_projectile",
+      "source": "LocalAreaNetWork -> ENTITY_WOLF_PROJECTILE",
+      "scale": 1
+    },
+    {
+      "profiles": [
+        "b06_gagan"
+      ],
+      "model": "projectile_tooth",
+      "texture": "haki_red",
+      "source": "Gagan -> ENTITY_ENERGY DATA_number1=4; EntityEnergyLayer haki_red",
+      "scale": 3
+    },
+    {
+      "profiles": [
+        "b06_spin"
+      ],
+      "model": "entity_slash",
+      "texture": "slash_blue",
+      "source": "RankyakuAmaneDachi -> ENTITY_SLASH slash_blue idle4",
+      "animation": "source_amane_dachi",
+      "scale": 0.45
+    },
+    {
+      "profiles": [
+        "b07_phoenix_bluebird"
+      ],
+      "model": "fist_small",
+      "texture": "tex_blue",
+      "source": "BlueBird -> ENTITY_DAI_FUNKA DATA_mode=-1; EntityDaiFunkaLayer tex_blue (base setter feather_robe names a missing texture)",
+      "scale": 2.5
+    },
+    {
+      "profiles": [
+        "b07_seiryu_kaifu"
+      ],
+      "model": "projectile_slash",
+      "texture": "slash_green",
+      "source": "Kaifu -> PROJECTILE_SLASH.setTexture(slash_green) PlayAnimationEntity2(vertical)",
+      "scale": 2.5,
+      "animation": "source_kaifu"
+    },
+    {
+      "profiles": [
+        "b07_seiryu_kongokabura"
+      ],
+      "model": "projectile_slash",
+      "texture": "slash_purple",
+      "source": "KongoKabura -> ENTITY_ENERGY DATA_number1=1 slash_purple idle1; slight presentation tilt for frontal readability",
+      "scale": 2,
+      "pitch": 12,
+      "animation": "source_energy_slash"
+    },
+    {
+      "profiles": [
+        "b07_daibutsu_impactwave"
+      ],
+      "model": "rubble",
+      "texture": "tex_white_trans",
+      "source": "ImpactWave -> ENTITY_IMPACT_WAVE.setTexture(tex_white_trans); compact additive core on the finite ray",
+      "scale": 0.4,
+      "additive": true
+    },
+    {
+      "profiles": [
+        "b07_seiryu_borobreath"
+      ],
+      "model": "rubble",
+      "texture": "flame_tiger",
+      "source": "BoroBreath -> ENTITY_IMPACT_WAVE.setTexture(flame_tiger); compact additive core on the finite ray",
+      "scale": 0.4,
+      "additive": true
+    },
+    {
+      "profiles": [
+        "b08_brachio_blackcofee"
+      ],
+      "model": "rubble",
+      "texture": "haki_yellow",
+      "source": "BlackCofee -> ENTITY_IMPACT_WAVE.setTexture(haki_yellow)",
+      "scale": 4,
+      "additive": true
+    },
+    {
+      "profiles": [
+        "b04_mero_pistolkiss"
+      ],
+      "model": "source_heart",
+      "texture": "textures/item/heart",
+      "source": "HeartBulletEntity PROJECTILE_ITEM=ITEM_HEART; item_heart.json -> textures/item/heart.png",
+      "scale": 1
+    }
+  ]
+}

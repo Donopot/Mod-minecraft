@@ -12,3 +12,28 @@ libs/*.jar
 # divers
 *.log
 .DS_Store
+
+# laboratoires, configurations privées et sorties
+**/.runtime/
+**/dist/
+**/__pycache__/
+*.pyc
+*.local.json
+*.local.ps1
+.env
+.env.*
+*.pfx
+*.pem
+*.key
+*.jks
+*.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+*.class
+*.dll
+*.exe
+*.zip
+*.tar.gz
+# ressources graphiques privées du port One Piece
+onepiece/src/main/resources/**/*.png
+onepiece/src/main/resources/**/*.ogg
+onepiece/src/main/resources/**/*.wav

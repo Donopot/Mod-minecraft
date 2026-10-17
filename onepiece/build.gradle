@@ -1,0 +1,55 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+loom {
+	mods {
+		"opworldlike" {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// GeckoLib (animation de mobs) — jar local dans libs/ (à copier dans mods/ au runtime)
+	implementation files('libs/geckolib-fabric-26.3-5.5.7.jar')
+
+	// Player Animation Library (PAL 1.2.8+26.3) — ANIMATIONS DE JOUEUR, la brique qui manquait au port.
+	// C'est la bibliothèque qu'emploie la source (elle dépendait de playeranimator puis de PAL) : sans
+	// elle, une technique ne peut pas animer le corps du joueur, et « on ne voit rien ».
+	// Bibliothèque CLIENT : à copier dans le dossier mods/ du client, pas besoin sur le serveur.
+	implementation files('libs/playeranimlib-26.3-1.2.8.jar')
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	def projectName = project.name
+	inputs.property "projectName", projectName
+
+	from("LICENSE") {
+		rename { "${it}_$projectName"}
+	}
+}

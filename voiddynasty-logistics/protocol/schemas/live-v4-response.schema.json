@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Native cargo mission response v4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reply_to",
+    "code",
+    "session_id",
+    "campaign_id",
+    "world_id",
+    "pair_id",
+    "checkpoint_id",
+    "delivery_id",
+    "state",
+    "payload_hash",
+    "zone",
+    "campaign_name",
+    "last_receipt_id",
+    "protocol_version",
+    "reserve",
+    "completed_count",
+    "available",
+    "native_count",
+    "mission_id"
+  ],
+  "properties": {
+    "reply_to": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "code": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "session_id": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "campaign_id": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "world_id": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "pair_id": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "checkpoint_id": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "delivery_id": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "state": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "payload_hash": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "zone": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "campaign_name": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "last_receipt_id": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "protocol_version": {
+      "const": 4
+    },
+    "reserve": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2560,
+      "multipleOf": 10
+    },
+    "completed_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "available": {
+      "type": "boolean"
+    },
+    "native_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "mission_id": {
+      "enum": [
+        "logistics_first_delivery",
+        "fuel",
+        "provisions",
+        "textiles",
+        "mechanisms",
+        "ranged_weapons",
+        "melee_weapons",
+        "armours",
+        "holy_gifts",
+        "xeno_artefacts",
+        "chaos_goods",
+        "jewellery",
+        "torpedoes",
+        "evacuation"
+      ]
+    }
+  }
+}

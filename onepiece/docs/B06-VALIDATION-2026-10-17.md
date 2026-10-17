@@ -1,0 +1,9 @@
+# Lot06 vérifié en laboratoire — 17 octobre 2026
+
+Loup, Léopard, Tigre à dents de sabre, Girafe et Batto :31 techniques,62 phases PAL distinctes,5 hybrides et5 formes animales complètes. **33 fruits et174 techniques traités**, plus Amaru. Il reste7 Zoans et39 techniques ; le travail continue jusqu'aux40.
+
+Paquet alpha.15 `4b0d5130ba89165318439b28bc1197c8194ee3d4afb1425b586ed51659be6c1a` :535 contrôles B06,59 du socle et307 historiques PASS sur ce même paquet, soit901 contrôles serveur distincts répartis sur deux recettes. 80ticks/s pour les mécaniques,20 pour les historiques ; ce n'est pas une mesure de performances. Les premières recettes échouées sont conservées avec leurs corrections : cibles chevauchant le mur, anciens tests synchrones, immunité intrinsèque des faux joueurs et horloge de capture de l'observateur.
+
+Session graphique complète acteur+observateur :185 captures par rôle,82 évaluations PAL par rôle,46 contrôles par rôle,10 planches effectivement inspectées. Les dimensions/yeux des formes sont contrôlés sur les deux clients. Trois contrôles sur un vrai joueur vérifient le coup normal, l'esquive/immobilisation du contre et son expiration. Les classes client et toutes les ressources sont identiques au paquet final ; seuls les anciens scénarios et les conditions serveur de coupure du vol ont changé depuis ces captures. Acceptation artistique humaine en attente.
+
+Tester-Lot-05 et Tester-Lot-06 sont disponibles ; Tester-OnePiece et Tester-Terrain proposent33fruits. Profil manuel neuf `run-412cf90e9d7f46eaa636a905a6ae4f30`, jamais lancé à la livraison. Changer de fruit reconstruit explicitement le décor du laboratoire ; les pouvoirs ne restaurent jamais le terrain. Aucun monde/mod habituel ni VOID modifié. Adaptations : docs/BATCH-06.md. Preuves : build/b06-alpha15-verification.local.json.

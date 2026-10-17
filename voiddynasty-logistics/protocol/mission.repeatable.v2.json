@@ -1,0 +1,12 @@
+{
+  "mission_id": "logistics_first_delivery",
+  "mission_version": 2,
+  "cargo": [
+    {
+      "item_id": "minecraft:iron_ingot",
+      "count": 64
+    }
+  ],
+  "logistics_reward": 10,
+  "repeatable": true
+}

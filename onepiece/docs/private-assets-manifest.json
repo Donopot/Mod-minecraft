@@ -1,0 +1,3817 @@
+{
+  "schema": 1,
+  "source_package_sha256": "5b2256941311a382e2f6f22027aaa7469dbe4fdb24073b2bfe8d394821b36e93",
+  "note": "Binary resources are restored locally from the matching private mod package. No reference mod JAR or game library is published.",
+  "files": [
+    {
+      "path": "assets/minepiece/sounds/bat_hit_metal.ogg",
+      "sha256": "f8590150f35d9d922a83083d042b841aa5e97d536619fbe00ef815da7c60eeb7",
+      "bytes": 23243
+    },
+    {
+      "path": "assets/minepiece/sounds/clap.ogg",
+      "sha256": "df51e5c8d7f68e79c9273b3e3f8e1c644f3813ad9335db6e113b88c0c22ce373",
+      "bytes": 8018
+    },
+    {
+      "path": "assets/minepiece/sounds/crush.ogg",
+      "sha256": "5df00998517c9a6520ef1078a8f408b4f0fa8942503e0475eec483951124dd41",
+      "bytes": 27875
+    },
+    {
+      "path": "assets/minepiece/sounds/devil_voice.ogg",
+      "sha256": "d0b53ed3a95ae32051e1a898df41b45a5c4ee2de7675efc7d21639a19b862ef7",
+      "bytes": 155249
+    },
+    {
+      "path": "assets/minepiece/sounds/electric_shock.ogg",
+      "sha256": "3fbd219d7015267265598509ff9bad65d7db9798e8e8223c7c5ca19e6641231e",
+      "bytes": 21653
+    },
+    {
+      "path": "assets/minepiece/sounds/electric_short.ogg",
+      "sha256": "bba2b05679f1b3c082c2d7fa3eaae7a5bbc86f2a61f199c7381423e0bc8d5f25",
+      "bytes": 8160
+    },
+    {
+      "path": "assets/minepiece/sounds/fire1.ogg",
+      "sha256": "6d179299787b98ba0a29d5d8073622097c0519059b57320194c1c8d103cb5dfe",
+      "bytes": 56408
+    },
+    {
+      "path": "assets/minepiece/sounds/frame_set.ogg",
+      "sha256": "56f8c83785ce6130a0011be4ea59032256b9cd8c50e066d8e11262254a68e826",
+      "bytes": 13888
+    },
+    {
+      "path": "assets/minepiece/sounds/gacon.ogg",
+      "sha256": "353be6602d64129823fb219630d6a3d282688deddda9714d93523157a4e49a1b",
+      "bytes": 16655
+    },
+    {
+      "path": "assets/minepiece/sounds/gavel.ogg",
+      "sha256": "a05d7c0e9fb96e52c55d52d53601cfb9db947f7a4ff3efe5e8542f71a362c6ad",
+      "bytes": 25904
+    },
+    {
+      "path": "assets/minepiece/sounds/glass_crash.ogg",
+      "sha256": "835d59c05c3bbf8e02d9b505ecedfafb8206cfd1f61d4d273ece216af905c58f",
+      "bytes": 41321
+    },
+    {
+      "path": "assets/minepiece/sounds/gravity.ogg",
+      "sha256": "0f8ed496b0f97301d0c6effb5413d198d2069d410dd290c9550e94f83a12b14b",
+      "bytes": 32583
+    },
+    {
+      "path": "assets/minepiece/sounds/guard_just.ogg",
+      "sha256": "9fce7decfd3290e14d38fcbb6ee41f87b5e96b2d2833ff5a6b9a08c9ab13155a",
+      "bytes": 20799
+    },
+    {
+      "path": "assets/minepiece/sounds/guard_sword.ogg",
+      "sha256": "be93c97d2ab8bd83f212147f7cf3e8aef2dc044a71c5a9a9e25ae0df6cd59eeb",
+      "bytes": 23019
+    },
+    {
+      "path": "assets/minepiece/sounds/gun_shot1.ogg",
+      "sha256": "bd3ab052f6256726250ab91337a43b3d655a5bb9d07d00adf8e586562ea984f0",
+      "bytes": 23208
+    },
+    {
+      "path": "assets/minepiece/sounds/haki_haoshoku.ogg",
+      "sha256": "4dd4f9991b491d164ce974ebc68314bcd5f86c7f96979da167d0014f3ac4cb33",
+      "bytes": 55901
+    },
+    {
+      "path": "assets/minepiece/sounds/high_speed_movement.ogg",
+      "sha256": "1b3f28ee4f86b09fc3db4a64c9cb8a9ea71184cbd7ee7049169ab88bab8a730e",
+      "bytes": 10844
+    },
+    {
+      "path": "assets/minepiece/sounds/hit_strong.ogg",
+      "sha256": "190b2cf82b9c7423388ba20f854a4b7f5bafccadaf57c3a8db069f0101a008e3",
+      "bytes": 16519
+    },
+    {
+      "path": "assets/minepiece/sounds/ice_generate.ogg",
+      "sha256": "c3c387209658c97c2ba1d78993efbe7bd06d19a061b024add01731d99d598b63",
+      "bytes": 44610
+    },
+    {
+      "path": "assets/minepiece/sounds/laser_beam.ogg",
+      "sha256": "322e52a8aca57ec8d3fe70df81de4552f15de00194ab8b8e7f923f58f110548e",
+      "bytes": 14773
+    },
+    {
+      "path": "assets/minepiece/sounds/motor.ogg",
+      "sha256": "86431d92a74e6c46371659a20cdc6426f2b1052b54d787fd236f656f35528126",
+      "bytes": 28181
+    },
+    {
+      "path": "assets/minepiece/sounds/piano_horror.ogg",
+      "sha256": "7228705c6e7d2a9461e02e70b6a3c3623e4bfcc1e6a74340dea7ab8232ab241d",
+      "bytes": 56692
+    },
+    {
+      "path": "assets/minepiece/sounds/punch_hit1.ogg",
+      "sha256": "b80cca785afd270b5838319d90b3ce10fea61661a45ee8f1a10cd3ab53f79fb4",
+      "bytes": 17042
+    },
+    {
+      "path": "assets/minepiece/sounds/rocket.ogg",
+      "sha256": "24b9d1b117393d51db86d566c1c44e8f4fda2da0e405d841759881887a6cbc53",
+      "bytes": 51687
+    },
+    {
+      "path": "assets/minepiece/sounds/slow_motion_end.ogg",
+      "sha256": "1efe09a564ebfff7a126238c5ff753dc376bea564420de8908c53bdeb6a692c4",
+      "bytes": 30387
+    },
+    {
+      "path": "assets/minepiece/sounds/step_seraphim.ogg",
+      "sha256": "19fddfa7f102df6e70744d56d6fca86bac60ece53141d07f7a1ce2a163ad7749",
+      "bytes": 6069
+    },
+    {
+      "path": "assets/minepiece/sounds/stone_crash.ogg",
+      "sha256": "cd9dc420e7da86e9640066ba8bb902fd6d3cdbfb6c62a35b23603b872670712d",
+      "bytes": 112765
+    },
+    {
+      "path": "assets/minepiece/sounds/suzume_living.ogg",
+      "sha256": "438291e04422c1ba78e88c4f5f0af1c4119a99dfd4aac3f6f2b0899d8f8113b7",
+      "bytes": 6522
+    },
+    {
+      "path": "assets/minepiece/sounds/sword_sweep.ogg",
+      "sha256": "36056ff008bed2fc1168e71c3574c9cc8b07e19870bc7db4770a91f47869139b",
+      "bytes": 24030
+    },
+    {
+      "path": "assets/minepiece/sounds/thunder_impact.ogg",
+      "sha256": "919069194a1b2a22a284159cace4f9183469d26771b255731eceb1f50ff101fd",
+      "bytes": 45854
+    },
+    {
+      "path": "assets/minepiece/sounds/tinnitus.ogg",
+      "sha256": "30280d7e6df208e19fb3f4acf72bc15c32f1c0f07a0b98bcc68212241fb43475",
+      "bytes": 33164
+    },
+    {
+      "path": "assets/minepiece/sounds/unlimited_void.ogg",
+      "sha256": "73493f09b45438913fda1b5c17053d6d796a3bf904ed7e6d2248fd08f0a2422b",
+      "bytes": 30375
+    },
+    {
+      "path": "assets/minepiece/sounds/water_splash.ogg",
+      "sha256": "339a334adf5f07f89736d5ea5a057e94818d213619ee35273c808f12bd17dd8f",
+      "bytes": 36887
+    },
+    {
+      "path": "assets/minepiece/sounds/wind_chime.ogg",
+      "sha256": "e7b1ed887f7ebbb17ded5a17f0b7054f7dec33d38f37478d5da7bdbcded1959d",
+      "bytes": 52907
+    },
+    {
+      "path": "assets/minepiece/textures/block/ace.png",
+      "sha256": "e90dac17a0e31eaa9769a9ac56b0cb4ee683576c9d86e05c82143b85015d24a2",
+      "bytes": 7209
+    },
+    {
+      "path": "assets/minepiece/textures/block/cat_claws.png",
+      "sha256": "f72d18284c627a06614ccc5de390bf42aa2eb1f1c24ebd1815a82cdf231e73f4",
+      "bytes": 3350
+    },
+    {
+      "path": "assets/minepiece/textures/block/clothes_krieg.png",
+      "sha256": "4f96ee81385c8f2ca4d4eef72eae45a187046d5d9945e9e2674b900f57810e91",
+      "bytes": 5688
+    },
+    {
+      "path": "assets/minepiece/textures/block/enma.png",
+      "sha256": "8a3f8def091134efeaba0646536de6a10325ed908117850607ae05f557586591",
+      "bytes": 13767
+    },
+    {
+      "path": "assets/minepiece/textures/block/griffon.png",
+      "sha256": "8be42427c07b564727065db477cf65fa5f616d8720b4a3e8dcc0f91b213d2535",
+      "bytes": 7271
+    },
+    {
+      "path": "assets/minepiece/textures/block/hook.png",
+      "sha256": "a57906fdaad97161f7814b8e8be9b95aba069acbaf410ea3bd5499e22c1b7358",
+      "bytes": 1204
+    },
+    {
+      "path": "assets/minepiece/textures/block/jitte.png",
+      "sha256": "07f64930a3748d7479a1c01be4f7a31028884b2d6d19263741109a9adadcbeec",
+      "bytes": 317
+    },
+    {
+      "path": "assets/minepiece/textures/block/kikoku.png",
+      "sha256": "12f74af11625a84a9dd03424c289375f3657e1374c4949348f112fad2d9b6b74",
+      "bytes": 17887
+    },
+    {
+      "path": "assets/minepiece/textures/block/kiribachi.png",
+      "sha256": "e1aafc1ebb93a321d95f860d89a965ed8a459d28874746c720d3956d45e2ef73",
+      "bytes": 3394
+    },
+    {
+      "path": "assets/minepiece/textures/block/meat_on_the_bone.png",
+      "sha256": "2f6194fe083f9e5523ddb426fcbbb2da21ec9c4cbcb8dbaaccbe30602f8bc126",
+      "bytes": 2055
+    },
+    {
+      "path": "assets/minepiece/textures/block/metal_rod.png",
+      "sha256": "2bd2f28087239aa0074c1c52932ad2f927a349b6dc67addb71bea648217b89fe",
+      "bytes": 635
+    },
+    {
+      "path": "assets/minepiece/textures/block/mogura.png",
+      "sha256": "8958532d1c59ab977ba69f707e7f6dc25524237431662885e047a1c04eab2ac2",
+      "bytes": 997
+    },
+    {
+      "path": "assets/minepiece/textures/block/murakumogiri.png",
+      "sha256": "092755554d9c6fe7d0bc872afd2a6ddc271862ec705314fa22a0647c5c9be11d",
+      "bytes": 1573
+    },
+    {
+      "path": "assets/minepiece/textures/block/senriku.png",
+      "sha256": "d693b70afea49617c756a9c314ce693ae78eb5d50b50bfb9d9e800c6cbe84591",
+      "bytes": 1820
+    },
+    {
+      "path": "assets/minepiece/textures/block/shusui.png",
+      "sha256": "25cc0bfab797b639b750eb9d057bfa2e9f9082449f860ec9f1559a4b6edfc62b",
+      "bytes": 1558
+    },
+    {
+      "path": "assets/minepiece/textures/block/spear.png",
+      "sha256": "1f26ab206641005ce3bbce1ce29f10de56a85a4c132630fc02498c084256e0fb",
+      "bytes": 1168
+    },
+    {
+      "path": "assets/minepiece/textures/block/spear_2.png",
+      "sha256": "82391a49426d563bdf66de09681d296f9721204e8c72094c6838d17412b8f23f",
+      "bytes": 1265
+    },
+    {
+      "path": "assets/minepiece/textures/block/tex_pikapika_animation.png",
+      "sha256": "1c94b741d7c6612f10d174b31a7cb4e5b047703019da5f3bdb7195378e1e0670",
+      "bytes": 6745
+    },
+    {
+      "path": "assets/minepiece/textures/block/uta_lance.png",
+      "sha256": "9e0ffe286debd483d8700c669ed6120f9c325e333c9a7003777a04a4846894e7",
+      "bytes": 2035
+    },
+    {
+      "path": "assets/minepiece/textures/block/uta_shield.png",
+      "sha256": "5cdfce2188bbefa865323d8d8ea4858c13673cab7ae765c8fd46f32f871c76e0",
+      "bytes": 7954
+    },
+    {
+      "path": "assets/minepiece/textures/block/wado_ichimonji.png",
+      "sha256": "74114b4d9a96bdffcc3d08e62832f40903b8ca8bc0e286df638f8dcb448033b6",
+      "bytes": 1491
+    },
+    {
+      "path": "assets/minepiece/textures/block/yoru.png",
+      "sha256": "514a2ab0b6191966610e429b1b2ac41c403bed8240aa960b394b272e778b9b4d",
+      "bytes": 18362
+    },
+    {
+      "path": "assets/minepiece/textures/entities/abyss.png",
+      "sha256": "94a8047fbd993d52752c432b91407ac5a61867d26ae3868099d11f24e82c4c0c",
+      "bytes": 1892
+    },
+    {
+      "path": "assets/minepiece/textures/entities/amaru_body.png",
+      "sha256": "34d1daecb8ec1d43214099cc91af53a7ff035d1a2efe241e845cbdb95e1a3995",
+      "bytes": 5015
+    },
+    {
+      "path": "assets/minepiece/textures/entities/amaru_energy.png",
+      "sha256": "5882cef452ae052d71ddee641083ec8cbc54a3a3d7541b22db45c211e22404c4",
+      "bytes": 303
+    },
+    {
+      "path": "assets/minepiece/textures/entities/armament_haki.png",
+      "sha256": "ae97b13d7e95909fd86e665925f95a36ccf6cb99b93f44445a1fcf431668f7d5",
+      "bytes": 2602
+    },
+    {
+      "path": "assets/minepiece/textures/entities/aroaro_arrow.png",
+      "sha256": "3b7080e1f0c50e72b5e563eae75727032fce470979d8c7d2a3b5efc06af6e15e",
+      "bytes": 453
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b06_giraffe_walk.png",
+      "sha256": "e60ee5b5ee6de07f1f0bb6b6c92c88eff1113cb1052211757972c48655d86ebd",
+      "bytes": 14886
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b06_leopard_walk.png",
+      "sha256": "1c8228fbbfcf26835c05d09054951413b18d323feed4e40858ac1c9c26d29d53",
+      "bytes": 9955
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_daibutsu.png",
+      "sha256": "c83e565f9cf4d7a814e991c6285d2720cb60a8a2036a67ee04bf654ad4f4a86e",
+      "bytes": 1206
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_0.png",
+      "sha256": "42c1788c360338b40bef7393ae13bfc23e7257e793ad9394f75ae1f175a5c928",
+      "bytes": 13208
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_1.png",
+      "sha256": "2659d06d09e0c1b3c9ed89fa5505d450d32bc6f2a528cac2575482cfdc33ea3e",
+      "bytes": 12838
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_2.png",
+      "sha256": "b03c74bb03f5e110b083e9b48e89871110406242bd3a9320c025ede382913528",
+      "bytes": 12629
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_3.png",
+      "sha256": "eedec2d6ecc21a7151db87fd4c625848d7f39dc5d5f1f9d20469854b364dd52c",
+      "bytes": 13096
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_4.png",
+      "sha256": "bb6f9816406a01895222de57c0185dc3b987929a046473538495f7fccf8cebde",
+      "bytes": 13099
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_5.png",
+      "sha256": "1acc8695f490ca673e78af8741e6e1963064eb103059131a46ec6e2eb256ac8b",
+      "bytes": 12802
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_6.png",
+      "sha256": "ea91139c09979afeca14b89ef7e3decb4f0fc8784ac96464c08f71afae19ad1a",
+      "bytes": 13117
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_flame_7.png",
+      "sha256": "6c7225a4a1db0ef92cd15803aea843901cff3145669437df610a1676f84848b9",
+      "bytes": 12879
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_phoenix_fly.png",
+      "sha256": "fda0e1bf11598f812c9f86ef79b6f120b06618ff792f4f25d2587dc814f08630",
+      "bytes": 12907
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b07_pteranodon_fly.png",
+      "sha256": "01ad54b16a35ec7332dbed41b9aa936f47303d81a8fe8f02b4a57f3c9a08afce",
+      "bytes": 10330
+    },
+    {
+      "path": "assets/minepiece/textures/entities/b08_brachiosaurus_guard.png",
+      "sha256": "dabbd3aa1ac62e10be9b18a214f88db765ab6238896cda36dac909c8c9be4f0c",
+      "bytes": 26866
+    },
+    {
+      "path": "assets/minepiece/textures/entities/biscuit_warrrior.png",
+      "sha256": "3a945c425771e22d488bce042b61705ec3b12b59c07a95c3cc2bdd0046ee1554",
+      "bytes": 23429
+    },
+    {
+      "path": "assets/minepiece/textures/entities/clear.png",
+      "sha256": "9423dbf97e033d531f681d5a6856eab97f7a0745438d00bf6c3cda8b4d9a35ac",
+      "bytes": 83
+    },
+    {
+      "path": "assets/minepiece/textures/entities/crack.png",
+      "sha256": "3fc11eb05d3a35f8f36a783a347a1ec619f3d2cba0ad9e09d09d87fe58f9fc94",
+      "bytes": 72213
+    },
+    {
+      "path": "assets/minepiece/textures/entities/enel_drum.png",
+      "sha256": "1a7c4f9f534d2714f20191713bc96467079c70b352719a77708a77f9c4bd03c1",
+      "bytes": 7595
+    },
+    {
+      "path": "assets/minepiece/textures/entities/feather_robe_black.png",
+      "sha256": "f1cf8b732cf3817b79b8a02ecfa2c3df616d94353d91e191fb7dbdee4d77aaa6",
+      "bytes": 608
+    },
+    {
+      "path": "assets/minepiece/textures/entities/feather_robe_lightblue.png",
+      "sha256": "7b088fbf81a4dcf6ae9a30809f43dd1a03cade669c662417dd9261b1e45188c9",
+      "bytes": 617
+    },
+    {
+      "path": "assets/minepiece/textures/entities/feather_robe_white.png",
+      "sha256": "1a6f4456f5144d93f3b2c8ac39147694438219b78099767d9ebe238ba962a4e3",
+      "bytes": 608
+    },
+    {
+      "path": "assets/minepiece/textures/entities/flame_tiger.png",
+      "sha256": "f92339889ec047cdb67e9e5b9f83500ebdc494327860fbe3dcb93c1e53b8cdba",
+      "bytes": 2632
+    },
+    {
+      "path": "assets/minepiece/textures/entities/gecko_moria.png",
+      "sha256": "d75377d5e71180d4a6219f750b16ff361862eaf3de788ebe6d6c00ec78a499b4",
+      "bytes": 3408
+    },
+    {
+      "path": "assets/minepiece/textures/entities/gecko_moria_2.png",
+      "sha256": "04479f33da14ae5a3f5115b108d48bce0bf26e6d4b5bb4bc496d080a7927aa46",
+      "bytes": 3080
+    },
+    {
+      "path": "assets/minepiece/textures/entities/ghost1_1.png",
+      "sha256": "3e82312b8a6709a3416e024f3d82424ef75036d5c9925baa6942075160450c5b",
+      "bytes": 475
+    },
+    {
+      "path": "assets/minepiece/textures/entities/ghost1_2.png",
+      "sha256": "3106d155b3b349c3c0d4d1af5325fd181a5b78c19bda77dcd8a9a11725b3e23b",
+      "bytes": 475
+    },
+    {
+      "path": "assets/minepiece/textures/entities/gryphon_trans.png",
+      "sha256": "0d9e4d9f9d8ead3aeccc8de89a88e7d1c1cfb3cc29ff12cce5cc6f7ea5d1988e",
+      "bytes": 28546
+    },
+    {
+      "path": "assets/minepiece/textures/entities/haki_blue.png",
+      "sha256": "11a7a22d1b29ccf4e3a657312c77ae3473a0036e61a0e284abc758c144ec97d0",
+      "bytes": 136
+    },
+    {
+      "path": "assets/minepiece/textures/entities/haki_green.png",
+      "sha256": "cfdd99acd25f7da6cb7060eae24ee56ee164a9f752e1c3ca323aa39da7cf7473",
+      "bytes": 140
+    },
+    {
+      "path": "assets/minepiece/textures/entities/haki_purple.png",
+      "sha256": "1268f8a1164d5583486856b7cdd22988f23bf132acd0cfba7fc2900daa2b0446",
+      "bytes": 107
+    },
+    {
+      "path": "assets/minepiece/textures/entities/haki_red.png",
+      "sha256": "5c902a5b4cb6c1edbd731483ae63d87bbd32620fd17525171203a3f3d4998358",
+      "bytes": 105
+    },
+    {
+      "path": "assets/minepiece/textures/entities/haki_yellow.png",
+      "sha256": "8dca088b934034abea7b26fc887f543650a33ec59d108382af1b3113c5d222ac",
+      "bytes": 577
+    },
+    {
+      "path": "assets/minepiece/textures/entities/horns_kaido.png",
+      "sha256": "cbf207142b19a6bd37e5618aa95c030abf0190b958f3be28694b7e94e60565b7",
+      "bytes": 482
+    },
+    {
+      "path": "assets/minepiece/textures/entities/horns_yamato.png",
+      "sha256": "2709691aebd502d8404a06e0abe96cd5561905c07d6f1cb9fff2e19a351bc71c",
+      "bytes": 3415
+    },
+    {
+      "path": "assets/minepiece/textures/entities/imu.png",
+      "sha256": "f47394a153d55e4f5ab5eba7bedd1938c64b38d55bfa48e72df75f0bf14f9da0",
+      "bytes": 1807
+    },
+    {
+      "path": "assets/minepiece/textures/entities/imu_arrow.png",
+      "sha256": "19b919f1ceab20c14cb744794b9c1d1514f60db261360d2d4cf691ba51f51ec3",
+      "bytes": 1650
+    },
+    {
+      "path": "assets/minepiece/textures/entities/inu_inu_okuchinomakami_humanbeast.png",
+      "sha256": "d13ed9040058c0d4131bd870c8b421073ee8ad0de8e9a81a56ecfbc9d0ab8fae",
+      "bytes": 5920
+    },
+    {
+      "path": "assets/minepiece/textures/entities/inu_inu_wolf_humanbeast.png",
+      "sha256": "3fb43cf7076555b673760cc9a444b229bed89f364b43df27739ceb91e6734993",
+      "bytes": 4450
+    },
+    {
+      "path": "assets/minepiece/textures/entities/inugami_guren.png",
+      "sha256": "718dd17b57782d3c66f40abda7b4ae7ae216f0b200bb7811f7e11a6a68e65e34",
+      "bytes": 2929
+    },
+    {
+      "path": "assets/minepiece/textures/entities/jabra_wolf_projectile.png",
+      "sha256": "79c05e2dcd3ebd32fc57ab98f9c5134d793e8ec498b4ffb267f0429b5e91159c",
+      "bytes": 993
+    },
+    {
+      "path": "assets/minepiece/textures/entities/kaidou_beast.png",
+      "sha256": "331d9acc4cc9eff7c486d05eb9ad138cc39bca3dec6eb6ce2ba0ce00938a62bd",
+      "bytes": 64221
+    },
+    {
+      "path": "assets/minepiece/textures/entities/kaidou_humanbeast.png",
+      "sha256": "1e173e6a7a1f7fbd0f4df27fda7b3d26aebd139e0fc6489fb42a96b5cfc39447",
+      "bytes": 166786
+    },
+    {
+      "path": "assets/minepiece/textures/entities/kirakira_form2.png",
+      "sha256": "ee2ead1d61e95515b00a2ad48f336d1e269ca14a34472af464689c671bdf0e15",
+      "bytes": 11842
+    },
+    {
+      "path": "assets/minepiece/textures/entities/kumac.png",
+      "sha256": "1c8aee1bbd201f5cc2109742f3c3d45b59631a709a86df26fa96bbd4d1bd7a2a",
+      "bytes": 4959
+    },
+    {
+      "path": "assets/minepiece/textures/entities/luffy.png",
+      "sha256": "2362e3832859b05e2dc1d4c4068317be86e6eff939a3b55e422c670b66c4d83e",
+      "bytes": 3566
+    },
+    {
+      "path": "assets/minepiece/textures/entities/luffy_gear2.png",
+      "sha256": "8dbb3fba12d1488f4d270c81c3b0ad01ea978e450a3cab4a69ac0727c317cc3a",
+      "bytes": 3541
+    },
+    {
+      "path": "assets/minepiece/textures/entities/meteor.png",
+      "sha256": "45eda8f9eb3173b130689107fd064970dd0ca2ae58f68cd8fc3bcb27b62aaaf8",
+      "bytes": 32966
+    },
+    {
+      "path": "assets/minepiece/textures/entities/missile.png",
+      "sha256": "765ffea618100db66f22e4085db840547354eaed8a9e7fa6278a2262b7b8a10f",
+      "bytes": 898
+    },
+    {
+      "path": "assets/minepiece/textures/entities/mochi.png",
+      "sha256": "e87c5d22119296c2efd2fee68177d59047d5c6b7144eb49052e9829d3373607d",
+      "bytes": 683
+    },
+    {
+      "path": "assets/minepiece/textures/entities/mori_mori_flower.png",
+      "sha256": "9532ef44a90b4eb02aad9e0ae272cdd55e792af20c83fda50546c17cfaf5ba47",
+      "bytes": 651
+    },
+    {
+      "path": "assets/minepiece/textures/entities/nekoneko_leopard_humanbeast.png",
+      "sha256": "fd99165cd1e6ace6e3b256cbba5bff072d57d25e603a472262b7df3828c31c7c",
+      "bytes": 11139
+    },
+    {
+      "path": "assets/minepiece/textures/entities/nekoneko_sabertiger_humanbeast.png",
+      "sha256": "3adcb984ed8b92993191289caac47e468fb9922320338e9911fcf81674e35207",
+      "bytes": 7491
+    },
+    {
+      "path": "assets/minepiece/textures/entities/note_warrior1.png",
+      "sha256": "4b06fb79ea00b5b7d48890f701be11be41f3b287915216ca711d48f5e09637a3",
+      "bytes": 2725
+    },
+    {
+      "path": "assets/minepiece/textures/entities/note_warrior2.png",
+      "sha256": "8a7af47dec897edacd50841ede9561c592aec225ce9bb749d4cd8fa12ba0df50",
+      "bytes": 2744
+    },
+    {
+      "path": "assets/minepiece/textures/entities/paws.png",
+      "sha256": "dae9dccddbce12e6f202f565364f4daecf43e20c85e859bad7cc0c0403b6581f",
+      "bytes": 250
+    },
+    {
+      "path": "assets/minepiece/textures/entities/projectile_slash.png",
+      "sha256": "312bede85ed8a96d29f93a52db6c5321bf24eba3128cc5d8544d5d3233a30bb2",
+      "bytes": 170
+    },
+    {
+      "path": "assets/minepiece/textures/entities/projectile_slash_gaicho.png",
+      "sha256": "71cde62f21db193fe6694ac08f11e0b2f0cba842e4e55e45a442219b0d0d2af2",
+      "bytes": 1753
+    },
+    {
+      "path": "assets/minepiece/textures/entities/projectile_slash_red.png",
+      "sha256": "37e196c0691e858d4c2f356b1880ddbd99971fb0288729b24a29047b59ea6187",
+      "bytes": 171
+    },
+    {
+      "path": "assets/minepiece/textures/entities/prometheus.png",
+      "sha256": "8ec7d487d2d94bd7fa56c0d800ebf2a96a1bad912854105db1ccd3e744396ba3",
+      "bytes": 6343
+    },
+    {
+      "path": "assets/minepiece/textures/entities/rock_fragment.png",
+      "sha256": "ea9d6c16b0b8c26e7bfced1d0918f80a258a638c446783181c4c24e878304980",
+      "bytes": 2438
+    },
+    {
+      "path": "assets/minepiece/textures/entities/ryu_ryu_brachiosaurus_humanbeast.png",
+      "sha256": "d09adec7966604a824b86765e1cf0580bcd895fdeb2517322cc0df1589fe71b7",
+      "bytes": 802
+    },
+    {
+      "path": "assets/minepiece/textures/entities/ryu_ryu_pachycephalosaurus_humanbeast.png",
+      "sha256": "6c621b8e5a4dbf0661aedc3152493bb9c521fbb9f18e2d4c88633e3564be8895",
+      "bytes": 1064
+    },
+    {
+      "path": "assets/minepiece/textures/entities/ryu_ryu_pteranodon_humanbeast.png",
+      "sha256": "a7f6e68b431766767a6cf7306a0e603da005931d287b0d80b9ab443af164ec0e",
+      "bytes": 653
+    },
+    {
+      "path": "assets/minepiece/textures/entities/sengoku_humanbeast.png",
+      "sha256": "c8a02e46f881bf7e4cd18aa5eccbc3bfab6bb9c598ce7ff13fad0506eb48c3ad",
+      "bytes": 10364
+    },
+    {
+      "path": "assets/minepiece/textures/entities/slash_blue.png",
+      "sha256": "199c0dae231495ef71b6bdce75bbc91a5150c3749392dbe9e106035d7e35cab1",
+      "bytes": 174
+    },
+    {
+      "path": "assets/minepiece/textures/entities/slash_green.png",
+      "sha256": "5a15e69bbf0e698984783142f6f2c8214e08573352da8ead0bdc62955b071c6b",
+      "bytes": 178
+    },
+    {
+      "path": "assets/minepiece/textures/entities/slash_purple.png",
+      "sha256": "ee8bd45a7a171c5d5faed2db8b64e9df18857ad81a67bf0f93798afa3b57f922",
+      "bytes": 176
+    },
+    {
+      "path": "assets/minepiece/textures/entities/slash_sand.png",
+      "sha256": "06792992ba5df7bdfcf50d479807aa9b8c3243112e888d54392e6e3c048f0028",
+      "bytes": 582
+    },
+    {
+      "path": "assets/minepiece/textures/entities/slash_white.png",
+      "sha256": "312bede85ed8a96d29f93a52db6c5321bf24eba3128cc5d8544d5d3233a30bb2",
+      "bytes": 170
+    },
+    {
+      "path": "assets/minepiece/textures/entities/supasupa_form2.png",
+      "sha256": "e4dd7d1c7d30d504a33c0aaa837f103c3cad46c9bad85ccdac2ec141782fb5b7",
+      "bytes": 1486
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_black.png",
+      "sha256": "8ec1d6e0f34c511e2f58ac73cb8656ed66bdb8dded7d225e96ff4340c108aed5",
+      "bytes": 108
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_blue.png",
+      "sha256": "f11ddd60cb2bf42e3ab7f59a2612748c2c213301504ef7941ef6ab3c22f11718",
+      "bytes": 738
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_ice.png",
+      "sha256": "542850e7e8f65414027693195de4047baffda7612b72d53963f66f07ac60b7f5",
+      "bytes": 17603
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_magma.png",
+      "sha256": "6b3c732c294b379a582ee2c0eda332a17023ac2d9103cb20b5b1a7efd91facda",
+      "bytes": 3376
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_stone.png",
+      "sha256": "ea9d6c16b0b8c26e7bfced1d0918f80a258a638c446783181c4c24e878304980",
+      "bytes": 2438
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_white.png",
+      "sha256": "21cd84294f633e8d3e049d1bc4062a35681dbd4780260e2f285003d928ec7ef3",
+      "bytes": 411
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_white2.png",
+      "sha256": "e04f3af69e4845d70aafc36834ad600b38526e84d4109f8c5a893b813dfa6752",
+      "bytes": 86
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_white3.png",
+      "sha256": "2cf107b209c0b55fad648d19127365c0a7e7e54f07066337404e3f156c91cb80",
+      "bytes": 367
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_white_trans.png",
+      "sha256": "09f04b22d45b1f7f2a00b4ceb42cee5fc5ea4efef866d77efe60f619dad752f8",
+      "bytes": 106
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tex_wood.png",
+      "sha256": "802c1db43421ce21631dc7948121d0ae12afca4b333f6f5c117a321ffde8d00a",
+      "bytes": 24301
+    },
+    {
+      "path": "assets/minepiece/textures/entities/toritori_phoenix_humanbeast.png",
+      "sha256": "55eecb3c3527344f3cdce9e39a3f99c60e778b49a36ddbfbf0481027f30d02ca",
+      "bytes": 13680
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tot_musica_1.png",
+      "sha256": "809bd519d1cd4c5600ff3c25cc38f8c930e8f210119a8ae6a977425bc6546f0c",
+      "bytes": 15349
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tot_musica_2.png",
+      "sha256": "26d623ef80fc3defd648440d595970128b656867adb681395623ee5251e0cf18",
+      "bytes": 23254
+    },
+    {
+      "path": "assets/minepiece/textures/entities/tot_musica_3.png",
+      "sha256": "de7df8c87a36bf8b1147bf679bdc1fa07675b884ababb31809b3a512f60c27a3",
+      "bytes": 26446
+    },
+    {
+      "path": "assets/minepiece/textures/entities/transform_hito_hito_daibutsu_humanbeast.png",
+      "sha256": "7fdc81c461b4d027f682583b87b5a0a958d91f27837cfb08c1aa79caaeec16a7",
+      "bytes": 9639
+    },
+    {
+      "path": "assets/minepiece/textures/entities/transform_inu_inu_wolf_humanbeast.png",
+      "sha256": "4a07d0551885b195d23c790669207c6392f824a0e91f6a97e4e6ccb0fca416b1",
+      "bytes": 995
+    },
+    {
+      "path": "assets/minepiece/textures/entities/transform_ryu_ryu_pachycephalosaurus_humanbeast.png",
+      "sha256": "f51b5ea0991885cc791fcceba4377ec97594afef752fb2d6085df26b91e97650",
+      "bytes": 695
+    },
+    {
+      "path": "assets/minepiece/textures/entities/uouo_dragon_human_beast.png",
+      "sha256": "af70d62e637b7acfa9c63b8e5c6d05f1a2e45047ea8c2b79c16949dc78635218",
+      "bytes": 4168
+    },
+    {
+      "path": "assets/minepiece/textures/entities/uouo_dragon_human_beast_skin.png",
+      "sha256": "dd58f01db615009da62f4a025ee8ecc08fb73b085ee0a04bb003f11499761141",
+      "bytes": 2291
+    },
+    {
+      "path": "assets/minepiece/textures/entities/ushi_ushi_giraffe_humanbeast.png",
+      "sha256": "3075925161a853944d63c031b195f0921f6352160e6dca43728f515db3286b1c",
+      "bytes": 3818
+    },
+    {
+      "path": "assets/minepiece/textures/entities/uta.png",
+      "sha256": "dbaad58269a4c3f14750647a962dad1dba3ffd0814dae31a2cfce902553e4f59",
+      "bytes": 8419
+    },
+    {
+      "path": "assets/minepiece/textures/entities/wing_bat_bat.png",
+      "sha256": "203833474d6f3180e1c21d0ef02336e52efd3db04faa85be1e2e3293b2af07a7",
+      "bytes": 1006
+    },
+    {
+      "path": "assets/minepiece/textures/entities/wings_lunarian_large.png",
+      "sha256": "28766252e07677e58270b8fcec18a1c49c8840fb56c2bba332a38d3303d0476a",
+      "bytes": 1493
+    },
+    {
+      "path": "assets/minepiece/textures/entities/wings_lunarian_small.png",
+      "sha256": "6d355eb81e28237223e7064168e23f7264690f78c7157195589793344def96b2",
+      "bytes": 861
+    },
+    {
+      "path": "assets/minepiece/textures/entities/zeus.png",
+      "sha256": "a6a29721f9d06e33e6d2555aed5c0e2c27e187148aa649d35cadc16fcdc9f2df",
+      "bytes": 591
+    },
+    {
+      "path": "assets/minepiece/textures/entities/zeus_black.png",
+      "sha256": "44c0e82b389cbe3ac327eec3bf7cf1efe6e53c7050f05677897f0da8ff1a5b83",
+      "bytes": 582
+    },
+    {
+      "path": "assets/minepiece/textures/item/biscuit.png",
+      "sha256": "df78fa938fbe3ec95fc316620960851bb2afd4d01f9a5f53addb0d2ee6647dae",
+      "bytes": 936
+    },
+    {
+      "path": "assets/minepiece/textures/item/chakram.png",
+      "sha256": "d1729dfd97180906aa8049d8ade61d3c13bdf1818688c0cb812feb55d6ca21c5",
+      "bytes": 145
+    },
+    {
+      "path": "assets/minepiece/textures/item/clear.png",
+      "sha256": "7074f74f39a8ad752db14a876089e9867d92b2425c37a6d44a74660f900a877d",
+      "bytes": 75
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_ace_helmet.png",
+      "sha256": "1f91a65a2f52d1066c0e3bddbf97d347ff06a1d30d7a8ce6b40c86f20c05e8a6",
+      "bytes": 405
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_crocodile_chestplate.png",
+      "sha256": "f0319cea24409d78c77c2e3c9e7d7872e163c3dbc363103315af274e9fa5e42e",
+      "bytes": 433
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_franky_chestplate.png",
+      "sha256": "8f387de5c60588401b30ed4bf35055f2cdae700521d9254d585f3667512a78f3",
+      "bytes": 575
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_luffy_boots.png",
+      "sha256": "c1caa6d3318788c0c51860db48a1440ff3d814bd63e888645db597e943fb14b5",
+      "bytes": 106
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_luffy_chestplate.png",
+      "sha256": "3c844d0b818d47a7bb0a6068b7ce313eeb16ced09d1b770e200102ac43f908a6",
+      "bytes": 458
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_luffy_helmet.png",
+      "sha256": "d30f0058b24b1ef08045e563ad496b6cbb8fc4db72a9db5a4e73044adff29cf0",
+      "bytes": 305
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_luffy_leggings.png",
+      "sha256": "a36ae225addfbfbf2a821d862039c0918be8396ee8c5b30b5df57a039471aa79",
+      "bytes": 236
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_mihawk_helmet.png",
+      "sha256": "7fcca2cfd8cb296010afcb55fa6f08139367d755cea74303d9b75c0a1f85cdc8",
+      "bytes": 779
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_sabo_helmet.png",
+      "sha256": "2961ad86922721cc512edbbbb228906c3053dac8459b96d1f976b9e59db40f2e",
+      "bytes": 420
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_uta.png",
+      "sha256": "0d1d1fa0432074af7f4bc7a44240e3b4dc3e092da36cf15bc769bed0f2d17b85",
+      "bytes": 4921
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_uta2.png",
+      "sha256": "e972d7a68dc27a61d116194f35c7b2d7784c84edc0b89ff4fa75e741c991f6ef",
+      "bytes": 17456
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_zoro_boots.png",
+      "sha256": "64283ebfd085d3008dc063c1ae4f80bb2244a8ec563fd802d2c56237d2207d1a",
+      "bytes": 114
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_zoro_chestplate.png",
+      "sha256": "3df70cf2a28d7cfe38571adf935f52d532cce02933cd2bf8fdb06b2bab739075",
+      "bytes": 273
+    },
+    {
+      "path": "assets/minepiece/textures/item/clothes_zoro_leggings.png",
+      "sha256": "95354c480a2a1266f9ae9c3f1f2e5a4e882006d99fe12bf51f1796a395ee5c48",
+      "bytes": 430
+    },
+    {
+      "path": "assets/minepiece/textures/item/cutlass.png",
+      "sha256": "09e417a5b26082ef0a2e9788bf2b2462c9b0f65976a5c3791ac243317d5eb01b",
+      "bytes": 28603
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_aro_aro.png",
+      "sha256": "3c9bf7df04c4f68c7bef42d1a45328f15d459e4efeb84656ee7113dc6e55e1f0",
+      "bytes": 292
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_batto_batto.png",
+      "sha256": "6d9a9a949ef669075c2ad5c230c57ecbc6b975cd3619db2bec20a9496ae89fc0",
+      "bytes": 257
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_bisu_bisu.png",
+      "sha256": "bff24e2461d42af5545ae7363fdfb71058310eb83ab5c8ba2f8410af70f7d0f5",
+      "bytes": 247
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_bomu_bomu.png",
+      "sha256": "706cc8755c7bd3c39fc6f00a3ba729fa7bf119bdecb11f26c1e497312f8e9a6f",
+      "bytes": 326
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_gomu_gomu.png",
+      "sha256": "16f4d1aa42ae5a26af5ca606a7b4215022d309f44c6a6bc49092889d92f1c406",
+      "bytes": 352
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_goro_goro.png",
+      "sha256": "d6be18deaedb61ac526fbb4723ffed43584f34b53a62739d2a43dafb32b8f029",
+      "bytes": 335
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_gura_gura.png",
+      "sha256": "267f45d854519aa59e554e07dd740980acb7a68620f86c3cfa4b6c8add808df7",
+      "bytes": 345
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_hie_hie.png",
+      "sha256": "553d5339fe6ee3c5bb1640c5d68317d54f54d77f0f092d4cf84e00a76f79d67d",
+      "bytes": 365
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_hitohito_daibutsu.png",
+      "sha256": "b176c9267330f975808d470d6b0e89e18c2df02de34ddb85bff4166486fbd657",
+      "bytes": 271
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_horo_horo.png",
+      "sha256": "805be221d316b5dc6c2acf1f3edde2b255f34155c54b187dd8f4f052f8d478aa",
+      "bytes": 313
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_imu.png",
+      "sha256": "9f739eaf1fd4cace8e6846611e983485a8e7970427471dac2c9003460d5be6ea",
+      "bytes": 276
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_inu_inu_okuchi_no_makami.png",
+      "sha256": "0018fb63611383fb2ae63492290ff332068a1837a76f419d394f436de9b980cc",
+      "bytes": 334
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_inu_inu_wolf.png",
+      "sha256": "167d1cf027b95f137c498dc501f6de823a01dabf3ba9adaa02a4162b474fa206",
+      "bytes": 541
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_kage_kage.png",
+      "sha256": "841f4df14eac3d82d49f56fb46c3f0480aba8070efdc7d130e7a425409ffb5a3",
+      "bytes": 334
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_kira_kira.png",
+      "sha256": "bcde419147ff06d46d1baf9ab3a897aa2d8dd7d02c9bc30feb9cd51ea44d2acd",
+      "bytes": 396
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_kiro_kiro.png",
+      "sha256": "250211c10564d29332e0d316bd7b730540b5abee784578644321787f4a88912b",
+      "bytes": 247
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_magu_magu.png",
+      "sha256": "27d6976a3f0ebfb4ca0bd6d22248692d26f53d534839566c8e07b4c2260d0c96",
+      "bytes": 383
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_mera_mera.png",
+      "sha256": "a21c3b956d23614ac6ed46f70fea0deef4c6504e81f3a41379ce99c538f46e47",
+      "bytes": 295
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_mero_mero.png",
+      "sha256": "e063dfe741eefadcb22aa237e46b31948a886b584e6a50f29b1511393d329d8c",
+      "bytes": 364
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_mochi_mochi.png",
+      "sha256": "ee7669689dea925d86019030f326848d7aea134edd33fd3d02b5833758f83604",
+      "bytes": 367
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_moku_moku.png",
+      "sha256": "60976bd8c3b676a0b66502f678795ecff17351954bd49aa7d29f1f65d62db9a3",
+      "bytes": 349
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_mori_mori.png",
+      "sha256": "2b25402d237ed8edc4ffe243a1bfb38bb904156d9500237a525f299ae697f705",
+      "bytes": 337
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_neko_neko_leopard.png",
+      "sha256": "93faae74e08cff28d78315fabb80765cb2fbb1fb4f17d4a125eac006bd428005",
+      "bytes": 348
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_neko_neko_sabertiger.png",
+      "sha256": "7fedcabd8e78ef64e3c3556107fa4e90dde7d70e8449ab70c5509b047688a3bd",
+      "bytes": 293
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_nikyu_nikyu.png",
+      "sha256": "66b6a955e956918036865aeb27c54c57e8e5bfb7de4f36dcad5d0c2c74cef12a",
+      "bytes": 369
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_ope_ope.png",
+      "sha256": "c17d4ae643912804f954bc13f276f80d60db19a5a01728ef934bbea7cbb3e7a0",
+      "bytes": 311
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_pika_pika.png",
+      "sha256": "90c8528626a9787c4a13ca841deff919a545b51a8879a8fb44ce9789367901df",
+      "bytes": 305
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_riki_riki.png",
+      "sha256": "f731e4666ec449fed54e6aa74c90db0747101c124849ce07f289d9ef3ddf220d",
+      "bytes": 389
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_ryu_ryu_brachiosaurus.png",
+      "sha256": "7e0e6e97028c802d5f70614139f0f19f201a9624ca1b471444ae4135a6ae9e00",
+      "bytes": 462
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_ryu_ryu_pachycephalosaurus.png",
+      "sha256": "8853a94eba586007aae50c2aabf355019bec9bd3e23798a5d4f6fd04451990af",
+      "bytes": 249
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_ryu_ryu_pteranodon.png",
+      "sha256": "4d271958cde981fb09e9b94af60472487e4bba4d5f5853d7234759e1fa5e2c42",
+      "bytes": 303
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_soru_soru.png",
+      "sha256": "f32f0d371924428e4daac9ef0cf8ab3d74a23b252a69ba330e6cd1261929a967",
+      "bytes": 285
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_suna_suna.png",
+      "sha256": "950c99733dce76653e02f06b312419248b7865e542674f4eb0ea70ecd7bbae5b",
+      "bytes": 504
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_supa_supa.png",
+      "sha256": "de724ed932ec29338064981c634e757ccfe4a3d07274ee57a072d0fa07c25794",
+      "bytes": 565
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_tori_tori_phoenix.png",
+      "sha256": "316ae882bfc04c65b4dc563cdb15077454df05f63ae8ae514ad1205eca4121af",
+      "bytes": 258
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_uo_uo_seiryu.png",
+      "sha256": "40fe5f4d1b61d9f911c6f99dddc2c5bdad84b478980c2a11ce035139574b87cc",
+      "bytes": 275
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_ushi_ushi_bison.png",
+      "sha256": "3a29e056716d316c3beab09dbfc0e10b41fefa71406d91ce6948b68fc3e3c935",
+      "bytes": 520
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_ushi_ushi_giraffe.png",
+      "sha256": "83d4123d5f27d772090aaa357d25699edfdc14ee7e1a37a57027888300059dcd",
+      "bytes": 294
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_uta_uta.png",
+      "sha256": "972c58d24c3336ae7b6d071d1ac5732badb274c2738350637d1afb9d189292e8",
+      "bytes": 393
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_yami_yami.png",
+      "sha256": "9205e4020b3a2a45f5273356b5eb968b727325ec73cbd007cf30d215c03d9eac",
+      "bytes": 313
+    },
+    {
+      "path": "assets/minepiece/textures/item/devil_fruit_zushi_zushi.png",
+      "sha256": "10d008a4dbd614c251b8377c4cb8c41a654b522606b1f04dbd7b8baabbfb5501",
+      "bytes": 257
+    },
+    {
+      "path": "assets/minepiece/textures/item/heart.png",
+      "sha256": "cda6809e3a5e3a8f0dc2cd77e33a9da75fec6b2db267f947f30dd3d3ea3cba9e",
+      "bytes": 172
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_book.png",
+      "sha256": "c498bc96320544f74c33f9b2a81e2a4301845d7924fb88ab29a8ed33d60d3fb8",
+      "bytes": 264
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_cat_claws.png",
+      "sha256": "454173eae92aab27ece9fcd876fd4ce171880b551f1b683bb4157bca2b4d3fad",
+      "bytes": 2473
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_clothes_uta2_body.png",
+      "sha256": "37342b5f194b6c13d2b0ea5c7596423853282c65af1be3b43535ab66c870be7f",
+      "bytes": 3723
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_clothes_uta2_helmet.png",
+      "sha256": "6758f0397d47b6a258decbbcec5f9952d3425d78e957fc56adff5dd27fbc91da",
+      "bytes": 4790
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_clothes_uta2_leggins.png",
+      "sha256": "9a36c8d3e7cac4664e67596b1830bb89b3a22a6a562d9b517080c04848d5aa51",
+      "bytes": 1134
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_clothes_uta_body.png",
+      "sha256": "f7641d36f27ce6a8b3184d152f88051ce969075f8dd50bb188614e1b94a755e4",
+      "bytes": 956
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_clothes_uta_boots.png",
+      "sha256": "208894d4bfab3aff1fc978708171047eb165e324a96f587a54090fa0e3a5e3e6",
+      "bytes": 320
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_clothes_uta_helmet.png",
+      "sha256": "92c08b0666d07952e438d3c55dad5e2972ec8d1c0d14079ccd12e6cd560b37d9",
+      "bytes": 2178
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_food_brown.png",
+      "sha256": "6f31b712a55000a49f3be1097daa0bbd618dc57185aac562615b86f977c1233d",
+      "bytes": 165
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_hook.png",
+      "sha256": "7fe37a44dccd834cd388b3cff199a19a76cee10fccfd4f94940b1c67c94a5b09",
+      "bytes": 3115
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_jitte.png",
+      "sha256": "6fa2591a4a2e047109d157ff5d7cc187841c7a88dbd08b65dd8523f673fd7eec",
+      "bytes": 660
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_metal_rod.png",
+      "sha256": "4d4a7fef647d9dfb16a915f061e1f91e5b0e72d94a86afabdc00b9df14bfe5a3",
+      "bytes": 37601
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_nikyu_nikyu_blue.png",
+      "sha256": "9418bfef053b185465ccede5685c4d1d8c8cd02996c70304ff863f38b33730d5",
+      "bytes": 275
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_rifle.png",
+      "sha256": "97da84cdeb349e71990490c7f34b9ea5db437d290f44792cd439e1e62a84f268",
+      "bytes": 1226
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_spear.png",
+      "sha256": "da8dd83dbb35a7e2a725bc08463255b813919f8ea8b4c0e79f48a2987426081f",
+      "bytes": 156
+    },
+    {
+      "path": "assets/minepiece/textures/item/icon_yoru.png",
+      "sha256": "dc9d6a86e5a081c183a556635faa9a840fc9b7b367d6c07555caee837bf048c5",
+      "bytes": 1534
+    },
+    {
+      "path": "assets/minepiece/textures/item/iron_spear.png",
+      "sha256": "de9a8408d5800d451ecdf41c785b51a11dcc5ce224d31bbee2c3729f35ed660a",
+      "bytes": 233
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_bullet.png",
+      "sha256": "01517e9f995be7c00f0742f2e80d99dadf5b7dbd97b3117ee13fbd62cb0ee017",
+      "bytes": 115
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit.png",
+      "sha256": "fdabe6882fe4f618e6b5bcf9582a61057a01abc329ac63f59b2ab0fae7f29a28",
+      "bytes": 282
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_aro_aro.png",
+      "sha256": "3c9bf7df04c4f68c7bef42d1a45328f15d459e4efeb84656ee7113dc6e55e1f0",
+      "bytes": 292
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_batto_batto.png",
+      "sha256": "6d9a9a949ef669075c2ad5c230c57ecbc6b975cd3619db2bec20a9496ae89fc0",
+      "bytes": 257
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_bisu_bisu.png",
+      "sha256": "bff24e2461d42af5545ae7363fdfb71058310eb83ab5c8ba2f8410af70f7d0f5",
+      "bytes": 247
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_bomu_bomu.png",
+      "sha256": "706cc8755c7bd3c39fc6f00a3ba729fa7bf119bdecb11f26c1e497312f8e9a6f",
+      "bytes": 326
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_gomu_gomu.png",
+      "sha256": "16f4d1aa42ae5a26af5ca606a7b4215022d309f44c6a6bc49092889d92f1c406",
+      "bytes": 352
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_goro_goro.png",
+      "sha256": "d6be18deaedb61ac526fbb4723ffed43584f34b53a62739d2a43dafb32b8f029",
+      "bytes": 335
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_gura_gura.png",
+      "sha256": "267f45d854519aa59e554e07dd740980acb7a68620f86c3cfa4b6c8add808df7",
+      "bytes": 345
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_hie_hie.png",
+      "sha256": "553d5339fe6ee3c5bb1640c5d68317d54f54d77f0f092d4cf84e00a76f79d67d",
+      "bytes": 365
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_hito_hito_daibutsu.png",
+      "sha256": "b176c9267330f975808d470d6b0e89e18c2df02de34ddb85bff4166486fbd657",
+      "bytes": 271
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_horo_horo.png",
+      "sha256": "805be221d316b5dc6c2acf1f3edde2b255f34155c54b187dd8f4f052f8d478aa",
+      "bytes": 313
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_imu.png",
+      "sha256": "9f739eaf1fd4cace8e6846611e983485a8e7970427471dac2c9003460d5be6ea",
+      "bytes": 276
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_inu_inu_okuchi_no_makami.png",
+      "sha256": "0018fb63611383fb2ae63492290ff332068a1837a76f419d394f436de9b980cc",
+      "bytes": 334
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_inu_inu_wolf.png",
+      "sha256": "167d1cf027b95f137c498dc501f6de823a01dabf3ba9adaa02a4162b474fa206",
+      "bytes": 541
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_kage_kage.png",
+      "sha256": "841f4df14eac3d82d49f56fb46c3f0480aba8070efdc7d130e7a425409ffb5a3",
+      "bytes": 334
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_kira_kira.png",
+      "sha256": "bcde419147ff06d46d1baf9ab3a897aa2d8dd7d02c9bc30feb9cd51ea44d2acd",
+      "bytes": 396
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_kiro_kiro.png",
+      "sha256": "250211c10564d29332e0d316bd7b730540b5abee784578644321787f4a88912b",
+      "bytes": 247
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_magu_magu.png",
+      "sha256": "27d6976a3f0ebfb4ca0bd6d22248692d26f53d534839566c8e07b4c2260d0c96",
+      "bytes": 383
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_mera_mera.png",
+      "sha256": "a21c3b956d23614ac6ed46f70fea0deef4c6504e81f3a41379ce99c538f46e47",
+      "bytes": 295
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_mero_mero.png",
+      "sha256": "e063dfe741eefadcb22aa237e46b31948a886b584e6a50f29b1511393d329d8c",
+      "bytes": 364
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_mochi_mochi.png",
+      "sha256": "ee7669689dea925d86019030f326848d7aea134edd33fd3d02b5833758f83604",
+      "bytes": 367
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_moku_moku.png",
+      "sha256": "60976bd8c3b676a0b66502f678795ecff17351954bd49aa7d29f1f65d62db9a3",
+      "bytes": 349
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_mori_mori.png",
+      "sha256": "2b25402d237ed8edc4ffe243a1bfb38bb904156d9500237a525f299ae697f705",
+      "bytes": 337
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_neko_neko_leopard.png",
+      "sha256": "93faae74e08cff28d78315fabb80765cb2fbb1fb4f17d4a125eac006bd428005",
+      "bytes": 348
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_neko_neko_sabertiger.png",
+      "sha256": "7fedcabd8e78ef64e3c3556107fa4e90dde7d70e8449ab70c5509b047688a3bd",
+      "bytes": 293
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_nikyu_nikyu.png",
+      "sha256": "66b6a955e956918036865aeb27c54c57e8e5bfb7de4f36dcad5d0c2c74cef12a",
+      "bytes": 369
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_ope_ope.png",
+      "sha256": "c17d4ae643912804f954bc13f276f80d60db19a5a01728ef934bbea7cbb3e7a0",
+      "bytes": 311
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_pika_pika.png",
+      "sha256": "90c8528626a9787c4a13ca841deff919a545b51a8879a8fb44ce9789367901df",
+      "bytes": 305
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_riki_riki.png",
+      "sha256": "f731e4666ec449fed54e6aa74c90db0747101c124849ce07f289d9ef3ddf220d",
+      "bytes": 389
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_ryu_ryu_brachiosaurus.png",
+      "sha256": "7e0e6e97028c802d5f70614139f0f19f201a9624ca1b471444ae4135a6ae9e00",
+      "bytes": 462
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_ryu_ryu_pachycephalosaurus.png",
+      "sha256": "8853a94eba586007aae50c2aabf355019bec9bd3e23798a5d4f6fd04451990af",
+      "bytes": 249
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_ryu_ryu_pteranodon.png",
+      "sha256": "4d271958cde981fb09e9b94af60472487e4bba4d5f5853d7234759e1fa5e2c42",
+      "bytes": 303
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_soru_soru.png",
+      "sha256": "f32f0d371924428e4daac9ef0cf8ab3d74a23b252a69ba330e6cd1261929a967",
+      "bytes": 285
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_suna_suna.png",
+      "sha256": "950c99733dce76653e02f06b312419248b7865e542674f4eb0ea70ecd7bbae5b",
+      "bytes": 504
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_supa_supa.png",
+      "sha256": "de724ed932ec29338064981c634e757ccfe4a3d07274ee57a072d0fa07c25794",
+      "bytes": 565
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_tori_tori_phoenix.png",
+      "sha256": "316ae882bfc04c65b4dc563cdb15077454df05f63ae8ae514ad1205eca4121af",
+      "bytes": 258
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_uo_uo_seiryu.png",
+      "sha256": "40fe5f4d1b61d9f911c6f99dddc2c5bdad84b478980c2a11ce035139574b87cc",
+      "bytes": 275
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_ushi_ushi_giraffe.png",
+      "sha256": "83d4123d5f27d772090aaa357d25699edfdc14ee7e1a37a57027888300059dcd",
+      "bytes": 294
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_uta_uta.png",
+      "sha256": "972c58d24c3336ae7b6d071d1ac5732badb274c2738350637d1afb9d189292e8",
+      "bytes": 393
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_yami_yami.png",
+      "sha256": "9205e4020b3a2a45f5273356b5eb968b727325ec73cbd007cf30d215c03d9eac",
+      "bytes": 313
+    },
+    {
+      "path": "assets/minepiece/textures/item/item_devil_fruit_zushi_zushi.png",
+      "sha256": "10d008a4dbd614c251b8377c4cb8c41a654b522606b1f04dbd7b8baabbfb5501",
+      "bytes": 257
+    },
+    {
+      "path": "assets/minepiece/textures/item/treasure_chest.png",
+      "sha256": "4d6c2bc829ad2d5da024aca299c77f7a58b85313693a30de8f3278a7fc38f264",
+      "bytes": 532
+    },
+    {
+      "path": "assets/minepiece/textures/item/treasure_chest_locked.png",
+      "sha256": "4d6c2bc829ad2d5da024aca299c77f7a58b85313693a30de8f3278a7fc38f264",
+      "bytes": 532
+    },
+    {
+      "path": "assets/minepiece/textures/item/uniform_marine_1_boots.png",
+      "sha256": "6adf4f2bb6029f54b861674fbdebd62fa66a86904a8e7c159f6325d403b98941",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/item/uniform_marine_1_chestplate.png",
+      "sha256": "b08187eeaf3a27a64eec961ab2db80c5450e59b46a6df56a1eeea0d8e59af683",
+      "bytes": 887
+    },
+    {
+      "path": "assets/minepiece/textures/item/uniform_marine_1_helmet.png",
+      "sha256": "dce3e8decaa2965905a55255d000b21f6fd6bf0b087fb4eb68cc3413c0e0471b",
+      "bytes": 964
+    },
+    {
+      "path": "assets/minepiece/textures/item/uniform_marine_1_leggings.png",
+      "sha256": "d3e7623b9e25aba75dae9a3dc03513603c765c76d39ce73cf73e861a626cb78c",
+      "bytes": 249
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/amputated.png",
+      "sha256": "9423dbf97e033d531f681d5a6856eab97f7a0745438d00bf6c3cda8b4d9a35ac",
+      "bytes": 83
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/armament_haki.png",
+      "sha256": "e1f23836372e764a10efbfbf1ce66dedb2cb93c64352687150489fe73889b97c",
+      "bytes": 196
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/b04_stone.png",
+      "sha256": "d93448dbb12f18396f831451dfc9cfd7553e8727caea83a1bdf145e831a14363",
+      "bytes": 1532
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/cooldown_time.png",
+      "sha256": "621b27e14334d6378dee5a5c40df8dc9a0675aee329e1934c44df4af4ce02c96",
+      "bytes": 838
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/cooldown_time_back_step.png",
+      "sha256": "6d3a133c536139e5c9ecad4b9b9c309277eefa46bc1f2b62dd6c131d5ea9fa8c",
+      "bytes": 496
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/cooldown_time_combat.png",
+      "sha256": "a2f02d94bb72b864e697933ae0827ded3b244c933e9cdc5d1f3d039aae1cae20",
+      "bytes": 595
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/cooldown_time_fly.png",
+      "sha256": "a5cd24326ea9ba88fbd895148e39bc3850aafdf1c4aa3a08a01f8810fc89b306",
+      "bytes": 485
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/cooldown_time_second.png",
+      "sha256": "621b27e14334d6378dee5a5c40df8dc9a0675aee329e1934c44df4af4ce02c96",
+      "bytes": 838
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/devil_fruit_user.png",
+      "sha256": "e64f85ef976ec941a449a55283aebca28f2116386d35dede26fec2b932cddb05",
+      "bytes": 701
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/diamond_body.png",
+      "sha256": "fd11635ec666c3febb9e6dd6d3ec49cdfb4d16a2a1d595ebd10e56b302417d08",
+      "bytes": 207
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/double_jump_effect.png",
+      "sha256": "e4afca11a3880b4d6bb27a06c51a20ed64319ab9a5895433eb564880472bfb7b",
+      "bytes": 253
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/fly_effect.png",
+      "sha256": "18e911a59d78657dd128cbb5719194c0591c96e728c82511df8f898ac291ef43",
+      "bytes": 275
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/frozen.png",
+      "sha256": "d93448dbb12f18396f831451dfc9cfd7553e8727caea83a1bdf145e831a14363",
+      "bytes": 1532
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/gear.png",
+      "sha256": "8548fd06a9772e4866c40fe53433aca9f81135617b3cd99b7bd654d4950cd620",
+      "bytes": 919
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/ice_defense.png",
+      "sha256": "d93448dbb12f18396f831451dfc9cfd7553e8727caea83a1bdf145e831a14363",
+      "bytes": 1532
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/light_charge.png",
+      "sha256": "9423dbf97e033d531f681d5a6856eab97f7a0745438d00bf6c3cda8b4d9a35ac",
+      "bytes": 83
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/mamaragan.png",
+      "sha256": "f4e8db8f3128c3712612e4a4b55c7951f8a182df6779a70a2d9e3576d6fd8091",
+      "bytes": 157
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/observation_haki.png",
+      "sha256": "a9ed2647c4ef2312a883b9061a80762a55933ed824422d621b73dfec3065f700",
+      "bytes": 306
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/petrification.png",
+      "sha256": "d93448dbb12f18396f831451dfc9cfd7553e8727caea83a1bdf145e831a14363",
+      "bytes": 1532
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/room_bound.png",
+      "sha256": "a9ed2647c4ef2312a883b9061a80762a55933ed824422d621b73dfec3065f700",
+      "bytes": 306
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/rooted.png",
+      "sha256": "35e5165f7a34e2d6793ea24f12709fadf168edba5c3ed137c5f406367fbbbb11",
+      "bytes": 437
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/sea_power.png",
+      "sha256": "fd0f41025c3ce24b14c153e84e67981e8b9843ce9c8b1cddf5b91a94f9d7cc83",
+      "bytes": 729
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/shadowless.png",
+      "sha256": "770b11040bc588094ed6f9b9901790f288082e5448b73186da950bf0a971ff75",
+      "bytes": 161
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/skill.png",
+      "sha256": "9423dbf97e033d531f681d5a6856eab97f7a0745438d00bf6c3cda8b4d9a35ac",
+      "bytes": 83
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/smoke_captured.png",
+      "sha256": "1ec3b534928721710642302ce001cba8edd116aa2eaf30f9843b63a98062483b",
+      "bytes": 383
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/sovereign_haki.png",
+      "sha256": "1330bc19e91a47b954ce9ca0dfb20fed9e5f9060ceae1f1492a8aaa064f2c9dc",
+      "bytes": 486
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/sovereign_veil.png",
+      "sha256": "1330bc19e91a47b954ce9ca0dfb20fed9e5f9060ceae1f1492a8aaa064f2c9dc",
+      "bytes": 486
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/sticky.png",
+      "sha256": "35e5165f7a34e2d6793ea24f12709fadf168edba5c3ed137c5f406367fbbbb11",
+      "bytes": 437
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/weight_state.png",
+      "sha256": "1fe04c58e88030c54cd2e7cd84e84e6759407dd2cb049e383355ee79d11695b2",
+      "bytes": 151
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/yami_absorbing.png",
+      "sha256": "770b11040bc588094ed6f9b9901790f288082e5448b73186da950bf0a971ff75",
+      "bytes": 161
+    },
+    {
+      "path": "assets/minepiece/textures/mob_effect/yami_sealed.png",
+      "sha256": "fd0f41025c3ce24b14c153e84e67981e8b9843ce9c8b1cddf5b91a94f9d7cc83",
+      "bytes": 729
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_1.png",
+      "sha256": "2da824b779c76b2b799c9c48cbfcdf94bd7a8dab47d3c8384320730cfaea14c3",
+      "bytes": 124
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_10.png",
+      "sha256": "fb2b145781d0d33d6dc6e9e2bfa96b4ce5503d41c2e2219bbf81663657062892",
+      "bytes": 204
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_11.png",
+      "sha256": "7f3aa48feeeacb8aa0c7b1b1b01a3808deb5ad5f010360796d55d0991b7c619e",
+      "bytes": 163
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_12.png",
+      "sha256": "b30de5d787810fa7aad7593cd2bcbcbc554aaa49eac6e71b2a06bcbe0b06c8ca",
+      "bytes": 121
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_2.png",
+      "sha256": "1343297a59662b3dad0b1f106bfdeb88eb87ad69e30cdb9e7bb6343a12a8adc3",
+      "bytes": 155
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_3.png",
+      "sha256": "1008a2a6a4b40a8ea1fa9135de62b9299f4a6a0d632494bbb28e5191944e7778",
+      "bytes": 214
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_4.png",
+      "sha256": "fb2b145781d0d33d6dc6e9e2bfa96b4ce5503d41c2e2219bbf81663657062892",
+      "bytes": 204
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_5.png",
+      "sha256": "db88b61235ac9403269da959a688e26fbd316fc5adff0471fda6a8851c0117b6",
+      "bytes": 212
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_6.png",
+      "sha256": "4fa39fbb7cde9844b21eaae7a95344a2e8fc50e7dd3726a2f01a9b641f42c41d",
+      "bytes": 216
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_7.png",
+      "sha256": "ad9418457bef15c4f5d6fe3e8f60e360dc361da0f0b763176a06798dc12a7ebf",
+      "bytes": 223
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_8.png",
+      "sha256": "4fa39fbb7cde9844b21eaae7a95344a2e8fc50e7dd3726a2f01a9b641f42c41d",
+      "bytes": 216
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_bat_9.png",
+      "sha256": "db88b61235ac9403269da959a688e26fbd316fc5adff0471fda6a8851c0117b6",
+      "bytes": 212
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_1.png",
+      "sha256": "60d6cafc7dd9ea315a3cae018895e802d1de1e83a7b23b610769e1b21a618729",
+      "bytes": 127
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_10.png",
+      "sha256": "45339bdc61ce8d9155979fba6ebf576e6bfcd06792cd8a20c7758f9f52ce5508",
+      "bytes": 121
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_11.png",
+      "sha256": "40e8a93ba911eeda5dc40252e5cf10c4c141866851a0b6b9380574b6189fa287",
+      "bytes": 110
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_12.png",
+      "sha256": "72e74512034f1df501f502a2f6a0a1f1cc119804f408f111c9b63b997044a698",
+      "bytes": 85
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_2.png",
+      "sha256": "3ff2ce78b89143115f805e27f751fccb8b7e43e3987888b2e5d98da193dfb126",
+      "bytes": 135
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_3.png",
+      "sha256": "9c7dd5a06778909ca62c3aedcf8ad091288f5eb66bbab9773bfef83f82a8097d",
+      "bytes": 162
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_4.png",
+      "sha256": "3073cd27c113f58f75ef7e0e3d06a0575a3e0e7f508aa3b16d11e38427d6b6f5",
+      "bytes": 167
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_5.png",
+      "sha256": "81b9cef0d82c847a2c89dc852afb5b072bcfcac921f93d7f08af999855644417",
+      "bytes": 174
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_6.png",
+      "sha256": "dbcf5c414c24006fb293e5c6d1fe9c04787c4862aa9c43f0c6cc43885a26bdbd",
+      "bytes": 160
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_7.png",
+      "sha256": "0807ed2b66a15cbd4f7c1b69348cc42dd4882fa6b86d41f93ef94bbb1f9e49d0",
+      "bytes": 156
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_8.png",
+      "sha256": "6a4a9a0934d90befcb93ee718e633d75491340a52a7ba8bbf74b7d5bdf16f72f",
+      "bytes": 145
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_big_smoke_9.png",
+      "sha256": "4e2d976864d991ef25e17c98cfeb53ca103c6aa39845b13ca1a83283c45106ca",
+      "bytes": 132
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_1.png",
+      "sha256": "e7219976c8bc4b83d94c08c0c2a2aba79f3f58c09a46be95ae4d6d9228348e2b",
+      "bytes": 77
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_10.png",
+      "sha256": "68ab90a0c8a0b8fb34cd08f4cccccbaac4b7cf00e2648421b8d650a82c1fd56f",
+      "bytes": 102
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_11.png",
+      "sha256": "45a9966b088f149a8b6e524c8c9af3d4936462319fc754d5f12b3d2b56f77262",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_12.png",
+      "sha256": "238911a4b35e35fc08cd3b00870a0d37fcc19369f35a1fd49b985ebbae9751f2",
+      "bytes": 94
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_13.png",
+      "sha256": "d38021cb758f0dea9201076266fbe0b6c8dc88d654c7f1f1d6ce4fc2fd4c30d9",
+      "bytes": 83
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_14.png",
+      "sha256": "37a69b7a1998c50d30ada9d1f20af39676e7611570bb5a1376c5d4ffc8e45e12",
+      "bytes": 88
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_15.png",
+      "sha256": "c9422bf25acfededc5264a32ad4d577e2839fe392df855b969357c7c688137ae",
+      "bytes": 77
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_2.png",
+      "sha256": "e1460caa02e474ff3f4bd030859815c3cf64560a45a6b936f8027a4a6315a7cc",
+      "bytes": 88
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_3.png",
+      "sha256": "e433d84df1decb7ef5e670213dc03959da6c7ea75b98a587c302cdbf47858fd0",
+      "bytes": 82
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_4.png",
+      "sha256": "14a46cf8ad8a34da4941ec016dd58877c8077da491d5e761e82f0cda79c79d82",
+      "bytes": 94
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_5.png",
+      "sha256": "6dcf5cc34f1c14c7d1deafc99609f7f9b3988d453cbd1c4b368b48093dcb569b",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_6.png",
+      "sha256": "f2ffdf58ec2342a20052e31be7da662ac746a0929ff7ec667c39839f8757293c",
+      "bytes": 100
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_7.png",
+      "sha256": "6dcf5cc34f1c14c7d1deafc99609f7f9b3988d453cbd1c4b368b48093dcb569b",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_8.png",
+      "sha256": "f2ffdf58ec2342a20052e31be7da662ac746a0929ff7ec667c39839f8757293c",
+      "bytes": 100
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_blue_9.png",
+      "sha256": "45a9966b088f149a8b6e524c8c9af3d4936462319fc754d5f12b3d2b56f77262",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_1.png",
+      "sha256": "74c668d3f771364860d1106c30a5fcc90f751a9913f4eaae9b74d8912f1667fb",
+      "bytes": 300
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_2.png",
+      "sha256": "3151054d81093de7b6f0a714d728cd47d08c98474b0f601d6ea2496a84d035d1",
+      "bytes": 226
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_3.png",
+      "sha256": "ebd888a9d07bb521f7db4360833c8eb41bf02403f5dbe98691a26513faa6c8a7",
+      "bytes": 126
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_4.png",
+      "sha256": "2dc599d3f79692344e845d617226a8f502d9e38d2018780f87c1fe9a31ad22c4",
+      "bytes": 298
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_small_1.png",
+      "sha256": "74c668d3f771364860d1106c30a5fcc90f751a9913f4eaae9b74d8912f1667fb",
+      "bytes": 300
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_small_2.png",
+      "sha256": "3151054d81093de7b6f0a714d728cd47d08c98474b0f601d6ea2496a84d035d1",
+      "bytes": 226
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_small_3.png",
+      "sha256": "ebd888a9d07bb521f7db4360833c8eb41bf02403f5dbe98691a26513faa6c8a7",
+      "bytes": 126
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_broken_glass_small_4.png",
+      "sha256": "2dc599d3f79692344e845d617226a8f502d9e38d2018780f87c1fe9a31ad22c4",
+      "bytes": 298
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_1.png",
+      "sha256": "37c644dcd6ed38e7695ecd0b9d5000d47b5beabfae683a94fb5d6d1683693cbe",
+      "bytes": 540
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_2.png",
+      "sha256": "51a2ee5313e989f461f0417b879e5e375a25ead9f71d3419fe13e61176e75434",
+      "bytes": 705
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_3.png",
+      "sha256": "2c4033640fbc1b17da25da1615d9357d2cf438025a768f5a4d3124f7a7f112fb",
+      "bytes": 802
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_4.png",
+      "sha256": "4be5617fbaae304cf6e1ac57206ac225f4a07e5dd1cac4bc6c942c153374a1ca",
+      "bytes": 808
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_5.png",
+      "sha256": "16d30cd1f5458d2bc5fc398843b84007fff201e383746d4675aa4e92c066fec1",
+      "bytes": 735
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_6.png",
+      "sha256": "850f518107dca8cb3b019e48a81ed929f29cb48feb8d27c57547c6262f5509ef",
+      "bytes": 508
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_7.png",
+      "sha256": "850f518107dca8cb3b019e48a81ed929f29cb48feb8d27c57547c6262f5509ef",
+      "bytes": 508
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_claws_8.png",
+      "sha256": "8bfc3bd601721619a216f8c9d1edc530a9bf987169ccd39f24cc373be5e55cb1",
+      "bytes": 446
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_1.png",
+      "sha256": "427bed4e4dca7f7bf708b0d7f9a8b55089d346d1ce799783f25dd5189f2db3d7",
+      "bytes": 133
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_10.png",
+      "sha256": "d858272519cb2e643b27061662651a33b76f150a94520895aaa4ad9f735ddd10",
+      "bytes": 201
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_11.png",
+      "sha256": "5f3b177531bb837deaee7ca2895bb95d515241ad3926fc62819d7136a9ff97f0",
+      "bytes": 189
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_12.png",
+      "sha256": "d2f0f82311391876e1f665e9ae3ed19a5fb5af36fd7c21a93663dc8cf1aa71f8",
+      "bytes": 198
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_13.png",
+      "sha256": "807859fe9dedb10763f26f10b65a1515cfafdc06f4d252aae7cca1e7f21b9d1d",
+      "bytes": 206
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_14.png",
+      "sha256": "c1f8dc5e5fb83c198c2588810f0743cb88eaba415dbd3871640a31cbf4fdd2e6",
+      "bytes": 193
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_15.png",
+      "sha256": "bf97dd64d934d326f9c511b23ce5eab372db7a3a120f07baa2bcb6ffd6ca64f0",
+      "bytes": 152
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_2.png",
+      "sha256": "7b24652854a08385196f3363d9d03d917ac7bd7af7fa8e3f2b1e125023d1d599",
+      "bytes": 145
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_3.png",
+      "sha256": "372dac4fbddee610155524509bb3c3d09e33123eb40b150a9d0cc35500cf5f5e",
+      "bytes": 147
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_4.png",
+      "sha256": "58fe31ab24c7b7dff10ebeb704b08a629c08b9f00600bdf71ca1d24cf28210aa",
+      "bytes": 152
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_5.png",
+      "sha256": "da401c159413bfc954a48630c9fc53828a129c83970034817a79139368603c26",
+      "bytes": 156
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_6.png",
+      "sha256": "bba3cd54f124639f489ebbf5c4e2d8d9258e315be6a56ca824846198abb543b8",
+      "bytes": 179
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_7.png",
+      "sha256": "a3a714020a9ca7c0e8b7490b0f785b81b691084d3277c09780dc430baf1f502e",
+      "bytes": 188
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_8.png",
+      "sha256": "3ac1d33bab868035d33e7e61a6453eebe2f73382abc601ac4c1e54ad8625cb14",
+      "bytes": 194
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_dark_9.png",
+      "sha256": "fca77635c0bea65c0152c2d1de917f3e3e57f09f80c6a2660809cad68cd9bbb2",
+      "bytes": 205
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_1.png",
+      "sha256": "75364eff8a7f1baa86b288d74e92a15f9b32cbf01f4ae88869f48b0ac050faf0",
+      "bytes": 951
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_2.png",
+      "sha256": "db97ea4d3960ab43f24ba55757a10c93494dd8cdb879bc088d44f7365ea31865",
+      "bytes": 1015
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_3.png",
+      "sha256": "7870ba0e0158b1dbcba7b974527c431e0cf3a8b27102ee5dd47adffd55739453",
+      "bytes": 1075
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_4.png",
+      "sha256": "ca10ce5b491e14bc95efa0941ca5e4c5d562db6186bc6714601a7c14914aaa7b",
+      "bytes": 1166
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_5.png",
+      "sha256": "4d8b4ac310433e80bbdd1ea70c41cc4e2e50a53ff40ac009d1176f4afe9fd5fc",
+      "bytes": 1082
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_6.png",
+      "sha256": "3e51ee51c8374a9814d34319f19bad9cee4df9fc5bf71ca9e14e280ceff9fa48",
+      "bytes": 1003
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_7.png",
+      "sha256": "094b93cd84bbd3d4e556477403bc9aa13a1eb744c4bab082e6ec78097ffadeac",
+      "bytes": 953
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fangs_8.png",
+      "sha256": "19e005057349f3d263165d0a7411f26d293c4d0572cdd71897e3f9df47227c07",
+      "bytes": 777
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_fly.png",
+      "sha256": "0ece0c48f3fdc606837e2e01d30661ba97a6062889f4146996c246b99f15454d",
+      "bytes": 124
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_1.png",
+      "sha256": "14e7285fe8df76e78d25d1cf47d7abb66681a7e92b708aa436579c76a1ccca5b",
+      "bytes": 87
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_10.png",
+      "sha256": "d00e56d52573da79bdd783a937ff2d183a74364b3edfbe4bebb95668f23e8ff8",
+      "bytes": 101
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_11.png",
+      "sha256": "ac6843f6ab6eab49f48eba97d3573315c7ecea928fbec2a03c44c3db64bfea88",
+      "bytes": 85
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_12.png",
+      "sha256": "2e27908d678f41af2849c1319dc6c91b54d704558d52b948f8c11b0c57895604",
+      "bytes": 80
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_13.png",
+      "sha256": "7074f74f39a8ad752db14a876089e9867d92b2425c37a6d44a74660f900a877d",
+      "bytes": 75
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_14.png",
+      "sha256": "7074f74f39a8ad752db14a876089e9867d92b2425c37a6d44a74660f900a877d",
+      "bytes": 75
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_2.png",
+      "sha256": "e0f76d4acc343460c7b3de01d68e372fa4f422a6c27abc8fc7d9a089ad994d94",
+      "bytes": 126
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_3.png",
+      "sha256": "9f6c1b509bb30d1af92bbc56540d271def0566b31769b374beec6463609932e5",
+      "bytes": 157
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_4.png",
+      "sha256": "8e461182d26b7b742e1bc7507fb3d6c5794a7b3c512afb077051af3cc8ef920b",
+      "bytes": 183
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_5.png",
+      "sha256": "c13eeb8577cd43f9e7783193e4610c8b0c9150c53826679343ae6929277f65b1",
+      "bytes": 202
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_6.png",
+      "sha256": "9f9a077b742fec77395dff3e467ea5ddc4c079a40ba892a28e83c20b21d9e652",
+      "bytes": 202
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_7.png",
+      "sha256": "d2fadccd305995d47ac8d0e5b3a45327cd64080f0683e617ab719b35b8b8b038",
+      "bytes": 175
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_8.png",
+      "sha256": "c2cf9973d4f3cfb1cb74cb80d2a8d3332966b051f67ac3e19849f65bcbb508c8",
+      "bytes": 152
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_fire_spark_9.png",
+      "sha256": "dc05431c31b8e6640870276c192da00d6bdea82b302bd8449af16010cb3ac219",
+      "bytes": 116
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_1.png",
+      "sha256": "a26a1d065dac967a340f9a35dd2a61c7b7721d47f4d65fc9aec35183481b4c30",
+      "bytes": 719
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_10.png",
+      "sha256": "3bb677989ce708759a4b2b9d43db7ccf120bfc409809ec3b5906127432ccfc6a",
+      "bytes": 611
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_2.png",
+      "sha256": "ca5434197c67ae356cd93f4e02537d8ce865eb307f4f6de3cd1da2c13befc2c4",
+      "bytes": 857
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_3.png",
+      "sha256": "f7298ba17fcf3f8cd83ad4a705024629becb96fa2da95320bb9e660a7cbb99ef",
+      "bytes": 808
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_4.png",
+      "sha256": "72dbaf89c4d7ab2f839aa62fd0f208cefb1a10c9bd00d7393d54298abb363408",
+      "bytes": 908
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_5.png",
+      "sha256": "728f85a62b926fdf8adf438be09cd04e4cb3c18847548944856ab7782153d898",
+      "bytes": 977
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_6.png",
+      "sha256": "af192ffe0975f1fa61fbce24b438bc1d9c22aaa958c58a4beab7fdcd31c64635",
+      "bytes": 795
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_7.png",
+      "sha256": "d09e2dcfe6bef61df068df16e277aa23e3673baac648397eb6d37661a3dc7239",
+      "bytes": 747
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_8.png",
+      "sha256": "9a51ff5b8aae26e0178a24bdf50b1862779984d7a9d6487150c2022cbf40c5c8",
+      "bytes": 676
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_9.png",
+      "sha256": "04bce29a5cdd3737a0067ee97cd75aa2830b62325b1d1e68b247a830be5ee0ef",
+      "bytes": 531
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_1.png",
+      "sha256": "5cf6742fb56f65bc9d1ae00ca6e527e31e388c235e64aeb0b869bc7822fd0187",
+      "bytes": 886
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_10.png",
+      "sha256": "1f50a8fcc242f1a4937efb4780a4872a9abebc5ab4d6f70fa4ef63325708fa1f",
+      "bytes": 2372
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_11.png",
+      "sha256": "9b4b50e141cae7882f1e8eedcf6526236e303725632dfb1f211942cdfb577327",
+      "bytes": 2863
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_12.png",
+      "sha256": "6cb23746909a2e72cbe510e8b1d30df407e76cbabfe40219c9b85b4c16ed32b1",
+      "bytes": 3162
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_13.png",
+      "sha256": "b9ec9c1a0c61a7fd304d768b5fea4f12391fecc960b050d226541b0826236937",
+      "bytes": 3253
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_14.png",
+      "sha256": "91a1520b4e3d2343df1e17357963e37beb2941ce88312048706685fe11137c93",
+      "bytes": 2236
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_15.png",
+      "sha256": "35a0cab577beb2f9e8abea763a741c911f73a02dc2a91120dd0e33bcd351b32a",
+      "bytes": 1464
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_2.png",
+      "sha256": "37d64afb46e2555091d692779e9a9cf39d09710b9e43e196830e4e572545d097",
+      "bytes": 1013
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_3.png",
+      "sha256": "928a8ec2f508d3f92f8ff360354ca32e801624a15a0c6380992d6125c6be8dc7",
+      "bytes": 1139
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_4.png",
+      "sha256": "267e3b6575ee4a20baf81d372b069256388ca1123911d1f94ecfd06048902a81",
+      "bytes": 1410
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_5.png",
+      "sha256": "eab04280aa9a10e20541b08214d59cd183e24cba37f2cc8cc31800e37553a80b",
+      "bytes": 1650
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_6.png",
+      "sha256": "bc6c9c04a69f11e2dc28375b248b20538d48cd9467519ddc422beaa7eb9ed918",
+      "bytes": 1952
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_7.png",
+      "sha256": "7d7ece6e9e687a164bc9d1dd4504277f5de5902048e466196e896862bec442e5",
+      "bytes": 2272
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_8.png",
+      "sha256": "f8950bd515a55187a7aa801beebc04ed9fed56482a88190d70f3bde013f6b1db",
+      "bytes": 2550
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_blue_9.png",
+      "sha256": "061b5e9ddf4a873f365a793711c337ba3281c801e22171646d3f330a81e5ae34",
+      "bytes": 2492
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_1.png",
+      "sha256": "ba80537647f7502d1c89074dfaf2b50caeaf3184f5b544941d4fd3120d56fc8c",
+      "bytes": 859
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_10.png",
+      "sha256": "8ac46048961dfe1ad6da23c227ef0cee73225cb724e47c9a367a1d9002cca6cc",
+      "bytes": 954
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_2.png",
+      "sha256": "b20f2e648f152e538133d8e05f98d9e3a658fbdde1c83206fd612be48d3d56c5",
+      "bytes": 632
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_3.png",
+      "sha256": "baf4f82020ed53e15a4b0e92a8fd6b5e87ac177711c934c35df873c88d0ff0e2",
+      "bytes": 801
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_4.png",
+      "sha256": "7f38d8daae732f776935f76e9984966d8e923689d1bb32f54811a024daeb7994",
+      "bytes": 931
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_5.png",
+      "sha256": "3e146bd2d3104e2db2740ea322c6b973d6c79c39a18739c05376f10a085885ac",
+      "bytes": 1234
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_6.png",
+      "sha256": "62ec7a5e0e603527e7a523e15e2938057eeef0b11ebffa553256dc0d009f1d8e",
+      "bytes": 1118
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_7.png",
+      "sha256": "b3f82d6deaec20a10fedc5b28092ac47d45db836336b2990424cff0c5b477951",
+      "bytes": 1287
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_8.png",
+      "sha256": "3b57e3b30589af1ebb1ff5289558655af5621cb0a0c4879d0e8cf28bf9d7d532",
+      "bytes": 1371
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_green_9.png",
+      "sha256": "8b676dedd619b46874b8cd105ed7130230f2e814c8f3923728a37d34a3778fdf",
+      "bytes": 1049
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_1.png",
+      "sha256": "4a36f4f9776fb6bc02e76b7005b08ff111f6b369624cab722a71fd01cbd695e3",
+      "bytes": 624
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_10.png",
+      "sha256": "0782746ab8834b542277e7440efbdfc54b56afbff42b58ec5a61d48ebecf17d2",
+      "bytes": 1755
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_11.png",
+      "sha256": "84df45ace3bcc38a5ccda1cb7d75693646349c9e04ac90f4ea3909e5da9f5bbc",
+      "bytes": 2143
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_12.png",
+      "sha256": "9ec332bf9ef5b082129f044faeaacb680dcb122468c0bb65be01a7764e35b293",
+      "bytes": 2450
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_13.png",
+      "sha256": "17be50eff24023731bcd5b6216c7e0655059d30ffeb5acff2b5de5d2ee07677f",
+      "bytes": 2404
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_14.png",
+      "sha256": "bfba0e95878f847722fad95817d97daaa8512e22bb6fbb21aa42652983baacc0",
+      "bytes": 1486
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_15.png",
+      "sha256": "92b021d0cb5c258d4c6a731c6b94fdeffa54720d36251235716af6d6b78fed5a",
+      "bytes": 857
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_2.png",
+      "sha256": "c2b86d0d3bdfff5cb2203de4e98a78887a7e1493905ff9cb54a4865f5372b263",
+      "bytes": 702
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_3.png",
+      "sha256": "3eef639ef2123bdd20d044b95374124630691b6403fe7d9d0147e9b335a27980",
+      "bytes": 850
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_4.png",
+      "sha256": "7e8a7bfc87dbc62e11ff0969f51fb24fc6cb8980330ab37e6d913e88f25d4a07",
+      "bytes": 983
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_5.png",
+      "sha256": "430e5eb384013ed891f44de1f7f8b6abb05e37fe5a3f461b74c3ff6ee12f90d4",
+      "bytes": 1275
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_6.png",
+      "sha256": "4cc4fe6e93382e7d417c967e88050bc9d02ca3702afa8a26e3d4b1f56622bacf",
+      "bytes": 1453
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_7.png",
+      "sha256": "d3c160045ffc0a74431cb3e4a6ad159f40df42b6ee3558bb5b7b3d160f5320a3",
+      "bytes": 1660
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_8.png",
+      "sha256": "d39cbe820dcc301a64f71526b529b1568a947f309d6ed1123cb6b53e8a2194a3",
+      "bytes": 1798
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_purple_9.png",
+      "sha256": "08f90057d9fb3b8fa62937ce8baf0f8a44062d117109af3284ede6c8368b334e",
+      "bytes": 1737
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_1.png",
+      "sha256": "225f8e68c73289770fbec05c30e0be387dbb92956a03b4a73587f3edb1822a37",
+      "bytes": 626
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_10.png",
+      "sha256": "fd0f6d835547e07bfc5b60b0841a616eb065b328a6b3cc5c8bbb0f5076497889",
+      "bytes": 1749
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_11.png",
+      "sha256": "61b5a1e1becbde88c365b77e1b94a2f37bab56e22ae9c5526bc11cc2eb6eec27",
+      "bytes": 2162
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_12.png",
+      "sha256": "018c7476950625230d18016e654d485a9ef2e9f34c4d8d702ffa860e5cb531b9",
+      "bytes": 2479
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_13.png",
+      "sha256": "95309153fe4d69347ce0eea9535db6ead84612aac93613c04d805316f3f5be29",
+      "bytes": 2424
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_14.png",
+      "sha256": "bfcbacfc999e3097c4df1738a71c3e25c833b57df0cb22994b85f5c29bb725cf",
+      "bytes": 1481
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_15.png",
+      "sha256": "fc7410c0590eec67ae2aef3baa323212724e889375cc675caea08640f8ce7f9b",
+      "bytes": 850
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_2.png",
+      "sha256": "08b04efb95f6656fe5d5f3e56c5eb347bad340cc02d0c60c527dbf071cd5cc7d",
+      "bytes": 706
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_3.png",
+      "sha256": "d5150d10dc7751d904317408c7c598c0da3b9d31173c7b549900ae5343a0a9cf",
+      "bytes": 854
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_4.png",
+      "sha256": "9011c5522e50c299c7b8d237bc60de5c07d6c0f51ea526125e951aa4198a0b35",
+      "bytes": 982
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_5.png",
+      "sha256": "73299bedcd5dec1004fbb5db9ef0f16ff263e5d13606f93d9067027ead391015",
+      "bytes": 1290
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_6.png",
+      "sha256": "b9cfd95ab3428ef6a1556fabeefb85dd9a14bec528cd6611f0de99dbd8b9eaf9",
+      "bytes": 1452
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_7.png",
+      "sha256": "b2e09abc553aecd775c90d0597d32523bc1590662a05a17708cb8c4a36140489",
+      "bytes": 1662
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_8.png",
+      "sha256": "204e70f3ba7b674ad1fe31a4f5cc09ac0564c3780e69d6828528f27060dd8794",
+      "bytes": 1814
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_red_9.png",
+      "sha256": "16cf34dcb57bc353229bbbb3430e9c0167f59db1ba13d48929e32f12a2f94d50",
+      "bytes": 1752
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_1.png",
+      "sha256": "a26a1d065dac967a340f9a35dd2a61c7b7721d47f4d65fc9aec35183481b4c30",
+      "bytes": 719
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_10.png",
+      "sha256": "3bb677989ce708759a4b2b9d43db7ccf120bfc409809ec3b5906127432ccfc6a",
+      "bytes": 611
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_2.png",
+      "sha256": "ca5434197c67ae356cd93f4e02537d8ce865eb307f4f6de3cd1da2c13befc2c4",
+      "bytes": 857
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_3.png",
+      "sha256": "f7298ba17fcf3f8cd83ad4a705024629becb96fa2da95320bb9e660a7cbb99ef",
+      "bytes": 808
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_4.png",
+      "sha256": "72dbaf89c4d7ab2f839aa62fd0f208cefb1a10c9bd00d7393d54298abb363408",
+      "bytes": 908
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_5.png",
+      "sha256": "728f85a62b926fdf8adf438be09cd04e4cb3c18847548944856ab7782153d898",
+      "bytes": 977
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_6.png",
+      "sha256": "af192ffe0975f1fa61fbce24b438bc1d9c22aaa958c58a4beab7fdcd31c64635",
+      "bytes": 795
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_7.png",
+      "sha256": "d09e2dcfe6bef61df068df16e277aa23e3673baac648397eb6d37661a3dc7239",
+      "bytes": 747
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_8.png",
+      "sha256": "9a51ff5b8aae26e0178a24bdf50b1862779984d7a9d6487150c2022cbf40c5c8",
+      "bytes": 676
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_small_9.png",
+      "sha256": "04bce29a5cdd3737a0067ee97cd75aa2830b62325b1d1e68b247a830be5ee0ef",
+      "bytes": 531
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_1.png",
+      "sha256": "66aad890b473af79252164d7a9eae4ba08cbaf1336782e5d65623da309a85065",
+      "bytes": 920
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_10.png",
+      "sha256": "09953035a43d4b79312daf9f0e2d7742991a566380131cc9e9c0fff4126cec4b",
+      "bytes": 2445
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_11.png",
+      "sha256": "19555616cd9353207c0b025df0701c882c4108ab1c9eb84b25a8eedcf0662191",
+      "bytes": 2903
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_12.png",
+      "sha256": "02f781bf668bd162b4934b236bab685ec3c9c62d3919e39991b867de5d821ed0",
+      "bytes": 3212
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_13.png",
+      "sha256": "148f29223ee3762fec2b0fecd9f91e6be8938259d38aab305c1cd7746294d56f",
+      "bytes": 3324
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_14.png",
+      "sha256": "d009083a3b822e02431515883f96e07242379932089f190bc276a08adbacd084",
+      "bytes": 2307
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_15.png",
+      "sha256": "1008a1b4b0bf35cf9f7937677f26f5c736964b1d9b05a87390119d3fb3966f13",
+      "bytes": 1505
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_2.png",
+      "sha256": "941aff0f82ca4c77e31b8d14957b4f7620e2ecaac2fe582757ed0c0ba9aae342",
+      "bytes": 1047
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_3.png",
+      "sha256": "2ccc1cbd1f5b796533e9d3dc44cd34d800fc958d7eeb072df90f086510a7b268",
+      "bytes": 1165
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_4.png",
+      "sha256": "f71a8530d6279cbed308957256fc6f47a871a78ae72093771b220cea7480039c",
+      "bytes": 1444
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_5.png",
+      "sha256": "37a9579cef09262f8ae08575057c2fce40d26b2d99dbccbda6e7c96eb2474c64",
+      "bytes": 1696
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_6.png",
+      "sha256": "271d1e66daa45a5e3784c02a479dadf408882202ed299003e19f7049886c25a5",
+      "bytes": 1987
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_7.png",
+      "sha256": "537000559d4d73416b9b67416969bb0f9541e11c60cdc4bb8ba8bbb4d1dbbe7f",
+      "bytes": 2359
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_8.png",
+      "sha256": "c4d4d25c3b7da9c70920ac2960e3aa3d1aac1efb16a8b786c765b4193dfbf711",
+      "bytes": 2624
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flame_yellow_9.png",
+      "sha256": "15af0ac959e9aab2e79209887be559cd223da23c2156ca43c3039d9f9840ca11",
+      "bytes": 2585
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_1.png",
+      "sha256": "f2098d4a33cd2914f98fced422d04abc67d05ecf71e2bb28c52d37e5a80984f9",
+      "bytes": 273
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_2.png",
+      "sha256": "4dcafcec521b1d96c194f8d8f93ca1a1ebc590bb0f9401381ab9d21a26b3b754",
+      "bytes": 633
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_3.png",
+      "sha256": "e56f216056e038db43ff7b8caa11359223e24bb49df8843dfbb421e419baf8e0",
+      "bytes": 1103
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_4.png",
+      "sha256": "4b7782995caf592aae8c2a6d6259566faa9e7d45a1ad618dcddb14df3b6dc6ee",
+      "bytes": 1701
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_5.png",
+      "sha256": "5f63b02c4bc9ccd59530eae64fa7dce816819a005f55bd0bcae86626fd6fd3d6",
+      "bytes": 1137
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_6.png",
+      "sha256": "fbed6676dae7a4174b0a3d5e77da690190ec2e8f4b8e8d13d8060e7162f81017",
+      "bytes": 633
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_7.png",
+      "sha256": "89a8dc3105ac11a8699cae6af73b136fda486bc7fc7f844ad446c9e3193a282a",
+      "bytes": 270
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_small_1.png",
+      "sha256": "f2098d4a33cd2914f98fced422d04abc67d05ecf71e2bb28c52d37e5a80984f9",
+      "bytes": 273
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_small_2.png",
+      "sha256": "4dcafcec521b1d96c194f8d8f93ca1a1ebc590bb0f9401381ab9d21a26b3b754",
+      "bytes": 633
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_small_3.png",
+      "sha256": "e56f216056e038db43ff7b8caa11359223e24bb49df8843dfbb421e419baf8e0",
+      "bytes": 1103
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_small_4.png",
+      "sha256": "4b7782995caf592aae8c2a6d6259566faa9e7d45a1ad618dcddb14df3b6dc6ee",
+      "bytes": 1701
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_small_5.png",
+      "sha256": "5f63b02c4bc9ccd59530eae64fa7dce816819a005f55bd0bcae86626fd6fd3d6",
+      "bytes": 1137
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_small_6.png",
+      "sha256": "fbed6676dae7a4174b0a3d5e77da690190ec2e8f4b8e8d13d8060e7162f81017",
+      "bytes": 633
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flash_red_small_7.png",
+      "sha256": "89a8dc3105ac11a8699cae6af73b136fda486bc7fc7f844ad446c9e3193a282a",
+      "bytes": 270
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_1.png",
+      "sha256": "d2ed73832f44589567a9d7857a6191f9223e5d99a99b4839538a86192c8750ba",
+      "bytes": 84
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_10.png",
+      "sha256": "11ca57996c075131d7dd823bb4893a49ab5a3ce9d9b56ee532b487781fccb8a4",
+      "bytes": 78
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_11.png",
+      "sha256": "8a03b7da2cfd73857a8806f93242ef31ea69574deb0b6af08c4a102c81388d54",
+      "bytes": 82
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_12.png",
+      "sha256": "25fa2641c9708a93f3e046b15736fae1be664784d00d0cbc25a739a8d01d5e68",
+      "bytes": 79
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_2.png",
+      "sha256": "3eb33553a70266bb5e0e09162eb0e2657c294c49d876fef0e06479995d38023a",
+      "bytes": 83
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_3.png",
+      "sha256": "c3f54b2c6c796ba25e152d653ec03aa2103f2d3d0c30cda38557405dd97d79d6",
+      "bytes": 84
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_4.png",
+      "sha256": "25fa2641c9708a93f3e046b15736fae1be664784d00d0cbc25a739a8d01d5e68",
+      "bytes": 79
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_5.png",
+      "sha256": "37a9aa0a718ea2bd4317d3301aad5ebc3d51bd4fe815acaf7b9d4d997f2daceb",
+      "bytes": 84
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_6.png",
+      "sha256": "76b9978aa3d461ea42ebe970d97178790f493fad79b0f7295fc9b3ffe68f90e3",
+      "bytes": 82
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_7.png",
+      "sha256": "11ca57996c075131d7dd823bb4893a49ab5a3ce9d9b56ee532b487781fccb8a4",
+      "bytes": 78
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_8.png",
+      "sha256": "6a3a4221a3c25893c6471f94afe24e2c9009204aa1c70ae0ce00aedf9187f6e5",
+      "bytes": 82
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_9.png",
+      "sha256": "35146589e06da2cf1330ae3d78366bd9aabf5cff9178662591d4d03b630b5067",
+      "bytes": 82
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_1.png",
+      "sha256": "85acbee5307578c2527c0ed42ac1ee330909ba1d3ced3670874f51b084d29655",
+      "bytes": 101
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_10.png",
+      "sha256": "f2af7544ad9db984d0139b99b20ecdb6d01fdb03c877bb9ad4684d7f89e6c2ac",
+      "bytes": 97
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_11.png",
+      "sha256": "244721e8216f53d17fa04abce0c6b19d44d50f8b4943c20233bb14572e936321",
+      "bytes": 100
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_12.png",
+      "sha256": "b4a56bcbfd4226180e131c18765bdb6217bca71f656727f74ff0e93d1200e283",
+      "bytes": 103
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_2.png",
+      "sha256": "30619247da655ff9e84780af2279f5e27c5d316ec2621f5ca8b7f1321b86e1b7",
+      "bytes": 100
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_3.png",
+      "sha256": "ad65ede95dd7771195a24b37139612c410584e0873fc4e6f8c978cb5cd06b2d9",
+      "bytes": 101
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_4.png",
+      "sha256": "550ef15aaa10e6bb060b2093d96549363fd7a6fccd4ef081f77b9755225cac33",
+      "bytes": 102
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_5.png",
+      "sha256": "797697c305c7fae44084bd8982d1a39916f8dabdfc922e357720e808cba2fa52",
+      "bytes": 103
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_6.png",
+      "sha256": "7cdab72831ac0832b85f1bc9cc19ba8b8b08bf604591791600103f9bec85a67d",
+      "bytes": 97
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_7.png",
+      "sha256": "082262686569f923c16ef4e266943385750fb500b657330912a2dd84987c8ae4",
+      "bytes": 100
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_8.png",
+      "sha256": "ed4a3bdbe084d3a9c30ecc647aaad81c1fa7690794fc032774d92746871a189a",
+      "bytes": 98
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_flower_pink_9.png",
+      "sha256": "cda0ef199ec9c3adfda42e9b4c663aeac5a001f274978d8aae01eaaf0a62498d",
+      "bytes": 95
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_gravity_1.png",
+      "sha256": "386ecd838eed46a93ff61031cd4d4dd0df14063a19ef47d51e0d2372b10a7c61",
+      "bytes": 174
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_gravity_2.png",
+      "sha256": "397975748c8ac826770023073dd98c5c39be88f3cc24b27c60900c81debdfa83",
+      "bytes": 181
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_gravity_3.png",
+      "sha256": "88d03604a6199f4cca11fe49708206d79b3ff836ce889a4ac164ee098e5a9923",
+      "bytes": 198
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_gravity_4.png",
+      "sha256": "3bf8f62ebb60c9599e7eea1bfdea0179bf753273dbaa0b30827627c3f357d928",
+      "bytes": 215
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_1.png",
+      "sha256": "f0a255d9700819b7dba15def68f56f40fc6886a368f24a843e7706af9f80182b",
+      "bytes": 221
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_10.png",
+      "sha256": "835969077fb17e19484e761f43141b04602064ec392a2f7b6b9ba2b1ddbe9a8a",
+      "bytes": 178
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_11.png",
+      "sha256": "7fc094862f8579bee3b36883e7c6dae8bda25c3257c2b2a8a3acd19e253d3001",
+      "bytes": 141
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_12.png",
+      "sha256": "7889cbd5f15268e0507798711fa58725b14536b163c4965e7f8b570061a375dc",
+      "bytes": 103
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_2.png",
+      "sha256": "d2a4b4c13feb64124c0522f4095464593828a4358d245d61c7fb274cc23dd799",
+      "bytes": 295
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_3.png",
+      "sha256": "880047cd22252224eeea9f37a28cbe42a8680a04db8e7dceecd2d5023320cd9d",
+      "bytes": 374
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_4.png",
+      "sha256": "fc5f110f3cfa053e825cbe414a5c05a461ee9eaf8597be3330eb996dd0dbc63a",
+      "bytes": 392
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_5.png",
+      "sha256": "0c5515b89e7ebba119b92f56bda5467ddf833cab0bf929c5a23cfc28b2d26949",
+      "bytes": 418
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_6.png",
+      "sha256": "225cda691251150e508632f7e490c92b82c6ea4b0e0cf94c1040872146a0a1a8",
+      "bytes": 385
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_7.png",
+      "sha256": "815d9ba0354811cab1b71e25a74f85cd54c045cc2a10bd6a5ba199873292ed28",
+      "bytes": 335
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_8.png",
+      "sha256": "14ed57c7b6f889deb10a77e25b8070904ec0d7de2f6d8eac3b239e40a60a8526",
+      "bytes": 248
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_ice_9.png",
+      "sha256": "4259bb0659ceec1547bbd93f77ca890c4c63270b643ee04ac615dad6880280d3",
+      "bytes": 242
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_large_1.png",
+      "sha256": "730f97c47b04ac15f4570f018ac3e632066460258ff23311a7dbfcd614559952",
+      "bytes": 560
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_large_2.png",
+      "sha256": "3cfacd38851dff7d285c2125c083f5ae71de3100ab8f8c4f2ac3e93c6b8d7288",
+      "bytes": 880
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_large_3.png",
+      "sha256": "f0a9d8106ea8770ae57495a54522b31e234b4ed9d65b8105f3f2bbe11a1a3af8",
+      "bytes": 1007
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_large_4.png",
+      "sha256": "3cfacd38851dff7d285c2125c083f5ae71de3100ab8f8c4f2ac3e93c6b8d7288",
+      "bytes": 880
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_large_5.png",
+      "sha256": "730f97c47b04ac15f4570f018ac3e632066460258ff23311a7dbfcd614559952",
+      "bytes": 560
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_large_red.png",
+      "sha256": "7c008d077cebd66a0f0b77f1106a1cab0d2e0664115a1d059aa3099d7f40afbf",
+      "bytes": 390
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_small_1.png",
+      "sha256": "730f97c47b04ac15f4570f018ac3e632066460258ff23311a7dbfcd614559952",
+      "bytes": 560
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_small_2.png",
+      "sha256": "3cfacd38851dff7d285c2125c083f5ae71de3100ab8f8c4f2ac3e93c6b8d7288",
+      "bytes": 880
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_small_3.png",
+      "sha256": "f0a9d8106ea8770ae57495a54522b31e234b4ed9d65b8105f3f2bbe11a1a3af8",
+      "bytes": 1007
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_small_4.png",
+      "sha256": "3cfacd38851dff7d285c2125c083f5ae71de3100ab8f8c4f2ac3e93c6b8d7288",
+      "bytes": 880
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_light_small_5.png",
+      "sha256": "730f97c47b04ac15f4570f018ac3e632066460258ff23311a7dbfcd614559952",
+      "bytes": 560
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_1.png",
+      "sha256": "25aff582ea2b25e0f60f2b1260c604effa4ef784e6e364d8747e37daf6e06e7f",
+      "bytes": 180
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_10.png",
+      "sha256": "1e9f31d8c166f25dadd664dce07db34ce28b4907ab09160d6fdbeb8a29096e63",
+      "bytes": 332
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_11.png",
+      "sha256": "44914f690b093646e9704a9d7607f9f2b049539f8382de485acede714a0fbdad",
+      "bytes": 337
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_12.png",
+      "sha256": "6b790d538a29cd7ce9dd47a1ed02dac3e62a4f6ba61bccf889493949c2ab177f",
+      "bytes": 265
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_2.png",
+      "sha256": "4a191b9b004f2739f500bde3f6dfb968b769ee0210f04456e83f033fb1bc787a",
+      "bytes": 262
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_3.png",
+      "sha256": "3da24510fbab060c234284ccd2eff3c4be3006dd3b59212d1b8d3b2b68adc583",
+      "bytes": 336
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_4.png",
+      "sha256": "88dc683f65e7a27810ac3c0056e3d0b279b263e84c12fd68c9979e0089f1e5fa",
+      "bytes": 435
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_5.png",
+      "sha256": "9533da67fd1b6739cb69b9cfbe95da74d2b2c2eb3ebf5cce9d30b4038f81469d",
+      "bytes": 478
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_6.png",
+      "sha256": "cc1024e769e53ce8b8d1e6f20c7560dc4561d0818e801e04fb9d722b3411f893",
+      "bytes": 426
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_7.png",
+      "sha256": "7680e9d6d717fdf069a4a32c2430f277db43f2b756eb9aa70beae0b9010bdd9c",
+      "bytes": 441
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_8.png",
+      "sha256": "a8f84417308504b397a7a5836f08761ad6b6226e04165283f887034572115f6d",
+      "bytes": 438
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_magma_9.png",
+      "sha256": "4a1d32ffbf170ac3d973661b91367d9102a79c0c4a6948c47c712ab97cdc2547",
+      "bytes": 391
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_negative.png",
+      "sha256": "e239371fcf94eafe4b3bcec7476d49defbe2381017d478ccb96b9822a2e8082a",
+      "bytes": 520
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_1.png",
+      "sha256": "c50b779ba4baabdc7a7eb8278a41d555b1e99c05072f199cb4a389e89aa8af35",
+      "bytes": 104
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_2.png",
+      "sha256": "9b2a8bc65bf9d3479950e7ab42896608870a0c42b4190247db5238319c8f142d",
+      "bytes": 104
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_3.png",
+      "sha256": "22ac20197b883975b06c8f0e7774a1082f40b836a32ddb18c19b874705eeceb5",
+      "bytes": 134
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_4.png",
+      "sha256": "0f0a3c14733a26db6536864908ee80eb272e2061b0569ea4fbea8308dfb77dd9",
+      "bytes": 134
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_5.png",
+      "sha256": "b9a17e57dd2d22bf88016d99e8a43479c76796a72db8d90004ac4cc023d3c34e",
+      "bytes": 154
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_6.png",
+      "sha256": "f32a1c10aded925f4381357552ac947620afde8bcc962047bd81ef4ba1798890",
+      "bytes": 154
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_7.png",
+      "sha256": "43c3f9cbd1c7ee686fe817aabc32485b2b57ec8479ddeefd5aeb3a79fb6e06fd",
+      "bytes": 108
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_8.png",
+      "sha256": "fc7fac370ffffb2572da6ca552bbb57581c7a2946cc6063d30a60fd5994293e5",
+      "bytes": 108
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_1.png",
+      "sha256": "59f741bdbbb9b129c1e2ac2e5863219c7bb8d97266acdb3bd83644d50023c203",
+      "bytes": 139
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_10.png",
+      "sha256": "d7d7f66eac764ac220454ab856b4987b3b853d57ab2354533a9bae799aa914ff",
+      "bytes": 142
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_2.png",
+      "sha256": "89f5ddd30ab79d51ce0acc8d6cb3bf3006f9bb9a05edc98298e1947052b3a470",
+      "bytes": 152
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_3.png",
+      "sha256": "3fb3b30e5862d8156e36d06297803f33efd8d2d9f41b61c616035e183dc8a892",
+      "bytes": 145
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_4.png",
+      "sha256": "2c980c169810500169e85ca5153b0d9485b6de7e83b3de2359b9496fa1311a5a",
+      "bytes": 156
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_5.png",
+      "sha256": "432061dd2215f8cd52b7c133383581f723985510f215e1f8eadc640d9daf9675",
+      "bytes": 172
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_6.png",
+      "sha256": "2059da513c4717d1f00221dbb61747c6170e8db861e764d31e18700774c1d677",
+      "bytes": 187
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_7.png",
+      "sha256": "005a0d917d151dea71eb09951e5e8cb3aa4c750d38659becfbf468922cecb65a",
+      "bytes": 176
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_8.png",
+      "sha256": "37c88fe0482dc70f987700258d136aace01fa68daa58a483e8cb4cca19abe32f",
+      "bytes": 169
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_note_black_9.png",
+      "sha256": "2c39e3b28c687956fffb66270ce65c127a99b704a0750c76b4c6e9b5ed115fac",
+      "bytes": 161
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_1.png",
+      "sha256": "c3d90684843c6026998bf603b2bd596b5caca7acf70b27153467935b2733f612",
+      "bytes": 98
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_10.png",
+      "sha256": "15f8b91bc23d0c304ff200de4d981f7f325f5c44683b8d15db0a3f67e25a8d60",
+      "bytes": 235
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_11.png",
+      "sha256": "d3a1865364f9824d88a576644abc649e55c42f084bcbf34cbd9a5da6d8f0b565",
+      "bytes": 226
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_12.png",
+      "sha256": "c31e850b161ae4cb9cfe453ceb278ed7e0462e72c4b3f3726cf9e6486ec362c0",
+      "bytes": 211
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_13.png",
+      "sha256": "b27ae8fde39aea7b15f186e76b03acd6e7a234dbc761a7acbd90e25920ee06a4",
+      "bytes": 174
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_14.png",
+      "sha256": "1c5bc2bae2c2714368a690c855270ce83172944094cc5d49de0cbeeb42ff1de1",
+      "bytes": 146
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_15.png",
+      "sha256": "c3d90684843c6026998bf603b2bd596b5caca7acf70b27153467935b2733f612",
+      "bytes": 98
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_2.png",
+      "sha256": "1c5bc2bae2c2714368a690c855270ce83172944094cc5d49de0cbeeb42ff1de1",
+      "bytes": 146
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_3.png",
+      "sha256": "609b2c60ac3f5abf92094101963a68e710681b9ef35b7c3ec34edb989a927993",
+      "bytes": 172
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_4.png",
+      "sha256": "c31e850b161ae4cb9cfe453ceb278ed7e0462e72c4b3f3726cf9e6486ec362c0",
+      "bytes": 211
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_5.png",
+      "sha256": "de5c97e4c0580dd75b3bd5a2181ee6f69e7ae30b3a8424ae964afae3e8e3e7e7",
+      "bytes": 224
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_6.png",
+      "sha256": "a533058c978817e87aa48191dec5f383d156db30f0c4ae9653ba8c3183b0d44f",
+      "bytes": 234
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_7.png",
+      "sha256": "9e66a27b914697c6226a88eb991ac12ef6ad930eaf9abfbfd36c9474d6ad564c",
+      "bytes": 227
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_8.png",
+      "sha256": "6db4d3fe0e2792b12765b597b7f2e8ca56e7676bb98295eb8aa793a5ca8c4289",
+      "bytes": 237
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_purple_9.png",
+      "sha256": "e61cc37b4f875e2ef30cc455d2ecc4405da98705396563235907a53e9ea81bfc",
+      "bytes": 228
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_1.png",
+      "sha256": "19147bb6fa5fb15e1ed1cdc170375610812ded9bfe7445a9cfd853c9b7c41b83",
+      "bytes": 77
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_10.png",
+      "sha256": "c9121a46606bfbac11a3d9f5004ea80a4dc40144113605a4b1658e65e42854fa",
+      "bytes": 101
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_11.png",
+      "sha256": "3fddb96b82582366d2e14ea18994afb1e3bf19f84912bae9eb932ea14f4870ec",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_12.png",
+      "sha256": "683fb7f5a03d36b52ead48f363219564b22fbf07ed83016fa3ce6ccb2dbf0ae1",
+      "bytes": 94
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_13.png",
+      "sha256": "ab14f8d54ad85aef9f5a61c8020fc8a3dc7ae9a674d5a5ce86545506bd60786d",
+      "bytes": 82
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_14.png",
+      "sha256": "65c317f812b348e9e60e8c5996238d2792f088f275d22aa6d9119233d80df9e1",
+      "bytes": 87
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_15.png",
+      "sha256": "156d2908b72b06e7aa3fa907990038811895a921af40d0e66add7ac63cd93206",
+      "bytes": 77
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_2.png",
+      "sha256": "4e239768cedac0d5cfa7a39fffaf48da32fa19e54b5cd0845710742576fbee86",
+      "bytes": 87
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_3.png",
+      "sha256": "6e31168b325a4849868d7cee46bc1ddf599290b7f5858cd49ad02258fcfd1070",
+      "bytes": 82
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_4.png",
+      "sha256": "875cb68c8b4155f67bef9de464e2df81f8dac0557e17e8d349bdfe3966f6a152",
+      "bytes": 94
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_5.png",
+      "sha256": "ee7e6b5db2bb5c98d90bc4c40a84b8ed52696221f20c8998f77b65f9f9137eba",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_6.png",
+      "sha256": "55dc1590183b601771d95288e3e2bcbf8095803dc37eda0eff4ef29ba63fc850",
+      "bytes": 100
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_7.png",
+      "sha256": "ee7e6b5db2bb5c98d90bc4c40a84b8ed52696221f20c8998f77b65f9f9137eba",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_8.png",
+      "sha256": "55dc1590183b601771d95288e3e2bcbf8095803dc37eda0eff4ef29ba63fc850",
+      "bytes": 100
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_red_9.png",
+      "sha256": "3fddb96b82582366d2e14ea18994afb1e3bf19f84912bae9eb932ea14f4870ec",
+      "bytes": 91
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_1.png",
+      "sha256": "f2b97cef0f733ee2c7eaae6f1c01921e882cf8471f491eb92ef18cb183a3081d",
+      "bytes": 221
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_10.png",
+      "sha256": "69f4dcadd445038d967733ca50e0acfb618289ce02f24dc58f57d6797f32b5d7",
+      "bytes": 176
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_11.png",
+      "sha256": "88680274c068ed0d49b252f0d8be9aa342f30b578190505e0245d966ca3dc58f",
+      "bytes": 140
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_12.png",
+      "sha256": "097586e08d4bbc373ec930e0ca7b8615d41f3c8a792412032bb6b0bd2cd865c6",
+      "bytes": 103
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_2.png",
+      "sha256": "9878883da2845ee05716752349ac27f938622778100fbb19033bb5950e11aaef",
+      "bytes": 294
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_3.png",
+      "sha256": "2c76ffe2a28056fd0542a4529dce89e0e72c6dc7486552bb46169c59c44be8e0",
+      "bytes": 377
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_4.png",
+      "sha256": "6dd716d53f4ad5fd0611fa9ddf89416ae3a0057c02a31bb6d3ca84a1be2e1113",
+      "bytes": 402
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_5.png",
+      "sha256": "e7ab7c910043ff19f6bbf840a953f062f2e5f3838b47cb5d6ddc73ef90a288b7",
+      "bytes": 443
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_6.png",
+      "sha256": "792c58ff269e046704fd16928992f5ffc278fb3210297b14c892b6fe19bf4bc9",
+      "bytes": 384
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_7.png",
+      "sha256": "3d723c156a34a010105cce6cc459df8e57c4fa09fb68306460299c2b74017ea4",
+      "bytes": 335
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_8.png",
+      "sha256": "a771c162005e8bac17f48701059bf23f4983ffac5425745b498ab6c1ca501b4f",
+      "bytes": 251
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_sand_9.png",
+      "sha256": "a9588f3696a4cde4659bbb8a5b00a5639be6245d52d9258eb412c3cbc45e3342",
+      "bytes": 241
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shock_hit_1.png",
+      "sha256": "cff0490b767be02d3de163e78c49f1509f6bc135122486b4c6d973aa9a94d396",
+      "bytes": 116
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shock_hit_2.png",
+      "sha256": "ea0f3693485f034fd18d3834e7de189e2a977fb0525a3298c160ff447c2f37d9",
+      "bytes": 138
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shock_hit_3.png",
+      "sha256": "c50915fb304bcabbf3265088e3f540bbfa5fe5485315731ab8d961c30e86b679",
+      "bytes": 166
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shock_hit_4.png",
+      "sha256": "de3841d30c1eed8853d77a61af7249edf5075448ae85d2ba886dd3adf4bca13b",
+      "bytes": 167
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shock_hit_5.png",
+      "sha256": "b0234d29d7d4f3ee910ebb90441631cf0c62016a8505bcbdd1f96dec086824cb",
+      "bytes": 167
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shock_hit_6.png",
+      "sha256": "b0a5485c4159ee8a7f71d502d4ba06bad1995938576b890153a1b9238fc16474",
+      "bytes": 168
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_1.png",
+      "sha256": "00b8e92f2e0945551750ca33c37d7692f19682002b3fbbeeb26d3b031ffcdf78",
+      "bytes": 110
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_2.png",
+      "sha256": "fa7d5e117020ee1ce5c81b637d944deb053e97382b61aece12876261e7c9f0d1",
+      "bytes": 131
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_3.png",
+      "sha256": "f41df2e65950c23d50b0e6bf3140145e479ee1a7b21998ac77c44c59acd827ac",
+      "bytes": 150
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_4.png",
+      "sha256": "c81e87c30a02413966c79875a262a3a00c75ce340b53d74c54307677c5bf0f4b",
+      "bytes": 170
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_5.png",
+      "sha256": "8a839ca852cea48d635138389064bedc26ba70a4bff26a36af00773be8942626",
+      "bytes": 186
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_6.png",
+      "sha256": "b6273f5c34e218c9a6af5dc1de12f6793b22027cb917e65dd83f6d423159e56c",
+      "bytes": 199
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_7.png",
+      "sha256": "314fb5ac1bce6b6276c35de35c38e4a859b17d5353ac1fd253d464c131779cea",
+      "bytes": 227
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_shockwave_8.png",
+      "sha256": "46c4d10811215a7d0b6d0639d558df8f775c17ae37cbd9b45f34731a90144539",
+      "bytes": 210
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_1.png",
+      "sha256": "62ac534ab941635afec194539804be4949f81eb59f349cd5332b0294706b5b46",
+      "bytes": 112
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_10.png",
+      "sha256": "b1703b398a2fb7760719088e888fc50f7712999c8130dd0e733825d5e06a6401",
+      "bytes": 116
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_2.png",
+      "sha256": "6bb47f511830a9a680b878203909b586a685b3c292114270c1b74ae3d697f3f1",
+      "bytes": 116
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_3.png",
+      "sha256": "7568c0eb2a36152ad8c1121ded6fea93fc9e06f38690082d12333c1fc754a931",
+      "bytes": 120
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_4.png",
+      "sha256": "44f73debc1ed18728bae1320c06ede18140ac83701ae6f6f21e6ce99943c94b8",
+      "bytes": 123
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_5.png",
+      "sha256": "44f73debc1ed18728bae1320c06ede18140ac83701ae6f6f21e6ce99943c94b8",
+      "bytes": 123
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_6.png",
+      "sha256": "44f73debc1ed18728bae1320c06ede18140ac83701ae6f6f21e6ce99943c94b8",
+      "bytes": 123
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_7.png",
+      "sha256": "44f73debc1ed18728bae1320c06ede18140ac83701ae6f6f21e6ce99943c94b8",
+      "bytes": 123
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_8.png",
+      "sha256": "7568c0eb2a36152ad8c1121ded6fea93fc9e06f38690082d12333c1fc754a931",
+      "bytes": 120
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_slash_9.png",
+      "sha256": "a65ad078bafda3f66170db494a7c70dffb9b2e4c969df779660c2743a2d892a2",
+      "bytes": 119
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_1.png",
+      "sha256": "1ec4ba02c3243af4da1254ba134683a3b371cafd251d8e6210b5e1dd0fffac34",
+      "bytes": 280
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_10.png",
+      "sha256": "b4f5984b8b69787676bfa8b2b0749de18cd11bd587d333670cca64cde4d3316f",
+      "bytes": 395
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_11.png",
+      "sha256": "d5f076bbe1eda7c5d8e204ff58d8198669a01f781e97e323db5cbff18768bc73",
+      "bytes": 814
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_12.png",
+      "sha256": "af23ffc0ac9ad3b68a49ff710c56dd3bfe4fae1b9435672d45e47a640f7059d8",
+      "bytes": 858
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_13.png",
+      "sha256": "e12a075d08d8725ce1d7e250df3323cb2124fa8446168e1bfad0a63957bab057",
+      "bytes": 883
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_14.png",
+      "sha256": "15b9a2290b266a5cba157301add98e10f476e25ab6b54341f65d256cd291b703",
+      "bytes": 573
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_15.png",
+      "sha256": "07c1291d808c591521e93807d2c547025735c37e572f9b91dbe762b92420d03c",
+      "bytes": 682
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_16.png",
+      "sha256": "80acb32a94e60f5755377d97b65140d9b720e28586ac94134850155e64443316",
+      "bytes": 676
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_17.png",
+      "sha256": "1a8511810eb27a83e6aa2ee3d708e0f23c5889611d96e386298ce61a65be2808",
+      "bytes": 528
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_18.png",
+      "sha256": "51f407ffb95f9c096d43f9fcf2b1970cbee80013773950bceac0437de8653190",
+      "bytes": 637
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_19.png",
+      "sha256": "1d7c7c3076304378aae9437a95a19e997c4eff026de4f614c285a09133c8da0c",
+      "bytes": 637
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_2.png",
+      "sha256": "b60423cf08f7b44d90adc67199c8d75562c1e6043ffad1bfabb39efeb0d61b38",
+      "bytes": 450
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_20.png",
+      "sha256": "310038b0f2164d05bcadd48b0fab077b6a39c45a20d0bd6d489b8c93c2333cb4",
+      "bytes": 354
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_21.png",
+      "sha256": "4eb71c3431a404b7ff16a6bda891fec03b216d31accfefc91abc55eb2eb645b8",
+      "bytes": 231
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_22.png",
+      "sha256": "ba18c5781cb9d87eba7b8744e378a6e33e10f829a4c59de3611d82c74f4d5f01",
+      "bytes": 137
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_3.png",
+      "sha256": "08eef04e64b24a3bbf0d031797117d5268989d784023cefc86495139563fb63c",
+      "bytes": 482
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_4.png",
+      "sha256": "ddf364d85ec8333dc8bbe49b12f869b277157faa91bd1d3851f2b87436d4a461",
+      "bytes": 329
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_5.png",
+      "sha256": "761aa8aa08f860a67c9e30b12328bb20b9677efed4e25e13313f0f6c4c7b00a3",
+      "bytes": 1289
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_6.png",
+      "sha256": "95b033e329214895b1fcb0f785003cd0cfb495a37ac6a09dc62b2746befe4ff6",
+      "bytes": 760
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_7.png",
+      "sha256": "a4bd82d755baa165e561cfae8afcbdabff6dbf9eb978b81957f2cc59d3e0f6fb",
+      "bytes": 1245
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_8.png",
+      "sha256": "34107bc1c42b7038cae50c44f36b666985762beca2407e8eb7b8db7b291588ff",
+      "bytes": 892
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_black_9.png",
+      "sha256": "eaf1d80a04823b4e87bdcf75688efcfafb7911e92492012b3ff8006c6fd0a6a4",
+      "bytes": 811
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_1.png",
+      "sha256": "8794137b4b7849b6a1187c84b1e7b6360d360509ee5ecc5161f2decb2e7af148",
+      "bytes": 298
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_10.png",
+      "sha256": "058dacc99126c7f9b19be68746266c86e15a02ea3bd3b1ab453da9ac3c84e77c",
+      "bytes": 426
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_11.png",
+      "sha256": "972577b476a45cdfc41b7e18c10080040ee9421f2ddb5f95ae170c44cf435a48",
+      "bytes": 866
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_12.png",
+      "sha256": "65e3761878d88880dbe206a13fcea3c8b0c04820b2d086683e66725ba4a19329",
+      "bytes": 920
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_13.png",
+      "sha256": "a89b3a541912d08c6a48adb641f17736e2306f3230b177898f66f476c92d9360",
+      "bytes": 948
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_14.png",
+      "sha256": "3f199d9d2cfe6a6002b115ecb8412ad7001036234d393a69cde8be3177bb721c",
+      "bytes": 619
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_15.png",
+      "sha256": "9fb47a04274fdc6dc5f7b5b2fdb45b337d363b3f0ca05eca09f29a5139785515",
+      "bytes": 738
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_16.png",
+      "sha256": "8e324739a412f79bcff5ae97c8a93c798cea083a282e584ddcabe5dd36ebf619",
+      "bytes": 728
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_17.png",
+      "sha256": "b6d53aa88ce14fcd11a072d4c63c01cfb78463c00195f671e64756ffeaffef18",
+      "bytes": 562
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_18.png",
+      "sha256": "77eb0d069768455aa6dfb113f440696458d86188052e50242476357081f29807",
+      "bytes": 685
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_19.png",
+      "sha256": "cb9d0400b977bbc1e17b3a8316e9451e2099e6af4bf3cc87d780bed3f7179fdd",
+      "bytes": 690
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_2.png",
+      "sha256": "317ff69e2d19cde7f62d008a48d7ca82e607c78d9eb58d8da4dde9c37f8d4909",
+      "bytes": 490
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_20.png",
+      "sha256": "f6a4f9c5aff805b84ef1c4b1ab56cf87b75dfc1ccc516d5c7fa82d66aa9e81d7",
+      "bytes": 372
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_21.png",
+      "sha256": "59f0afd652d6c481a7cc3d2d4bb47a820c72846e19033fc157a71ee94c36124f",
+      "bytes": 241
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_22.png",
+      "sha256": "d1486396f97ad0afa5d4f651c38136b5ef692d3d575510e7c8bc5e2bd41e7d45",
+      "bytes": 142
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_3.png",
+      "sha256": "61ea591d97dc2e7542da1d379e46f7cf8d84e7a4938a066f780a9b106fb64a6c",
+      "bytes": 517
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_4.png",
+      "sha256": "f230e0a504bf50dff0eaafbf58abb0b47f6218d14412e1fa379d39953c4af9a5",
+      "bytes": 353
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_5.png",
+      "sha256": "7fef9e2d516ecb65e15b85af9493a747a49ba5a4fd1c206a4da95f94a9478351",
+      "bytes": 1365
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_6.png",
+      "sha256": "6baa1a296f81b951447b5d7004e46326075319febf640dbbd9d99c9d4d380aa3",
+      "bytes": 834
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_7.png",
+      "sha256": "50fec70028bcce2f3b19cf2a2291082475e2d9a5532c63371c589514f22ee966",
+      "bytes": 1313
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_8.png",
+      "sha256": "7d49a3e07c5d327cebc3284a71101cb64069643cd75851c31aca0d995280978f",
+      "bytes": 967
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_blue_9.png",
+      "sha256": "2cc3dae3b73c45f9d7109cf97ae1a2db2514ca7957242ff926230bf5b2c56c2e",
+      "bytes": 875
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_1.png",
+      "sha256": "42944a2a840158434cf0df6657045cdcf3b46e45c5869059f2b0663053ce796b",
+      "bytes": 294
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_10.png",
+      "sha256": "0750faf8aa4c9af5fdd027716079bc0b93d3d88851bafd96bc44fbb1841d34bd",
+      "bytes": 402
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_11.png",
+      "sha256": "6b2b52b963c6dc5068da3826c7676d95213d6fc9c27c602de72d84f3a3e9a296",
+      "bytes": 828
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_12.png",
+      "sha256": "ea96e8e9951763504f4d4cf08b5717c9af240b115bd94276e726f34e2f1eaede",
+      "bytes": 887
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_13.png",
+      "sha256": "d122f8c7e7ef6ddb63a7116de46667f8b524c2aaaea6f9dfb946af1867220f45",
+      "bytes": 918
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_14.png",
+      "sha256": "5b3b56fe8aeeb36d8258a27c5e04e168f8e5830106d3b79079498369a33d7018",
+      "bytes": 599
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_15.png",
+      "sha256": "121b095125e7083a321a94d5d081a1d2c42ec1be77c6071923d2d9981888e00d",
+      "bytes": 714
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_16.png",
+      "sha256": "6e5dc34f8a19e55f527f202dadadcafa0b4c213209aba8cb4a480c1c94d88c7a",
+      "bytes": 699
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_17.png",
+      "sha256": "f1079372ece19a8aeac171c7f821675d331b1cf0280111167283774fea3b69ff",
+      "bytes": 540
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_18.png",
+      "sha256": "0c2c5bb9010329fa2ab15045903a7f450b367eff5838892673bfbecf05b257d4",
+      "bytes": 652
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_19.png",
+      "sha256": "ffa8629a43f105b5130373d2567d24f1ec297e61937f1fbf460890f546600fd3",
+      "bytes": 662
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_2.png",
+      "sha256": "11ff94d44ab06d15235ff0fc811aab4191a4854a243f12d0c83f6c2eb61ad088",
+      "bytes": 473
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_20.png",
+      "sha256": "b0e8af84445797d5d81ec18a24b42df64c7a4a3a446007b34503c6eba7899440",
+      "bytes": 351
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_21.png",
+      "sha256": "c8c7a7e8d4271418ae94152061634d7dda48b30b4ca04775a5a9c94b41f6b4c2",
+      "bytes": 227
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_22.png",
+      "sha256": "474b2de1dfe0d7f38161f8448e93dd8db0c498c9ff8aedf57645d74c846e5a6c",
+      "bytes": 136
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_3.png",
+      "sha256": "abdc40ffe64bd6b7139b0f9aa4a642e7cc3ae8214e6d28cdbc5815caaca36875",
+      "bytes": 509
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_4.png",
+      "sha256": "57eddf255b04c3709c802c42f8d95d22a696808b18f961e89cd41879ab321e67",
+      "bytes": 347
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_5.png",
+      "sha256": "e6c65f839499cdbb83d9004aa761a020e7ac4dc70b8daee020bfff8ba53a9d75",
+      "bytes": 1342
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_6.png",
+      "sha256": "1838f80d0392794b38503568b770c4af405c4364c43ae10f534f936575405d10",
+      "bytes": 801
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_7.png",
+      "sha256": "f342e78908cef3f5fa2904424578e3caa6b2d502e59b74dcee2a1503b6439321",
+      "bytes": 1267
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_8.png",
+      "sha256": "d3aaa46bcf21729eaf342f080d5f3ec3d048c36f778300977ffa84921dcc67ba",
+      "bytes": 929
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_dark_blue_9.png",
+      "sha256": "a747eee8e1fbaab8093dc34a6560567f84ad9d18a27fe737d5891cc348e85cf7",
+      "bytes": 842
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_1.png",
+      "sha256": "4754f76256aaf06a4147cd6adb90bba57bd4456e6d8a56c7974dc67dbab38ae2",
+      "bytes": 287
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_10.png",
+      "sha256": "67fe48edd7d042846430a34aee1c98527aea93d13eaaaaaacf7d57a64e6cc135",
+      "bytes": 413
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_11.png",
+      "sha256": "568fc70aabde9b1f310bb1ca8b0b12ac90ef2b135cfd44b5dfc2d19273f45087",
+      "bytes": 850
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_12.png",
+      "sha256": "9f81742b1a826fd253b0845868b6b666e61bce12c6c2d11c6e0e53f854923e17",
+      "bytes": 901
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_13.png",
+      "sha256": "54cfafc868f938f5f3e4a8c162f98df8fb6fff814cd4ef2beb8f29a91cde9286",
+      "bytes": 940
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_14.png",
+      "sha256": "d682f5f71f384248f696b391670383cefed29fb7b5462727a661a2645e7e0fec",
+      "bytes": 609
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_15.png",
+      "sha256": "f3bddbe5fcfcd1fb2e8a2a4d19694874299fe7099b8e35502957328a1369f1dd",
+      "bytes": 722
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_16.png",
+      "sha256": "5849f4baa26dc561a5d00f4b19a1ff3d1b35d126607bf659b1a7138e4bdc3143",
+      "bytes": 715
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_17.png",
+      "sha256": "2d0b9fe5ebbb1d5966b77e2798a4488e217a89e1b4dea7dda8b825bc623dc93c",
+      "bytes": 551
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_18.png",
+      "sha256": "a4eb1a6c01c9a5301f309e731a227b6915e66346b5029fd448da9543936d14e4",
+      "bytes": 666
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_19.png",
+      "sha256": "08d3cdbdc9571ddde8fa2142ff2e568bd0884fc350439983d51cd6f63a0c6760",
+      "bytes": 677
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_2.png",
+      "sha256": "8ef82526fb9226e222a8f30aa67ed99695961d741a5299176d46eaa2d5f33b09",
+      "bytes": 480
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_20.png",
+      "sha256": "aeab81f70447c7152e78745c4d57cdf289531890c1b00dd228af337a6db70f8d",
+      "bytes": 368
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_21.png",
+      "sha256": "31edbf3ece968b5a4f067a2c8a715153a66d8ba08d2178066a2c7c3fdb51fa44",
+      "bytes": 236
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_22.png",
+      "sha256": "2763695b6aa2ea3cfc8f2d42a645576ef72667ebc96cba2352e8137c22a3ae23",
+      "bytes": 138
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_3.png",
+      "sha256": "d99a8431b8872b65f2e18d150435776e1c64b5e27498a5bd6ee1034a8cb158f6",
+      "bytes": 507
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_4.png",
+      "sha256": "1f58a48917bf5ffaf1d7c4772498b28f8efb45611716afbbfe682b87ffa53ff1",
+      "bytes": 344
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_5.png",
+      "sha256": "f960de39f282965f6420af3c1564b3eac5a2348ef186f6b176243a41451ff08e",
+      "bytes": 1346
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_6.png",
+      "sha256": "52d7b248e0bf0c3518885589f214a6649545162840d25fe6db339b50e384625c",
+      "bytes": 818
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_7.png",
+      "sha256": "20f444d9ce17cf624e6dae000e8ee86ddbcdef08c13ab9e5c5f938f63f28a765",
+      "bytes": 1298
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_8.png",
+      "sha256": "f0c782c92833fb9740bbdb3c07a3e7d2134c35b656aece524169f7363225d85b",
+      "bytes": 953
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_thunder_light_blue_9.png",
+      "sha256": "128b21a19a73d9b8456a96a8108077ad37d3fe67600b491fa5eb258b3d441d22",
+      "bytes": 860
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_1.png",
+      "sha256": "ef418a72530b59321f8f17a4ae9149ededa3203ab069566241981929ed6a96a9",
+      "bytes": 357
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2.png",
+      "sha256": "4b01ccfa45053fa15c19084b5e3b386374d7baaf45143e0b5f5a9f467e39f602",
+      "bytes": 417
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_1.png",
+      "sha256": "ef418a72530b59321f8f17a4ae9149ededa3203ab069566241981929ed6a96a9",
+      "bytes": 357
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_2.png",
+      "sha256": "4b01ccfa45053fa15c19084b5e3b386374d7baaf45143e0b5f5a9f467e39f602",
+      "bytes": 417
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_3.png",
+      "sha256": "3bbf49af8c4d3589dd24470cba12c84afeae621b6b4785e31bc4710ab60efe3a",
+      "bytes": 510
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_4.png",
+      "sha256": "d5b8b481162bcee6d56ad7afc5631d1b57a114a758ddb32277b30169b2ce3e57",
+      "bytes": 522
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_5.png",
+      "sha256": "8bbd4555c032b947e0935aa8186ed28531b71e647d86d430b2078c721c430e0b",
+      "bytes": 419
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_6.png",
+      "sha256": "43324f13ed47312fdc494d36b3aee0b3b405f7dcc997a33a3f0837359bfb4679",
+      "bytes": 194
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_7.png",
+      "sha256": "1b69d16fc52fa395a0bd4edd150b439ead5cb5a2231d7fca6cbe6daa6b1af062",
+      "bytes": 190
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_2_8.png",
+      "sha256": "349a65cb4d9ab9c007df9d101e790e03764eb3e3b55b4f2033f6fbfcbcd84a94",
+      "bytes": 121
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_3.png",
+      "sha256": "3bbf49af8c4d3589dd24470cba12c84afeae621b6b4785e31bc4710ab60efe3a",
+      "bytes": 510
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_4.png",
+      "sha256": "d5b8b481162bcee6d56ad7afc5631d1b57a114a758ddb32277b30169b2ce3e57",
+      "bytes": 522
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_5.png",
+      "sha256": "8bbd4555c032b947e0935aa8186ed28531b71e647d86d430b2078c721c430e0b",
+      "bytes": 419
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_6.png",
+      "sha256": "43324f13ed47312fdc494d36b3aee0b3b405f7dcc997a33a3f0837359bfb4679",
+      "bytes": 194
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_7.png",
+      "sha256": "1b69d16fc52fa395a0bd4edd150b439ead5cb5a2231d7fca6cbe6daa6b1af062",
+      "bytes": 190
+    },
+    {
+      "path": "assets/minepiece/textures/particle/particle_water_8.png",
+      "sha256": "349a65cb4d9ab9c007df9d101e790e03764eb3e3b55b4f2033f6fbfcbcd84a94",
+      "bytes": 121
+    }
+  ]
+}

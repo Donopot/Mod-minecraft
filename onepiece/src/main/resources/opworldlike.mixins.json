@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "br.com.oneminepiece.opworldlike.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LevelMutationMixin",
+    "LivingHurtMixin",
+    "SkillProjectileCollisionMixin",
+    "AmaruDimensionsMixin",
+    "ParameciaMobFreezeMixin",
+    "KiroLandingMixin",
+    "ParameciaStoneDataMixin",
+    "GomuGearDimensionsMixin",
+    "ZoanDimensionsMixin"
+  ],
+  "client": [
+    "AvatarRendererMixin",
+    "AvatarRenderStateMixin",
+    "TransformBodyMixin",
+    "AmaruPlayerPoseMixin",
+    "ParameciaRenderStateMixin",
+    "ParameciaLivingRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

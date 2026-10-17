@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "minepiece:item_devil_fruit_ryu_ryu_pachycephalosaurus",
+    "minepiece:item_devil_fruit_inu_inu_wolf",
+    "minepiece:item_devil_fruit_neko_neko_leopard",
+    "minepiece:item_devil_fruit_batto_batto",
+    "minepiece:item_devil_fruit_inu_inu_okuchi_no_makami",
+    "minepiece:item_devil_fruit_hito_hito_daibutsu",
+    "minepiece:item_devil_fruit_ushi_ushi_giraffe",
+    "minepiece:item_devil_fruit_tori_tori_phoenix",
+    "minepiece:item_devil_fruit_uo_uo_seiryu",
+    "minepiece:item_devil_fruit_ryu_ryu_brachiosaurus",
+    "minepiece:item_devil_fruit_ryu_ryu_pteranodon",
+    "minepiece:item_devil_fruit_neko_neko_sabertiger"
+  ]
+}

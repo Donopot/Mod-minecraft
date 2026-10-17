@@ -1,0 +1,62 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true,
+			"animation_length": 1,
+			"bones": {
+				"color1": {
+					"scale": {
+						"vector": [
+							"query.anim_time<0.2?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.2?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.2?math.min(query.anim_time*1024,1024):0"
+						]
+					}
+				},
+				"body": {
+					"rotation": {
+						"vector": ["math.random(720)", "math.random(720)", "math.random(720)"]
+					}
+				},
+				"color2": {
+					"scale": {
+						"vector": [
+							"query.anim_time<0.4?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.4?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.4?math.min(query.anim_time*1024,1024):0"
+						]
+					}
+				},
+				"color3": {
+					"scale": {
+						"vector": [
+							"query.anim_time<0.6?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.6?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.6?math.min(query.anim_time*1024,1024):0"
+						]
+					}
+				},
+				"color4": {
+					"scale": {
+						"vector": [
+							"query.anim_time<0.8?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.8?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<0.8?math.min(query.anim_time*1024,1024):0"
+						]
+					}
+				},
+				"color5": {
+					"scale": {
+						"vector": [
+							"query.anim_time<1.0?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<1.0?math.min(query.anim_time*1024,1024):0",
+							"query.anim_time<1.0?math.min(query.anim_time*1024,1024):0"
+						]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

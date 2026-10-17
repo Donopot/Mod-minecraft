@@ -1,0 +1,282 @@
+{
+  "guard": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:item.shield.block"
+      }
+    ]
+  },
+  "sword_sweep": {
+    "sounds": [
+      {
+        "name": "minepiece:sword_sweep",
+        "stream": false
+      }
+    ]
+  },
+  "flame_explode": {
+    "sounds": [
+      {
+        "name": "minepiece:fire1",
+        "stream": false
+      }
+    ]
+  },
+  "punch": {
+    "sounds": [
+      {
+        "name": "minepiece:punch_hit1",
+        "stream": false
+      }
+    ]
+  },
+  "wind_chime": {
+    "sounds": [
+      {
+        "name": "minepiece:wind_chime",
+        "stream": false
+      }
+    ]
+  },
+  "slow_motion_end": {
+    "sounds": [
+      {
+        "name": "minepiece:slow_motion_end",
+        "stream": false
+      }
+    ]
+  },
+  "piano_horror": {
+    "sounds": [
+      {
+        "name": "minepiece:piano_horror",
+        "stream": false
+      }
+    ]
+  },
+  "tinnitus": {
+    "sounds": [
+      {
+        "name": "minepiece:tinnitus",
+        "stream": false
+      }
+    ]
+  },
+  "electric_shock": {
+    "sounds": [
+      {
+        "name": "minepiece:electric_shock",
+        "stream": false
+      }
+    ]
+  },
+  "guard_just": {
+    "sounds": [
+      {
+        "name": "minepiece:guard_just",
+        "stream": false
+      }
+    ]
+  },
+  "frame_set": {
+    "sounds": [
+      {
+        "name": "minepiece:frame_set",
+        "stream": false
+      }
+    ]
+  },
+  "stone_crash": {
+    "sounds": [
+      {
+        "name": "minepiece:stone_crash",
+        "stream": false
+      }
+    ]
+  },
+  "glass_crash": {
+    "sounds": [
+      {
+        "name": "minepiece:glass_crash",
+        "stream": false
+      }
+    ]
+  },
+  "gacon": {
+    "subtitle": "subtitles.gacon",
+    "sounds": [
+      {
+        "name": "minepiece:gacon",
+        "stream": false
+      }
+    ]
+  },
+  "devil_laugh": {
+    "subtitle": "subtitles.devil_laugh",
+    "sounds": [
+      {
+        "name": "minepiece:devil_voice",
+        "stream": false
+      }
+    ]
+  },
+  "strong_hit": {
+    "sounds": [
+      {
+        "name": "minepiece:hit_strong",
+        "stream": false
+      }
+    ]
+  },
+  "clap": {
+    "subtitle": "subtitles.clap",
+    "sounds": [
+      {
+        "name": "minepiece:clap",
+        "stream": false
+      }
+    ]
+  },
+  "crush": {
+    "subtitle": "subtitles.crush",
+    "sounds": [
+      {
+        "name": "minepiece:crush",
+        "stream": false
+      }
+    ]
+  },
+  "guard_sword": {
+    "subtitle": "subtitles.guard_sword",
+    "sounds": [
+      {
+        "name": "minepiece:guard_sword",
+        "stream": false
+      }
+    ]
+  },
+  "ice_generate": {
+    "sounds": [
+      {
+        "name": "minepiece:ice_generate",
+        "stream": false
+      }
+    ]
+  },
+  "gavel": {
+    "subtitle": "subtitles.gavel",
+    "sounds": [
+      {
+        "name": "minepiece:gavel",
+        "stream": false
+      }
+    ]
+  },
+  "step_seraphim": {
+    "sounds": [
+      {
+        "name": "minepiece:step_seraphim",
+        "stream": false
+      }
+    ]
+  },
+  "gravity": {
+    "sounds": [
+      {
+        "name": "minepiece:gravity",
+        "stream": false
+      }
+    ]
+  },
+  "water_splash": {
+    "sounds": [
+      {
+        "name": "minepiece:water_splash",
+        "stream": false
+      }
+    ]
+  },
+  "suzume_living": {
+    "sounds": [
+      {
+        "name": "minepiece:suzume_living",
+        "stream": false
+      }
+    ]
+  },
+  "haki_haoshoku": {
+    "subtitle": "subtitles.haki_haoshoku",
+    "sounds": [
+      {
+        "name": "minepiece:haki_haoshoku",
+        "stream": false
+      }
+    ]
+  },
+  "thunder_impact": {
+    "sounds": [
+      {
+        "name": "minepiece:thunder_impact",
+        "stream": false
+      }
+    ]
+  },
+  "rocket_launcher": {
+    "sounds": [
+      {
+        "name": "minepiece:rocket",
+        "stream": false
+      }
+    ]
+  },
+  "gun_shot1": {
+    "sounds": [
+      {
+        "name": "minepiece:gun_shot1",
+        "stream": false
+      }
+    ]
+  },
+  "high_speed_movement": {
+    "sounds": [
+      {
+        "name": "minepiece:high_speed_movement",
+        "stream": false
+      }
+    ]
+  },
+  "laser_beam": {
+    "sounds": [
+      {
+        "name": "minepiece:laser_beam",
+        "stream": false
+      }
+    ]
+  },
+  "electric_short": {
+    "sounds": [
+      {
+        "name": "minepiece:electric_short",
+        "stream": false
+      }
+    ]
+  },
+  "bat_hit_metal": {
+    "sounds": [
+      {
+        "name": "minepiece:bat_hit_metal",
+        "stream": false
+      }
+    ]
+  },
+  "motor": {
+    "subtitle": "subtitles.motor",
+    "sounds": [
+      {
+        "name": "minepiece:motor",
+        "stream": false
+      }
+    ]
+  }
+}

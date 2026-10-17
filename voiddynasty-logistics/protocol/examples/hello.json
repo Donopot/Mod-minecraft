@@ -1,0 +1,13 @@
+{
+  "protocol_version": 1,
+  "type": "hello",
+  "message_id": "00000000-0000-4000-8000-000000000010",
+  "session_id": "00000000-0000-4000-8000-000000000001",
+  "pair_id": "00000000-0000-4000-8000-000000000002",
+  "campaign_id": "00000000-0000-4000-8000-000000000003",
+  "world_id": "00000000-0000-4000-8000-000000000004",
+  "checkpoint_id": "00000000-0000-4000-8000-000000000005",
+  "token": "EXAMPLE_ONLY_GENERATE_A_LOCAL_RANDOM_TOKEN",
+  "mission_hash": "5c71be8024ee47071cd53668229d38419b3cb5e239148de876e1b6579ae5f8e5",
+  "known_receipts": []
+}

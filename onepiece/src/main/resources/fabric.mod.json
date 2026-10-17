@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "opworldlike",
+  "version": "1.0.1-alpha.19",
+  "name": "OP World Like",
+  "description": "Port Fabric 26.3 de l'addon One Piece worldlike (îles, claims, crews, mobs, loot) — shim Mine Piece inclus.",
+  "authors": [
+    "Donopot (via Hermes / universal-modder)"
+  ],
+  "license": "All rights reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "br.com.oneminepiece.opworldlike.OmpWorld"
+    ],
+    "client": [
+      "net.mcreator.minepiece.client.DevilFruitClientInit"
+    ]
+  },
+  "mixins": [
+    "opworldlike.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*",
+    "geckolib": "*",
+    "player_animation_library": ">=1.2.8"
+  }
+}

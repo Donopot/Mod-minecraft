@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Live game adapter request v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "message_id",
+    "token",
+    "session_id",
+    "campaign_id",
+    "world_id",
+    "pair_id",
+    "checkpoint_id",
+    "delivery_id",
+    "known_state",
+    "mission_hash",
+    "payload_hash",
+    "item_id",
+    "protocol_version",
+    "count"
+  ],
+  "properties": {
+    "type": {
+      "enum": [
+        "inspect",
+        "propose_pair",
+        "status",
+        "prepare",
+        "commit"
+      ]
+    },
+    "message_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "session_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "campaign_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "world_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "pair_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "checkpoint_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "delivery_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "known_state": {
+      "enum": [
+        "IDLE",
+        "DRAFT",
+        "RESERVED",
+        "SETTLED"
+      ]
+    },
+    "mission_hash": {
+      "const": "5c71be8024ee47071cd53668229d38419b3cb5e239148de876e1b6579ae5f8e5"
+    },
+    "payload_hash": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "item_id": {
+      "const": "minecraft:iron_ingot"
+    },
+    "protocol_version": {
+      "const": 2
+    },
+    "count": {
+      "const": 64
+    }
+  }
+}

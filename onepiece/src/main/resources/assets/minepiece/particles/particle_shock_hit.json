@@ -1,0 +1,10 @@
+{
+  "textures": [
+    "minepiece:particle_shock_hit_1",
+    "minepiece:particle_shock_hit_2",
+    "minepiece:particle_shock_hit_3",
+    "minepiece:particle_shock_hit_4",
+    "minepiece:particle_shock_hit_5",
+    "minepiece:particle_shock_hit_6"
+  ]
+}
