@@ -125,3 +125,32 @@ Chaque étape se prouve par un contrôle automatique **et** par ton œil quand c
   réels** — c'est là que passe le temps, pas dans le code de minage.
 - « Généralisable » veut dire : même substrat, nouveau planificateur. Ça ne veut pas dire que
   l'agriculture marchera du premier coup parce que le minage marche.
+
+---
+
+## 9 · Décisions actées (17/10/2026)
+
+| Question | Réponse de Donopot |
+|---|---|
+| Forme de l'agent | **Servitor de chantier visible et attaquable** — il peut être détruit, donc il faut pouvoir le défendre |
+| Sort des ressources | **Coffres de dépôt posés sur place au fil du chantier** |
+| Coffres et blocs à butin rencontrés | **Ouvrir et mettre le butin de côté sans le consommer** |
+| Ordre de réalisation | **EXCAVATE seul d'abord**, jusqu'à ce qu'il soit solide |
+| Interface | **Langage naturel dès le début, via le pont MCP** |
+
+Conséquences :
+
+1. Le pont MCP est avancé : il expose d'abord ce qui existe déjà (`/vdyntest`, `/fleet`, scan de zone),
+   puis les outils de chantier au fur et à mesure.
+2. « Visible et attaquable » impose une règle de plus : si le Servitor meurt, le chantier doit
+   **s'arrêter proprement** et son journal rester reprenable — un cadavre ne doit pas laisser des
+   coffres de dépôt éparpillés sans trace.
+3. Les coffres de dépôt progressifs imposent de choisir **où** les poser : à l'extérieur de la zone
+   de fouille, au plus près, et jamais dans un couloir de circulation.
+
+## 10 · Première brique livrée : `tools/work_scan.py`
+
+Scan en lecture seule d'une zone, avec les 18 catégories de dangers et leur réaction.
+Éprouvé sur une vérité connue : la zone du Titan dans `world8` renvoie **exactement 39 996 blocs**,
+le nombre vérifié en jeu lors de son intégration — et il y trouve 161 échelles, 52 blocs de gravité,
+26 blocs de lave et 4 hoppers. Un contrôle qui ne retrouve pas un nombre déjà prouvé ne vaut rien.
