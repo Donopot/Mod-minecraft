@@ -93,6 +93,11 @@ public final class BrainTools {
                 + "BUILD: schema=1,type=BUILD,request_id,blueprint,material,anchor:[x,y,z],source:[x,y,z],origin:[x,y,z]. "
                 + "Le coffre doit exister. Demander les informations manquantes, ne pas inventer. L'acceptation ne signifie pas livraison.",
                 props(prop("spec", "string", "Specification JSON complete de la mission, 8192 caracteres maximum.")),List.of("spec")));
+        tools.add(tool("routine_gather", "Routine complete: trouver, acceder, recolter, deposer puis revenir."
+                + " spec est la meme specification JSON que work_submit (GATHER). Une seule reponse a la fin,"
+                + " avec le compte rendu de la mission et le retour au point d'origine."
+                + " Ne pas enchainer work_submit derriere: cette routine s'en occupe.",
+                props(prop("spec", "string", "Specification GATHER complete, 8192 caracteres maximum.")),List.of("spec")));
         tools.add(tool("work_status", "Lire les compteurs, le sac et le rollback de la mission, sans la modifier.",
                 props(prop("mission_id", "string", "UUID de la mission, ou current pour la lecture seulement.")),List.of("mission_id")));
         tools.add(tool("work_control", "Pauser, reprendre, annuler ou deposer le sac d'une mission. Ne libere jamais le journal de rollback.",
@@ -125,6 +130,8 @@ public final class BrainTools {
                         prop("half", "integer", "Demi-largeur 1 à 4 (defaut 2)."),
                         prop("layers", "integer", "Demi-hauteur 1 à 6 (defaut 2).")),
                 List.of("x", "y", "z")));
+        tools.add(tool("note_list", "Relire les dernieres notes de ce monde. Réponse immédiate.",
+                props(), List.of()));
         tools.add(tool("remember", "Enregistrer un fait durable (filon, tunnel, base) avec ta position."
                         + " Il survit aux redemarrages. Réponse immédiate.",
                 props(prop("note", "string", "Le fait à retenir, en une phrase.")), List.of("note")));
@@ -202,7 +209,8 @@ public final class BrainTools {
         }
         if(!WITHOUT_BODY.contains(name) && (bot==null || bot.isRemoved() || !bot.isAlive() || bot.level()!=level)) return "aucun servitor disponible dans cette dimension";
         if(bot!=null && com.donopot.voiddynasty.work.WorkService.owns(level,bot)
-                && List.of("goto","come_to_player","follow_player","attack_nearest","pickup","work_submit").contains(name)) {
+                && List.of("goto","come_to_player","follow_player","attack_nearest","pickup","work_submit",
+                           "routine_gather").contains(name)) {
             // Native submit handles identical request replay without taking ownership twice.
             if(!name.equals("work_submit")) return "ACTION_BUSY: chantier actif; work_status ou pause d'abord";
         }
@@ -232,7 +240,7 @@ public final class BrainTools {
             Identifier id=Identifier.tryParse(normalizeBlock(order.strArg("block")));
             if(id==null || !BuiltInRegistries.BLOCK.containsKey(id)) return "bloc inconnu";
         }
-        if(name.equals("work_submit")) {
+        if(name.equals("work_submit") || name.equals("routine_gather")) {
             var mission=com.donopot.voiddynasty.work.MissionService.parse(com.google.gson.JsonParser.parseString(order.strArg("spec")).getAsJsonObject());
             long volume=(long)(mission.max.getX()-mission.min.getX()+1)*(mission.max.getY()-mission.min.getY()+1)*(mission.max.getZ()-mission.min.getZ()+1);
             if(volume>Math.max(1,Math.min(32768,cfg.maxVolume))) return "zone trop volumineuse pour le cerveau";

@@ -54,6 +54,24 @@ public final class BrainCommand {
                         .then(Commands.argument("variante", IntegerArgumentType.integer(1, 3))
                                 .executes(ctx -> spawn(ctx, IntegerArgumentType.getInteger(ctx, "variante")))))
                 .then(Commands.literal("despawn").executes(BrainCommand::despawn))
+                .then(Commands.literal("routine").then(Commands.literal("list").executes(ctx -> {
+                    for (String line : BrainRoutine.describe().split("\n")) {
+                        ctx.getSource().sendSuccess(() -> Component.literal(line), false);
+                    }
+                    return 1;
+                })))
+                .then(Commands.literal("bag")
+                        .then(Commands.literal("list").executes(BrainCommand::bags))
+                        .then(Commands.literal("audit").executes(BrainCommand::bagAudit))
+                        .then(Commands.literal("restore")
+                                .then(Commands.argument("id", StringArgumentType.word())
+                                        .executes(ctx -> bagAction(ctx, "restore"))))
+                        .then(Commands.literal("give")
+                                .then(Commands.argument("id", StringArgumentType.word())
+                                        .executes(ctx -> bagAction(ctx, "give"))))
+                        .then(Commands.literal("drop")
+                                .then(Commands.argument("id", StringArgumentType.word())
+                                        .executes(ctx -> bagAction(ctx, "drop")))))
                 .then(Commands.literal("stop").executes(BrainCommand::stop))
                 .then(Commands.literal("brain")
                         .then(Commands.literal("on").executes(BrainCommand::on))
@@ -340,6 +358,44 @@ public final class BrainCommand {
         ServitorBrain.instruct(consigne);
         ctx.getSource().sendSuccess(() -> Component.literal("Consigne transmise au prochain cycle : " + consigne), true);
         return 1;
+    }
+
+    // ------------------------------------------------------------------ sacs
+
+    private static int bags(CommandContext<CommandSourceStack> ctx) {
+        var server = ctx.getSource().getServer();
+        String out = BrainBags.reconcile(server) + " | " + BrainBags.describe(server);
+        for (String line : out.split("\n")) {
+            ctx.getSource().sendSuccess(() -> Component.literal(line), false);
+        }
+        return 1;
+    }
+
+    private static int bagAudit(CommandContext<CommandSourceStack> ctx) {
+        var server = ctx.getSource().getServer();
+        LivingEntity bot = BrainSpawn.find(ctx.getSource().getLevel());
+        String out = BrainBags.audit(server, bot == null ? null : bot.getUUID());
+        for (String line : out.split("\n")) {
+            ctx.getSource().sendSuccess(() -> Component.literal(line), false);
+        }
+        return 1;
+    }
+
+    private static int bagAction(CommandContext<CommandSourceStack> ctx, String action) {
+        var server = ctx.getSource().getServer();
+        ServerLevel level = ctx.getSource().getLevel();
+        String id = StringArgumentType.getString(ctx, "id");
+        String out = switch (action) {
+            case "restore" -> BrainBags.restoreToBot(server, id, BrainSpawn.find(level));
+            case "give" -> BrainBags.giveToPlayer(server, id, ctx.getSource().getPlayer());
+            default -> BrainBags.dropAt(server, id, level, ctx.getSource().getPosition());
+        };
+        boolean ok = !out.startsWith("refus") && !out.startsWith("sac introuvable")
+                && !out.startsWith("aucun") && !out.startsWith("joueur introuvable")
+                && !out.startsWith("position");
+        if (ok) ctx.getSource().sendSuccess(() -> Component.literal(out), true);
+        else ctx.getSource().sendFailure(Component.literal(out));
+        return ok ? 1 : 0;
     }
 
     /** Nom du modele pour les messages, avec la raison d'un eventuel remplacement. */

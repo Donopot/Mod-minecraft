@@ -82,7 +82,17 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         if user.startswith("ORDRE DE L'OPERATEUR"):
-            if "trouve" in user:
+            if "routine" in user:
+                sys.stderr.write("[stub] mode ordre -> routine_gather\n")
+                spec = ('{"schema":1,"type":"GATHER","request_id":"routine-test-1",'
+                        '"item":"minecraft:cobblestone","amount":2,'
+                        '"min":[6505,64,6499],"max":[6507,66,6501],'
+                        '"destination":[6510,64,6500],"origin":[6502,64,6502]}')
+                self._chat(model, tool_calls=[tool_call("routine_gather", {"spec": spec})])
+            elif "ramasse" in user:
+                sys.stderr.write("[stub] mode ordre -> pickup\n")
+                self._chat(model, tool_calls=[tool_call("pickup", {"radius": 12, "count": 16})])
+            elif "trouve" in user:
                 sys.stderr.write("[stub] mode ordre -> find\n")
                 self._chat(model, tool_calls=[tool_call("find",
                                                         {"block": "gold_block", "radius": 16, "limit": 4})])

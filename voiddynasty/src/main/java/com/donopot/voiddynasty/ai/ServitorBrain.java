@@ -50,6 +50,13 @@ public final class ServitorBrain {
     private static long revision;
     public static void invalidatePending() { revision++; instruction=""; forceCycle=false; }
 
+    /** Compte rendu asynchrone (routine, surveillance) : meme canal que les taches du cerveau. */
+    public static void note(String report) {
+        if (report == null || report.isBlank()) return;
+        feedback = report;
+        audit(report);
+    }
+
     /** Nombre d'ordres de lecture (scan, where…) d'affilee, sans action. */
     private static int idleOrders = 0;
     private static String instruction = "";
@@ -68,8 +75,10 @@ public final class ServitorBrain {
     private ServitorBrain() {}
 
     public static void init() {
+        BrainBags.init();
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(TaskRunner::tick);
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(ServitorBrain::tick);
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(BrainRoutine::tick);
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(s -> { invalidatePending(); IN_FLIGHT.set(false); TaskRunner.reset(); BrainSpawn.reset(); });
         log("cerveau initialise (desactive par defaut)");
     }
