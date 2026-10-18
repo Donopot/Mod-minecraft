@@ -98,11 +98,25 @@ class RconCorrelationTest(unittest.TestCase):
     def test_auth_empty_packet_and_stale_ids_are_not_command_results(self):
         sock = Mock()
         with patch.object(core, '_props', return_value=('fixture', 1234)), patch.object(core.socket, 'create_connection', return_value=sock), \
-                patch.object(core.Rcon, '_recv', side_effect=[(1,0,''),(1,2,''),(1,0,'stale'),(2,0,'actual')]):
+                patch.object(core.Rcon, '_recv', side_effect=[(1,0,''),(1,2,''),(1,0,'stale'),(2,0,'actual'),(3,0,'sentinel')]):
             connection = core.Rcon()
             self.assertEqual(connection.cmd('list'), 'actual')
             connection.close()
-        self.assertEqual(sock.sendall.call_count, 2)
+        self.assertEqual(sock.sendall.call_count, 3)
+
+    def test_fragments_are_joined_until_correlated_sentinel(self):
+        sock=Mock()
+        with patch.object(core,'_props',return_value=('fixture',1234)),patch.object(core.socket,'create_connection',return_value=sock),patch.object(core.Rcon,'_recv',side_effect=[(1,2,''),(2,0,'VDMISSION {"ok":'),(1,0,'stale'),(2,0,'true}'),(3,0,'players')]):
+            connection=core.Rcon(timeout=2)
+            self.assertEqual(connection.cmd('work mission capabilities'),'VDMISSION {"ok":true}')
+            connection.close()
+
+    def test_missing_end_marker_never_returns_partial_json(self):
+        sock=Mock()
+        with patch.object(core,'_props',return_value=('fixture',1234)),patch.object(core.socket,'create_connection',return_value=sock),patch.object(core.Rcon,'_recv',side_effect=[(1,2,''),(2,0,'VDMISSION {"ok":true}'),RuntimeError('closed')]):
+            connection=core.Rcon(timeout=2)
+            with self.assertRaises(RuntimeError):connection.cmd('work mission capabilities')
+            connection.close()
 
     def test_auth_rejection_closes_socket(self):
         sock = Mock()

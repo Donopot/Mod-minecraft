@@ -16,6 +16,7 @@ import socket
 import struct
 import subprocess
 import sys
+import time
 
 MC_DIR = os.environ.get("VD_SERVER_DIR", "/opt/data/workspace/mc-server")
 PROPS = os.path.join(MC_DIR, "server.properties")
@@ -41,7 +42,8 @@ class Rcon:
 
     def __init__(self, timeout=600):
         pw, port = _props()
-        self.s = socket.create_connection(("127.0.0.1", port), 15)
+        self.timeout=timeout
+        self.s = socket.create_connection(("127.0.0.1", port), min(15,timeout))
         self.s.settimeout(timeout)
         self.rid = 0
         self._send(3, pw)
@@ -80,10 +82,21 @@ class Rcon:
 
     def cmd(self, c):
         self._send(2, c)
+        command_id=self.rid
+        # Vanilla RCON splits long replies into several packets with the same ID.
+        # A subsequent read-only command marks their end without guessing packet length.
+        self._send(2,"list")
+        sentinel_id=self.rid;parts=[];size=0;deadline=time.monotonic()+self.timeout
         while True:
+            remaining=deadline-time.monotonic()
+            if remaining<=0:raise RuntimeError("delai total RCON depasse")
+            self.s.settimeout(remaining)
             rid, kind, text = self._recv()
-            if rid == self.rid and kind == 0:
-                return text
+            if rid==sentinel_id and kind==0:return ''.join(parts)
+            if rid==command_id and kind==0:
+                size+=len(text.encode('utf-8'))
+                if size>1024*1024:raise RuntimeError("reponse RCON trop grande")
+                parts.append(text)
 
     def close(self):
         try:
@@ -210,13 +223,13 @@ def _dimension(value):
     return value
 
 
-def _mission_call(tail, dimension):
+def _mission_call(tail, dimension, timeout=30):
     try:
         dim = _dimension(dimension)
     except ValueError as error:
         return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
     try:
-        reply = rcon("execute in " + dim + " run work mission " + tail, timeout=30)[0]
+        reply = rcon("execute in " + dim + " run work mission " + tail, timeout=timeout)[0]
     except (RuntimeError, OSError) as error:
         return {"ok": False, "error": "SERVER_UNAVAILABLE", "detail": str(error)}
     marker = "VDMISSION "
@@ -242,6 +255,61 @@ def _position(value):
 
 def servitor_capabilities(dimension="overworld"):
     return _mission_call("capabilities", dimension)
+
+
+def _observation(kind, zone_min, zone_max, limit, dimension, item=None):
+    try:
+        _dimension(dimension)
+        a,b=_position(zone_min),_position(zone_max)
+        low=[min(x,y) for x,y in zip(a,b)];high=[max(x,y) for x,y in zip(a,b)]
+        volume=1
+        for lo,hi in zip(low,high):volume*=hi-lo+1
+        if volume>32768:raise ValueError("Observation exceeds 32768 cells")
+        if type(limit) is not int or not 1<=limit<=64:raise ValueError("limit must be an integer in 1..64")
+        payload={"schema":1,"type":kind,"min":low,"max":high,"limit":limit}
+        if kind=="FIND":
+            if not isinstance(item,str) or not re.fullmatch(r"(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+",item):raise ValueError("Invalid resource identifier")
+            payload['item']=item if ':' in item else 'minecraft:'+item
+    except (ValueError,TypeError) as error:return {"ok":False,"error":"INVALID_ARGUMENT","detail":str(error)}
+    encoded=base64.urlsafe_b64encode(json.dumps(payload,separators=(',',':')).encode()).decode().rstrip('=')
+    return _mission_call('observe '+encoded,dimension)
+
+
+def servitor_observe(zone_min,zone_max,dimension="overworld",limit=16):
+    """Live read-only coverage and hazards; unknown/protected cells are never treated as air."""
+    return _observation('OBSERVE',zone_min,zone_max,limit,dimension)
+
+
+def servitor_find(item,zone_min,zone_max,dimension="overworld",limit=16):
+    """Observe source blocks for a supported gather item; counts blocks, never promises item drops."""
+    return _observation('FIND',zone_min,zone_max,limit,dimension,item)
+
+
+async def servitor_mission_wait(mission_id,timeout_seconds=10,dimension="overworld"):
+    """Bounded observation of a fixed mission ID. Timeout/cancellation does not stop server work."""
+    import asyncio
+    if type(timeout_seconds) is not int or not 0<=timeout_seconds<=30:
+        return {"ok":False,"error":"INVALID_ARGUMENT","detail":"timeout_seconds must be an integer in 0..30"}
+    try:
+        if str(uuid.UUID(mission_id))!=mission_id:raise ValueError()
+        _dimension(dimension)
+    except (ValueError,TypeError,AttributeError):return {"ok":False,"error":"INVALID_ARGUMENT","detail":"A fixed mission UUID and valid dimension are required"}
+    started=asyncio.get_running_loop().time();deadline=started+timeout_seconds
+    while True:
+        status_timeout=min(3.0,max(.25,deadline-asyncio.get_running_loop().time()))
+        result=await asyncio.to_thread(_mission_call,"status "+mission_id,dimension,status_timeout)
+        if not result.get('ok'):return {**result,'wait_state':'unknown','mission_id':mission_id}
+        mission=result.get('mission')
+        if not isinstance(mission,dict) or mission.get('id')!=mission_id or not isinstance(mission.get('status'),str):
+            return {'ok':False,'error':'PROTOCOL_ERROR','detail':'Missing or mismatched mission identity/status','wait_state':'unknown','mission_id':mission_id}
+        if result.get('rollback_state') in ('FAILED','PARTIAL'):state='attention'
+        elif result.get('rollback_state')=='RUNNING' or result.get('worker_active') and mission['status'] in ('CANCELLED','INCOMPLETE','SUCCEEDED'):state='pending'
+        elif mission['status']=='PAUSED':state='paused'
+        elif mission['status'] in ('SUCCEEDED','INCOMPLETE','CANCELLED'):state='settled'
+        else:state='pending'
+        now=asyncio.get_running_loop().time()
+        if state!='pending' or now>=deadline:return {**result,'wait_state':state,'waited_seconds':round(now-started,3)}
+        await asyncio.sleep(min(.5,deadline-now))
 
 
 def servitor_gather(request_id, item, amount, zone_min, zone_max, destination, origin, dimension="overworld", access="surface"):
@@ -319,5 +387,6 @@ def servitor_mission_control(mission_id, action, dimension="overworld"):
 
 
 TOOLS_MAP.update({"servitor_capabilities":servitor_capabilities,"servitor_gather":servitor_gather,
+                  "servitor_observe":servitor_observe,"servitor_find":servitor_find,
                   "servitor_build_estimate":servitor_build_estimate,"servitor_build":servitor_build,
                   "servitor_mission_status":servitor_mission_status,"servitor_mission_control":servitor_mission_control})
