@@ -197,6 +197,8 @@ public class VoidDynastyMod implements ModInitializer {
         });
 
         WorkService.init();
+        com.donopot.voiddynasty.ai.ServitorBrain.init();
+        com.donopot.voiddynasty.ai.ChatListener.init();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> {
             dispatcher.register(
@@ -207,6 +209,7 @@ public class VoidDynastyMod implements ModInitializer {
             FrigateCommand.register(dispatcher);
             FleetCommand.register(dispatcher);
             WorkCommand.register(dispatcher);
+            com.donopot.voiddynasty.ai.BrainCommand.register(dispatcher);
             MortuaryCommand.register(dispatcher);
             MissionCommand.register(dispatcher);
             com.donopot.voiddynasty.campagne.CampagneCommand.register(dispatcher);
