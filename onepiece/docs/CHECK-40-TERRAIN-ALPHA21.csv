@@ -1,0 +1,214 @@
+fruit,technique,mode,radius,blocks,reason
+aro_aro,arrow,DESTRUCTIVE,2.0,48,AIArrow actual contact; bounded adaptation
+aro_aro,move,NONE,0.0,0,Source movement/contacts have no block destruction
+aro_aro,combo,NONE,0.0,0,Source movement/contacts have no block destruction
+aro_aro,passive,NONE,0.0,0,Source movement/contacts have no block destruction
+batto_batto,shigan,DESTRUCTIVE,1.2,24,Shigan RangeAttack + BlockDestroy; contact only
+batto_batto,soru,NONE,0.0,0,StepBlock movement never tunnels
+batto_batto,rankyaku,DESTRUCTIVE,1.5,40,Finite physical slash impact; projectile helper adaptation
+batto_batto,tobushigan,NONE,0.0,0,"Finger projectile, evasion/counter stance and range dash without source block destruction"
+batto_batto,kamiezanshin,NONE,0.0,0,"Finger projectile, evasion/counter stance and range dash without source block destruction"
+batto_batto,yurushitene,NONE,0.0,0,"Finger projectile, evasion/counter stance and range dash without source block destruction"
+bisu_bisu,crashpretzel,NONE,0.0,0,CrashPretzel RangeAttack and Knockback; no BlockDestroy call
+bisu_bisu,biscuitwarrior,NONE,0.0,0,Summons and food creation preserve terrain
+bisu_bisu,biscuitwarrior2,NONE,0.0,0,Summons and food creation preserve terrain
+bisu_bisu,biscuit,NONE,0.0,0,Summons and food creation preserve terrain
+bomu_bomu,nosefancycannon,DESTRUCTIVE,2.5,48,"B02 source audit; active collision only, bounded adaptation"
+bomu_bomu,kickbomb,DESTRUCTIVE,3.0,64,"B02 source audit; active collision only, bounded adaptation"
+bomu_bomu,punchbomb,DESTRUCTIVE,3.0,64,"B02 source audit; active collision only, bounded adaptation"
+bomu_bomu,bomboverhead,DESTRUCTIVE,4.0,96,"B02 source audit; active collision only, bounded adaptation"
+bomu_bomu,zenshinkibaku,DESTRUCTIVE,5.0,160,"B02 source audit; active collision only, bounded adaptation"
+gomu_gomu,gomu_pistol,DESTRUCTIVE,1.5,32,Source strong punch real arm contact
+gomu_gomu,gomu_bazooka,DESTRUCTIVE,2.0,48,Two-hand impact once
+gomu_gomu,gomu_gatling,DESTRUCTIVE,1.0,48,Six timed contacts share quota
+gomu_gomu,gear_change,NONE,0.0,0,Transformation preserves terrain
+goro_goro,vari,DESTRUCTIVE,3.0,48,Vari arrival only; blink never tunnels
+goro_goro,elthor,DESTRUCTIVE,3.0,48,ElThor active strike
+goro_goro,sango,DESTRUCTIVE,1.0,16,"Sango accepted contacts only, four blocks per contact"
+goro_goro,mamaragan,NONE,0.0,0,Storm has no explicit source BlockDestroy; blink has none
+goro_goro,karikrash,DESTRUCTIVE,2.5,32,KariKrash front contact
+goro_goro,passive,NONE,0.0,0,Storm has no explicit source BlockDestroy; blink has none
+goro_goro,raigo,DESTRUCTIVE,4.0,128,AIMeteorRaigo true collision
+gura_gura,attacksweep,DESTRUCTIVE,1.5,24,"B02 source audit; active collision only, bounded adaptation"
+gura_gura,overheadsuper,DESTRUCTIVE,3.0,64,"B02 source audit; active collision only, bounded adaptation"
+gura_gura,gekishin,DESTRUCTIVE,2.5,96,"B02 source audit; active collision only, bounded adaptation"
+gura_gura,kabutowari,DESTRUCTIVE,1.5,16,"B02 source audit; active collision only, bounded adaptation"
+gura_gura,tenchimeido,DESTRUCTIVE,3.0,256,"B02 source audit; active collision only, bounded adaptation"
+gura_gura,kaishin,DESTRUCTIVE,3.0,96,"B02 source audit; active collision only, bounded adaptation"
+hie_hie,icepartisan,DESTRUCTIVE,2.5,64,AIEntityBird collision
+hie_hie,pheasantbeak,DESTRUCTIVE,3.0,96,AIEntityBird collision
+hie_hie,icespikes,TRANSFORM,0.0,0,BlockToIce; permanent ice
+hie_hie,iceball,TRANSFORM,0.0,0,BlockToIce; permanent ice
+hie_hie,iceage,TRANSFORM,0.0,0,BlockToIce; permanent ice
+hito_hito_daibutsu,attackoverhead,DESTRUCTIVE,2.0,48,AttackOverhead actual contact
+hito_hito_daibutsu,brilliantpunk,DESTRUCTIVE,2.0,48,Strong punch finishing contact
+hito_hito_daibutsu,impactball,DESTRUCTIVE,2.5,64,AI energy collision
+hito_hito_daibutsu,overheadsuper,DESTRUCTIVE,3.0,96,AttackOverheadSuper contact
+hito_hito_daibutsu,impactwave,DESTRUCTIVE,3.0,96,ImpactWave -> AIImpactWave -> BlockDestroy
+horo_horo,negativehollow,NONE,0.0,0,"Control, command and summon preserve blocks"
+horo_horo,minihollow,DESTRUCTIVE,2.0,48,AIMiniHollow commanded explosions share48blocks
+horo_horo,tokuhoro,DESTRUCTIVE,3.5,96,Large AIMiniHollow explosion
+horo_horo,rap,NONE,0.0,0,"Control, command and summon preserve blocks"
+horo_horo,kumac,NONE,0.0,0,"Control, command and summon preserve blocks"
+imu,imuarrow,DESTRUCTIVE,2.0,48,Source AttackStrongPunch delegates block destruction; port25budget
+imu,silentcommand,NONE,0.0,0,Mod-defined control preserves terrain
+imu,sovereigngrasp,DESTRUCTIVE,2.0,48,Mod-defined physical heavy impact
+inu_inu_okuchi_no_makami,attackoverhead,DESTRUCTIVE,2.0,48,AttackOverhead actual contact
+inu_inu_okuchi_no_makami,attacksweep,DESTRUCTIVE,1.5,32,AttackSweep contact
+inu_inu_okuchi_no_makami,raimeihakke,DESTRUCTIVE,2.0,48,RaimeiHakke strong sword finishing contact
+inu_inu_okuchi_no_makami,narikabura,DESTRUCTIVE,2.0,48,AIEnergy actual collision
+inu_inu_okuchi_no_makami,namujihyoga,TRANSFORM,0.0,0,NamujiHyoga -> BlockToIce permanent path
+inu_inu_okuchi_no_makami,himorogiri,DESTRUCTIVE,3.0,80,Himorogiri explicit BlockDestroy on landing
+inu_inu_okuchi_no_makami,hyogaheki,NONE,0.0,0,"Port-added bounded personal armor, no terrain"
+inu_inu_wolf,shigan,DESTRUCTIVE,1.2,24,Shigan RangeAttack + BlockDestroy; contact only
+inu_inu_wolf,soru,NONE,0.0,0,StepBlock movement never tunnels
+inu_inu_wolf,rankyaku,DESTRUCTIVE,1.5,40,Finite physical slash impact; projectile helper adaptation
+inu_inu_wolf,lupusfall,DESTRUCTIVE,2.0,48,"Wolf projectile impact, bounded permanent adaptation"
+inu_inu_wolf,okamihajiki,DESTRUCTIVE,1.5,32,AttackStrongPunch contact
+inu_inu_wolf,jushigan,DESTRUCTIVE,1.5,32,Strong/weak punch helpers
+inu_inu_wolf,localareanetwork,DESTRUCTIVE,1.5,40,Wolf projectiles share one permanent quota
+inu_inu_wolf,poursuite,NONE,0.0,0,Mod-designed chase never tunnels
+kage_kage,attackoverhead,DESTRUCTIVE,2.0,48,AttackOverhead active contact
+kage_kage,brickbat,NONE,0.0,0,"Shadow swarm, lance, summon or transformation; no source block destruction"
+kage_kage,tsunotokage,NONE,0.0,0,"Shadow swarm, lance, summon or transformation; no source block destruction"
+kage_kage,doppelman,NONE,0.0,0,"Shadow swarm, lance, summon or transformation; no source block destruction"
+kage_kage,islandshatterpunch,DESTRUCTIVE,5.0,192,IslandShatterPunch destruction; bounded port44budget
+kage_kage,shadowasgard,NONE,0.0,0,"Shadow swarm, lance, summon or transformation; no source block destruction"
+kira_kira,attackoverhead,DESTRUCTIVE,4.5,128,AttackOverhead actual active contact
+kira_kira,brilliantpunk,DESTRUCTIVE,1.5,48,AttackStrongPunch after shoulder rush
+kira_kira,diamondshard,DESTRUCTIVE,1.25,48,RockFragment handler; diamond identity adaptation
+kira_kira,diamondavalanche,DESTRUCTIVE,4.5,192,"Large RockFragment handler, bounded adaptation"
+kira_kira,diamondbody,NONE,0.0,0,Body coat never changes terrain
+kiro_kiro,attackoverhead,DESTRUCTIVE,3.0,64,AttackOverhead contact
+kiro_kiro,attackjump,DESTRUCTIVE,3.0,64,AttackJump delegates overhead on landing
+kiro_kiro,kirooverhead,DESTRUCTIVE,4.0,96,Kiro overhead landing
+kiro_kiro,weightmanipulation,DESTRUCTIVE,3.0,64,"Source grounded erosion adapted to one heavy landing, never idle ticks"
+magu_magu,daifunka,DESTRUCTIVE,2.5,48,"AIFist impact; permanent magma blocks, finite attributed field"
+magu_magu,inugamiguren,DESTRUCTIVE,2.0,32,AIFist impact
+magu_magu,kageromagumagu,DESTRUCTIVE,1.5,24,KageroMagu active path and eruption
+magu_magu,volcanicexplosion,DESTRUCTIVE,4.0,96,VolcanicExplosion active eruption
+magu_magu,ryuseikazan,DESTRUCTIVE,2.0,160,AIFist2; twenty meteor impacts share160 blocks
+mera_mera,hiken,DESTRUCTIVE,3.0,48,AIFist; charged radius capped at3
+mera_mera,higan,DESTRUCTIVE,0.9,8,ProjectileLaser block impact; four shots share8 blocks
+mera_mera,hibashira,DESTRUCTIVE,4.0,96,Hibashira BlockRange16; bounded adaptation
+mera_mera,kagero,DESTRUCTIVE,1.0,12,Kagero active trail only
+mera_mera,hotarubi,DESTRUCTIVE,2.5,32,Hotarubi expanding active field
+mera_mera,kaenryuo,DESTRUCTIVE,4.0,64,KaenRyuo active stages
+mera_mera,daienkai,DESTRUCTIVE,6.0,160,AIFlameBall actual impact
+mero_mero,pistolkiss,NONE,0.0,0,Heart projectile and AttackSpeed dash preserve terrain
+mero_mero,roundhousekick,DESTRUCTIVE,1.5,32,Karate roundhouse active contact
+mero_mero,rotatekick,DESTRUCTIVE,2.0,48,RotateKick active phase
+mero_mero,perfumefemur,NONE,0.0,0,Heart projectile and AttackSpeed dash preserve terrain
+mochi_mochi,mochipistol,DESTRUCTIVE,1.25,24,"AttackStrongPunch true contact, bounded adaptation"
+mochi_mochi,mochigatling,DESTRUCTIVE,1.0,48,AttackWeakPunch six native pulses share quota
+mochi_mochi,yakimochi,NONE,0.0,0,AIFist mode -2 has no mode1 block destruction
+mochi_mochi,zangirimochi,DESTRUCTIVE,1.5,48,AttackSpeed finishing contact
+mochi_mochi,musodonatsu,DESTRUCTIVE,1.25,64,Two reactive rings share a lifetime terrain quota
+mochi_mochi,mochibuild,TRANSFORM,0.0,0,"Plan-added honey construction, permanent24blocks"
+moku_moku,whiteblow,DESTRUCTIVE,2.5,64,AIFist collision
+moku_moku,whitevine,DESTRUCTIVE,3.0,96,AITornado collision
+moku_moku,whitelauncher,NONE,0.0,0,"StepBlock is movement, not destruction"
+moku_moku,whiteout,DESTRUCTIVE,8.0,256,WhiteOut active field; source radius16.5 reduced
+mori_mori,root,TRANSFORM,0.0,0,"TreeRoot and BlockToGrass, permanent selective grass conversion"
+mori_mori,rootgiant,TRANSFORM,0.0,0,"TreeRoot and BlockToGrass, permanent selective grass conversion"
+mori_mori,assault,TRANSFORM,0.0,0,"TreeRoot and BlockToGrass, permanent selective grass conversion"
+mori_mori,rootsurround,TRANSFORM,0.0,0,"TreeRoot and BlockToGrass, permanent selective grass conversion"
+neko_neko_leopard,shigan,DESTRUCTIVE,1.2,24,Shigan RangeAttack + BlockDestroy; contact only
+neko_neko_leopard,soru,NONE,0.0,0,StepBlock movement never tunnels
+neko_neko_leopard,rankyaku,DESTRUCTIVE,1.5,40,Finite physical slash impact; projectile helper adaptation
+neko_neko_leopard,gaicho,DESTRUCTIVE,2.0,64,AIProjectileSlash actual collision
+neko_neko_leopard,attackjump,DESTRUCTIVE,3.0,64,AttackJump delegates AttackOverhead at landing
+neko_neko_leopard,shugan,NONE,0.0,0,Source range/dash has no block destruction
+neko_neko_leopard,rokuogan,DESTRUCTIVE,3.0,80,Rokuogan moving pressure wave
+neko_neko_sabertiger,shigan,DESTRUCTIVE,1.2,24,Shigan RangeAttack + BlockDestroy; contact only
+neko_neko_sabertiger,attackspeed,DESTRUCTIVE,1.5,32,Source AttackStrongPunch/Sword finishing contact
+neko_neko_sabertiger,shiganmadara,DESTRUCTIVE,1.0,32,Timed Shigan contacts share one quota
+neko_neko_sabertiger,gagan,DESTRUCTIVE,2.0,48,Energy/strong punch physical impact
+neko_neko_sabertiger,kibasen,DESTRUCTIVE,1.5,32,Strong punch finishing contact
+nikyu_nikyu,padho,DESTRUCTIVE,2.0,48,"B02 source audit; active collision only, bounded adaptation"
+nikyu_nikyu,ursusshock,DESTRUCTIVE,6.0,192,"B02 source audit; active collision only, bounded adaptation"
+nikyu_nikyu,assault,DESTRUCTIVE,2.5,64,"B02 source audit; active collision only, bounded adaptation"
+nikyu_nikyu,kumapunch,DESTRUCTIVE,2.0,64,"B02 source audit; active collision only, bounded adaptation"
+nikyu_nikyu,passive,NONE,0.0,0,Travel never tunnels
+ope_ope,stoneopeope,DESTRUCTIVE,2.0,96,"B02 source audit; active collision only, bounded adaptation"
+ope_ope,room,NONE,0.0,0,Surgery does not destroy terrain
+ope_ope,shambles,NONE,0.0,0,Surgery does not destroy terrain
+ope_ope,amputation,NONE,0.0,0,Surgery does not destroy terrain
+pika_pika,laser1,DESTRUCTIVE,2.5,64,Laser BlockRange4 -> radius2.5
+pika_pika,laser2,DESTRUCTIVE,4.5,160,Laser2 BlockRange8; shared volley budget
+pika_pika,kick,DESTRUCTIVE,1.5,32,Light kick active impact
+pika_pika,yatanokagami,NONE,0.0,0,"Travel or weapon grant, no terrain impact"
+pika_pika,magatama,DESTRUCTIVE,1.5,96,ProjectileLaser block impact; shared volley budget
+pika_pika,amanomurakumo,NONE,0.0,0,"Travel or weapon grant, no terrain impact"
+pika_pika,speedispower,DESTRUCTIVE,2.0,48,SpeedIsPower active strike
+pika_pika,passive,NONE,0.0,0,"Travel or weapon grant, no terrain impact"
+riki_riki,attackoverhead,DESTRUCTIVE,4.5,128,AttackOverhead active impact
+riki_riki,hadoelbow,DESTRUCTIVE,3.5,128,HadoElbow active impact
+riki_riki,galleonlariat,DESTRUCTIVE,3.0,96,AIProjectileSweep actual collision
+riki_riki,stonethrowing,DESTRUCTIVE,1.25,48,RockFragment actual collision; no held target required
+riki_riki,stonethrowinglarge,DESTRUCTIVE,4.5,192,Large RockFragment actual collision
+ryu_ryu_brachiosaurus,attackoverhead,DESTRUCTIVE,2.0,48,AttackOverhead actual contact
+ryu_ryu_brachiosaurus,brachiobober,DESTRUCTIVE,3.5,96,BrachioBober explicit BlockDestroy at landing
+ryu_ryu_brachiosaurus,blackcofee,DESTRUCTIVE,2.5,80,BlackCofee beam explicit BlockDestroy
+ryu_ryu_brachiosaurus,brachiolauncher,DESTRUCTIVE,2.5,64,MissileProjectileHitsBlock -> BlockDestroy;13.5 blast plus direct2.2
+ryu_ryu_brachiosaurus,sparkingqueen,DESTRUCTIVE,2.0,48,ProjectileLaserRed uses ProjectileLaserProjectileHitsBlock
+ryu_ryu_pachycephalosaurus,attackjump,DESTRUCTIVE,3.0,64,AttackJump -> AttackOverhead at actual landing
+ryu_ryu_pachycephalosaurus,attacksweep,DESTRUCTIVE,1.5,32,AttackSweep
+ryu_ryu_pachycephalosaurus,headbutt,DESTRUCTIVE,2.0,48,Headbutt -> StrongPunch contact
+ryu_ryu_pachycephalosaurus,ulzugan,NONE,0.0,0,UlZugan RangeAttack moving contact; no BlockDestroy
+ryu_ryu_pachycephalosaurus,ulmeteor,DESTRUCTIVE,4.0,128,UlMeteor actual landing explicit BlockDestroy
+ryu_ryu_pteranodon,attackspeed,DESTRUCTIVE,1.5,32,AttackSpeed strong punch finishing contact
+ryu_ryu_pteranodon,tankyudon,NONE,0.0,0,StepBlock + RangeAttack; beak lunge never tunnels
+ryu_ryu_pteranodon,barizodon,DESTRUCTIVE,2.0,80,SkillProjectileSlash -> AIProjectileSlash actual collision
+soru_soru,attackoverhead,DESTRUCTIVE,2.0,48,AttackOverhead
+soru_soru,attacksweep,DESTRUCTIVE,1.5,32,AttackSweep
+soru_soru,raitei,DESTRUCTIVE,3.0,64,Zeus commanded electric strike
+soru_soru,hebunrifire,DESTRUCTIVE,3.0,64,Prometheus SkillTackle contact
+soru_soru,furugora,DESTRUCTIVE,3.0,72,Electric moving wave
+soru_soru,mamaraid,DESTRUCTIVE,4.0,96,Actual landing only
+soru_soru,ikoku,DESTRUCTIVE,4.0,128,"Moving pressure wave, shared per cast"
+suna_suna,desertspada,DESTRUCTIVE,1.5,64,AIProjectileSlash collision
+suna_suna,barjan,NONE,0.0,0,"StepBlock and slash visual, no destruction path"
+suna_suna,sables,DESTRUCTIVE,3.5,160,AITornado; bounded field
+suna_suna,desertlaspada,DESTRUCTIVE,2.0,96,AIProjectileSlash collision
+suna_suna,grounddeath,TRANSFORM,0.0,0,BlockToSand; permanent stable sandstone surface
+supa_supa,projectileslash,DESTRUCTIVE,1.5,64,AIProjectileSlash true collision
+supa_supa,atomicspurt,NONE,0.0,0,"Source StepBlock dash, charge explosion interaction NONE"
+supa_supa,sparklingdaisy,DESTRUCTIVE,1.0,96,"Six source fan phases share quota, port bounded contact"
+supa_supa,sparbreak,DESTRUCTIVE,1.0,64,Bilateral slash active contact
+tori_tori_phoenix,attackspeed,DESTRUCTIVE,1.5,32,AttackSpeed/AttackStrongPunch ending contact
+tori_tori_phoenix,ongle,DESTRUCTIVE,1.5,32,Ongle/AttackStrongPunch ending contact
+tori_tori_phoenix,bluebird,DESTRUCTIVE,2.5,64,BlueBird DaiFunka -> AIFist actual impact
+tori_tori_phoenix,marcotornado,DESTRUCTIVE,2.0,80,MarcoTornado explicit BlockDestroy; shared quota
+tori_tori_phoenix,hooin,DESTRUCTIVE,3.0,80,HooIn explicit landing BlockDestroy
+tori_tori_phoenix,fujiazami,DESTRUCTIVE,2.0,48,Fujiazami actual sweep BlockDestroy
+uo_uo_seiryu,attackoverhead,DESTRUCTIVE,2.0,48,AttackOverhead actual contact
+uo_uo_seiryu,attacksweep,DESTRUCTIVE,1.5,32,AttackSweep contact
+uo_uo_seiryu,raimeihakke,DESTRUCTIVE,2.0,48,RaimeiHakke strong sword finishing contact
+uo_uo_seiryu,kongokabura,DESTRUCTIVE,2.5,64,AIEnergy collision
+uo_uo_seiryu,kaifu,DESTRUCTIVE,2.0,96,Three SkillProjectileSlash siblings share quota
+uo_uo_seiryu,borobreath,DESTRUCTIVE,3.0,128,BoroBreath explicit BlockDestroy along active ray
+uo_uo_seiryu,kosanze,DESTRUCTIVE,4.0,128,Kosanze explicit landing BlockDestroy
+uo_uo_seiryu,ikoku,DESTRUCTIVE,3.0,128,Ikoku traveling pressure wave
+ushi_ushi_giraffe,shigan,DESTRUCTIVE,1.2,24,Shigan RangeAttack + BlockDestroy; contact only
+ushi_ushi_giraffe,soru,NONE,0.0,0,StepBlock movement never tunnels
+ushi_ushi_giraffe,rankyaku,DESTRUCTIVE,1.5,40,Finite physical slash impact; projectile helper adaptation
+ushi_ushi_giraffe,rankyakuran,DESTRUCTIVE,1.5,56,Three emitted slashes share a quota
+ushi_ushi_giraffe,amanedachi,DESTRUCTIVE,3.0,80,Source RangeAttack + explicit BlockDestroy
+uta_uta,noteattack,DESTRUCTIVE,1.5,24,"AINote actual impact, siblings share quota"
+uta_uta,notelaser,DESTRUCTIVE,1.5,32,"Three native source angles, siblings share quota"
+uta_uta,posing,DESTRUCTIVE,2.0,48,AIImpactWave active arrival
+uta_uta,noteshield,DESTRUCTIVE,2.0,48,One bounded release wave
+uta_uta,notewarrior,NONE,0.0,0,Soldier invocation itself preserves terrain
+uta_uta,totmusicapunch,DESTRUCTIVE,3.0,64,Two arm contacts share quota
+uta_uta,summontotmusica,DESTRUCTIVE,3.0,96,Owned Tot Musica energy impacts share lifetime quota
+yami_yami,kurouzu,NONE,0.0,0,"Attraction, no destruction path"
+yami_yami,blackhole,DESTRUCTIVE,8.0,384,BlackHole active field; source radius24.5 reduced
+yami_yami,darkball,DESTRUCTIVE,3.5,128,AIBall collision
+yami_yami,darkmatter,DESTRUCTIVE,4.5,192,AIFlameBall collision
+zushi_zushi,attackspeed,DESTRUCTIVE,1.5,32,"B02 source audit; active collision only, bounded adaptation"
+zushi_zushi,gravito,DESTRUCTIVE,3.0,96,"B02 source audit; active collision only, bounded adaptation"
+zushi_zushi,meteorsmall,DESTRUCTIVE,3.0,96,"B02 source audit; active collision only, bounded adaptation"
+zushi_zushi,moko,DESTRUCTIVE,6.0,160,"B02 source audit; active collision only, bounded adaptation"
+zushi_zushi,rubble,DESTRUCTIVE,2.0,64,"B02 source audit; active collision only, bounded adaptation"
+zushi_zushi,meteor,DESTRUCTIVE,5.0,192,"B02 source audit; active collision only, bounded adaptation"

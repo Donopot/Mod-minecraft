@@ -1,6 +1,8 @@
 # Terrain — décisions par technique
 
-Politique actuelle : [tous les blocs modifiés restent définitifs](TERRAIN-DEFINITIF-alpha11.md), à la demande explicite du joueur. Cette table couvre les116techniques des23fruits traités, plus Amaru. Les autres fruits restent à évaluer ; leurs anciennes mentions de restitution ne définissent plus le comportement du service commun.
+Politique actuelle : [tous les blocs modifiés restent définitifs](TERRAIN-DEFINITIF-alpha11.md), à la demande explicite du joueur. Le registre chargé en alpha 21 couvre les **213 techniques des 40 fruits** : 157 destructrices, 10 transformations, 46 sans mutation. Voir [l'export complet contrôlé en jeu](CHECK-40-TERRAIN-ALPHA21.csv) et [le rapport de vérification](CHECK-40-FRUITS-ALPHA21.md).
+
+La table ci-dessous conserve le relevé historique des 116 techniques des 23 premiers fruits, plus Amaru. Elle n'est pas le catalogue complet actuel. L'ancien générateur `document_terrain_policy.py`, limité à ce relevé, ne doit pas servir à remplacer l'export actuel.
 
 Les appels MinePiece ver15 ont été suivis jusqu’aux projectiles et convertisseurs. BlockDestroyAllDirection utilise une largeur (rayon nominal `(BlockRange+1)/2`), BlockToIce/BlockToSand un rayon. Les volumes ci-dessous sont des adaptations bornées pour le port, pas une reproduction générale des volumes source.
 
