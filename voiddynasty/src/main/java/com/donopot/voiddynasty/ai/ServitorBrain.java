@@ -47,6 +47,8 @@ public final class ServitorBrain {
 
     /** Signature du dernier ordre applique, pour ne pas relancer une tache identique en cours. */
     private static String lastOrder = "";
+    private static long revision;
+    public static void invalidatePending() { revision++; instruction=""; forceCycle=false; }
 
     /** Nombre d'ordres de lecture (scan, where…) d'affilee, sans action. */
     private static int idleOrders = 0;
@@ -68,7 +70,7 @@ public final class ServitorBrain {
     public static void init() {
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(TaskRunner::tick);
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(ServitorBrain::tick);
-        net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(s -> IN_FLIGHT.set(false));
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(s -> { invalidatePending(); IN_FLIGHT.set(false); TaskRunner.reset(); BrainSpawn.reset(); });
         log("cerveau initialise (desactive par defaut)");
     }
 
@@ -139,12 +141,17 @@ public final class ServitorBrain {
 
         IN_FLIGHT.set(true);
         final ServerLevel target = level;
+        final long requestRevision=revision;
+        final java.util.UUID requestBot=bot==null?null:bot.getUUID();
         final long started = System.currentTimeMillis();
         WORKER.submit(() -> {
             BrainLlm.Result result = BrainLlm.ask(cfg, systemPrompt(), user);
             long elapsed = System.currentTimeMillis() - started;
             server.execute(() -> {
                 try {
+                    if(requestRevision!=revision || !cfg.enabled) return;
+                    LivingEntity current=BrainSpawn.find(target);
+                    if(!java.util.Objects.equals(requestBot,current==null?null:current.getUUID())) return;
                     lastLatencyMs = elapsed;
                     handleResult(result, target, cfg);
                 } finally {
@@ -196,7 +203,7 @@ public final class ServitorBrain {
                 instructionForced = true;
                 feedback = "tache '" + signature + "' annulee pour executer la consigne de"
                         + " l'operateur : choisis maintenant l'outil qui la realise"
-                        + " (dig_box, mine_block, mine_area, goto).";
+                        + " (work_submit ou goto).";
                 audit("tache annulee pour la consigne");
                 return;
             }
@@ -209,12 +216,11 @@ public final class ServitorBrain {
         String outcome = BrainOrders.apply(result.order(), level, bot, cfg);
         lastOrder = bot != null && TaskRunner.current(bot) != null ? signature : "";
         lastDecision = signature;
-        if (!instruction.isEmpty()) {
-            instruction = "";
-            instructionAge = 0;
-            instructionForced = false;
+        boolean observation=java.util.List.of("scan","probe","find","box","where","recall","remember","work_status","work_capabilities").contains(result.order().name());
+        if (!instruction.isEmpty() && !observation && !outcome.startsWith("REFUSE") && !outcome.contains("\"ok\":false")) {
+            instruction = ""; instructionAge = 0; instructionForced = false;
         }
-        feedback = "ordre applique : " + outcome;
+        feedback = outcome;
         audit(signature + " → " + outcome);
 
         // Un petit modele peut boucler sur scan/where sans jamais agir : on le pousse.
@@ -227,7 +233,7 @@ public final class ServitorBrain {
             if (idleOrders >= 2) {
                 feedback = feedback + " | tu enchaines " + idleOrders
                         + " ordres de lecture sans agir : lance maintenant une action"
-                        + " (dig_box pour creuser, mine_area pour une zone, mine_block pour un minerai, goto)";
+                        + " (work_submit pour une mission journalisee ou goto pour marcher)";
                 audit("rappel d'action apres " + idleOrders + " lectures");
             }
         } else {
@@ -253,6 +259,7 @@ public final class ServitorBrain {
     }
 
     public static void disable(BrainConfig cfg, String reason) {
+        invalidatePending();
         cfg.enabled = false;
         cfg.save();
         audit("desactive : " + reason);
@@ -266,6 +273,7 @@ public final class ServitorBrain {
         return "position " + bot.blockPosition().toShortString()
                 + " | vie " + (int) bot.getHealth()
                 + " | tache " + task
+                + " | mission " + com.donopot.voiddynasty.work.MissionService.status(level,"current")
                 + " | operateur " + (operator.isEmpty() ? "inconnu" : operator);
     }
 
@@ -276,6 +284,7 @@ public final class ServitorBrain {
     }
 
     public static void instruct(String consigne) {
+        revision++;
         instructionAge = 0;
         instructionsReceived++;
         forceCycle = true;
@@ -345,27 +354,27 @@ public final class ServitorBrain {
                 Comment travailler :
                 - Une tache longue (miner, suivre, combattre) continue apres ta reponse. Regarde le
                   champ "tache" : si elle est encore en cours et progresse, laisse-la finir avec wait.
-                - L'outil probe te dit ce qu'il y a autour (plafond, sortie, lave, minerais) : utilise-le
-                  avant de creuser dans une direction au hasard.
-                - find localise un bloc precis (fer, coffre) avec sa distance, box dessine une zone en
+                - L'outil probe observe les blocs et dangers locaux; il ne prouve pas une sortie.
+                - find localise un bloc precis (fer, coffre) par coordonnees, box dessine une zone en
                   grille : demande-les avant de creuser au hasard ou de partir a l'aveugle.
                 - remember enregistre un fait durable (filon, tunnel, base) et recall le relit : sers-t'en
                   au lieu de re-explorer ce que tu connais deja.
-                - S'il est bloque par un mur en allant quelque part, il creuse un passage tout seul :
-                  ne lui demande pas de casser bloc par bloc, donne juste la destination.
-                - Apres un minage il remonte par un escalier qu'il creuse lui-meme : la tache ne
-                  se termine qu'une fois revenu au niveau du sol.
+                - goto et come_to_player marchent sans casser de blocs. Un chemin bloque est un echec.
+                - Pour recolter ou construire: work_capabilities puis work_submit avec zone, coffre,
+                  origine et request_id stable. Les blocs ne sont casses que dans cette zone autorisee.
+                - Ne devine jamais un coffre, une zone, un materiau ni une coordonnee manquante:
+                  demande ces informations via say. Une maison utilise seulement un plan disponible.
+                - work_submit accepte le travail; seul work_status prouve les quantites livrees/posees.
+                - work_control pause/resume/cancel/deposit conserve les ressources et le rollback.
+                  Le modele ne peut pas effacer le journal ni valider un chantier par close.
                 - Un suivi (follow_player) ne se termine jamais : ne le renvoies pas a chaque tour
                   et ne reponds pas wait en boucle. Attends une consigne, ou fais autre chose.
                 - Si l'etat contient une CONSIGNE DE L'OPERATEUR, elle passe AVANT la tache en
                   cours : abandonne ou remplace ce que tu faisais pour l'executer.
                 - Si la tache est "aucune" et que l'operateur attend quelque chose, lance l'action.
                 - Un ordre refuse au tour precedent ne se repete pas : change d'approche.
-                - scan sert au maximum UNE fois : ensuite tu lances l'action. Ne boucle jamais sur
-                  scan ou where, ils ne changent rien au monde.
-                - Pour creuser un trou rectangulaire sous toi (un trou de 10 sur 18, une cave, un
-                  puits), utilise dig_box avec width, length et depth.
-                - Pour creuser une zone autour d'un point, mine_area. Pour un minerai precis, mine_block.
+                - Une lecture ne prouve ni trajet possible ni recolte. Utilise les compteurs de couverture;
+                  une zone non chargee est inconnue, pas vide.
                 - Si rien ne justifie une action, utilise wait. Ne fais rien "pour occuper".
                 - Tu parles francais, en phrases courtes, seulement via say.
 

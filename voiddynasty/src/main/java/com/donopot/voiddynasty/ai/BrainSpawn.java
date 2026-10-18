@@ -77,6 +77,7 @@ public final class BrainSpawn {
      * appellerait {@code navigation.stop()} toutes les deux secondes et couperait les
      * déplacements en cours.</p>
      */
+    static void reset() { CONFIGURED.clear(); }
     public static LivingEntity find(ServerLevel level) {
         for (Entity e : level.getAllEntities()) {
             if (e instanceof LivingEntity le && le.isAlive() && le.entityTags().contains(TAG)) {
@@ -91,7 +92,11 @@ public final class BrainSpawn {
         boolean any = false;
         for (Entity e : level.getAllEntities()) {
             if (e instanceof LivingEntity le && le.entityTags().contains(TAG)) {
+                com.donopot.voiddynasty.work.WorkState work = com.donopot.voiddynasty.work.WorkState.get(level);
+                if (work.jobName != null && le.getUUID().toString().equals(work.servitorUuid)) continue;
+                TaskRunner.cancel(le, level, "retrait operateur");
                 BrainInv.dropAll(level, le);
+                if (!BrainInv.of(le).isEmpty()) continue;
                 CONFIGURED.remove(le.getUUID());
                 le.discard();
                 any = true;

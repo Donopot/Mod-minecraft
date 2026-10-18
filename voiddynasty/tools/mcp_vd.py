@@ -7,7 +7,7 @@ Aucune commande arbitraire n'est exposée : `command` est limité à une liste b
 Lancement manuel :   python3 mcp_vd.py
 Exécuter avec le Python de l'environnement MCP et VD_SERVER_DIR pointant vers
 le dossier du serveur Minecraft local. Voir docs/SERVITOR-POLYVALENT.md pour
-les quatre outils du rôle servitor et les limites de cette première version.
+les neuf outils restreints du rôle servitor et docs/SERVITOR-IA-ALPHA6.md pour la perception.
 
 Compatible avec MCP Python SDK 1.30.0 (voir requirements-mcp.txt).
 """

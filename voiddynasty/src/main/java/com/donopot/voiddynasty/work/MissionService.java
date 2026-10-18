@@ -137,6 +137,10 @@ public final class MissionService {
     }
 
     public static JsonObject submit(ServerLevel level, JsonObject request) {
+        return submit(level, request, null);
+    }
+
+    public static JsonObject submit(ServerLevel level, JsonObject request, LivingEntity companion) {
         WorkMission proposed;
         try { proposed = parse(request); } catch (RuntimeException e) { return error("INVALID_SPEC", e.getMessage()); }
         WorkState s = WorkState.get(level);
@@ -154,7 +158,7 @@ public final class MissionService {
         if (level.isOutsideBuildHeight(proposed.origin) || !level.getWorldBorder().isWithinBounds(proposed.origin))
             return error("INVALID_ORIGIN", "Origin outside dimension bounds");
         if(proposed.build!=null) {String invalid=BuildService.validate(level,proposed);if(!invalid.isEmpty()) return error(invalid,"Build site refused before reserving resources");}
-        WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin);
+        WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin, companion);
         if (started == null) return error("START_REFUSED", s.lastStop);
         s.missions.add(proposed); s.missionId = proposed.id;
         // Include the actual delivery chest in receipt recovery; never clear its other contents.

@@ -27,7 +27,9 @@ public final class BrainOrders {
 
     /** @return un compte rendu court, réinjecté dans le prompt du cycle suivant. */
     public static String apply(BrainTools.Order order, ServerLevel level, LivingEntity bot, BrainConfig cfg) {
-        String name = order.name().toLowerCase(Locale.ROOT);
+        String refusal=BrainTools.validate(order,level,bot,cfg);
+        if(refusal!=null) return "REFUSE: "+refusal;
+        String name = order.name();
         return switch (name) {
             case "say" -> {
                 String msg = order.strArg("message").trim();
@@ -37,14 +39,21 @@ public final class BrainOrders {
             case "wait" -> {
                 // Attendre ne remplace JAMAIS une tache en cours : sinon le simple fait de dire
                 // « patiente » annulerait le minage en cours. C'est le piege classique.
+                if(com.donopot.voiddynasty.work.WorkService.owns(level,bot)) yield "chantier en cours; work_status pour les compteurs";
                 if (TaskRunner.current(bot) != null) {
                     yield "attente : la tache en cours continue (" + TaskRunner.describe(bot) + ")";
                 }
-                int seconds = BrainTools.clamp(order.intArg("seconds"), 1, 60);
+                int seconds = BrainTools.clamp(order.args().has("seconds")?order.intArg("seconds"):1, 1, 60);
                 TaskRunner.assign(level, bot, new BrainTasks.Wait(seconds));
                 yield "attente de " + seconds + " s";
             }
-            case "stop" -> TaskRunner.cancel(bot, level, "demande du modele");
+            case "stop" -> {
+                if(com.donopot.voiddynasty.work.WorkService.owns(level,bot)) {
+                    com.donopot.voiddynasty.work.WorkService.stop(level);
+                    yield "chantier pause; ressources et journal conserves";
+                }
+                yield TaskRunner.cancel(bot,level,"demande du modele");
+            }
             case "goto" -> {
                 BlockPos dst = new BlockPos(order.intArg("x"), order.intArg("y"), order.intArg("z"));
                 TaskRunner.assign(level, bot, new BrainTasks.Goto(dst, cfg.timeoutSeconds * 3));
@@ -62,36 +71,11 @@ public final class BrainOrders {
                 TaskRunner.assign(level, bot, new BrainTasks.Follow(player, distance));
                 yield "suivi de " + player + " a " + (int) distance + " blocs";
             }
-            case "mine_area" -> {
-                int radius = BrainTools.clamp(order.intArg("radius"), 1, cfg.maxRadius);
-                int cx = order.intArg("x");
-                int cy = order.intArg("y");
-                int cz = order.intArg("z");
-                BlockPos a = new BlockPos(cx - radius, cy - radius, cz - radius);
-                BlockPos b = new BlockPos(cx + radius, cy + radius, cz + radius);
-                TaskRunner.assign(level, bot, new BrainTasks.MineArea(a, b));
-                yield "minage de la zone " + a.toShortString() + " → " + b.toShortString() + " lance";
-            }
-            case "dig_box" -> {
-                int w = BrainTools.clamp(order.intArg("width"), 1, 16);
-                int l = BrainTools.clamp(order.intArg("length"), 1, 16);
-                int d = BrainTools.clamp(order.intArg("depth"), 1, 16);
-                int x = bot.getBlockX() - (w - 1) / 2;
-                int z = bot.getBlockZ() - (l - 1) / 2;
-                int top = bot.getBlockY() - 1;
-                BlockPos a = new BlockPos(x, top - d + 1, z);
-                BlockPos b = new BlockPos(x + w - 1, top, z + l - 1);
-                TaskRunner.assign(level, bot, new BrainTasks.MineArea(a, b));
-                yield "trou de " + w + "x" + l + "x" + d + " creuse sous toi (" + a.toShortString()
-                        + " → " + b.toShortString() + ")";
-            }
-            case "mine_block" -> {
-                String block = BrainTools.normalizeBlock(order.strArg("block"));
-                int count = BrainTools.clamp(order.intArg("count"), 1, 64);
-                int radius = BrainTools.clamp(order.args().has("radius") ? order.intArg("radius") : 24, 4, 32);
-                TaskRunner.assign(level, bot, new BrainTasks.MineBlocks(block, count, radius));
-                yield "recherche et minage de " + count + " × " + block + " lance";
-            }
+            case "work_capabilities" -> com.donopot.voiddynasty.work.MissionService.capabilities().toString();
+            case "work_submit" -> com.donopot.voiddynasty.work.MissionService.submit(level,
+                    com.google.gson.JsonParser.parseString(order.strArg("spec")).getAsJsonObject(),bot).toString();
+            case "work_status" -> com.donopot.voiddynasty.work.MissionService.status(level,order.strArg("mission_id")).toString();
+            case "work_control" -> com.donopot.voiddynasty.work.MissionService.control(level,order.strArg("mission_id"),order.strArg("action")).toString();
             case "attack_nearest" -> {
                 int radius = BrainTools.clamp(order.args().has("radius") ? order.intArg("radius") : 12, 4, 24);
                 int count = BrainTools.clamp(order.args().has("count") ? order.intArg("count") : 1, 1, 10);
@@ -104,7 +88,7 @@ public final class BrainOrders {
                 TaskRunner.assign(level, bot, new BrainTasks.Pickup(radius, count));
                 yield "ramassage lance (rayon " + radius + ")";
             }
-            case "scan" -> scan(level, bot, order.strArg("block"), clamp(order, cfg));
+            case "scan" -> BrainSenses.find(level,bot,order.strArg("block"),clamp(order,cfg),1);
             case "probe" -> BrainSenses.summary(level, bot, clamp(order, cfg));
             case "find" -> BrainSenses.find(level, bot, order.strArg("block"),
                     order.args().has("radius") ? order.intArg("radius") : 16,
@@ -122,31 +106,6 @@ public final class BrainOrders {
 
     private static int clamp(BrainTools.Order order, BrainConfig cfg) {
         return BrainTools.clamp(order.args().has("radius") ? order.intArg("radius") : 24, 4, 32);
-    }
-
-    private static String scan(ServerLevel level, LivingEntity bot, String block, int radius) {
-        if (bot == null) return "scan impossible : aucun servitor";
-        String wanted = BrainTools.normalizeBlock(block);
-        BlockPos center = bot.blockPosition();
-        int found = 0;
-        BlockPos nearest = null;
-        double bestD = Double.MAX_VALUE;
-        for (BlockPos p : BlockPos.betweenClosed(center.offset(-radius, -16, -radius),
-                center.offset(radius, 16, radius))) {
-            BlockState st = level.getBlockState(p);
-            if (st.isAir()) continue;
-            Identifier id = BuiltInRegistries.BLOCK.getKey(st.getBlock());
-            if (!id.toString().equals(wanted) && !id.getPath().equals(block.toLowerCase(Locale.ROOT))) continue;
-            found++;
-            double d = center.distSqr(p);
-            if (d < bestD) {
-                bestD = d;
-                nearest = p.immutable();
-            }
-        }
-        if (found == 0) return "aucun " + wanted + " dans un rayon de " + radius + " blocs";
-        return found + " × " + wanted + " autour de toi, le plus proche en " + nearest.toShortString()
-                + " (" + (int) Math.sqrt(bestD) + " blocs)";
     }
 
     private static String where(ServerLevel level, LivingEntity bot, String player) {

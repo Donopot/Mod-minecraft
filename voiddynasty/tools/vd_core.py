@@ -85,8 +85,9 @@ class Rcon:
         command_id=self.rid
         # Vanilla RCON splits long replies into several packets with the same ID.
         # A subsequent read-only command marks their end without guessing packet length.
-        self._send(2,"list")
-        sentinel_id=self.rid;parts=[];size=0;deadline=time.monotonic()+self.timeout
+        # Send the marker only after the first reply. Some vanilla RCON versions
+        # consume one request per socket read and can drop a pipelined second frame.
+        sentinel_id=None;parts=[];size=0;deadline=time.monotonic()+self.timeout
         while True:
             remaining=deadline-time.monotonic()
             if remaining<=0:raise RuntimeError("delai total RCON depasse")
@@ -97,6 +98,9 @@ class Rcon:
                 size+=len(text.encode('utf-8'))
                 if size>1024*1024:raise RuntimeError("reponse RCON trop grande")
                 parts.append(text)
+                if sentinel_id is None:
+                    self._send(2,"list")
+                    sentinel_id=self.rid
 
     def close(self):
         try:

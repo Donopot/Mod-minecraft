@@ -95,6 +95,19 @@ class MissionToolsTest(unittest.TestCase):
 
 
 class RconCorrelationTest(unittest.TestCase):
+    def test_marker_is_not_pipelined_before_first_reply(self):
+        sock=Mock()
+        def receive():
+            count=sock.sendall.call_count
+            if count==1:return (1,2,'')
+            if count==2:return (2,0,'response')
+            if count==3:return (3,0,'sentinel')
+            self.fail('unexpected request sequence')
+        with patch.object(core,'_props',return_value=('fixture',1234)),patch.object(core.socket,'create_connection',return_value=sock),patch.object(core.Rcon,'_recv',side_effect=receive):
+            connection=core.Rcon(timeout=2)
+            self.assertEqual(connection.cmd('list'),'response')
+            connection.close()
+
     def test_auth_empty_packet_and_stale_ids_are_not_command_results(self):
         sock = Mock()
         with patch.object(core, '_props', return_value=('fixture', 1234)), patch.object(core.socket, 'create_connection', return_value=sock), \

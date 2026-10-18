@@ -33,6 +33,7 @@ public final class ChatListener {
             return;
         }
         if (raw == null || raw.isBlank()) return;
+        if (!sender.permissions().hasPermission(net.minecraft.server.permissions.Permissions.COMMANDS_GAMEMASTER)) return;
 
         BrainConfig cfg = BrainConfig.get();
         String lower = raw.toLowerCase(java.util.Locale.ROOT);

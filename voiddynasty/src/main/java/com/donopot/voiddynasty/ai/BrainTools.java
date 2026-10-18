@@ -68,7 +68,7 @@ public final class BrainTools {
     }
 
     /** Outils qui n'ont pas besoin d'un servitor en jeu. */
-    private static final List<String> WITHOUT_BODY = List.of("say", "wait", "where", "stop");
+    private static final List<String> WITHOUT_BODY = List.of("say", "where", "stop", "work_capabilities", "work_status", "work_control");
 
     // ------------------------------------------------------------------ schéma
 
@@ -87,43 +87,35 @@ public final class BrainTools {
                         prop("distance", "number", "Distance à conserver, en blocs (2 à 10).")),
                 List.of("player")));
         tools.add(tool("stop", "Arrêter la tâche en cours.", props(), List.of()));
-        tools.add(tool("mine_area",
-                "Miner toute une zone cubique, bloc par bloc, en marchant de l'un à l'autre.",
-                props(prop("x", "integer", "Centre X"), prop("y", "integer", "Centre Y"),
-                        prop("z", "integer", "Centre Z"),
-                        prop("radius", "integer", "Demi-taille de la zone, en blocs (1 à 8).")),
-                List.of("x", "y", "z", "radius")));
-        tools.add(tool("dig_box",
-                "Creuser un trou rectangulaire sous toi (largeur x longueur x profondeur, en blocs).",
-                props(prop("width", "integer", "Largeur en blocs (1 à 16)."),
-                        prop("length", "integer", "Longueur en blocs (1 à 16)."),
-                        prop("depth", "integer", "Profondeur vers le bas en blocs (1 à 16).")),
-                List.of("width", "length", "depth")));
-        tools.add(tool("mine_block",
-                "Chercher un type de bloc autour de toi et en miner un nombre précis.",
-                props(prop("block", "string", "Identifiant du bloc (ex: iron_ore, oak_log)."),
-                        prop("count", "integer", "Nombre de blocs à miner (1 à 64)."),
-                        prop("radius", "integer", "Rayon de recherche en blocs (4 à 32).")),
-                List.of("block", "count")));
+        tools.add(tool("work_capabilities", "Lire les ressources, plans et limites du moteur de chantier.", props(), List.of()));
+        tools.add(tool("work_submit", "Soumettre une mission GATHER ou BUILD journalisee. spec est un objet JSON encode en texte. "
+                + "Champs GATHER: schema=1,type,request_id stable,item,amount,min:[x,y,z],max:[x,y,z],destination:[x,y,z],origin:[x,y,z],access optionnel surface/excavate. "
+                + "BUILD: schema=1,type=BUILD,request_id,blueprint,material,anchor:[x,y,z],source:[x,y,z],origin:[x,y,z]. "
+                + "Le coffre doit exister. Demander les informations manquantes, ne pas inventer. L'acceptation ne signifie pas livraison.",
+                props(prop("spec", "string", "Specification JSON complete de la mission, 8192 caracteres maximum.")),List.of("spec")));
+        tools.add(tool("work_status", "Lire les compteurs, le sac et le rollback de la mission, sans la modifier.",
+                props(prop("mission_id", "string", "UUID de la mission, ou current pour la lecture seulement.")),List.of("mission_id")));
+        tools.add(tool("work_control", "Pauser, reprendre, annuler ou deposer le sac d'une mission. Ne libere jamais le journal de rollback.",
+                props(prop("mission_id", "string", "UUID exact retourne par work_submit."),
+                        prop("action", "string", "pause, resume, cancel ou deposit")),List.of("mission_id","action")));
         tools.add(tool("attack_nearest", "Attaquer les monstres hostiles les plus proches.",
                 props(prop("radius", "integer", "Rayon de détection (4 à 24)."),
                         prop("count", "integer", "Nombre de monstres à éliminer (1 à 10).")),
                 List.of()));
         tools.add(tool("pickup", "Aller ramasser les objets au sol autour de toi.",
-                props(prop("radius", "integer", "Rayon de recherche (4 à 32)."),
+                props(prop("radius", "integer", "Rayon de ramassage (4 à 32)."),
                         prop("count", "integer", "Nombre d'objets à ramasser (1 à 64).")),
                 List.of()));
         tools.add(tool("scan", "Compter un type de bloc autour de toi, sans rien miner. Réponse immédiate.",
                 props(prop("block", "string", "Identifiant du bloc (ex: iron_ore)."),
-                        prop("radius", "integer", "Rayon de recherche (4 à 32).")),
+                        prop("radius", "integer", "Rayon horizontal (4 à 24), hauteur +/-4.")),
                 List.of("block")));
-        tools.add(tool("probe", "Voir ce qu'il y a autour de toi : epaisseur du plafond, sortie la plus"
-                        + " proche, lave, minerais. Réponse immédiate.", 
+        tools.add(tool("probe", "Observer les blocs et dangers locaux avec couverture explicite; hauteur +/-4.",
                 props(prop("radius", "integer", "Rayon d'analyse (4 à 16).")), List.of()));
         tools.add(tool("find", "Localiser les blocs les plus proches d'un type (fer, charbon, coffre...)"
-                        + " avec distance et direction. Réponse immédiate.",
+                        + " par coordonnees, dans les cellules chargees non protegees. Réponse immédiate.",
                 props(prop("block", "string", "Identifiant du bloc (ex: iron_ore)."),
-                        prop("radius", "integer", "Rayon de recherche (4 à 24)."),
+                        prop("radius", "integer", "Rayon horizontal (4 à 24), hauteur +/-4."),
                         prop("limit", "integer", "Nombre de resultats (1 à 16).")),
                 List.of("block")));
         tools.add(tool("box", "Voir une petite zone en grille, une couche par niveau (dessin + legende)."
@@ -183,90 +175,78 @@ public final class BrainTools {
 
     /** @return {@code null} si l'ordre est acceptable, sinon la raison du refus. */
     public static String validate(Order order, ServerLevel level, LivingEntity bot, BrainConfig cfg) {
-        if (order == null || order.name() == null) return "ordre vide";
-        String name = order.name().toLowerCase(Locale.ROOT);
-        if (!known(name)) return "outil inconnu : " + name;
-
-        boolean needsBody = !WITHOUT_BODY.contains(name);
-        BlockPos botPos = bot == null ? null : bot.blockPosition();
-        if (needsBody && botPos == null) {
-            return "aucun servitor en jeu : /servitor spawn d'abord";
-        }
-
-        switch (name) {
-            case "say" -> {
-                String msg = order.strArg("message").trim();
-                if (msg.isEmpty()) return "message vide";
-                if (msg.length() > 200) return "message trop long (200 max)";
-                return null;
-            }
-            case "wait" -> {
-                return null;
-            }
-            case "stop" -> {
-                return null;
-            }
-            case "goto" -> {
-                BlockPos dst = new BlockPos(order.intArg("x"), order.intArg("y"), order.intArg("z"));
-                double d = Math.sqrt(dst.distSqr(botPos));
-                if (d > cfg.maxDistance) return "destination trop loin (" + (int) d + " blocs, max " + cfg.maxDistance + ")";
-                return null;
-            }
-            case "come_to_player", "follow_player" -> {
-                String target = order.strArg("player");
-                return playerByName(level, target) == null ? "joueur inconnu : " + target : null;
-            }
-            case "where" -> {
-                String target = order.strArg("player");
-                return playerByName(level, target) == null ? "joueur inconnu : " + target : null;
-            }
-            case "dig_box" -> {
-                int w = clamp(order.intArg("width"), 1, 16);
-                int l = clamp(order.intArg("length"), 1, 16);
-                int d = clamp(order.intArg("depth"), 1, 16);
-                int volume = w * l * d;
-                if (volume > cfg.maxVolume) {
-                    return "trou trop volumineux (" + volume + " blocs, max " + cfg.maxVolume + ")";
-                }
-                if (bot == null) return "aucun servitor en jeu : /servitor spawn d'abord";
-                return null;
-            }
-            case "mine_area" -> {
-                int radius = clamp(order.intArg("radius"), 1, cfg.maxRadius);
-                int volume = (2 * radius + 1) * (2 * radius + 1) * (2 * radius + 1);
-                if (volume > cfg.maxVolume) return "zone trop volumineuse (" + volume + " blocs, max " + cfg.maxVolume + ")";
-                BlockPos center = new BlockPos(order.intArg("x"), order.intArg("y"), order.intArg("z"));
-                double d = Math.sqrt(center.distSqr(botPos));
-                if (d > cfg.maxDistance) return "zone trop loin du servitor (" + (int) d + " blocs, max " + cfg.maxDistance + ")";
-                return null;
-            }
-            case "mine_block", "scan", "find" -> {
-                String block = order.strArg("block").toLowerCase(Locale.ROOT);
-                if (block.isBlank()) return "bloc non precise";
-                Identifier id = Identifier.tryParse(block.contains(":") ? block : "minecraft:" + block);
-                if (id == null || BuiltInRegistries.BLOCK.getValue(id) == null) return "bloc inconnu : " + block;
-                return null;
-            }
-            case "attack_nearest", "pickup", "probe", "recall", "box" -> {
-                return null;
-            }
-            case "remember" -> {
-                if (order.strArg("note").isBlank()) return "note vide";
-                return null;
-            }
-            default -> {
-                return "outil inconnu : " + name;
-            }
-        }
+        try { return validateChecked(order,level,bot,cfg); }
+        catch(RuntimeException ex) {return "arguments invalides : " + ex.getMessage();}
     }
-
-    private static boolean known(String name) {
-        return switch (name) {
-            case "say", "wait", "stop", "goto", "come_to_player", "follow_player",
-                 "mine_area", "dig_box", "mine_block", "attack_nearest", "pickup", "scan",
-                 "probe", "find", "box", "remember", "recall", "where" -> true;
-            default -> false;
-        };
+    private static String validateChecked(Order order,ServerLevel level,LivingEntity bot,BrainConfig cfg) {
+        if(order==null || order.name()==null || order.args()==null) return "ordre vide";
+        String name=order.name();
+        String spec=schemaOf(name);
+        if(spec==null) return "outil inconnu: "+name+"; minage via work_submit uniquement";
+        JsonObject schema=com.google.gson.JsonParser.parseString(spec).getAsJsonObject();
+        JsonObject fields=schema.getAsJsonObject("properties");
+        for(JsonElement field:schema.getAsJsonArray("required"))
+            if(!order.args().has(field.getAsString())) return "champ manquant: "+field.getAsString();
+        for(var field:order.args().entrySet()) {
+            if(!fields.has(field.getKey())) return "champ inconnu: "+field.getKey();
+            JsonElement v=field.getValue();String type=fields.getAsJsonObject(field.getKey()).get("type").getAsString();
+            if(!v.isJsonPrimitive()) return "type invalide: "+field.getKey();
+            var primitive=v.getAsJsonPrimitive();
+            if(type.equals("string") && !primitive.isString()) return "texte requis: "+field.getKey();
+            if(type.equals("integer")) {
+                if(!primitive.isNumber() || !v.getAsString().matches("-?[0-9]+")) return "entier requis: "+field.getKey();
+                v.getAsBigDecimal().intValueExact();
+            }
+            if(type.equals("number") && (!primitive.isNumber() || !Double.isFinite(v.getAsDouble()))) return "nombre fini requis";
+            if(type.equals("string") && v.getAsString().length()>(field.getKey().equals("spec")?8192:1000)) return "texte trop long";
+        }
+        if(!WITHOUT_BODY.contains(name) && (bot==null || bot.isRemoved() || !bot.isAlive() || bot.level()!=level)) return "aucun servitor disponible dans cette dimension";
+        if(bot!=null && com.donopot.voiddynasty.work.WorkService.owns(level,bot)
+                && List.of("goto","come_to_player","follow_player","attack_nearest","pickup","work_submit").contains(name)) {
+            // Native submit handles identical request replay without taking ownership twice.
+            if(!name.equals("work_submit")) return "ACTION_BUSY: chantier actif; work_status ou pause d'abord";
+        }
+        if(name.equals("say") && (order.strArg("message").isBlank() || order.strArg("message").length()>200)) return "message vide ou trop long";
+        if(name.equals("remember") && order.strArg("note").isBlank()) return "note vide";
+        if(order.args().has("radius")) {
+            int max=switch(name) {case "probe" -> 16;case "find", "scan" -> 24;case "attack_nearest" -> 24;default -> 32;};
+            if(order.intArg("radius")<4 || order.intArg("radius")>max) return "rayon hors limites";
+        }
+        if(order.args().has("count") && (order.intArg("count")<1 || order.intArg("count")>(name.equals("attack_nearest")?10:64))) return "quantite hors limites";
+        if(order.args().has("limit") && (order.intArg("limit")<1 || order.intArg("limit")>16)) return "limite hors limites";
+        if(order.args().has("seconds") && (order.intArg("seconds")<1 || order.intArg("seconds")>60)) return "attente hors limites";
+        if(order.args().has("distance") && (order.doubleArg("distance")<2 || order.doubleArg("distance")>10)) return "distance hors limites";
+        if(order.args().has("half") && (order.intArg("half")<1 || order.intArg("half")>4)) return "largeur hors limites";
+        if(order.args().has("layers") && (order.intArg("layers")<1 || order.intArg("layers")>6)) return "hauteur hors limites";
+        if(name.equals("goto") || name.equals("box")) {
+            BlockPos dst=new BlockPos(order.intArg("x"),order.intArg("y"),order.intArg("z"));
+            if(level.isOutsideBuildHeight(dst) || !level.getWorldBorder().isWithinBounds(dst) || !level.hasChunkAt(dst)) return "destination indisponible";
+            if(Math.sqrt(dst.distSqr(bot.blockPosition()))>Math.max(1,Math.min(cfg.maxDistance,128))) return "destination trop loin";
+        }
+        if(List.of("come_to_player","follow_player","where").contains(name)) {
+            ServerPlayer player=playerByName(level,order.strArg("player"));
+            if(player==null || player.level()!=level) return "joueur absent de cette dimension";
+            if(!name.equals("where") && bot.distanceTo(player)>Math.max(1,Math.min(cfg.maxDistance,128))) return "joueur trop loin";
+        }
+        if(name.equals("scan") || name.equals("find")) {
+            Identifier id=Identifier.tryParse(normalizeBlock(order.strArg("block")));
+            if(id==null || !BuiltInRegistries.BLOCK.containsKey(id)) return "bloc inconnu";
+        }
+        if(name.equals("work_submit")) {
+            var mission=com.donopot.voiddynasty.work.MissionService.parse(com.google.gson.JsonParser.parseString(order.strArg("spec")).getAsJsonObject());
+            long volume=(long)(mission.max.getX()-mission.min.getX()+1)*(mission.max.getY()-mission.min.getY()+1)*(mission.max.getZ()-mission.min.getZ()+1);
+            if(volume>Math.max(1,Math.min(32768,cfg.maxVolume))) return "zone trop volumineuse pour le cerveau";
+            if(Math.sqrt(mission.origin.distSqr(bot.blockPosition()))>Math.max(1,Math.min(cfg.maxDistance,128))) return "origine trop loin du servitor";
+            for(BlockPos point:List.of(mission.min,mission.max,mission.destination))
+                if(Math.sqrt(point.distSqr(bot.blockPosition()))>Math.max(1,Math.min(cfg.maxDistance,128))) return "mission trop loin du servitor";
+            if(TaskRunner.current(bot)!=null) return "ACTION_BUSY: tache du compagnon active; stop d'abord";
+        }
+        if(name.equals("work_status") || name.equals("work_control")) {
+            String id=order.strArg("mission_id");
+            if(!(name.equals("work_status") && id.equals("current"))) java.util.UUID.fromString(id);
+            if(name.equals("work_control") && !List.of("pause","resume","cancel","deposit").contains(order.strArg("action"))) return "action refusee; le journal ne peut etre efface par le modele";
+        }
+        return null;
     }
 
     public static int clamp(int value, int min, int max) {
