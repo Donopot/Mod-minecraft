@@ -60,7 +60,7 @@ async def before_restart(rcon, lab, notes):
     fixture(rcon,notes,'setup')
     async with connection(lab) as session:
         names={t.name for t in (await session.list_tools()).tools}
-        check(notes,'actual_mcp_tool_discovery',names=={'servitor_capabilities','servitor_gather','servitor_mission_status','servitor_mission_control','servitor_build','servitor_build_estimate'})
+        check(notes,'actual_mcp_tool_discovery',names=={'servitor_capabilities','servitor_gather','servitor_mission_status','servitor_mission_control','servitor_build','servitor_build_estimate','servitor_observe','servitor_find','servitor_mission_wait'})
         caps=await call(session,'servitor_capabilities')
         check(notes,'server_reports_actual_capabilities',caps['ok'] and caps['mission_types']==['GATHER','BUILD'] and 'minecraft:diamond' in caps['gather_items'])
         invalid=await session.call_tool('servitor_gather',spec('bad-boolean',amount=True))

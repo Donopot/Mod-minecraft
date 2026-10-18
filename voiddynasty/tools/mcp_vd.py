@@ -7,7 +7,7 @@ Aucune commande arbitraire n'est exposée : `command` est limité à une liste b
 Lancement manuel :   python3 mcp_vd.py
 Exécuter avec le Python de l'environnement MCP et VD_SERVER_DIR pointant vers
 le dossier du serveur Minecraft local. Voir docs/SERVITOR-POLYVALENT.md pour
-les quatre outils du rôle servitor et les limites de cette première version.
+les neuf outils restreints du rôle servitor et docs/SERVITOR-IA-ALPHA6.md pour la perception.
 
 Compatible avec MCP Python SDK 1.30.0 (voir requirements-mcp.txt).
 """
@@ -60,12 +60,31 @@ def tool_servitor_capabilities(dimension: str = "overworld") -> dict:
     return vd_core.servitor_capabilities(dimension)
 
 
+def tool_servitor_observe(zone_min: list[StrictInt],zone_max: list[StrictInt],dimension: str="overworld",limit: StrictInt=16) -> dict:
+    """Observe live blocks and hazards in a bounded loaded area, without editing or loading chunks.
+    Incomplete coverage is unknown terrain, not empty or safe terrain. No container contents are read."""
+    return vd_core.servitor_observe(zone_min,zone_max,dimension,limit)
+
+
+def tool_servitor_find(item: str,zone_min: list[StrictInt],zone_max: list[StrictInt],dimension: str="overworld",limit: StrictInt=16) -> dict:
+    """Find source blocks for a supported gather item in an authorized box. Positions are sampled facts,
+    not a route or a promise of reachable drops. Check coverage before concluding there are no resources."""
+    return vd_core.servitor_find(item,zone_min,zone_max,dimension,limit)
+
+
+async def tool_servitor_mission_wait(mission_id: str,timeout_seconds: StrictInt=10,dimension: str="overworld") -> dict:
+    """Wait up to 30 seconds for this exact mission UUID. Pending means work continues; retry observation
+    rather than duplicating a submission. Paused/attention require a decision; acceptance is never completion."""
+    return await vd_core.servitor_mission_wait(mission_id,timeout_seconds,dimension)
+
+
 def tool_servitor_gather(request_id: str, item: str, amount: StrictInt, zone_min: list[StrictInt],
                          zone_max: list[StrictInt], destination: list[StrictInt], origin: list[StrictInt],
                          dimension: str = "overworld", access: str = "surface") -> dict:
     """Have the physical servitor gather a quantity from matching blocks in an explicit zone and deliver it
     to a single chest/barrel. access=excavate opts into up to 256 horizontal access blocks inside the zone;
-    no stairs yet. Reuse request_id unchanged after timeout; poll the returned
+    existing floors support excavated 3-block landings with one-block steps (up to 8 blocks of rise).
+    Reuse request_id unchanged after timeout; poll the returned
     mission UUID until SUCCEEDED, INCOMPLETE or PAUSED. Acceptance alone is not success."""
     return vd_core.servitor_gather(request_id,item,amount,zone_min,zone_max,destination,origin,dimension,access)
 
@@ -97,6 +116,7 @@ for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest
                 (tool_scan_zone, "scan_zone"), (tool_place_ship, "place_ship"),
                 (tool_fleet, "fleet"), (tool_command, "command"),
                 (tool_servitor_capabilities, "servitor_capabilities"), (tool_servitor_gather, "servitor_gather"),
+                (tool_servitor_observe,"servitor_observe"),(tool_servitor_find,"servitor_find"),(tool_servitor_mission_wait,"servitor_mission_wait"),
                 (tool_servitor_build_estimate,"servitor_build_estimate"),(tool_servitor_build,"servitor_build"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):

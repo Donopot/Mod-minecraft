@@ -58,6 +58,7 @@ public final class MissionService {
         JsonArray types = new JsonArray(); types.add("GATHER"); types.add("BUILD"); out.add("mission_types", types);
         JsonArray resources = new JsonArray(); SOURCES.keySet().forEach(resources::add); out.add("gather_items", resources);
         out.addProperty("max_volume", 32768); out.addProperty("max_amount", 4096);
+        JsonArray perceptions=new JsonArray();perceptions.add("OBSERVE");perceptions.add("FIND");out.add("observation_types",perceptions);out.addProperty("observation_max_results",WorkObservation.MAX_RESULTS);
         out.addProperty("prospection", "Optional access=excavate clears horizontal passages or excavates 3-block landings with one-block steps and return headroom; existing floors required; inside authorized zone only");
         out.addProperty("access_max_blocks",WorkAccess.MAX_BLOCKS);
         out.addProperty("access_max_rise",WorkStairs.MAX_RISE);
@@ -67,13 +68,13 @@ public final class MissionService {
         return out;
     }
 
-    private static int integer(JsonElement value) {
+    static int integer(JsonElement value) {
         if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()
                 || !value.getAsString().matches("-?[0-9]+")) throw new IllegalArgumentException("Integer required");
         return value.getAsBigDecimal().intValueExact();
     }
 
-    private static BlockPos position(JsonElement value) {
+    static BlockPos position(JsonElement value) {
         if (value == null || !value.isJsonArray() || value.getAsJsonArray().size() != 3) throw new IllegalArgumentException("Position must have 3 integers");
         JsonArray a = value.getAsJsonArray(); int x = integer(a.get(0)), y = integer(a.get(1)), z = integer(a.get(2));
         if (Math.abs((long)x) > 29999984 || Math.abs((long)z) > 29999984 || y < -2048 || y > 2047)
@@ -136,6 +137,10 @@ public final class MissionService {
     }
 
     public static JsonObject submit(ServerLevel level, JsonObject request) {
+        return submit(level, request, null);
+    }
+
+    public static JsonObject submit(ServerLevel level, JsonObject request, LivingEntity companion) {
         WorkMission proposed;
         try { proposed = parse(request); } catch (RuntimeException e) { return error("INVALID_SPEC", e.getMessage()); }
         WorkState s = WorkState.get(level);
@@ -153,7 +158,7 @@ public final class MissionService {
         if (level.isOutsideBuildHeight(proposed.origin) || !level.getWorldBorder().isWithinBounds(proposed.origin))
             return error("INVALID_ORIGIN", "Origin outside dimension bounds");
         if(proposed.build!=null) {String invalid=BuildService.validate(level,proposed);if(!invalid.isEmpty()) return error(invalid,"Build site refused before reserving resources");}
-        WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin);
+        WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin, companion);
         if (started == null) return error("START_REFUSED", s.lastStop);
         s.missions.add(proposed); s.missionId = proposed.id;
         // Include the actual delivery chest in receipt recovery; never clear its other contents.

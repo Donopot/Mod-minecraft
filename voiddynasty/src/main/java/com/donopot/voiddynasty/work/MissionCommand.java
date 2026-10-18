@@ -36,6 +36,12 @@ public final class MissionCommand {
                     .then(Commands.literal("surface").executes(ctx->gather(ctx,"surface")))
                     .then(Commands.literal("excavate").executes(ctx->gather(ctx,"excavate"))))))))))
             .then(Commands.literal("capabilities").executes(ctx -> reply(ctx.getSource(), MissionService.capabilities())))
+            .then(Commands.literal("observe").then(Commands.argument("payload",StringArgumentType.word()).executes(ctx->{
+                String payload=StringArgumentType.getString(ctx,"payload");
+                if(payload.length()>8192||!payload.matches("[A-Za-z0-9_-]+"))return reply(ctx.getSource(),MissionService.error("INVALID_SPEC","Invalid observation encoding"));
+                try{return reply(ctx.getSource(),WorkObservation.inspect(ctx.getSource().getLevel(),JsonParser.parseString(new String(Base64.getUrlDecoder().decode(payload),StandardCharsets.UTF_8)).getAsJsonObject()));}
+                catch(RuntimeException e){return reply(ctx.getSource(),MissionService.error("INVALID_SPEC","Invalid observation payload"));}
+            })))
             .then(Commands.literal("estimate").then(Commands.argument("payload",StringArgumentType.word()).executes(ctx->{
                 String payload=StringArgumentType.getString(ctx,"payload");
                 if(payload.length()>8192 || !payload.matches("[A-Za-z0-9_-]+")) return reply(ctx.getSource(),MissionService.error("INVALID_SPEC","Invalid payload"));

@@ -40,21 +40,27 @@ public final class BrainState {
             s.addProperty("tache", TaskRunner.describe(bot));
             JsonArray sack = new JsonArray();
             int shown = 0;
-            for (ItemStack stack : BrainInv.of(bot.getUUID())) {
+            java.util.List<ItemStack> bag;
+            try {bag=BrainInv.of(bot);}
+            catch(IllegalStateException ex) {
+                s.addProperty("sac_erreur",ex.getMessage());bag=java.util.List.of();
+            }
+            for (ItemStack stack : bag) {
                 if (stack.isEmpty() || shown++ >= 10) continue;
                 JsonObject it = new JsonObject();
                 it.addProperty("item", BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath());
                 it.addProperty("n", stack.getCount());
                 sack.add(it);
             }
-            s.add("sac_detail", sack);
+            if(!s.has("sac_erreur")) s.add("sac_detail", sack);
             root.add("servitor", s);
         } else {
             root.addProperty("servitor", "aucun servitor en jeu (l'operateur doit faire /servitor spawn)");
         }
 
         WorkState work = WorkState.get(level);
-        if (work != null && work.hasJob()) {
+        root.add("mission",com.donopot.voiddynasty.work.MissionService.status(level,"current"));
+        if (work != null && work.jobName!=null) {
             JsonObject job = new JsonObject();
             job.addProperty("nom", work.jobName);
             job.addProperty("avancement_pct", work.total <= 0 ? 0
@@ -67,6 +73,7 @@ public final class BrainState {
         JsonArray players = new JsonArray();
         if (bot != null) {
             for (ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
+                if(p.level()!=level) continue;
                 JsonObject o = new JsonObject();
                 o.addProperty("nom", p.getGameProfile().name());
                 o.addProperty("x", p.getBlockX());

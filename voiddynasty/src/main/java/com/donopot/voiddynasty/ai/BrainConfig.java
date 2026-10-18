@@ -58,7 +58,7 @@ public final class BrainConfig {
      * true : le modele n'est appele QUE quand l'operateur donne un ordre, avec un prompt minimal.
      * false : il recoit l'etat complet du monde a chaque cycle (comportement historique).
      */
-    public boolean orderOnly = false;
+    public boolean orderOnly = true;
     public double temperature = 0.2;
 
     /** Garde-fous d'action. */

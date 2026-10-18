@@ -117,10 +117,11 @@ public final class BrainCommand {
     }
 
     private static int despawn(CommandContext<CommandSourceStack> ctx) {
+        ServitorBrain.invalidatePending();
         boolean any = BrainSpawn.despawn(ctx.getSource().getLevel());
         ctx.getSource().sendSuccess(() -> Component.literal(any
                 ? "Servitor retire (sac vide au sol)."
-                : "Aucun servitor pilote dans cette dimension."), true);
+                : "Aucun retrait: servitor absent ou lie a un chantier conserve. Reconciler puis /work commit."), true);
         return any ? 1 : 0;
     }
 
@@ -130,7 +131,13 @@ public final class BrainCommand {
             ctx.getSource().sendFailure(Component.literal("Aucun servitor en jeu."));
             return 0;
         }
-        String out = TaskRunner.cancel(bot, ctx.getSource().getLevel(), "commande operateur");
+        ServitorBrain.invalidatePending();
+        ServerLevel level=ctx.getSource().getLevel();
+        String out;
+        if(com.donopot.voiddynasty.work.WorkService.owns(level,bot)) {
+            com.donopot.voiddynasty.work.WorkService.stop(level);
+            out="chantier pause; ressources et journal conserves";
+        } else out=TaskRunner.cancel(bot,level,"commande operateur");
         ctx.getSource().sendSuccess(() -> Component.literal(out), true);
         return 1;
     }

@@ -33,9 +33,11 @@ public final class TaskRunner {
     private static final Map<UUID, Running> TASKS = new HashMap<>();
 
     private TaskRunner() {}
+    static void reset() { TASKS.clear(); }
 
     public static void assign(ServerLevel level, LivingEntity bot, BrainTask task) {
-        if (bot == null || task == null) return;
+        if (bot == null || task == null) throw new IllegalArgumentException("aucun servitor/tache");
+        if (com.donopot.voiddynasty.work.WorkService.owns(level, bot)) throw new IllegalStateException("ACTION_BUSY: chantier actif");
         Running previous = TASKS.get(bot.getUUID());
         if (previous != null && previous.task != null) {
             try {
@@ -101,12 +103,16 @@ public final class TaskRunner {
             }
             ServerLevel level = (ServerLevel) bot.level();
             BrainTask.Ctx ctx = new BrainTask.Ctx(level, bot, BrainConfig.get());
-            if (r.ticks++ % 10 == 0) BrainTasks.suckNearby(ctx);
+            if (com.donopot.voiddynasty.work.WorkService.owns(level, bot)) {
+                cancel(bot, level, "controle reserve au chantier");
+                continue;
+            }
 
             BrainTask.Status status;
             try {
                 status = r.task.tick(ctx);
             } catch (RuntimeException e) {
+                r.task.cancel(ctx);
                 r.lastOutcome = "tache echouee sur erreur : " + e.getClass().getSimpleName();
                 r.task = null;
                 ServitorBrain.onTaskFinished(r.lastOutcome);
@@ -114,10 +120,12 @@ public final class TaskRunner {
             }
             if (status == BrainTask.Status.DONE) {
                 r.lastOutcome = "tache terminee : " + r.task.describe();
+                r.task.cancel(ctx);
                 ServitorBrain.onTaskFinished(r.lastOutcome);
                 r.task = null;
             } else if (status == BrainTask.Status.FAILED) {
                 r.lastOutcome = "tache echouee : " + r.task.describe();
+                r.task.cancel(ctx);
                 ServitorBrain.onTaskFinished(r.lastOutcome);
                 r.task = null;
             }

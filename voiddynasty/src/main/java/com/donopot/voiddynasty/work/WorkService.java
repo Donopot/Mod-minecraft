@@ -85,6 +85,13 @@ public final class WorkService {
         });
     }
 
+    /** Physical ownership, shared by native work and the companion task runner. */
+    public static boolean owns(ServerLevel level, LivingEntity bot) {
+        WorkState s = WorkState.get(level);
+        return bot != null && bot.getUUID().toString().equals(s.servitorUuid)
+                && (s.hasJob() || s.rollbackRemaining > 0);
+    }
+
     public static double lastMs() {
         return lastMs;
     }
@@ -633,6 +640,15 @@ public final class WorkService {
     }
 
     private static boolean spawnServitor(ServerLevel level, WorkState state) {
+        // A retained companion UUID is never silently replaced by a new worker.
+        if (!state.servitorUuid.isEmpty()) {
+            LivingEntity existing = servitor(level, state);
+            if (existing == null || existing.level() != level) return false;
+            if (com.donopot.voiddynasty.ai.TaskRunner.current(existing) != null) return false;
+            state.awaitingServitor = false;
+            if(existing instanceof Mob mob) mob.setNoAi(false);
+            return true;
+        }
         Servitor1Entity servitor = ModEntities.SERVITOR_1.create(level, EntitySpawnReason.COMMAND);
         if (servitor == null) {
             return false;
@@ -671,9 +687,15 @@ public final class WorkService {
 
     public static void discardServitor(ServerLevel level, WorkState state) {
         LivingEntity bot = servitor(level, state);
-        if (bot != null) {
-            bot.discard();
+        if (bot != null && bot.entityTags().contains("voiddynasty_brain")) {
+            if (bot instanceof Mob mob) mob.getNavigation().stop();
+            bot.removeTag("voiddynasty_work");
+            bot.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY); // Work tool is only a non-loot visual projection.
+            if (bot instanceof com.donopot.voiddynasty.entity.ChaosCultistEntity cultist) cultist.passerEnModePilote();
+            // Retain identity through pause/restart/rollback; close explicitly releases it.
+            return;
         }
+        if (bot != null) bot.discard();
         sweepOrphans(level);
         state.servitorUuid = "";
         state.pendingServitor = null;
@@ -683,7 +705,7 @@ public final class WorkService {
     public static int sweepOrphans(ServerLevel level) {
         int n = 0;
         for (net.minecraft.world.entity.Entity e : level.getAllEntities()) {
-            if (e instanceof Servitor1Entity s && s.entityTags().contains("voiddynasty_work")) {
+            if (e instanceof Servitor1Entity s && s.entityTags().contains("voiddynasty_work") && !s.entityTags().contains("voiddynasty_brain")) {
                 e.discard();
                 n++;
             }
@@ -737,8 +759,20 @@ public final class WorkService {
     }
 
     public static WorkState start(ServerLevel level, String name, BlockPos a, BlockPos b, String toolId, BlockPos origin) {
+        return start(level, name, a, b, toolId, origin, null);
+    }
+
+    public static WorkState start(ServerLevel level, String name, BlockPos a, BlockPos b, String toolId,
+                                  BlockPos origin, LivingEntity companion) {
         WorkState state = WorkState.get(level);
         if (state.needsRecovery()) return null;
+        if (companion == null) companion = com.donopot.voiddynasty.ai.BrainSpawn.find(level);
+        if (companion != null && (!companion.isAlive() || companion.isRemoved() || companion.level() != level
+                || !companion.entityTags().contains("voiddynasty_brain") || !companion.getMainHandItem().isEmpty()
+                || com.donopot.voiddynasty.ai.TaskRunner.current(companion) != null)) {
+            state.lastStop = "ACTION_BUSY: compagnon indisponible, occupe ou main non vide";
+            return null;
+        }
         if (state.jobName != null || !state.journal.isEmpty() || !state.invSlots.isEmpty()) {
             state.lastStop = "chantier precedent conserve — /work resume, rollback ou commit";
             return null;
@@ -787,7 +821,15 @@ public final class WorkService {
         state.toolBlocks = 0;
         state.servitorUuid = "";
 
-        if (!spawnServitor(level, state)) state.lastStop = "chantier accepte — preparation du depart du servitor";
+        if (companion != null) {
+            state.servitorUuid = companion.getUUID().toString();
+            state.pendingServitor = companion;
+            state.awaitingServitor = false;
+            if (companion instanceof Mob mob) {
+                mob.getNavigation().stop();
+                mob.setDropChance(EquipmentSlot.MAINHAND,0.0f);
+            }
+        } else if (!spawnServitor(level, state)) state.lastStop = "chantier accepte — preparation du depart du servitor";
         state.setDirty();
         return state;
     }
@@ -801,8 +843,16 @@ public final class WorkService {
                 || (state.cursorY < state.minY && state.invSlots.isEmpty())) {
             return null;
         }
-        if (state.hasJob()) {
-            return state;
+        if (state.hasJob()) return state;
+        LivingEntity retained = servitor(level, state);
+        if (!state.servitorUuid.isEmpty() && (retained == null || retained.level() != level)) {
+            state.lastStop = "WORKER_UNAVAILABLE: retrouver et charger le servitor conserve avant la reprise";
+            return null;
+        }
+        if (!state.servitorUuid.isEmpty() && retained != null && retained.entityTags().contains("voiddynasty_brain")
+                && com.donopot.voiddynasty.ai.TaskRunner.current(retained) != null) {
+            state.lastStop = "ACTION_BUSY: le compagnon execute une autre tache";
+            return null;
         }
         discardServitor(level, state);
         state.idleTicks = 0; state.nextPathTick = 0;
@@ -939,6 +989,7 @@ public final class WorkService {
         WorkMission mission = MissionService.active(state);
         if (mission != null && !mission.terminal()) return false;
         discardServitor(level, state);
+        state.servitorUuid = ""; state.pendingServitor = null;
         state.missionId = "";
         state.journal.clear(); state.depots.clear();
         state.jobName = null; state.hasDepot = false; state.rollbackStarted = false;
