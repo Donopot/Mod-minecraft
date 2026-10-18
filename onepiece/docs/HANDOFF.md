@@ -1,3 +1,11 @@
+# État du 18 octobre 2026 — dragon alpha 22
+
+Branche `codex/onepiece-dragon-flight` : [squelette et pilotage Seiryu](DRAGON-ALPHA22.md). Le modèle actuel est conservé ; ses 24 sections suivent le chemin en 3D, le vol suit le regard et freine au relâchement. La caméra arrière passe au-dessus de l’épaule et conserve un contrôle de collision avec les murs et plafonds. JAR final `db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c` : 335 sources compilées, 1 807 assets et toutes les classes serveur identiques à alpha 21. Tests numériques PASS ; 59 contrôles natifs sur le final, couverture de 188 contrôles Seiryu sur les mêmes classes serveur, 16 contrôles acteur et 2 observateur sur deux clients réels. 9+9 captures finales et deux planches inspectées. Corps/queue visuels, collision de déplacement autour de la tête ; acceptation artistique humaine en attente. Le paquet local est préparé sans installation dans les mods habituels ni modification des mondes personnels.
+
+La [référence True Prime Piece Two](REFERENCE-TRUEPRIMEPIECE.md) fournie par l’utilisateur est conservée et inventoriée localement, sans import pour cette version. Le diagnostic Phoenix reste corrigé conformément au retour utilisateur ci-dessous.
+
+---
+
 # État du 18 octobre 2026 — reprise alpha 21
 
 Audit global terminé : [40 fruits / 213 techniques](CHECK-40-FRUITS-ALPHA21.md), 3874 contrôles natifs retenus par recettes complémentaires sur le même JAR. Les échecs accélérés Magu/Goro ne sont pas effacés ; leurs reprises isolées à 20 TPS passent 74/74 et 142/142. Le diagnostic chargé contrôle 426 sélections d'animation et les 213 politiques terrain. Phoenix : le diagnostic de couleur des ailes est retiré. L’utilisateur identifie la partie brun-jaune comme la queue et confirme sa couleur ; aucune correction de couleur n’est justifiée par cette capture. La vérification artistique des ailes reste distincte. Deux références générales `swim`/`sword` manquent mais ne sont sélectionnées dans aucun des 426 cas actuels. Détails des compagnons Soru et acceptation artistique globale toujours ouverts. Aucun code de jeu ni JAR n'est modifié pendant cet audit ; nouveaux outils et module de diagnostic réservés aux tests.

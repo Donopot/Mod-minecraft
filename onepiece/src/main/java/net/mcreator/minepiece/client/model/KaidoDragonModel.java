@@ -24,6 +24,8 @@ public final class KaidoDragonModel extends EntityModel<EntityRenderState> {
   try(var in=Minecraft.getInstance().getResourceManager().getResource(Identifier.fromNamespaceAndPath("minepiece","geo/kaidou_beast.geo.json")).orElseThrow().openAsReader()){
    JsonObject g=JsonParser.parseReader(in).getAsJsonObject().getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
    Map<String,JsonObject> specs=new LinkedHashMap<>();for(JsonElement e:g.getAsJsonArray("bones")){var b=e.getAsJsonObject();specs.put(b.get("name").getAsString(),b);}NAMES.addAll(specs.keySet());
+   // Keep every original cube/pivot/UV, but let each section follow the travelled spine independently.
+   for(String name:DragonSpineMath.BONES)specs.get(name).addProperty("parent","torso");
    Map<String,ModelPart> roots=new LinkedHashMap<>();for(var e:specs.entrySet())if(!e.getValue().has("parent"))roots.put(e.getKey(),bone(e.getValue(),specs));
    var root=new ModelPart(List.of(),roots);root.setInitialPose(PartPose.offset(0,24,0));root.resetPose();return root;
   }catch(IOException e){throw new IllegalStateException("Cannot load original Kaido dragon",e);}
@@ -50,48 +52,16 @@ public final class KaidoDragonModel extends EntityModel<EntityRenderState> {
  }
  void rotate(String n,float x,float y,float z){var p=bones.get(n);if(p!=null){p.xRot+=rad(-x);p.yRot+=rad(-y);p.zRot+=rad(z);}}
  void position(String n,float x,float y,float z){var p=bones.get(n);if(p!=null){p.x+=x;p.y+=y;p.z+=z;}}
- void idle(){   rotate("body",-2.5F,0.0F,0.0F);
-  position("body",0.0F,58.0F,0.0F);
-  rotate("torso1",7.5F,0.0F,0.0F);
-  rotate("torso2",(-40.4374983796F+(float)Math.cos(seconds*Math.PI/2)*(2.5F)),3.89285F,1.20314F);
-  rotate("torso3",(-40.4374983796F-(float)Math.sin(seconds*Math.PI/2)*(2.5F)),17.32866F,10.98395F);
-  rotate("torso4",(41.7727309529F-(float)Math.cos(seconds*Math.PI/2)*(2.5F)),9.33515F,34.52075F);
-  rotate("torso5",(52.3613333115F+(float)Math.sin(seconds*Math.PI/2)*(-2.5F)),31.79886F,41.11172F);
-  rotate("torso6",(25.7340664341F+(float)Math.cos(seconds*Math.PI/2)*(2.5F)),-49.54569F,4.07195F);
-  rotate("torso7",-25.8843F,-54.30026F,47.08018F);
-  rotate("torso8",(-2.1767871622F-(float)Math.cos(seconds*Math.PI/2)*(2.5F)),-53.10479F,21.13216F);
-  rotate("torso9",(-37.1143166542F+(float)Math.sin(seconds*Math.PI/2)*(2.5F)),-41.92831F,24.75948F);
-  rotate("torso10",(-20.6066035443F-(float)Math.cos(seconds*Math.PI/2)*(2.5F)),15.90042F,19.48905F);
-  rotate("torso14",(-3.519558361F-(float)Math.sin(seconds*Math.PI/2)*(2.5F)),-1.40628F,0.37253F);
-  rotate("torso15",(21.5415723501F-(float)Math.cos(seconds*Math.PI/2)*(2.5F)),20.92393F,1.91403F);
-  rotate("torso16",(13.7131523224F+(float)Math.sin(seconds*Math.PI/2)*(2.5F)),47.90258F,-13.30163F);
-  rotate("torso17",(-6.4800876872F-(float)Math.sin(seconds*Math.PI/2)*(2.5F)),52.21677F,-8.17831F);
-  rotate("torso18",(-19.2929873631F+(float)Math.cos(seconds*Math.PI/2)*(2.5F)),52.05719F,-28.51962F);
-  rotate("torso11",(-35.0849650105F+(float)Math.sin(seconds*Math.PI/2)*(2.5F)),30.00652F,-11.66133F);
-  rotate("torso12",(-32.5F+(float)Math.cos(seconds*Math.PI/2)*(2.5F)),0.0F,0.0F);
-  rotate("torso13",(4.6394523092F-(float)Math.sin(seconds*Math.PI/2)*(5F)),-16.52171F,18.04186F);
-  rotate("torso22",(36.6404423935F+(float)Math.cos(seconds*Math.PI/2)*(2.5F)),-45.51554F,-30.3434F);
-  rotate("torso23",(51.0870164467F-(float)Math.sin(seconds*Math.PI/2)*(2.5F)),-61.1599F,-36.88404F);
-  rotate("torso24",(-19.9716767519F+(float)Math.cos(seconds*Math.PI/2)*(2.5F)),-53.69375F,63.93404F);
-  rotate("torso25",(21.8779996941F-(float)Math.sin(seconds*Math.PI/2)*(2.5F)),-24.65008F,9.9663F);
-  rotate("torso26",(-25.6928423153F-(float)Math.cos(seconds*Math.PI/2)*(2.5F)),16.88547F,-4.6653F);
-  rotate("torso27",(-37.226435214F+(float)Math.cos(seconds*Math.PI/2)*(2.5F)),22.52101F,-11.14843F);
-  rotate("head",(15F+(float)Math.sin(seconds*Math.PI/2)*(2.5F)),0.0F,0.0F);
-  rotate("arms",22.5F,-25.0F,-20.0F);
-  rotate("right_arm",0.0F,7.5F,0.0F);
-  rotate("right_arm2",-1.66812F,-7.90532F,-19.86983F);
-  rotate("right_hand",10.0F,20.0F,0.0F);
-  rotate("left_arm",-2.04897F,-7.35637F,-4.38994F);
-  rotate("left_arm2",3.63648F,-6.34294F,31.7525F);
-  rotate("finger6",35.0F,0.0F,0.0F);
-  rotate("finger8",50.0F,0.0F,0.0F);
-  rotate("finger9",27.5F,0.0F,0.0F);
-  rotate("mant",3.55798F,-27.26692F,-18.43593F);
-  rotate("ago",(10F+(float)Math.sin(seconds*Math.PI/2)*(5F)),0.0F,0.0F);
-  rotate("right_beard",0.0F,(10F+(float)Math.cos(seconds*Math.PI/2)*(10F)),0.0F);
-  rotate("left_beard",0.0F,(-10F-(float)Math.cos(seconds*Math.PI/2)*(10F)),0.0F); }
- @Override public void setupAnim(EntityRenderState state){rig.getAllParts().forEach(ModelPart::resetPose);seconds=state.ageInTicks/20;boolean stone=state instanceof ParameciaRenderData s&&s.minepiece$stone();if(stone)seconds=0;idle();
-  var pose=TransformPoses.forState(state);var head=bones.get("head");if(!stone&&pose!=null){head.xRot+=pose.head().xRot()*.45F;head.yRot+=pose.head().yRot()*.45F;}
+ @Override public void setupAnim(EntityRenderState state){rig.getAllParts().forEach(ModelPart::resetPose);seconds=state.ageInTicks/20;boolean stone=state instanceof ParameciaRenderData s&&s.minepiece$stone();if(stone)seconds=0;
+  var pose=state instanceof DragonRenderData d?d.minepiece$dragonPose():null;
+  if(pose!=null)for(int i=0;i<DragonSpineMath.BONES.length;i++){
+   var joint=pose.joints().get(i);var part=bones.get(DragonSpineMath.BONES[i]);
+   part.x=joint.x();part.y=joint.y();part.z=joint.z();part.xRot=joint.pitch();part.yRot=joint.yaw();part.zRot=0;
+  }
+  var head=bones.get("head");if(pose!=null){head.xRot=pose.headPitch();head.yRot=pose.headYaw();}
+  rotate("arms",22.5F,-25,-20);rotate("right_arm2",-1.66812F,-7.90532F,-19.86983F);rotate("left_arm2",3.63648F,-6.34294F,31.7525F);
+  rotate("ago",stone?10:10+(float)Math.sin(seconds*1.6)*2,0,0);
+  rotate("right_beard",0,stone?10:10+(float)Math.cos(seconds*1.5)*5,0);rotate("left_beard",0,stone?-10:-10-(float)Math.cos(seconds*1.5)*5,0);
   Batch07VisualLab.beastPose(3,head.xRot,bones.get("torso2").xRot,bones.get("torso3").xRot);
  }
 }
