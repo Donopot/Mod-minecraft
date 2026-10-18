@@ -81,11 +81,14 @@ public final class WorkState extends SavedData {
     public int rollbackRemaining;
     public boolean rollbackStarted;
     // Runtime watchdog: movement and work progress both count, per dimension/job.
-    public transient double previousX, previousY, previousZ;
     public transient int idleTicks;
     public transient long nextPathTick;
     public final transient List<BlockPos> accessRoute = new ArrayList<>();
     public transient BlockPos accessBlock;
+    /** Previous stair landing; null for the original horizontal access route. Replanned on resume. */
+    public transient BlockPos accessFrom;
+    /** Bounded movement history: oscillation over already visited cells is not progress. */
+    public final transient java.util.Set<BlockPos> movementCells = new java.util.HashSet<>();
     public transient BlockPos placementTarget;
     public String recoveryProblem = "";
     private CompoundTag recoveryPayload;

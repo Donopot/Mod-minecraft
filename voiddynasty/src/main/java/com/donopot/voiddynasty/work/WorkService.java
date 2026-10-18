@@ -118,7 +118,7 @@ public final class WorkService {
                     BlockPos target = new BlockPos(state.targetX, state.targetY, state.targetZ);
                     if (level.hasChunkAt(target) && level.getBlockState(target).isAir()) {
                         state.hasTarget = false; state.progress = 0;
-                        state.accessRoute.clear(); state.accessBlock = null;
+                        state.accessRoute.clear(); state.accessBlock = null; state.accessFrom = null;
                         advance(state); state.setDirty();
                     }
                 }
@@ -149,14 +149,14 @@ public final class WorkService {
             int oldX = state.cursorX, oldY = state.cursorY, oldZ = state.cursorZ;
             tickWorker(level, state, bot);
             if (!state.hasJob() && bot instanceof Mob mob) mob.getNavigation().stop();
-            double moved = bot.distanceToSqr(state.previousX, state.previousY, state.previousZ);
-            if (moved > 0.01 || state.progress != oldProgress || state.done != oldDone || state.depotBuildTicks != oldBuild
-                    || oldX != state.cursorX || oldY != state.cursorY || oldZ != state.cursorZ) state.idleTicks = 0;
-            else if (++state.idleTicks > 400) {
+            boolean worked = state.progress != oldProgress || state.done != oldDone || state.depotBuildTicks != oldBuild
+                    || oldX != state.cursorX || oldY != state.cursorY || oldZ != state.cursorZ;
+            if (navigationStalled(state, bot.blockPosition(), worked)) {
                 if (bot instanceof Mob mob) mob.getNavigation().stop();
-                pause(state, "trajet bloque — sac et journal conserves; /work resume");
+                pause(state, "NAVIGATION_STALLED");
+                state.lastStop = "NAVIGATION_STALLED: trajet bloque en " + bot.blockPosition().toShortString()
+                        + " — sac et journal conserves; /work resume";
             }
-            state.previousX = bot.getX(); state.previousY = bot.getY(); state.previousZ = bot.getZ();
         }
         lastMs = lastMs * 0.8 + ((System.nanoTime() - start) / 1_000_000.0) * 0.2;
     }
@@ -328,7 +328,7 @@ public final class WorkService {
         if (blockState.isAir() || (access ? !WorkAccess.enabled(state) || !WorkAccess.safe(level,state,pos)
                 : mission != null && !MissionService.matches(mission, blockState))
                 || skip(level, state, pos, blockState)) {
-            if(access) {state.accessRoute.clear();state.accessBlock=null;state.progress=0;}
+            if(access) {state.accessRoute.clear();state.accessBlock=null;state.accessFrom=null;state.progress=0;}
             else {state.hasTarget=false;advance(state);} state.setDirty(); return;
         }
 
@@ -390,6 +390,14 @@ public final class WorkService {
 
     // ---------------------------------------------------------------- déplacement
 
+    static boolean navigationStalled(WorkState state, BlockPos cell, boolean worked) {
+        if (worked) state.movementCells.clear();
+        boolean discovered = state.movementCells.size() < 2048 && state.movementCells.add(cell.immutable());
+        if (worked || discovered) state.idleTicks = 0;
+        else state.idleTicks++;
+        return state.idleTicks > 400;
+    }
+
     static boolean visible(ServerLevel level, LivingEntity bot, BlockPos target) {
         return visibleFrom(level,bot,bot.getEyePosition(),target);
     }
@@ -416,6 +424,7 @@ public final class WorkService {
     /** Native pathfinding to a reachable work position, never teleport or mine through a wall. */
     static boolean stepToward(ServerLevel level, WorkState state, LivingEntity bot, BlockPos target) {
         if (!(bot instanceof Mob mob)) return false;
+        if (!bot.onGround()) return true; // Let a new worker settle before planning.
         if (level.getGameTime() < state.nextPathTick) return !mob.getNavigation().isDone();
         state.nextPathTick = level.getGameTime() + 20;
         var path = findWorkPath(level, bot, target);
@@ -461,7 +470,7 @@ public final class WorkService {
                 if (!level.getBlockState(feet.below()).isFaceSturdy(level, feet.below(), Direction.UP)) continue;
                 if (!level.getBlockState(feet).getFluidState().isEmpty()
                         || !level.getBlockState(feet.above()).getFluidState().isEmpty()) continue;
-                double nodeOffset=placement?Math.floor(bot.getBbWidth()+1.0)*.5:0.5;
+                double nodeOffset=Math.floor(bot.getBbWidth()+1.0)*.5;
                 var box = bot.getBoundingBox().move(feet.getX() + nodeOffset - bot.getX(),
                         feet.getY() - bot.getY(), feet.getZ() + nodeOffset - bot.getZ());
                 if (!level.noCollision(bot, box)) continue;
@@ -687,7 +696,8 @@ public final class WorkService {
         state.awaitingServitor = false;
         state.buildingDepot = false; state.depotPlanned = false;
         state.hasTarget = false; state.progress = 0;
-        state.accessRoute.clear(); state.accessBlock = null; state.placementTarget = null;
+        state.accessRoute.clear(); state.accessBlock = null; state.accessFrom = null; state.placementTarget = null;
+        state.movementCells.clear();
         MissionService.concluded(state);
         String verdict = "curseur termine (blocs proteges et butin laisses en place)";
         state.lastStop = "termine: " + state.done + " cassés, " + state.skipped + " laissés, "
@@ -763,7 +773,8 @@ public final class WorkService {
         state.depots.clear();
         state.rollbackStarted = false;
         state.rollbackRemaining = 0;
-        state.accessRoute.clear();state.accessBlock=null;state.placementTarget=null;
+        state.accessRoute.clear();state.accessBlock=null;state.accessFrom=null;state.placementTarget=null;
+        state.movementCells.clear();state.idleTicks=0;state.nextPathTick=0;
         state.hasTarget = false;
         state.progress = 0.0;
         state.goingToDepot = false;
@@ -795,7 +806,8 @@ public final class WorkService {
         }
         discardServitor(level, state);
         state.idleTicks = 0; state.nextPathTick = 0;
-        state.accessRoute.clear();state.accessBlock=null;state.placementTarget=null;state.progress=0;
+        state.accessRoute.clear();state.accessBlock=null;state.accessFrom=null;state.placementTarget=null;state.progress=0;
+        state.movementCells.clear();
         state.finished = false;
         if (mission != null && !mission.terminal()) { mission.status = "PREPARING"; mission.reason = ""; }
         state.lastStop = "";

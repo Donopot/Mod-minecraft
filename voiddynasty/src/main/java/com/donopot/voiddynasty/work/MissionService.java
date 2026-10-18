@@ -58,8 +58,10 @@ public final class MissionService {
         JsonArray types = new JsonArray(); types.add("GATHER"); types.add("BUILD"); out.add("mission_types", types);
         JsonArray resources = new JsonArray(); SOURCES.keySet().forEach(resources::add); out.add("gather_items", resources);
         out.addProperty("max_volume", 32768); out.addProperty("max_amount", 4096);
-        out.addProperty("prospection", "Optional access=excavate clears a bounded horizontal 3x2 passage inside the authorized zone; no stairs yet");
+        out.addProperty("prospection", "Optional access=excavate clears horizontal passages or excavates 3-block landings with one-block steps and return headroom; existing floors required; inside authorized zone only");
         out.addProperty("access_max_blocks",WorkAccess.MAX_BLOCKS);
+        out.addProperty("access_max_rise",WorkStairs.MAX_RISE);
+        out.addProperty("access_search_radius",WorkStairs.RADIUS);
         JsonArray plans=new JsonArray();BuildPlan.IDS.stream().sorted().forEach(plans::add);out.add("blueprints",plans);
         JsonArray materials=new JsonArray();BuildPlan.MATERIALS.stream().sorted().forEach(materials::add);out.add("build_materials",materials);
         return out;

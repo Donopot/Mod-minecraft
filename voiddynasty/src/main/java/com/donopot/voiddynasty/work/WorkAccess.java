@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import java.util.*;
 
-/** Opt-in horizontal excavation. Width accounts for the servitor's 1.09-block hitbox. */
+/** Opt-in excavation. Width accounts for the servitor's 1.09-block hitbox. */
 public final class WorkAccess {
     public static final int MAX_BLOCKS = 256, SEARCH_NODES = 512;
     private static final Set<String> ROCK = Set.of("minecraft:stone", "minecraft:deepslate", "minecraft:dirt", "minecraft:coarse_dirt", "minecraft:granite", "minecraft:andesite", "minecraft:diorite", "minecraft:tuff");
@@ -18,7 +18,8 @@ public final class WorkAccess {
     static boolean contains(WorkMission m,BlockPos p) { return p.getX()>=m.min.getX() && p.getX()<=m.max.getX() && p.getY()>=m.min.getY() && p.getY()<=m.max.getY() && p.getZ()>=m.min.getZ() && p.getZ()<=m.max.getZ(); }
     static boolean safe(ServerLevel level,WorkState s,BlockPos p) {
         WorkMission m=MissionService.active(s);
-        if (m==null || !contains(m,p) || !WorkService.loadedNeighborhood(level,p) || ClaimIntegration.isClaimProtected(level,p)) return false;
+        if (m==null || !contains(m,p) || level.isOutsideBuildHeight(p) || !level.getWorldBorder().isWithinBounds(p)
+                || !WorkService.loadedNeighborhood(level,p) || ClaimIntegration.isClaimProtected(level,p)) return false;
         var block=level.getBlockState(p);
         if (!ROCK.contains(BuiltInRegistries.BLOCK.getKey(block.getBlock()).toString()) && !MissionService.matches(m,block)) return false;
         if (block.hasBlockEntity() || !block.getFluidState().isEmpty() || WorkService.touchesFluid(level,p)) return false;
@@ -74,12 +75,34 @@ public final class WorkAccess {
         if(!(bot instanceof Mob mob)) return;
         WorkMission m=MissionService.active(s);
         if(s.accessRoute.isEmpty()) {
+            s.accessFrom=null;
             s.accessRoute.addAll(route(level,s,bot.blockPosition(),target));
+            if(s.accessRoute.isEmpty()) {
+                var plan=WorkStairs.plan(level,s,bot,target);
+                s.accessRoute.addAll(plan.path());
+                if(!s.accessRoute.isEmpty()) s.accessFrom=plan.start().immutable();
+            }
             if(s.accessRoute.isEmpty()) {WorkService.pause(s,"ACCESS_NO_SAFE_ROUTE");return;}
+            s.nextPathTick=0;
         }
         BlockPos next=s.accessRoute.getFirst();
-        if(!passable(level,s,next)) {s.accessRoute.clear();WorkService.pause(s,"ACCESS_TERRAIN_CHANGED");return;}
-        for(BlockPos p:clearance(next)) {
+        boolean stairs=s.accessFrom!=null;
+        if(stairs ? !WorkStairs.safe(level,s,s.accessFrom,next) || s.accessRoute.stream().anyMatch(p->!WorkStairs.floor(level,p))
+                : !passable(level,s,next)) {s.accessRoute.clear();s.accessFrom=null;WorkService.pause(s,"ACCESS_TERRAIN_CHANGED");return;}
+        List<BlockPos> cells=stairs?WorkStairs.clearance(s.accessFrom,next):clearance(next);
+        // Centre on the current landing before reaching down to the far edge of the next.
+        // A spawn or a vanilla arrival can be half a block short, beyond mining reach.
+        if(stairs && cells.stream().anyMatch(p->!level.getBlockState(p).isAir())
+                && bot.onGround() && bot.blockPosition().getY()==s.accessFrom.getY()
+                && clearance(s.accessFrom).stream().allMatch(p->level.getBlockState(p).isAir())) {
+            double offset=Math.floor(bot.getBbWidth()+1.0)*.5;
+            var centre=new net.minecraft.world.phys.Vec3(s.accessFrom.getX()+offset,s.accessFrom.getY(),s.accessFrom.getZ()+offset);
+            double distance=bot.position().distanceToSqr(centre);
+            if(distance>.04 && distance<2.25 && level.noCollision(bot,bot.getBoundingBox().move(centre.subtract(bot.position())))) {
+                mob.getNavigation().stop();mob.getMoveControl().setWantedPosition(centre.x,centre.y,centre.z,1.0);return;
+            }
+        }
+        for(BlockPos p:cells) {
             if(level.getBlockState(p).isAir()) continue;
             if(m.accessMined>=MAX_BLOCKS) {WorkService.pause(s,"ACCESS_BUDGET_EXHAUSTED");return;}
             if(WorkService.distanceSq(bot,p)>WorkService.reach()*WorkService.reach() || !WorkService.visible(level,bot,p)) continue;
@@ -89,12 +112,23 @@ public final class WorkAccess {
             if(s.progress>=WorkService.breakSeconds(level,s,p,level.getBlockState(p))) WorkService.breakTarget(level,s,bot,p,true);
             return;
         }
-        boolean clear=clearance(next).stream().allMatch(p->level.getBlockState(p).isAir());
+        boolean clear=cells.stream().allMatch(p->level.getBlockState(p).isAir());
         if(!clear) {WorkService.pause(s,"ACCESS_OUT_OF_REACH");return;}
         // Vanilla centers wide mobs on a multi-cell node, not at block + 0.5.
         double offset=Math.floor(bot.getBbWidth()+1.0)*.5;
-        if(bot.distanceToSqr(next.getX()+offset,next.getY(),next.getZ()+offset)<1.0) {s.accessRoute.removeFirst();s.accessBlock=null;return;}
-        if(level.getGameTime()>=s.nextPathTick) {
+        if(bot.distanceToSqr(next.getX()+offset,next.getY(),next.getZ()+offset)<.36 && bot.onGround()) {
+            s.accessRoute.removeFirst();s.accessBlock=null;if(stairs) s.accessFrom=next;
+            if(s.accessRoute.isEmpty()) s.accessFrom=null;
+            s.nextPathTick=0;return;
+        }
+        // Vanilla can finish short of the centre of a wide-mob node. Complete only the
+        // last step within the cleared, supported landing; retain native collisions.
+        var centre=new net.minecraft.world.phys.Vec3(next.getX()+offset,next.getY(),next.getZ()+offset);
+        if(bot.onGround() && bot.blockPosition().getY()==next.getY() && bot.position().distanceToSqr(centre)<2.25
+                && level.noCollision(bot,bot.getBoundingBox().move(centre.subtract(bot.position())))) {
+            mob.getMoveControl().setWantedPosition(centre.x,centre.y,centre.z,1.0);return;
+        }
+        if(bot.onGround() && level.getGameTime()>=s.nextPathTick) {
             s.nextPathTick=level.getGameTime()+10;
             var path=mob.getNavigation().createPath(next,0);
             if(path==null || !path.canReach() || !mob.getNavigation().moveTo(path,1.0)) {
