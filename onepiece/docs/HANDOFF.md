@@ -1,3 +1,9 @@
+# État du 18 octobre 2026 — reprise alpha 21
+
+La branche `codex/onepiece-mera-camera` poursuit les finitions après le HUD alpha 20. [Mera et caméra](MERA-CAMERA-ALPHA21.md) : flammes atténuées dans les trois vues, dégagement des tirs Hiken/Higan/Entei et protection pendant la synchronisation initiale du profil. Compilation 327 sources, classes serveur identiques à l'alpha 20, 59 contrôles du socle, scène de 51+24 captures et cinq planches inspectées. Les arrêts des contrôles et reprises sont détaillés dans le rapport ; aucune recette exhaustive des 40 fruits ni acceptation artistique humaine n'est annoncée. Suite : ailes du Phoenix, puis détails des compagnons de Soru. Les installations habituelles restent inchangées.
+
+---
+
 # État du 17 octobre 2026 — sources centralisées, alpha.19 en recette
 
 Le dépôt demandé par l’utilisateur est https://github.com/Donopot/Mod-minecraft. Il conserve VOID DYNASTY et son bridge existants et ajoute One Piece ainsi que la suite de logistique et l’assistant Windows. Les ressources binaires privées restent locales ; leur manifeste et leur importeur figurent dans le dossier One Piece du dépôt. Les paragraphes ci-dessous conservent l’historique des versions précédentes.

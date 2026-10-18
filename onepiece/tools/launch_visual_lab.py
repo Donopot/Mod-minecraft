@@ -381,7 +381,7 @@ def run(lab,fruit="hie_hie",resume=False,fresh_scene=False):
             elif frozen.get('capture'):
                 shots = sorted((client / 'screenshots').glob('actor-*.png' if frozen.get('scenario') in ('mera','magu','goro','amaru','batch01','batch02','batch03','batch04','batch05','batch06','batch07','batch08') else '0*-*.png'))
                 frozen['captured_images'] = [str(path) for path in shots]
-                expected = 49 if frozen.get('scenario')=='goro' else 55 if frozen.get('scenario')=='magu' else 48 if frozen.get('scenario')=='mera' else 9
+                expected = 49 if frozen.get('scenario')=='goro' else 55 if frozen.get('scenario')=='magu' else 51 if frozen.get('scenario')=='mera' else 9
                 if len(shots) != expected: raise RuntimeError(f'Missing graphical evidence: expected {expected}, got {len(shots)}')
                 if frozen.get('observer'):
                     witness_shots=sorted((Path(frozen['observer']) / 'screenshots').glob('observer-*.png'))
@@ -407,6 +407,14 @@ def run(lab,fruit="hie_hie",resume=False,fresh_scene=False):
                     actor_checks=re.findall(r'\['+prefix+r'-client-check\] (\S+) (PASS|FAIL)',actor_log)
                     frozen['actor_live_checks']=[{'id':cid,'passed':state=='PASS'} for cid,state in actor_checks]
                     if actor_checks != [('blink-real-distance' if prefix=='goro' else 'dash-real-distance' if prefix=='magu' else 'propulsion-real-distance','PASS')]: raise RuntimeError('Actual client propulsion did not move or evidence is missing')
+                    if prefix=='mera':
+                        samples=set(re.findall(r'\[mera-camera-flame\] (\S+)',actor_log))
+                        required={'FIRST_PERSON:hidden','FIRST_PERSON:visible','THIRD_PERSON_BACK:hidden','THIRD_PERSON_BACK:visible','THIRD_PERSON_FRONT:visible'}
+                        if not required<=samples:raise RuntimeError('Mera camera flame coverage missing: '+str(sorted(required-samples)))
+                        meshes=set(re.findall(r'\[mera-camera-mesh\] (\S+)',actor_log))
+                        if not {'hiken:visible','higan:hidden','higan:visible','daienkai:visible'}<=meshes or not {'hiken:hidden','pending-profile:hidden'}&meshes:raise RuntimeError('Mera mesh clearance evidence missing')
+                        frozen['camera_flame_samples']=sorted(samples)
+                        frozen['camera_mesh_samples']=sorted(meshes)
                 if frozen.get('scenario')=='goro':
                     storm_text=(lab/'logs/latest.log').read_text(encoding='utf-8',errors='replace')
                     storm=re.findall(r'\[goro-storm\] strike delay=(\d+) strikes=(\d+) hits=(\d+)',storm_text)

@@ -41,8 +41,7 @@ public final class MeraFlameVisuals {
      case "mera_dash","kagero"->{at=e.position().subtract(direction.scale(f*1.8)).add(Math.cos(angle)*.3,.25+c.level.getRandom().nextDouble()*.45,Math.sin(angle)*.3);velocity=direction.scale(-.04).add(0,.05,0);}
      default->{at=e.position().add(Math.cos(angle)*.5,c.level.getRandom().nextDouble()*.55-.15,Math.sin(angle)*.5);velocity=new Vec3(0,.035,0);big=false;}
     }
-    // Leave the first-person view clear; the same world effect remains visible to observers.
-    if(c.options.getCameraType().isFirstPerson()&&at.distanceToSqr(c.player.getEyePosition())<1.2*1.2)continue;
+    // Sprite rendering fades against each viewer's camera; retain the world trail in all views.
     c.level.addParticle(big?MinepieceModParticles.FLAME:MinepieceModParticles.FLAME_SMALL,at.x,at.y,at.z,velocity.x,velocity.y,velocity.z);emitted++;budget--;
    }
    if(emitted>0&&Boolean.getBoolean("opworldlike.visualCapture")&&SEEN.add(id))org.slf4j.LoggerFactory.getLogger("MeraFlames").info("[mera-flame] {} sprites={} native-propulsion-flames",id,emitted);

@@ -1,3 +1,9 @@
+# Reprise du 18 octobre 2026 — alpha 21
+
+Mera : protection des flammes dans les trois vues, dégagement Hiken/Higan/Entei et synchronisation initiale des profils. Classes serveur identiques à l'alpha 20 ; 59 contrôles du socle et 51+24 captures avec reprise du contrôle de caméra, cinq planches inspectées. Voir le rapport MERA-CAMERA-ALPHA21.md dans docs pour les résultats et les limites. Prochaine réserve : ailes du Phoenix. Aucun monde ou mod habituel modifié.
+
+---
+
 Mise à jour du 17 octobre — Mera alpha.18 : les sept attaques reprennent les particules animées FLAME/FLAME_SMALL de Fire Propulsion. Traînées sur les tirs, colonne sur Hibashira, souffle sur Kaenryuo, petites flammes sur Hotarubi et enveloppe sur Entei. Émission limitée à96particules par2ticks côté client ; extinction naturelle en15ticks. Dégâts et comportement serveur identiques au paquet natif validé. La scène réelle fournit48captures acteur et24observateur, avec les sept émetteurs présents dans les journaux de chaque rôle ; les deux planches ont été inspectées. Le mesh opaque préexistant d’Entei peut encore traverser la caméra. Acceptation artistique humaine en attente. Preuve : build/mera-flames-alpha18-proof.local.json. Tester-Mera.cmd ouvre un nouveau laboratoire privé alpha.18 ; installation normale inchangée. Revue des assets des40fruits toujours en cours.
 
 # Les 40 fruits sont implémentés et couverts en laboratoire — revue des assets en cours

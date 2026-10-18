@@ -43,7 +43,11 @@ public class SkillProjectileRenderer extends DirectionalProjectileRenderer<Skill
       ((GeoRenderState) state).addGeckolibData(VELOCITY, animatable.getDeltaMovement());
       ((GeoRenderState) state).addGeckolibData(VISUAL_READY,animatable.getEntityData().get(SkillProjectileEntity.VISUAL_READY));
       var client=net.minecraft.client.Minecraft.getInstance();
-      boolean nativeCameraInside=false;
+      double meraClearance=net.mcreator.minepiece.client.EffectCameraVisibility.meraMeshClearance(animatable.getVisualProfile(),animatable.getScale());
+      boolean pendingProfile=animatable.getVisualProfile().isEmpty();
+      if(pendingProfile)meraClearance=net.mcreator.minepiece.client.EffectCameraVisibility.pendingMeshClearance(animatable.getScale());
+      boolean nativeCameraInside=meraClearance>0 && animatable.getPosition(partialTick)
+         .distanceToSqr(client.gameRenderer.mainCamera().position())<meraClearance*meraClearance;
       // Use the actual camera origin; feet distance lets near eye-level meshes fill the view.
       if(client.options.getCameraType().isFirstPerson()){
          double clearance=switch(animatable.getVisualProfile()){
@@ -51,7 +55,7 @@ public class SkillProjectileRenderer extends DirectionalProjectileRenderer<Skill
             case "b02_rubble"->3.2*animatable.getScale();
             default->0;
          };
-         nativeCameraInside=clearance>0&&animatable.getPosition(partialTick).distanceToSqr(client.gameRenderer.mainCamera().position())<clearance*clearance;
+         nativeCameraInside|=clearance>0&&animatable.getPosition(partialTick).distanceToSqr(client.gameRenderer.mainCamera().position())<clearance*clearance;
       }
       if(animatable.getVisualProfile().equals("daienkai")||animatable.getVisualProfile().equals("goro_raigo")){
           double radius=(animatable.getVisualProfile().equals("daienkai")?2.6:2.1)*animatable.getScale();
@@ -65,6 +69,7 @@ public class SkillProjectileRenderer extends DirectionalProjectileRenderer<Skill
          inside |= clearance>0 && animatable.distanceTo(client.player)<clearance;
       }
       ((GeoRenderState) state).addGeckolibData(HIDE_NEAR_CAMERA,inside||nativeCameraInside);
+      net.mcreator.minepiece.client.MeraVisualLab.cameraMesh(pendingProfile?"pending-profile":animatable.getVisualProfile(),inside||nativeCameraInside);
    }
 
    @Override

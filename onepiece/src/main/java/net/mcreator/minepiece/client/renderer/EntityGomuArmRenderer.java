@@ -41,9 +41,11 @@ public class EntityGomuArmRenderer extends GeoEntityRenderer<EntityGomuArmEntity
       var client=net.minecraft.client.Minecraft.getInstance();
       String visualId=animatable.getVisualProfile();
       double coreRadius=1.35*OriginalAssetVisuals.modelScale(visualId)*animatable.getStretch();
+      boolean meraCore=visualId.equals("mera_charge_ball");
+      if(meraCore)coreRadius=net.mcreator.minepiece.client.EffectCameraVisibility.meraMeshClearance(visualId,animatable.getStretch())-.2;
       ((GeoRenderState)state).addGeckolibData(HIDE_NATIVE_CORE,
-         OriginalAssetVisuals.additive(visualId)
-         && animatable.position().distanceToSqr(client.gameRenderer.mainCamera().position())<(coreRadius+.2)*(coreRadius+.2));
+         (OriginalAssetVisuals.additive(visualId)||meraCore)
+         && animatable.getPosition(partialTick).distanceToSqr(client.gameRenderer.mainCamera().position())<(coreRadius+.2)*(coreRadius+.2));
       ((GeoRenderState) state).addGeckolibData(HIDE_MAGMA_CHARGE,
          ((animatable.getVisualProfile().startsWith("b07_")||animatable.getVisualProfile().startsWith("b08_"))&&client.player!=null&&animatable.position().distanceTo(client.player.getEyePosition())<.8 || java.util.Set.of("b05_soru_hebunrifire","b03_mochi_zangirimochi","b03_mochi_impact","b01_smoke_finish","sables-native","goro_charge","goro_raigo_charge","magu_charge","magu_trail","magu_fist_charge","magu_hound_charge","magu_dash","magu_meteor_charge").contains(animatable.getVisualProfile()))
          && client.player!=null && client.options.getCameraType().isFirstPerson() && animatable.distanceTo(client.player)<4);
