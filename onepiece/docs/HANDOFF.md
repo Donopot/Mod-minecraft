@@ -1,3 +1,9 @@
+# Recherche d’assets du 18 octobre 2026
+
+[Comparaison des références à alpha 22](ASSETS-A-METTRE-A-JOUR.md) : 40 fruits examinés, 14 avec candidats et décisions détaillées en CSV/JSON. Premier lot proposé : Amaru, Phoenix complet, Bouddha, Loup, Léopard. Cinq ensembles reliés par les modèles source, 31 pistes avec os existants et durées valides, sept textures référencées décodées. Nouveau JAR : 172 géométries Gecko, 380 effets Photon lisibles mais moteur/dépendances à adapter. Défauts de source identifiés : os Body absent du Phoenix hybride, animation d’explosion Entai manquante, carriers de foudre/patte invisibles. Gear 4 trouvé est un PNJ Luffy et exige une adaptation au skin joueur. Modèle du dragon et couleur de queue Phoenix conservés. Aucun changement de JAR ou d’asset de jeu ; aucune validation artistique nouvelle. Prochain lot ensuite : Gomu, Gura, Ope, Mochi, Nikyu.
+
+---
+
 # État du 18 octobre 2026 — dragon alpha 22
 
 Branche `codex/onepiece-dragon-flight` : [squelette et pilotage Seiryu](DRAGON-ALPHA22.md). Le modèle actuel est conservé ; ses 24 sections suivent le chemin en 3D, le vol suit le regard et freine au relâchement. La caméra arrière passe au-dessus de l’épaule et conserve un contrôle de collision avec les murs et plafonds. JAR final `db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c` : 335 sources compilées, 1 807 assets et toutes les classes serveur identiques à alpha 21. Tests numériques PASS ; 59 contrôles natifs sur le final, couverture de 188 contrôles Seiryu sur les mêmes classes serveur, 16 contrôles acteur et 2 observateur sur deux clients réels. 9+9 captures finales et deux planches inspectées. Corps/queue visuels, collision de déplacement autour de la tête ; acceptation artistique humaine en attente. Le paquet local est préparé sans installation dans les mods habituels ni modification des mondes personnels.

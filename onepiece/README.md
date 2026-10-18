@@ -4,6 +4,7 @@ Version de développement **1.0.1-alpha.22** : [dragon Seiryu, squelette suivant
 
 - [Décisions sur les 40 fruits](docs/ASSETS-MINEPIECE-40.md)
 - [Nouvelle réserve d’assets True Prime Piece Two](docs/REFERENCE-TRUEPRIMEPIECE.md)
+- [Assets à mettre à jour : 14 fruits candidats, premier lot de 5 transformations](docs/ASSETS-A-METTRE-A-JOUR.md)
 - [Audit des 40 fruits sur alpha 21](docs/CHECK-40-FRUITS-ALPHA21.md) : catalogue et mécaniques couverts ; diagnostic de couleur Phoenix retiré après identification correcte de la queue par l’utilisateur.
 - [Validation des assets](docs/ASSETS-ALPHA19-VALIDATION.md)
 - [Suivi et historique](docs/HANDOFF.md)
