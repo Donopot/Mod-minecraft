@@ -12,7 +12,7 @@
 
 ## Défauts et réserves
 
-1. **Phoenix : rendu des ailes à corriger.** Une reprise actuelle à deux clients confirme des ailes brun-jaune pendant le vol de la forme complète, au lieu du rendu bleu de feu attendu. Six captures acteur et six observateur sont inspectées. Les contrôles de formes, dimensions, vol et les quatre évaluations PAL par client passent ; ils ne prouvent pas la bonne couleur. Examiner les couches `phoenixWings`/`phoenixFlames` et le passage des couleurs dans `PlayerTransformLayer` avant de changer arbitrairement une texture.
+1. **Phoenix : diagnostic de couleur retiré après correction de l’utilisateur.** La partie brun-jaune visible sur les captures est la queue, dont l’utilisateur confirme la bonne couleur. Elle avait été confondue avec les ailes lors de l’inspection. Les 6+6 captures ne prouvent donc aucun défaut de couleur des ailes. Les contrôles de formes, dimensions, vol et les quatre évaluations PAL par client restent réussis ; la vérification artistique des ailes reste distincte de cette confirmation de la queue.
 2. **Deux anciennes déclarations d'animation sans fichier : `swim` et `sword`.** Le registre les filtre. Aucune des 426 sélections de base testées sur les 40 fruits ne les demande. Le repli générique vers `sword` peut cependant produire un nom vide dans un autre chemin ; ce socle doit être nettoyé ou complété avec une animation vérifiée.
 3. **Soru : détails des compagnons encore à revoir visuellement.** Les tests mécaniques passent ; aucune nouvelle inspection rapprochée de leurs visages n'est revendiquée ici.
 4. Les formes complètes absentes de ver15 restent des adaptations. Le rapprochement de la caméra vanilla dans les cratères et l'acceptation artistique des 40 fruits restent ouverts.
@@ -69,7 +69,7 @@ Chaque ligne a un catalogue et des décisions terrain vérifiés à l’exécuti
 | hito_hito_daibutsu | 5 | B07 PASS | Rendu non rejoué exhaustivement ici |
 | ryu_ryu_pachycephalosaurus | 5 | B08 PASS | Rendu non rejoué exhaustivement ici |
 | inu_inu_okuchi_no_makami | 7 | B07 PASS | Rendu non rejoué exhaustivement ici |
-| tori_tori_phoenix | 6 | B07 PASS | Ailes de la forme complète |
+| tori_tori_phoenix | 6 | B07 PASS | Queue : couleur confirmée par l’utilisateur ; ailes à vérifier séparément |
 | uo_uo_seiryu | 8 | B07 PASS | Rendu non rejoué exhaustivement ici |
 | ryu_ryu_pteranodon | 3 | B07 PASS | Rendu non rejoué exhaustivement ici |
 | ryu_ryu_brachiosaurus | 5 | B08 PASS | Rendu non rejoué exhaustivement ici |
