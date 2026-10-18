@@ -57,12 +57,9 @@ public final class DevilFruitClientInit implements ClientModInitializer {
 
    private static final Logger LOGGER = LoggerFactory.getLogger("MinePieceDevilFruit");
 
-   private static KeyMapping SKILL_KEY;
    private static boolean skillHeld;
-   private static KeyMapping TRANSFORM_KEY;
    /** Lab uses the game key queue; no desktop input injection. */
-   public static void clickTransformForLab() { if(Boolean.getBoolean("opworldlike.visualCapture")) KeyMapping.click(com.mojang.blaze3d.platform.InputConstants.Type.KEYBOARD.getOrCreate(25)); }
-   private static KeyMapping CYCLE_KEY;
+   public static void clickTransformForLab() { if(Boolean.getBoolean("opworldlike.visualCapture")) KeyMapping.click(KeyMappingHelper.getBoundKeyOf(DevilFruitControls.TRANSFORM)); }
 
    @Override
    public void onInitializeClient() {
@@ -134,40 +131,14 @@ public final class DevilFruitClientInit implements ClientModInitializer {
       ModelLayerRegistry.registerModelLayer(ModelinuInuWolfHumanbeastSlim.LAYER_LOCATION, ModelinuInuWolfHumanbeastSlim::createBodyLayer);
       ModelLayerRegistry.registerModelLayer(ModeloverlaySlim.LAYER_LOCATION, ModeloverlaySlim::createBodyLayer);
 
-      SKILL_KEY = KeyMappingHelper.registerKeyMapping(
-         new KeyMapping(
-            "key.minepiece.skill",
-            InputConstants.Type.KEYBOARD,
-            21, // SDL_SCANCODE_R (26.3 = SDL, PAS GLFW : R=21)
-            KeyMapping.Category.GAMEPLAY
-         )
-      );
-
-      TRANSFORM_KEY = KeyMappingHelper.registerKeyMapping(
-         new KeyMapping(
-            "key.minepiece.transform",
-            InputConstants.Type.KEYBOARD,
-            25, // SDL_SCANCODE_V (26.3 = SDL : V=25)
-            KeyMapping.Category.GAMEPLAY
-         )
-      );
-
-      CYCLE_KEY = KeyMappingHelper.registerKeyMapping(
-         new KeyMapping(
-            "key.minepiece.cycle",
-            InputConstants.Type.KEYBOARD,
-            5, // SDL_SCANCODE_B (26.3 = SDL : B=5) — cycle de technique
-            KeyMapping.Category.GAMEPLAY
-         )
-      );
+      DevilFruitControls.register();
 
       // AUTO-CONTRÔLE CLIENT — une ligne, au démarrage, qui dit si la moitié client est chargée.
       // Sans elle, un mod dont le client n'a pas pris se comporte exactement comme un mod qui
       // fonctionne côté serveur mais ne dessine rien : aucune erreur, aucun repère. Cette ligne
       // rend le journal lisible (« est-ce que mon client a bien chargé cette moitié ? »).
       LOGGER.info("MinePiece — moitié CLIENT chargée : {} types de particules déclarés, renderers (bras"
-         + " Gomu, projectile, invoc), couche d'animation PAL prio {} ; touches : R = technique,"
-         + " B = cycle, V = transformation",
+         + " Gomu, projectile, invoc), couche d'animation PAL prio {} ; raccourcis reconfigurables dans One Piece",
          MinepieceParticlesClient.nombreEnregistre(), DevilFruitAnimationLayer.priorite());
       net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
          skillHeld=false;
@@ -188,26 +159,29 @@ public final class DevilFruitClientInit implements ClientModInitializer {
          TransformClientState.useLevel(client.level);
          // CORE-014 : n'envoyer que connecté (joueur présent) et canal supporté par le serveur.
          if (client.player == null) {
+            skillHeld=false;DevilFruitControls.drain();
             return;
          }
-         if(skillHeld && (!SKILL_KEY.isDown() || client.gui.screen()!=null)
+         boolean blocked=client.gui.screen()!=null || !client.player.isAlive() || client.player.isSpectator();
+         if(skillHeld && (!DevilFruitControls.SKILL.isDown() || blocked || DevilFruitControls.reloadHasPriority(client))
                && ClientPlayNetworking.canSend(DevilFruitNetworking.SKILL_RELEASE)) {
             ClientPlayNetworking.send(new DevilFruitNetworking.SkillReleasePayload());skillHeld=false;
          }
-         while (SKILL_KEY.consumeClick()) {
+         if(blocked) {DevilFruitControls.drain();return;}
+         while(DevilFruitControls.HUD.consumeClick()) DevilFruitControls.toggleHud();
+         while (DevilFruitControls.SKILL.consumeClick()) {
             boolean possible = ClientPlayNetworking.canSend(DevilFruitNetworking.SKILL_CAST);
-            LOGGER.info("touche R (technique) pressée — canal ouvert : {}", possible);
-            if (possible) {
+            if (possible && !skillHeld && !DevilFruitControls.reloadHasPriority(client)) {
                ClientPlayNetworking.send(new DevilFruitNetworking.SkillCastPayload());
                skillHeld=true;
             }
          }
-         while (TRANSFORM_KEY.consumeClick()) {
+         while (DevilFruitControls.TRANSFORM.consumeClick()) {
             if (ClientPlayNetworking.canSend(DevilFruitNetworking.TRANSFORM)) {
                ClientPlayNetworking.send(new DevilFruitNetworking.TransformPayload());
             }
          }
-         while (CYCLE_KEY.consumeClick()) {
+         while (DevilFruitControls.CYCLE.consumeClick()) {
             if (ClientPlayNetworking.canSend(DevilFruitNetworking.CYCLE_TECHNIQUE)) {
                ClientPlayNetworking.send(new DevilFruitNetworking.CycleTechniquePayload());
             }
@@ -256,6 +230,6 @@ public final class DevilFruitClientInit implements ClientModInitializer {
       // CORE-028 : HUD (fruit, énergie, technique, forme) — affiché seulement si le joueur a un Fruit.
       net.mcreator.minepiece.client.hud.DevilFruitHud.register();
 
-      LOGGER.info("Devil Fruit client init OK — keybinds R (skill), V (transform), B (cycle) enregistrés.");
+      LOGGER.info("Devil Fruit client init OK — contrôles One Piece enregistrés, choix existants conservés.");
    }
 }

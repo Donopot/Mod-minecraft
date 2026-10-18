@@ -89,7 +89,7 @@ public final class RepairTestCommands {
          vars.syncPlayerVariables(player);
          if("goro".equals(System.getProperty("opworldlike.visualScenario")) && !Boolean.getBoolean("opworldlike.visualCapture")) {
             visualScene(server.createCommandSourceStack().withEntity(player),"goro_goro","vari");
-            player.sendSystemMessage(Component.literal("Test Goro : maintenir/relacher R pour Vari, El Thor, Sango, Kari ; appuyer pour orage, blink, Raigo. B suivante ; Maj = blink arriere ; F5 camera."),false);return;
+            player.sendSystemMessage(Component.translatable("minepiece.hint.goro_test",Component.keybind("key.minepiece.skill"),Component.keybind("key.minepiece.cycle")),false);return;
          }
          if("magu".equals(System.getProperty("opworldlike.visualScenario")) && !Boolean.getBoolean("opworldlike.visualCapture")) {
             visualScene(server.createCommandSourceStack().withEntity(player),"magu_magu","daifunka");

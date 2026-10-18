@@ -181,7 +181,7 @@ public final class MeraTechniques {
          case "hiken", "higan", "hotarubi", "daienkai" -> {
             if(charging(player)) return false;
             CHARGES.put(player.getUUID(),new Charge(player,move));
-            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Maintenir R pour charger, relacher pour lancer."),true);
+            player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("minepiece.hint.charge",net.minecraft.network.chat.Component.keybind("key.minepiece.skill")),true);
             return true;
          }
          case "hibashira", "kagero", "kaenryuo" -> {

@@ -207,5 +207,11 @@
   "entity.voiddynasty.daemon_prince": "Daemon Prince",
   "item.voiddynasty.daemon_prince_spawn_egg": "Daemon Prince",
   "entity.voiddynasty.chaos_helldrake": "HellDrake",
-  "item.voiddynasty.chaos_helldrake_spawn_egg": "HellDrake Spawn Egg"
+  "item.voiddynasty.chaos_helldrake_spawn_egg": "HellDrake Spawn Egg",
+  "key.category.voiddynasty.controls": "VOID DYNASTY",
+  "key.voiddynasty.hud": "Show / hide weapon HUD",
+  "hud.voiddynasty.reserve": "Reserve %s",
+  "hud.voiddynasty.reloading": "Reloading…",
+  "hud.voiddynasty.empty": "Magazine empty",
+  "hud.voiddynasty.ready": "Ready"
 }

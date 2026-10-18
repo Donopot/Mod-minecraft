@@ -1,6 +1,6 @@
 # One Piece — port Fabric 26.3
 
-Version de développement **1.0.1-alpha.19**. Le catalogue compte **40 fruits et 213 techniques**, avec des formes hybrides et complètes. La revue des assets a relié 53 profils aux visuels de MinePiece ver15 : 60 fichiers originaux contrôlés et 8 adaptations de pistes. Les dernières recettes graphiques restent en cours ; aucune acceptation artistique humaine n’est implicite.
+Version de développement **1.0.1-alpha.20** : [HUD et raccourcis reconfigurables](../docs/HUD-KEYBINDINGS.md), rappels des touches réellement choisies et cohabitation avec VOID DYNASTY. Le catalogue reste de **40 fruits et 213 techniques**, avec des formes hybrides et complètes. Les assets restent ceux de l'alpha 19 : 53 profils reliés aux visuels de MinePiece ver15, 60 fichiers originaux contrôlés et 8 adaptations de pistes. Les réserves graphiques documentées restent ouvertes ; aucune acceptation artistique humaine n’est implicite.
 
 - [Décisions sur les 40 fruits](docs/ASSETS-MINEPIECE-40.md)
 - [Validation des assets](docs/ASSETS-ALPHA19-VALIDATION.md)

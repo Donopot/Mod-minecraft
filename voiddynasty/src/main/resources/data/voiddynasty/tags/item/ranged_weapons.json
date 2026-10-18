@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "voiddynasty:boltgun", "voiddynasty:bolt_pistol", "voiddynasty:heavy_bolter",
+    "voiddynasty:stalker_bolt_rifle", "voiddynasty:las_gun", "voiddynasty:laz_pistol",
+    "voiddynasty:plasma_pistol", "voiddynasty:plasma_incinerator", "voiddynasty:shotgun",
+    "voiddynasty:flamethrower", "voiddynasty:melta_gun", "voiddynasty:hunter_killer_missile"
+  ]
+}

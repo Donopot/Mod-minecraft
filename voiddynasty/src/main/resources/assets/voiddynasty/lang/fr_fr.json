@@ -207,5 +207,11 @@
   "entity.voiddynasty.daemon_prince": "Prince Démon",
   "item.voiddynasty.daemon_prince_spawn_egg": "Prince Démon",
   "entity.voiddynasty.chaos_helldrake": "HellDrake",
-  "item.voiddynasty.chaos_helldrake_spawn_egg": "Œuf d'apparition HellDrake"
+  "item.voiddynasty.chaos_helldrake_spawn_egg": "Œuf d'apparition HellDrake",
+  "key.category.voiddynasty.controls": "VOID DYNASTY",
+  "key.voiddynasty.hud": "Afficher / masquer le HUD des armes",
+  "hud.voiddynasty.reserve": "Réserve %s",
+  "hud.voiddynasty.reloading": "Rechargement…",
+  "hud.voiddynasty.empty": "Chargeur vide",
+  "hud.voiddynasty.ready": "Prêt"
 }

@@ -60,7 +60,7 @@ public final class GoroAmaru {
       GoroTechniques.cancel(p);
       FORMS.put(p.getUUID(),new Form(p));
       TechniqueAnimations.playNamed(p,"goro_amaru_transform");
-      message(p,"Charge d’Amaru… V pour annuler.");return true;
+      p.sendSystemMessage(net.minecraft.network.chat.Component.translatable("minepiece.hint.amaru_charge",net.minecraft.network.chat.Component.keybind("key.minepiece.transform")),true);return true;
    }
    public static void tick(ServerPlayer p){
       var f=FORMS.get(p.getUUID());if(f==null)return;

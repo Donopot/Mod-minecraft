@@ -1,134 +1,89 @@
 package net.mcreator.minepiece.client.hud;
 
 import net.mcreator.minepiece.client.DevilFruitClientState;
+import net.mcreator.minepiece.client.DevilFruitControls;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
-/**
- * HUD de la couche Fruits du Démon (CORE-028).
- *
- * <p>Affiche, uniquement quand le joueur a mangé un Fruit : le nom du Fruit, la barre d'Énergie,
- * la technique sélectionnée (« n/total » + nom) et la forme courante. Tout le texte passe par des
- * clés de traduction ({@code minepiece.hud.*}, {@code minepiece.overlay.*}, {@code minepiece.technique.*},
- * {@code item.minepiece.*}) : l'affichage suit la langue du client sans texte en dur.</p>
- *
- * <p>Les données viennent de {@link DevilFruitClientState}, synchronisé par le serveur (CORE-004),
- * étendu en CORE-028 avec l'id de la technique et le nombre de techniques.</p>
- */
+/** Top-left power panel, outside chat/hotbar; scaled coordinates and live bindings. */
 public final class DevilFruitHud implements HudElement {
+    private static final int GOLD=0xFFE9BC67,TEXT=0xFFF0EDE6,DIM=0xFFA8B4BA;
+    public static void register() {HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("minepiece","devil_fruit_hud"),new DevilFruitHud());}
 
-   private static final Identifier ID = Identifier.fromNamespaceAndPath("minepiece", "devil_fruit_hud");
-
-   private static final int PANEL_BG = 0xB0101010;
-   private static final int BORDER = 0xFF3A3A3A;
-   private static final int BAR_BG = 0xFF202020;
-   private static final int BAR_FILL = 0xFF35C46A;
-   private static final int BAR_LOW = 0xFFD8523A;
-   private static final int TITLE = 0xFFE0B040;
-   private static final int TEXT = 0xFFE8E8E8;
-   private static final int DIM = 0xFF9A9A9A;
-
-   private static final int WIDTH = 168;
-   private static final int HEIGHT = 56;
-   private static final int MARGIN = 6;
-
-   public static void register() {
-      HudElementRegistry.addLast(ID, new DevilFruitHud());
-   }
-
-   @Override
-   public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker delta) {
-      Minecraft client = Minecraft.getInstance();
-      if (client.player == null || client.font == null) {
-         return;
-      }
-      if (DevilFruitClientState.fruitId.isEmpty()) {
-         return;                                        // aucun Fruit → pas de HUD
-      }
-
-      int x = MARGIN;
-      int y = graphics.guiHeight() - HEIGHT - MARGIN - 30;   // au-dessus de la barre rapide
-      graphics.fill(x - 1, y - 1, x + WIDTH + 1, y + HEIGHT + 1, BORDER);
-      graphics.fill(x, y, x + WIDTH, y + HEIGHT, PANEL_BG);
-
-      int cx = x + 5;
-      int cy = y + 5;
-
-      // Nom du Fruit — traduit via la clé de l'item (minepiece:item_devil_fruit_x → item.minepiece....)
-      graphics.text(client.font, Component.translatable("minepiece.hud.title"), cx, cy, TITLE);
-      cy += 11;
-      graphics.text(client.font, fruitName(), cx + 4, cy, TEXT);
-      cy += 12;
-
-      // Énergie : libellé + barre
-      int energy = (int) Math.round(DevilFruitClientState.energy);
-      int energyMax = (int) Math.round(DevilFruitClientState.energyMax);
-      Component energyLabel = Component.translatable("minepiece.overlay.energy");
-      graphics.text(client.font, energyLabel, cx + 4, cy, DIM);
-      graphics.text(client.font, Component.literal(energy + "/" + energyMax),
-         cx + 56, cy, TEXT);
-      cy += 10;
-      int barWidth = WIDTH - 16;
-      graphics.fill(cx + 4, cy, cx + 4 + barWidth, cy + 4, BAR_BG);
-      if (energyMax > 0) {
-         int filled = Math.max(0, Math.min(barWidth, (int) Math.round(barWidth * energy / energyMax)));
-         int color = energy * 100 / energyMax <= 20 ? BAR_LOW : BAR_FILL;
-         if (filled > 0) {
-            graphics.fill(cx + 4, cy, cx + 4 + filled, cy + 4, color);
-         }
-      }
-      cy += 7;
-
-      // Technique courante : « n/total » + nom localisé
-      Component techniqueName = DevilFruitClientState.techniqueId.isEmpty()
-         ? Component.translatable("minepiece.hud.none")
-         : Component.translatableWithFallback(
-            "minepiece.technique." + (DevilFruitClientState.techniqueId.equals("passive") && DevilFruitClientState.fruitId.endsWith("item_devil_fruit_aro_aro") ? "aro_passive" : DevilFruitClientState.techniqueId.equals("passive") && DevilFruitClientState.fruitId.endsWith("item_devil_fruit_nikyu_nikyu") ? "nikyu_passive" : DevilFruitClientState.techniqueId.equals("passive") && DevilFruitClientState.fruitId.endsWith("item_devil_fruit_pika_pika") ? "pika_passive" : DevilFruitClientState.techniqueId),
-            DevilFruitClientState.techniqueId);
-      graphics.text(client.font, Component.translatable("minepiece.hud.technique"), cx + 4, cy, DIM);
-      String index = DevilFruitClientState.techniqueCount > 0
-         ? (DevilFruitClientState.technique + 1) + "/" + DevilFruitClientState.techniqueCount + " "
-         : "";
-      graphics.text(client.font, Component.literal(index).append(techniqueName), cx + 56, cy, TEXT);
-      cy += 11;
-
-      // Forme
-      Component form = Component.translatable("minepiece.hud.form");
-      Component formValue = DevilFruitClientState.form > 0.0
-         ? (DevilFruitClientState.fruitId.equals(net.mcreator.minepiece.procedures.GoroAmaru.FRUIT) ? Component.literal("Amaru") : Component.translatable("minepiece.hud.form.hybrid"))
-         : Component.translatable("minepiece.hud.form.base");
-      if(DevilFruitClientState.form>0&&DevilFruitClientState.fruitId.equals(net.mcreator.minepiece.procedures.GomuGears.FRUIT))formValue=Component.literal("Gear "+(int)DevilFruitClientState.form);
-      if(DevilFruitClientState.form==2&&!DevilFruitClientState.fruitId.equals(net.mcreator.minepiece.procedures.GomuGears.FRUIT))formValue=Component.literal("Animale");
-      graphics.text(client.font, form, cx + 4, cy, DIM);
-      graphics.text(client.font, formValue, cx + 56, cy, TEXT);
-      cy += 11;
-
-      // FRUIT-KIRO_KIRO-03 : le poids, affiché SEULEMENT quand il n'est pas normal, et lu depuis l'état
-      // CONFIRMÉ par le serveur (DevilFruitClientState.weight). Si le serveur a borné la demande du
-      // joueur, l'interface montre la valeur bornée : elle suit l'état confirmé, jamais la demande.
-      if (Math.abs(DevilFruitClientState.weight - 1.0) > 1.0E-9) {
-         Component weightLabel = Component.translatable("minepiece.hud.weight");
-         String poids = (DevilFruitClientState.weight == Math.floor(DevilFruitClientState.weight)
-            ? String.valueOf((long) DevilFruitClientState.weight)
-            : String.format(java.util.Locale.ROOT, "%.1f", DevilFruitClientState.weight)) + "×";
-         graphics.text(client.font, weightLabel, cx + 4, cy, DIM);
-         graphics.text(client.font, Component.literal(poids), cx + 56, cy, TEXT);
-      }
-   }
-
-   /** Nom localisé du Fruit courant, dérivé de l'id d'item synchronisé. */
-   private static Component fruitName() {
-      String id = DevilFruitClientState.fruitId;              // ex. minepiece:item_devil_fruit_mera_mera
-      int colon = id.indexOf(':');
-      if (colon <= 0) {
-         return Component.literal(id);
-      }
-      String key = "item." + id.substring(0, colon) + "." + id.substring(colon + 1);
-      return Component.translatableWithFallback(key, id.substring(colon + 1));
-   }
+    @Override public void extractRenderState(GuiGraphicsExtractor g,DeltaTracker delta) {
+        Minecraft mc=Minecraft.getInstance();
+        if(mc.player==null || mc.font==null || mc.player.isSpectator() || mc.gui.hud.isHidden()
+                || mc.gui.screen()!=null || !DevilFruitControls.hudVisible || DevilFruitClientState.fruitId.isEmpty()) return;
+        int width=Math.min(224,(g.guiWidth()-24)/2);
+        if(width<80) return;
+        int content=width-16;
+        var move=selectedMove();
+        Component technique=move!=null?move.name():DevilFruitClientState.techniqueId.isEmpty()?Component.translatable("minepiece.hud.none")
+                :Component.translatableWithFallback("minepiece.technique."+DevilFruitClientState.techniqueId,DevilFruitClientState.techniqueId);
+        var lines=mc.font.split(technique,content);
+        int lineCount=Math.min(2,Math.max(1,lines.size()));
+        boolean weight=Math.abs(DevilFruitClientState.weight-1)>1.0E-9;
+        int height=130+lineCount*10+(weight?11:0);
+        int x=8,y=8,cx=x+8,cy=y+7;
+        g.fill(x,y,x+width,y+height,0xD3111A22);
+        g.fill(x,y,x+3,y+height,GOLD);
+        g.fill(x+3,y,x+width,y+1,0xFF58616B);
+        text(g,mc,Component.translatable("minepiece.hud.title"),cx,cy,content,GOLD);cy+=12;
+        text(g,mc,fruitName(),cx,cy,content,TEXT);cy+=14;
+        int energy=finiteInt(DevilFruitClientState.energy),max=finiteInt(DevilFruitClientState.energyMax);
+        text(g,mc,Component.translatable("minepiece.hud.energy").append("  "+energy+" / "+max),cx,cy,content,DIM);cy+=11;
+        g.fill(cx,cy,cx+content,cy+4,0xFF283641);
+        double ratio=max>0?Math.clamp((double)energy/max,0,1):0;
+        int filled=(int)Math.round(content*ratio);
+        if(filled>0)g.fill(cx,cy,cx+filled,cy+4,ratio<=.2?0xFFEC7865:0xFF4DD8BC);
+        cy+=11;
+        String index=DevilFruitClientState.techniqueCount>0?(DevilFruitClientState.technique+1)+" / "+DevilFruitClientState.techniqueCount:"—";
+        text(g,mc,Component.translatable("minepiece.hud.technique").append("  "+index),cx,cy,content,GOLD);cy+=11;
+        for(int n=0;n<lineCount;n++) {
+            if(n<lines.size()) g.text(mc.font,lines.get(n),cx,cy,TEXT);
+            cy+=10;
+        }
+        if(lines.size()>2)g.text(mc.font,"…",x+width-16,cy-10,TEXT);
+        cy+=3;
+        text(g,mc,Component.translatable("minepiece.hud.form").append(": ").append(formName()),cx,cy,content,DIM);cy+=11;
+        if(weight) {text(g,mc,Component.translatable("minepiece.hud.weight").append(": "+String.format(java.util.Locale.ROOT,"%.1f×",DevilFruitClientState.weight)),cx,cy,content,DIM);cy+=11;}
+        g.fill(cx,cy+1,cx+content,cy+2,0xFF33434E);cy+=7;
+        hint(g,mc,DevilFruitControls.SKILL,DevilFruitControls.reloadHasPriority(mc)?"minepiece.hud.reload_priority":"minepiece.hud.use",cx,cy,content);cy+=11;
+        hint(g,mc,DevilFruitControls.CYCLE,"minepiece.hud.change",cx,cy,content);cy+=11;
+        hint(g,mc,DevilFruitControls.TRANSFORM,"minepiece.hud.transform",cx,cy,content);
+    }
+    private static int finiteInt(double value) {return Double.isFinite(value)?(int)Math.clamp(Math.round(value),0,Integer.MAX_VALUE):0;}
+    private static void hint(GuiGraphicsExtractor g,Minecraft mc,KeyMapping key,String action,int x,int y,int width) {
+        text(g,mc,Component.literal("[").append(key.getTranslatedKeyMessage()).append("] ").append(Component.translatable(action)),x,y,width,0xFFB9C6CD);
+    }
+    private static void text(GuiGraphicsExtractor g,Minecraft mc,Component text,int x,int y,int width,int color) {
+        String value=text.getString();
+        if(mc.font.width(value)>width)value=mc.font.plainSubstrByWidth(value,Math.max(0,width-mc.font.width("…")))+"…";
+        g.text(mc.font,value,x,y,color);
+    }
+    private static net.mcreator.minepiece.procedures.DevilFruitMove selectedMove() {
+        Identifier id=Identifier.tryParse(DevilFruitClientState.fruitId);
+        if(id==null)return null;
+        var moves=net.mcreator.minepiece.procedures.DevilFruitRegistry.movesFor(net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(id));
+        int i=DevilFruitClientState.technique;
+        return i>=0 && i<moves.size() && moves.get(i).id().equals(DevilFruitClientState.techniqueId)?moves.get(i):null;
+    }
+    private static Component formName() {
+        double form=DevilFruitClientState.form;
+        if(form<=0)return Component.translatable("minepiece.hud.form.base");
+        String fruit=DevilFruitClientState.fruitId;
+        if(fruit.equals(net.mcreator.minepiece.procedures.GoroAmaru.FRUIT))return Component.literal("Amaru");
+        if(fruit.equals(net.mcreator.minepiece.procedures.GomuGears.FRUIT))return Component.literal("Gear "+(int)form);
+        return Component.translatable(form==2?"minepiece.hud.form.full":"minepiece.hud.form.hybrid");
+    }
+    private static Component fruitName() {
+        String id=DevilFruitClientState.fruitId;int colon=id.indexOf(':');
+        return colon<=0?Component.literal(id):Component.translatableWithFallback("item."+id.substring(0,colon)+"."+id.substring(colon+1),id.substring(colon+1));
+    }
 }

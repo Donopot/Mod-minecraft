@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "opworldlike",
-  "version": "1.0.1-alpha.19",
+  "version": "1.0.1-alpha.20",
   "name": "OP World Like",
   "description": "Port Fabric 26.3 de l'addon One Piece worldlike (îles, claims, crews, mobs, loot) — shim Mine Piece inclus.",
   "authors": [
