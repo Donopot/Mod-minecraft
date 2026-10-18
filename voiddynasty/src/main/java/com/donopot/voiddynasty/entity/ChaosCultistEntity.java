@@ -213,6 +213,23 @@ public abstract class ChaosCultistEntity extends Monster implements GeoEntity {
         }
     }
 
+    /**
+     * Mode piloté : l'entité n'agit plus de son propre chef.
+     *
+     * <p>Le cerveau (ou un contrôleur) conduit le mob : tous les buts internes sont retirés,
+     * la navigation reste active pour que les ordres de marche fonctionnent. Sans ordre, le
+     * servitor ne fait strictement rien — c'est le principe.</p>
+     */
+    public void passerEnModePilote() {
+        this.goalSelector.removeAllGoals(g -> true);
+        this.targetSelector.removeAllGoals(g -> true);
+        this.setTarget(null);
+        this.setNoAi(false);
+        this.setPersistenceRequired();
+        this.setCanPickUpLoot(false);
+        this.getNavigation().stop();
+    }
+
     public boolean isAttacking() {
         return this.entityData.get(DATA_ATTACKING);
     }
