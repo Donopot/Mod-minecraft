@@ -25,4 +25,13 @@ public final class EffectCameraVisibility {
       // The factory spawns before the caller assigns the final technique profile.
       return .3 + 3 * Math.max(1,scale);
    }
+
+   /** Eye-level projectiles must clear the lens before their solid centre is drawn. */
+   public static double elementalMeshClearance(String profile,float scale) {
+      return switch(profile) {
+         case "darkball" -> 2.4*Math.max(.5,scale);
+         case "whiteblow" -> 2.2*Math.max(.5,scale);
+         default -> 0;
+      };
+   }
 }

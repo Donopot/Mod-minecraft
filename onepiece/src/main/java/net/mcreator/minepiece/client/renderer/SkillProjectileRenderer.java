@@ -48,6 +48,9 @@ public class SkillProjectileRenderer extends DirectionalProjectileRenderer<Skill
       if(pendingProfile)meraClearance=net.mcreator.minepiece.client.EffectCameraVisibility.pendingMeshClearance(animatable.getScale());
       boolean nativeCameraInside=meraClearance>0 && animatable.getPosition(partialTick)
          .distanceToSqr(client.gameRenderer.mainCamera().position())<meraClearance*meraClearance;
+      double elementalClearance=net.mcreator.minepiece.client.EffectCameraVisibility.elementalMeshClearance(animatable.getVisualProfile(),animatable.getScale());
+      double lensDistance=animatable.getPosition(partialTick).distanceTo(client.gameRenderer.mainCamera().position());
+      nativeCameraInside|=elementalClearance>0&&lensDistance<elementalClearance;
       // Use the actual camera origin; feet distance lets near eye-level meshes fill the view.
       if(client.options.getCameraType().isFirstPerson()){
          double clearance=switch(animatable.getVisualProfile()){
@@ -69,6 +72,7 @@ public class SkillProjectileRenderer extends DirectionalProjectileRenderer<Skill
          inside |= clearance>0 && animatable.distanceTo(client.player)<clearance;
       }
       ((GeoRenderState) state).addGeckolibData(HIDE_NEAR_CAMERA,inside||nativeCameraInside);
+      net.mcreator.minepiece.client.Batch01VisualLab.cameraMesh(animatable.getVisualProfile(),inside||nativeCameraInside,lensDistance);
       net.mcreator.minepiece.client.MeraVisualLab.cameraMesh(pendingProfile?"pending-profile":animatable.getVisualProfile(),inside||nativeCameraInside);
    }
 

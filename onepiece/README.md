@@ -1,10 +1,11 @@
 # One Piece — port Fabric 26.3
 
-Version de développement **1.0.1-alpha.22** : [dragon Seiryu, squelette suivant le trajet et vol selon le regard en 3D](docs/DRAGON-ALPHA22.md), avec une vue arrière dégagée. Le modèle existant est conservé. Les [corrections Mera et caméra](docs/MERA-CAMERA-ALPHA21.md), ainsi que les [HUD et raccourcis reconfigurables](../docs/HUD-KEYBINDINGS.md), sont conservés. Le catalogue reste de **40 fruits et 213 techniques**, avec des formes hybrides et complètes. Les assets restent ceux de l'alpha 19 : 53 profils reliés aux visuels de MinePiece ver15, 60 fichiers originaux contrôlés et 8 adaptations de pistes. Les réserves graphiques documentées restent ouvertes ; aucune acceptation artistique humaine n’est implicite.
+Version de développement **1.0.1-alpha.23** : [revue des 40 fruits et 213 techniques](docs/CHECK-40-FRUITS-ALPHA23.md), correction des replis génériques d'animation et du dégagement caméra de White Blow / Dark Ball. Le [dragon Seiryu suivant le trajet du joueur en 3D](docs/DRAGON-ALPHA22.md), les [corrections Mera](docs/MERA-CAMERA-ALPHA21.md) et les [HUD et raccourcis reconfigurables](../docs/HUD-KEYBINDINGS.md) sont conservés. Les 1 807 assets sont identiques à alpha22 ; les nouvelles références restent en réserve. Le rapport distingue contrôles techniques et réserves artistiques. Le système de Haki n'est pas modifié.
 
 - [Décisions sur les 40 fruits](docs/ASSETS-MINEPIECE-40.md)
 - [Nouvelle réserve d’assets True Prime Piece Two](docs/REFERENCE-TRUEPRIMEPIECE.md)
 - [Assets à mettre à jour : 14 fruits candidats, premier lot de 5 transformations](docs/ASSETS-A-METTRE-A-JOUR.md)
+- [Bilan fruit par fruit alpha 23](docs/CHECK-40-FRUITS-ALPHA23.csv) et [preuves des recettes](docs/CHECK-40-PREUVES-ALPHA23.json)
 - [Audit des 40 fruits sur alpha 21](docs/CHECK-40-FRUITS-ALPHA21.md) : catalogue et mécaniques couverts ; diagnostic de couleur Phoenix retiré après identification correcte de la queue par l’utilisateur.
 - [Validation des assets](docs/ASSETS-ALPHA19-VALIDATION.md)
 - [Suivi et historique](docs/HANDOFF.md)

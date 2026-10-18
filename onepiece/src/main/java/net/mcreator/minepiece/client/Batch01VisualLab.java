@@ -14,6 +14,11 @@ public final class Batch01VisualLab {
  private static final List<String> fruits=new ArrayList<>(),ids=new ArrayList<>();
  private static int tick,actorClock=-1;private static boolean ready;private static net.minecraft.world.phys.Vec3 start;private static float swordBefore;
  private static final Set<String> RENDERED=new HashSet<>();
+ private static final Set<String> CAMERA_SEEN=new HashSet<>();
+ public static void cameraMesh(String profile,boolean hidden,double distance){
+  if(!Boolean.getBoolean("opworldlike.visualCapture")||!"batch01".equals(System.getProperty("opworldlike.visualScenario"))||!Set.of("darkball","whiteblow").contains(profile))return;
+  if(CAMERA_SEEN.add(profile+":"+hidden))org.slf4j.LoggerFactory.getLogger("Batch01Visual").info("[batch01-camera] {} {} lensDistance={}",profile,hidden?"hidden":"visible",distance);
+ }
  public static void rendered(String id){if(!"batch01".equals(System.getProperty("opworldlike.visualScenario")))return;RENDERED.add(id);}
  public static void register(){for(int i=0;i<FRUITS.length;i++)if(System.getProperty("opworldlike.batchRetake", "").isEmpty() || java.util.Arrays.asList(System.getProperty("opworldlike.batchRetake").split(",")).contains(FRUITS[i]))for(String id:MOVES[i]){fruits.add(FRUITS[i]);ids.add(id);}
   ClientPlayNetworking.registerGlobalReceiver(DevilFruitNetworking.LAB_SCENE,(p,c)->c.client().execute(()->{if(p.scene().equals("ready"))ready=true;if(p.scene().startsWith("batch-clock:"))actorClock=Integer.parseInt(p.scene().substring(12));}));ClientTickEvents.END_CLIENT_TICK.register(Batch01VisualLab::tick);
