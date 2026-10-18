@@ -71,7 +71,7 @@ public final class MinepieceParticlesClient {
             new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 0.200F, Math.max(1, 10 + level.getRandom().nextInt(6) - 3), 0.100F, 0.980F, 14, 1, false));
       registry.register(MinepieceModParticles.FLAME,
          sprites -> (type, level, x, y, z, vx, vy, vz, aleatoire) ->
-            new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 1.600F, 15, 0.000F, 0.980F, 10, 1, false).protectFirstPerson());
+            new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 1.600F, 15, 0.000F, 0.980F, 10, 1, false).protectCamera());
       registry.register(MinepieceModParticles.FLAME_BLUE,
          sprites -> (type, level, x, y, z, vx, vy, vz, aleatoire) ->
             new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 1.600F, 15, 0.000F, 0.980F, 15, 1, false));
@@ -86,7 +86,7 @@ public final class MinepieceParticlesClient {
             new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 0.600F, 15, 0.000F, 0.980F, 15, 1, false));
       registry.register(MinepieceModParticles.FLAME_SMALL,
          sprites -> (type, level, x, y, z, vx, vy, vz, aleatoire) ->
-            new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 0.400F, 15, 0.000F, 0.980F, 10, 1, false));
+            new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 0.400F, 15, 0.000F, 0.980F, 10, 1, false).protectCamera());
       registry.register(MinepieceModParticles.FLAME_YELLOW,
          sprites -> (type, level, x, y, z, vx, vy, vz, aleatoire) ->
             new SpriteParticle(sprites, level, x, y, z, vx, vy, vz, 0.600F, 15, 0.000F, 0.980F, 15, 1, false));
@@ -180,7 +180,7 @@ public final class MinepieceParticlesClient {
       private final int frameStep;
       private boolean cameraFade;
 
-      SpriteParticle protectFirstPerson(){this.cameraFade=true;return this;}
+      SpriteParticle protectCamera(){this.cameraFade=true;return this;}
 
       SpriteParticle(SpriteSet sprites, ClientLevel level, double x, double y, double z,
                      double vx, double vy, double vz, float taille, int duree, float gravite,
@@ -210,10 +210,15 @@ public final class MinepieceParticlesClient {
          float reste = 1.0F - (this.age / (float) this.lifetime);
          float size=this.quadSize * Math.max(0.25F, reste);
          var client=net.minecraft.client.Minecraft.getInstance();
-         if(this.cameraFade&&client.options.getCameraType().isFirstPerson()){
+         if(this.cameraFade){
             var camera=client.gameRenderer.mainCamera().position();
-            double distance=camera.distanceTo(new net.minecraft.world.phys.Vec3(this.x,this.y,this.z));
-            size*=(float)Math.clamp((distance-1.8)/1.5,0,1);
+            double distance=camera.distanceTo(new net.minecraft.world.phys.Vec3(
+               net.minecraft.util.Mth.lerp(echelle,this.xo,this.x),
+               net.minecraft.util.Mth.lerp(echelle,this.yo,this.y),
+               net.minecraft.util.Mth.lerp(echelle,this.zo,this.z)));
+            float visibility=EffectCameraVisibility.flameScale(distance,size);
+            MeraVisualLab.cameraFlame(visibility,client.options.getCameraType());
+            size*=visibility;
          }
          return size;
       }

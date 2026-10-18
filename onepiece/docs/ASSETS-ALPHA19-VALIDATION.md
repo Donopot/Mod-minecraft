@@ -1,5 +1,7 @@
 # Revue des assets alpha.19 — validation en cours
 
+État historique de l'alpha 19. La reprise des réserves Mera est documentée séparément dans [le rapport alpha 21](MERA-CAMERA-ALPHA21.md). Les réserves Phoenix et Soru restent ouvertes.
+
 Les 40 fruits et 213 techniques sont revus au niveau de la source. Cette passe relie 53 profils visuels, avec 60 fichiers originaux contrôlés octet par octet et 8 adaptations de pistes d’animation. Voir [les décisions par fruit](ASSETS-MINEPIECE-40.md).
 
 Le candidat de développement du 17 octobre porte l’empreinte `5b2256941311a382e2f6f22027aaa7469dbe4fdb24073b2bfe8d394821b36e93`. Il reste en recette graphique privée, sans mise à jour des parties habituelles.

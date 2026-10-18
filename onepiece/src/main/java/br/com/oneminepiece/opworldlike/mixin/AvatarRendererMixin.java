@@ -43,6 +43,8 @@ public abstract class AvatarRendererMixin {
       var form = net.mcreator.minepiece.client.TransformClientState.get(avatar.getUUID());
       ((net.mcreator.minepiece.client.TransformRenderData) state).minepiece$setForm(form.value(), form.fruit());
       ((net.mcreator.minepiece.client.TransformRenderData) state).minepiece$setAirborne(!avatar.onGround());
+      ((net.mcreator.minepiece.client.DragonRenderData) state).minepiece$setDragonPose(
+         net.mcreator.minepiece.client.DragonBodyTrail.capture(avatar,state,partialTick));
       net.mcreator.minepiece.client.MaterialClientState.useLevel(net.minecraft.client.Minecraft.getInstance().level);
       ((net.mcreator.minepiece.client.TransformRenderData)state).minepiece$setMaterial(net.mcreator.minepiece.client.MaterialClientState.get(avatar.getUUID()));
    }

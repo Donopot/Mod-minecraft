@@ -7,7 +7,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(AvatarRenderState.class)
-public class AvatarRenderStateMixin implements TransformRenderData {
+public class AvatarRenderStateMixin implements TransformRenderData, net.mcreator.minepiece.client.DragonRenderData {
+   @Unique private net.mcreator.minepiece.client.DragonSpineMath.Pose minepiece$dragonPose;
+   public net.mcreator.minepiece.client.DragonSpineMath.Pose minepiece$dragonPose(){return minepiece$dragonPose;}
+   public void minepiece$setDragonPose(net.mcreator.minepiece.client.DragonSpineMath.Pose pose){minepiece$dragonPose=pose;}
    @Unique private boolean minepiece$airborne;
    public boolean minepiece$airborne(){return minepiece$airborne;}
    public void minepiece$setAirborne(boolean value){minepiece$airborne=value;}

@@ -1,8 +1,10 @@
 # One Piece — port Fabric 26.3
 
-Version de développement **1.0.1-alpha.20** : [HUD et raccourcis reconfigurables](../docs/HUD-KEYBINDINGS.md), rappels des touches réellement choisies et cohabitation avec VOID DYNASTY. Le catalogue reste de **40 fruits et 213 techniques**, avec des formes hybrides et complètes. Les assets restent ceux de l'alpha 19 : 53 profils reliés aux visuels de MinePiece ver15, 60 fichiers originaux contrôlés et 8 adaptations de pistes. Les réserves graphiques documentées restent ouvertes ; aucune acceptation artistique humaine n’est implicite.
+Version de développement **1.0.1-alpha.22** : [dragon Seiryu, squelette suivant le trajet et vol selon le regard en 3D](docs/DRAGON-ALPHA22.md), avec une vue arrière dégagée. Le modèle existant est conservé. Les [corrections Mera et caméra](docs/MERA-CAMERA-ALPHA21.md), ainsi que les [HUD et raccourcis reconfigurables](../docs/HUD-KEYBINDINGS.md), sont conservés. Le catalogue reste de **40 fruits et 213 techniques**, avec des formes hybrides et complètes. Les assets restent ceux de l'alpha 19 : 53 profils reliés aux visuels de MinePiece ver15, 60 fichiers originaux contrôlés et 8 adaptations de pistes. Les réserves graphiques documentées restent ouvertes ; aucune acceptation artistique humaine n’est implicite.
 
 - [Décisions sur les 40 fruits](docs/ASSETS-MINEPIECE-40.md)
+- [Nouvelle réserve d’assets True Prime Piece Two](docs/REFERENCE-TRUEPRIMEPIECE.md)
+- [Audit des 40 fruits sur alpha 21](docs/CHECK-40-FRUITS-ALPHA21.md) : catalogue et mécaniques couverts ; diagnostic de couleur Phoenix retiré après identification correcte de la queue par l’utilisateur.
 - [Validation des assets](docs/ASSETS-ALPHA19-VALIDATION.md)
 - [Suivi et historique](docs/HANDOFF.md)
 - [Matrice des 213 techniques](docs/matrice-techniques-213.csv)

@@ -15,7 +15,18 @@ public final class MeraVisualLab {
    private static int tick,sceneAge;
    private static String scene="";
    private static net.minecraft.world.phys.Vec3 propulsionStart;
+   private static final java.util.Set<String> CAMERA_SAMPLES=new java.util.HashSet<>();
    private MeraVisualLab() { }
+   public static void cameraFlame(float visibility,CameraType camera) {
+      if(!Boolean.getBoolean("opworldlike.visualCapture") || !"mera".equals(System.getProperty("opworldlike.visualScenario")))return;
+      String sample=camera+":"+(visibility==0?"hidden":visibility==1?"visible":"faded");
+      if(CAMERA_SAMPLES.add(sample))LoggerFactory.getLogger("MeraVisualLab").info("[mera-camera-flame] {}",sample);
+   }
+   public static void cameraMesh(String profile,boolean hidden) {
+      if(!Boolean.getBoolean("opworldlike.visualCapture") || !"mera".equals(System.getProperty("opworldlike.visualScenario")) || !java.util.Set.of("pending-profile","hiken","higan","daienkai").contains(profile))return;
+      String sample=profile+":"+(hidden?"hidden":"visible");
+      if(CAMERA_SAMPLES.add(sample))LoggerFactory.getLogger("MeraVisualLab").info("[mera-camera-mesh] {}",sample);
+   }
    public static void register() {
       ClientPlayNetworking.registerGlobalReceiver(DevilFruitNetworking.LAB_SCENE,(payload,context)->context.client().execute(()->{
          if(payload.scene().equals("ready")) ready=true;
@@ -67,6 +78,14 @@ public final class MeraVisualLab {
       if(offset==(charged?47:30)) capture(client,"actor-"+current+"-active.png");
       if(offset==(charged?54:42)) capture(client,"actor-"+current+"-impact.png");
       if(offset==70) capture(client,"actor-"+current+"-after.png");
+      if(current.equals("propulsion")) {
+         if(offset==50)client.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+         if(offset==55)capture(client,"actor-propulsion-front.png");
+         if(offset==60)client.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+         if(offset==65)capture(client,"actor-propulsion-back.png");
+         if(offset==75)client.options.setCameraType(CameraType.FIRST_PERSON);
+         if(offset==85)capture(client,"actor-propulsion-first.png");
+      }
       // A second short take keeps the actual emission in first person, with both held items.
       if(charged && offset==75) {
          client.setCameraEntity(client.player);client.options.setCameraType(CameraType.FIRST_PERSON);
