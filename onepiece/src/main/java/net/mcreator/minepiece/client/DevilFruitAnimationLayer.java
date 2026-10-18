@@ -117,6 +117,7 @@ public final class DevilFruitAnimationLayer {
          if (!(client.level.getEntity(payload.entityId()) instanceof net.minecraft.world.entity.Avatar avatar)) {
             return;
          }
+         RigClientState.action(client.level,avatar,payload.animation());
          if (PlayerAnimationAccess.getPlayerAnimationLayer(avatar, TECHNIQUE_LAYER)
             instanceof PlayerAnimationController controleur) {
             controleur.triggerAnimation(PlayerRawAnimationBuilder.begin()

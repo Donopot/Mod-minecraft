@@ -37,6 +37,7 @@ libs/*.jar
 onepiece/src/main/resources/**/*.png
 onepiece/src/main/resources/**/*.ogg
 onepiece/src/main/resources/**/*.wav
+onepiece/src/main/resources/assets/minepiece/upgrade24/
 
 # Pack client VOID DYNASTY demandé : binaires limités à ce dossier versionné.
 !client-local/voiddynasty-*/mods/*.jar

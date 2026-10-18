@@ -11,7 +11,8 @@ from run_local_tests import Rcon
 PROJECT = Path(__file__).resolve().parents[1]
 ROOT = PROJECT.parent
 
-def prepare(accept_eula, capture=False, scenario="foundation",retake="",forms_only=False):
+def prepare(accept_eula, capture=False, scenario="foundation",retake="",forms_only=False,priority_soak=False):
+    if priority_soak:capture=True;scenario='batch05';retake=''
     cmd = [sys.executable, str(PROJECT / 'tools/run_local_tests.py'), '--prepare']
     if accept_eula: cmd.append('--accept-eula')
     try:
@@ -60,6 +61,7 @@ def prepare(accept_eula, capture=False, scenario="foundation",retake="",forms_on
         '--quickPlayMultiplayer', '127.0.0.1:' + str(manifest['port'])]
     if forms_only: arguments.insert(0, "-Dopworldlike.formsOnly=true")
     if capture: arguments.insert(0, '-Dopworldlike.visualCapture=true')
+    if priority_soak:arguments.insert(0,'-Dopworldlike.prioritySoak=true')
     arguments.insert(0, '-Dopworldlike.visualScenario='+scenario)
     if retake: arguments.insert(0, '-Dopworldlike.batchRetake='+retake)
     (client / 'launch.args').write_text('\n'.join('"'+s.replace('\\','/')+'"' for s in arguments), encoding='utf-8')
@@ -69,7 +71,7 @@ def prepare(accept_eula, capture=False, scenario="foundation",retake="",forms_on
         server_args.write_text('"-Dopworldlike.visualCapture=true"\n'+server_args.read_text(),encoding='utf-8')
     frozen = {'jdk': build['jdk'], 'build_sha256': build['sha256'], 'lab': str(lab), 'client': str(client),
               'client_mods': {jar.name: hashlib.sha256(jar.read_bytes()).hexdigest() for jar in (client / 'mods').glob('*.jar')},
-              'rendered': False, 'launched': False, 'capture': capture, 'scenario': scenario, 'retake':retake,'forms_only':forms_only}
+              'rendered': False, 'launched': False, 'capture': capture, 'scenario': scenario, 'retake':retake,'forms_only':forms_only,'priority_soak':priority_soak}
     if capture and scenario in ('mera','magu','goro','amaru','batch01','batch02','batch03','batch04','batch05','batch06','batch07','batch08'):
         observer = lab / 'observer'
         shutil.copytree(client, observer)
@@ -159,6 +161,7 @@ def run(lab,fruit="hie_hie",resume=False,fresh_scene=False):
                 rcon.cmd('op FruitWitness')
                 rcon.cmd('dmeraready')
             deadline = time.monotonic() + (650 if frozen.get('scenario') in ('batch06','batch07','batch08') else 380 if frozen.get('scenario')=='batch05' else 260 if frozen.get('scenario') in ('batch01','batch02','batch03','batch04','batch05','batch06','batch07','batch08') else 120)
+            if frozen.get('priority_soak'):deadline=time.monotonic()+900
             while game.poll() is None and server.poll() is None:
                 if frozen.get('capture') and time.monotonic() > deadline:
                     raise TimeoutError('Capture timeline did not finish')
@@ -167,7 +170,18 @@ def run(lab,fruit="hie_hie",resume=False,fresh_scene=False):
             if observer_game is not None:
                 observer_game.wait(timeout=30)
                 if observer_game.returncode != 0: raise RuntimeError('Observer client exited with an error')
-            if frozen.get('capture') and frozen.get('scenario')=='batch08':
+            if frozen.get('priority_soak'):
+                for role,directory in [('actor',client),('observer',Path(frozen['observer']))]:
+                    body=(directory/'process.log').read_text(encoding='utf-8',errors='replace')
+                    end=re.search(r'\[priority-soak\] END ticks=12000 checks=220 elapsed_seconds=([0-9.]+)',body)
+                    checks=re.findall(r'\[priority-soak-check\] (\S+) (PASS|FAIL) (.*)',body)
+                    samples=re.findall(r'\[priority-soak-sample\] tick=(\d+) heap_mib=(\d+) effects=(\d+) rig_cache=(\d+)',body)
+                    shots=sorted((directory/'screenshots').glob(role+'-soak-*.png'))
+                    if not end or float(end[1])<590 or len(checks)!=220 or len({r[0] for r in checks})!=220 or any(r[1]!='PASS' for r in checks) or len(samples)!=60 or len(shots)!=20:raise RuntimeError('Missing/failed prolonged evidence on '+role)
+                    frozen[role+'_soak']={'seconds':float(end[1]),'checks':[{'id':i,'passed':ok=='PASS','detail':detail} for i,ok,detail in checks],'samples':[dict(zip(['tick','heap_mib','effects','rig_cache'],map(int,row))) for row in samples],'images':[str(p) for p in shots]}
+                frozen['rendered']=True
+                print('PRIORITY_SOAK_PASSED 12000 ticks, 220 checks and 20 captures per client; review remains required.',flush=True)
+            elif frozen.get('capture') and frozen.get('scenario')=='batch08':
                 catalogue={'ryu_ryu_brachiosaurus': ['attackoverhead', 'brachiobober', 'blackcofee', 'brachiolauncher', 'sparkingqueen'], 'ryu_ryu_pachycephalosaurus': ['attackjump', 'attacksweep', 'headbutt', 'ulzugan', 'ulmeteor']}
                 short={'ryu_ryu_brachiosaurus': 'brachio', 'ryu_ryu_pachycephalosaurus': 'pachy'}
                 if frozen.get('retake'):catalogue={f:ms for f,ms in catalogue.items() if f in frozen['retake'].split(',')}
@@ -441,6 +455,7 @@ def run(lab,fruit="hie_hie",resume=False,fresh_scene=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--priority-soak',action='store_true',help='Ten-minute isolated recipe over the ten priority fruits with two clients')
     parser.add_argument('--forms-only',action='store_true',help='Scoped retake of complete form cycles, retaining two actual skill casts')
     parser.add_argument('--retake',default='',help='Comma separated B01 fruit IDs; only after a completed grouped run')
     parser.add_argument('--fruit',choices=['mera_mera','magu_magu','goro_goro','hie_hie','pika_pika','moku_moku','suna_suna','yami_yami','gura_gura','bomu_bomu','zushi_zushi','nikyu_nikyu','ope_ope','mochi_mochi','mori_mori','kira_kira','supa_supa','riki_riki','aro_aro','horo_horo','mero_mero','kiro_kiro','bisu_bisu','kage_kage','soru_soru','uta_uta','imu','gomu_gomu','inu_inu_wolf','neko_neko_leopard','neko_neko_sabertiger','ushi_ushi_giraffe','batto_batto','inu_inu_okuchi_no_makami','hito_hito_daibutsu','tori_tori_phoenix','uo_uo_seiryu','ryu_ryu_pteranodon','ryu_ryu_brachiosaurus','ryu_ryu_pachycephalosaurus'],default='hie_hie',help='Initial fruit in a manual B01 profile')
@@ -452,5 +467,5 @@ if __name__ == '__main__':
     parser.add_argument('--capture', action='store_true', help='Capture a short scripted scene then close only this test client')
     parser.add_argument('--scenario',choices=['foundation','mera','magu','goro','amaru','batch01','batch02','batch03','batch04','batch05','batch06','batch07','batch08'],default='foundation')
     args = parser.parse_args()
-    lab = args.lab.resolve() if args.lab else prepare(args.accept_eula, args.capture,args.scenario,args.retake,args.forms_only)
+    lab = args.lab.resolve() if args.lab else prepare(args.accept_eula, args.capture,args.scenario,args.retake,args.forms_only,args.priority_soak)
     if args.run: run(lab,args.fruit,args.resume,args.fresh_scene)

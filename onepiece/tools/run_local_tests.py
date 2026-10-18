@@ -106,6 +106,10 @@ def main():
     parser.add_argument('--batch01',action='store_true',help='Run the five-fruit B01 acceptance suite')
     parser.add_argument('--goro', action='store_true', help='Run seven Goro techniques in the disposable world')
     args = parser.parse_args()
+    if args.batch05_only:
+        selected=args.batch05_only.split(',')
+        if not args.batch05 or len(selected)!=len(set(selected)) or not set(selected)<={'kage','soru','uta','imu','gomu'}:
+            parser.error('--batch05-only requires --batch05 and distinct short IDs: kage,soru,uta,imu,gomu')
     build = json.loads((PROJECT / 'build/build-local.json').read_text(encoding='utf-8'))
     config = json.loads((ROOT / '.runtime/fabric-build/build.local.json').read_text(encoding='utf-8'))
     jar = Path(build['jar'])

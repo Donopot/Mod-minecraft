@@ -1,3 +1,9 @@
+# État du 18 octobre 2026 — alpha25
+
+Les deux lots demandés sont intégrés et testés : cinq transformations, puis Gomu/Gura/Ope/Mochi/Nikyu. 681 contrôles natifs ciblés passent à 20 TPS ; la session de dix minutes fournit 220 contrôles et 20 captures inspectées par client. [Portée et limites](PRIORITY-ASSETS-WORKORDER.md), [preuves](PRIORITY-ASSETS-PREUVES-ALPHA25.json). Amaru : objets tenus encore sur anciennes attaches. Gear5 : corps joueur adapté, collier importé. Photon non porté. Haki inchangé. Aucun profil habituel modifié. Branche locale `codex/onepiece-priority-assets`, sans push demandé pour cette livraison.
+
+---
+
 # Revue fruit par fruit du 18 octobre 2026 — alpha 23
 
 Branche `codex/onepiece-fruit-review`. [Bilan des 40 fruits / 213 techniques](CHECK-40-FRUITS-ALPHA23.md), [CSV par fruit](CHECK-40-FRUITS-ALPHA23.csv) et [preuves des recettes](CHECK-40-PREUVES-ALPHA23.json). JAR final `defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706` : 335 sources compilées. Replis génériques `sword`/`swim` absents reproduits sur alpha22 puis corrigés ; trois contrôles de régression réussis. Dégagement caméra White Blow / Dark Ball corrigé depuis la lentille réelle et la taille du mesh : 519 assertions numériques et reprise 32+32 captures réussies, inspectées. Particules Yami encore denses : réserve de lisibilité.

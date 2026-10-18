@@ -19,6 +19,8 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
  */
 public class SkillProjectileRenderer extends DirectionalProjectileRenderer<SkillProjectileEntity, EntityRenderState> {
    private final SourcePrimitiveVisuals sourcePrimitives=new SourcePrimitiveVisuals();
+   private final SourcePriorityEffects priorityEffects=new SourcePriorityEffects();
+   private static final com.geckolib.constant.dataticket.DataTicket<Integer> VARIANT=com.geckolib.constant.dataticket.DataTicket.create("priority_effect_variant",Integer.class);
 
    private static final java.util.Set<String> SEEN=new java.util.HashSet<>();
    private static final com.geckolib.constant.dataticket.DataTicket<Boolean> VISUAL_READY =
@@ -40,6 +42,7 @@ public class SkillProjectileRenderer extends DirectionalProjectileRenderer<Skill
       ((GeoRenderState) state).addGeckolibData(SkillProjectileModel.TEXTURE_TICKET, OriginalAssetVisuals.texture(animatable.getVisualProfile(),animatable.getTexture(),animatable.getId()));
       ((GeoRenderState) state).addGeckolibData(SkillProjectileModel.SCALE_TICKET, animatable.getScale());
       ((GeoRenderState) state).addGeckolibData(PROFILE, animatable.getVisualProfile());
+      ((GeoRenderState) state).addGeckolibData(VARIANT,animatable.getId());
       ((GeoRenderState) state).addGeckolibData(VELOCITY, animatable.getDeltaMovement());
       ((GeoRenderState) state).addGeckolibData(VISUAL_READY,animatable.getEntityData().get(SkillProjectileEntity.VISUAL_READY));
       var client=net.minecraft.client.Minecraft.getInstance();
@@ -95,6 +98,7 @@ public class SkillProjectileRenderer extends DirectionalProjectileRenderer<Skill
       net.mcreator.minepiece.client.Batch02VisualLab.rendered(geo.getOrDefaultGeckolibData(PROFILE,""));
       net.mcreator.minepiece.client.Batch01VisualLab.rendered(geo.getOrDefaultGeckolibData(PROFILE,""));
       String primitiveId=geo.getOrDefaultGeckolibData(PROFILE,"");
+      if(priorityEffects.submit(primitiveId,geo.getOrDefaultGeckolibData(SkillProjectileModel.SCALE_TICKET,1F),geo.getOrDefaultGeckolibData(VELOCITY,net.minecraft.world.phys.Vec3.ZERO),geo.getOrDefaultGeckolibData(VARIANT,0),state,stack,collector))return;
       if(sourcePrimitives.submit(primitiveId,geo.getOrDefaultGeckolibData(SkillProjectileModel.SCALE_TICKET,1F),geo.getOrDefaultGeckolibData(VELOCITY,net.minecraft.world.phys.Vec3.ZERO),state,stack,collector)){
          net.mcreator.minepiece.client.Batch07VisualLab.rendered(primitiveId);net.mcreator.minepiece.client.Batch08VisualLab.rendered(primitiveId);return;
       }

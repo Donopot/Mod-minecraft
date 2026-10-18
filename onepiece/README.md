@@ -1,6 +1,6 @@
 # One Piece — port Fabric 26.3
 
-Version de développement **1.0.1-alpha.23** : [revue des 40 fruits et 213 techniques](docs/CHECK-40-FRUITS-ALPHA23.md), correction des replis génériques d'animation et du dégagement caméra de White Blow / Dark Ball. Le [dragon Seiryu suivant le trajet du joueur en 3D](docs/DRAGON-ALPHA22.md), les [corrections Mera](docs/MERA-CAMERA-ALPHA21.md) et les [HUD et raccourcis reconfigurables](../docs/HUD-KEYBINDINGS.md) sont conservés. Les 1 807 assets sont identiques à alpha22 ; les nouvelles références restent en réserve. Le rapport distingue contrôles techniques et réserves artistiques. Le système de Haki n'est pas modifié.
+Version de développement **1.0.1-alpha.25** : [cinq transformations prioritaires et Gomu/Gura/Ope/Mochi/Nikyu](docs/PRIORITY-ASSETS-WORKORDER.md), avec [preuves et limites](docs/PRIORITY-ASSETS-PREUVES-ALPHA25.json). Les 40 fruits/213 techniques sont conservés ; cette version ne prétend pas refaire toute leur acceptation artistique. Le dragon Seiryu alpha22, la permanence du terrain et le Haki restent inchangés.
 
 - [Décisions sur les 40 fruits](docs/ASSETS-MINEPIECE-40.md)
 - [Nouvelle réserve d’assets True Prime Piece Two](docs/REFERENCE-TRUEPRIMEPIECE.md)
@@ -13,7 +13,7 @@ Version de développement **1.0.1-alpha.23** : [revue des 40 fruits et 213 techn
 
 ## Dépendances et ressources
 
-Java 25, Minecraft 26.3, Fabric Loader 0.19.5 et Fabric API 0.162.0+26.3. Placer GeckoLib 5.5.7 et Player Animation Library 1.2.8 dans `libs/`, comme indiqué dans [libs/README.md](libs/README.md). Rétablir les ressources visuelles privées depuis le paquet correspondant avec `python tools/import-private-assets.py --jar <paquet.jar>`. Les JAR de référence Forge restent des références locales.
+Java 25, Minecraft 26.3, Fabric Loader 0.19.5 et Fabric API 0.162.0+26.3. Placer GeckoLib 5.5.7 et Player Animation Library 1.2.8 dans `libs/`, comme indiqué dans [libs/README.md](libs/README.md). Restaurer les 62 fichiers prioritaires avec `python tools/import_priority_assets.py --reference <trueprimepiecetwo-infusedrocknroll.jar>` (empreinte contrôlée). Rétablir les autres ressources visuelles privées depuis le paquet correspondant avec `python tools/import-private-assets.py --jar <paquet.jar>`. Les JAR de référence Forge restent des références locales.
 
 ## Compilation
 

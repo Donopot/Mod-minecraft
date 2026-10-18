@@ -26,7 +26,7 @@ import net.minecraft.world.level.Level;
  * « Bras de Gomu Gomu » — entité fake (NoAI + invulnérable) jouant l'animation du coup étiré.
  * Port Fabric 26.3 de {@code EntityGomuArmEntity} (ver15) sur GeckoLib 5.5.7.
  * Deux contrôleurs d'animation (idle + procédure one-shot), suivi du propriétaire, texture dynamique,
- * échelle via l'attribut SIZE. Reste différé : skin joueur, couches armure/item (réécrites en 5.x), base TamableAnimal.
+ * échelle via SIZE. Propriétaire synchronisé pour le skin Gomu ; armure/item et base TamableAnimal différés.
  */
 public class EntityGomuArmEntity extends Monster implements GeoEntity {
    public static final EntityDataAccessor<String> MODEL =
@@ -42,6 +42,8 @@ public class EntityGomuArmEntity extends Monster implements GeoEntity {
       SynchedEntityData.defineId(EntityGomuArmEntity.class, EntityDataSerializers.FLOAT);
 
    public static final EntityDataAccessor<Float> THICKNESS=SynchedEntityData.defineId(EntityGomuArmEntity.class,EntityDataSerializers.FLOAT);
+   /** Rendering ownership only; client skins must never be guessed from proximity. */
+   public static final EntityDataAccessor<Integer> OWNER_ID=SynchedEntityData.defineId(EntityGomuArmEntity.class,EntityDataSerializers.INT);
    public float getThickness(){return entityData.get(THICKNESS);}
    public void setThickness(float thickness){entityData.set(THICKNESS,Math.max(.1F,Math.min(4F,thickness)));}
 
@@ -69,6 +71,7 @@ public class EntityGomuArmEntity extends Monster implements GeoEntity {
       builder.define(VISUAL_PROFILE, "");
       builder.define(STRETCH, 1.0F);
       builder.define(THICKNESS,1F);
+      builder.define(OWNER_ID,-1);
    }
 
    public String getModel() {
@@ -96,9 +99,10 @@ public class EntityGomuArmEntity extends Monster implements GeoEntity {
    /** Propriétaire (côté serveur) : l'entité suit sa position/rotation chaque tick si {@code followOwner}. */
    public void setOwnerEntity(Entity owner) {
       this.owner = owner;
+      this.entityData.set(OWNER_ID,owner==null?-1:owner.getId());
    }
 
-   public Entity ownerEntity() { return owner; }
+   public Entity ownerEntity() { return owner!=null?owner:level().getEntity(entityData.get(OWNER_ID)); }
 
    public EntityGomuArmEntity followOwner(boolean follow) {
       this.followOwner = follow;

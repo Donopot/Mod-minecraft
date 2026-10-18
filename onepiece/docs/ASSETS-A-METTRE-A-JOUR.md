@@ -1,5 +1,7 @@
 # Assets à mettre à jour après alpha 22
 
+**Suivi alpha 25 :** les cinq transformations prioritaires et la passe Gomu/Gura/Ope/Mochi/Nikyu sont intégrées sur `codex/onepiece-priority-assets`. [Portée, validation et limites](PRIORITY-ASSETS-WORKORDER.md). Les paragraphes ci-dessous conservent l'inventaire préalable : la présence d'un candidat n'implique pas que tous ses compléments (hybride, Photon, forme Gear) aient été importés.
+
 Recherche du 18 octobre 2026, comparée au JAR alpha 22 `db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c` et à la [revue des ressources actuelles](ASSETS-MINEPIECE-40.md). **40 fruits examinés, 14 avec des candidats retenus. Aucun asset ni JAR jouable modifié pendant cette recherche.**
 
 La nouvelle réserve `trueprimepiecetwo-infusedrocknroll.jar` contient 172 géométries Gecko et 380 effets Photon. Les quatre réserves complémentaires True Prime Piece Two, Mine Mine no Mi 0.11.6, ompworld 1.3.48 et MinePieceXMineNoMi 0.1.13 ont été inventoriées. Les références MinePiece ver15 restent la base déjà revue ; un nouveau nom de fichier ne justifie pas à lui seul un remplacement.

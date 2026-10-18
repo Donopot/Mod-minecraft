@@ -15,6 +15,9 @@ public final class AmaruRenderProbe {
    public static String stage="";
    private AmaruRenderProbe(){}
    public static void evaluated(EntityRenderState state,AmaruModel m){
+      evaluatedSource(state,m.rightArm.xRot,m.rightArm.zRot,m.leftArm.xRot,m.leftArm.zRot);
+   }
+   public static void evaluatedSource(EntityRenderState state,float rx,float rz,float lx,float lz){
       if(!Boolean.getBoolean("opworldlike.visualCapture") || !"amaru".equals(System.getProperty("opworldlike.visualScenario")))return;
       var level=net.minecraft.client.Minecraft.getInstance().level;
       if(level==null || !(state instanceof net.minecraft.client.renderer.entity.state.AvatarRenderState avatar))return;
@@ -22,9 +25,9 @@ public final class AmaruRenderProbe {
       var expected=java.util.UUID.nameUUIDFromBytes("OfflinePlayer:FruitLab".getBytes(java.nio.charset.StandardCharsets.UTF_8));
       if(entity==null || !entity.getUUID().equals(expected))return;
       EVALUATED.merge(stage,1,Integer::sum);
-      double pose=Math.abs(m.rightArm.xRot)+Math.abs(m.rightArm.zRot)+Math.abs(m.leftArm.xRot)+Math.abs(m.leftArm.zRot);
+      double pose=Math.abs(rx)+Math.abs(rz)+Math.abs(lx)+Math.abs(lz);
       POSES.merge(stage,pose,Math::max);
-      Sample now=new Sample((float)Math.floor(state.ageInTicks),m.rightArm.xRot,m.rightArm.zRot,m.leftArm.xRot,m.leftArm.zRot);
+      Sample now=new Sample((float)Math.floor(state.ageInTicks),rx,rz,lx,lz);
       Sample old=FIRST.putIfAbsent(stage,now);
       if(old!=null && now.time-old.time>2){
          double delta=Math.abs(now.rx-old.rx)+Math.abs(now.rz-old.rz)+Math.abs(now.lx-old.lx)+Math.abs(now.lz-old.lz);
