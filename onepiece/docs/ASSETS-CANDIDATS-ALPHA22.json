@@ -1,0 +1,1162 @@
+{
+  "current_jar": "opworldlike-1.0.1-alpha.22.jar",
+  "current_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+  "reference": "trueprimepiecetwo-infusedrocknroll.jar",
+  "reference_sha256": "328b8ea70071750b654b07e8a03bccbcec66a155680269254b03a01de7de9db0",
+  "method": "Inspection statique ; méthodes des cinq GeoModel principaux et textures/couches vérifiées par javap ; aucune intégration ni recette artistique en jeu.",
+  "fruits_reviewed": 40,
+  "fruits_with_candidates": 14,
+  "top_five_core_tracks": 31,
+  "reference_geometries": 172,
+  "reference_photon_effects": 380,
+  "first_batch": [
+    {
+      "file": "assets/trueprimepiecetwo/geo/amaru.geo.json",
+      "sha256": "f228e8edfbae4b5fdf97977349b3f682fe74b8574d97c9958b10d4399cb2176e",
+      "bones": 16,
+      "cubes": 38,
+      "textures": {
+        "assets/trueprimepiecetwo/textures/entities/amaru.png": {
+          "size": [
+            512,
+            512
+          ],
+          "sha256": "4a3d76b6628a6b87945dab815a9fd668d6f3ba03174cc925a0723fb98cb6c7a7"
+        }
+      },
+      "animations": [
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "idle",
+          "loop": true,
+          "length": 3,
+          "missing_bones": [],
+          "animated_bones": 16
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "run",
+          "loop": true,
+          "length": 1.5,
+          "missing_bones": [],
+          "animated_bones": 16
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "attack",
+          "loop": false,
+          "length": 0.5,
+          "missing_bones": [],
+          "animated_bones": 16
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "shoot",
+          "loop": false,
+          "length": 0.75,
+          "missing_bones": [],
+          "animated_bones": 16
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "fly",
+          "loop": false,
+          "length": 2,
+          "missing_bones": [],
+          "animated_bones": 15
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "mamaragan",
+          "loop": false,
+          "length": 1,
+          "missing_bones": [],
+          "animated_bones": 15
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "click",
+          "loop": false,
+          "length": 0.5,
+          "missing_bones": [],
+          "animated_bones": 15
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+          "track": "raigo",
+          "loop": false,
+          "length": 1,
+          "missing_bones": [],
+          "animated_bones": 13
+        }
+      ],
+      "model_classes": [
+        "net/mcreator/trueprimepiecetwo/entity/model/AmaruReworkModel.class"
+      ]
+    },
+    {
+      "file": "assets/trueprimepiecetwo/geo/torifullform.geo.json",
+      "sha256": "aa73af2744c0a66da445fa8e9a3005baf8f53d9ce09b9f5fe0c083c4ae519a21",
+      "bones": 21,
+      "cubes": 45,
+      "textures": {
+        "assets/trueprimepiecetwo/textures/entities/torifullform2new.png": {
+          "size": [
+            512,
+            512
+          ],
+          "sha256": "dfd8e1fdcb8a76c7ae21d8a8687033dee99205c3a3750082450114bee8b9fb29"
+        },
+        "assets/trueprimepiecetwo/textures/item/torifullform2.png": {
+          "size": [
+            512,
+            512
+          ],
+          "sha256": "dfd8e1fdcb8a76c7ae21d8a8687033dee99205c3a3750082450114bee8b9fb29"
+        }
+      },
+      "animations": [
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "idle",
+          "loop": true,
+          "length": 1.5,
+          "missing_bones": [],
+          "animated_bones": 19
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "run",
+          "loop": true,
+          "length": 1,
+          "missing_bones": [],
+          "animated_bones": 19
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "attack",
+          "loop": false,
+          "length": 0.25,
+          "missing_bones": [],
+          "animated_bones": 2
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "toritransformation",
+          "loop": false,
+          "length": 2,
+          "missing_bones": [],
+          "animated_bones": 18
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "toririptide",
+          "loop": false,
+          "length": 0.5,
+          "missing_bones": [],
+          "animated_bones": 11
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "toritwirlbeast",
+          "loop": false,
+          "length": 1,
+          "missing_bones": [],
+          "animated_bones": 19
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "torilift",
+          "loop": false,
+          "length": 1.5,
+          "missing_bones": [],
+          "animated_bones": 19
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "bluebirdbeast",
+          "loop": false,
+          "length": 0.75,
+          "missing_bones": [],
+          "animated_bones": 19
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+          "track": "toriflyaround",
+          "loop": false,
+          "length": 3,
+          "missing_bones": [],
+          "animated_bones": 18
+        }
+      ],
+      "model_classes": [
+        "net/mcreator/trueprimepiecetwo/entity/model/ToriReworkModel.class",
+        "net/mcreator/trueprimepiecetwo/item/model/TorifullformModel.class"
+      ]
+    },
+    {
+      "file": "assets/trueprimepiecetwo/geo/buddha.geo.json",
+      "sha256": "454d1cd43a0d8bae6ec6db5ab0c1d03a15820b4f6229c2e00fa10c5e35e7b7e4",
+      "bones": 8,
+      "cubes": 18,
+      "textures": {
+        "assets/trueprimepiecetwo/textures/item/buddha.png": {
+          "size": [
+            256,
+            256
+          ],
+          "sha256": "40a5169053c41e9ad99aa1c74c83dc2e1f391f5e6569175330d9648b23c4f6b0"
+        }
+      },
+      "animations": [
+        {
+          "file": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+          "track": "idle",
+          "loop": true,
+          "length": 7.95833,
+          "missing_bones": [],
+          "animated_bones": 6
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+          "track": "run",
+          "loop": true,
+          "length": 4,
+          "missing_bones": [],
+          "animated_bones": 3
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+          "track": "shockwave",
+          "loop": false,
+          "length": 1.5,
+          "missing_bones": [],
+          "animated_bones": 4
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+          "track": "attack",
+          "loop": false,
+          "length": 0.25,
+          "missing_bones": [],
+          "animated_bones": 6
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+          "track": "palm",
+          "loop": false,
+          "length": 2.08333,
+          "missing_bones": [],
+          "animated_bones": 5
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+          "track": "stomp",
+          "loop": false,
+          "length": 1.70833,
+          "missing_bones": [],
+          "animated_bones": 6
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+          "track": "rupture",
+          "loop": false,
+          "length": 4,
+          "missing_bones": [],
+          "animated_bones": 6
+        }
+      ],
+      "model_classes": [
+        "net/mcreator/trueprimepiecetwo/item/model/BuddhabeastformModel.class"
+      ]
+    },
+    {
+      "file": "assets/trueprimepiecetwo/geo/wolfbeast.geo.json",
+      "sha256": "7a27fdc06bcb6cd9d06d8cb2f27f05539032ceaba2ab9ab3e49fc16dd3dae2b2",
+      "bones": 11,
+      "cubes": 21,
+      "textures": {
+        "assets/trueprimepiecetwo/textures/entities/wolfbeast.png": {
+          "size": [
+            64,
+            64
+          ],
+          "sha256": "8a092a68b14f97ae6594b574979f180fee35ed5c3c7369b29a5cca26d7bc5687"
+        },
+        "assets/trueprimepiecetwo/textures/item/wolfbeast.png": {
+          "size": [
+            64,
+            64
+          ],
+          "sha256": "8a092a68b14f97ae6594b574979f180fee35ed5c3c7369b29a5cca26d7bc5687"
+        }
+      },
+      "animations": [
+        {
+          "file": "assets/trueprimepiecetwo/animations/wolfbeast.animation.json",
+          "track": "animation.wolfbeast.idle",
+          "loop": true,
+          "length": 4,
+          "missing_bones": [],
+          "animated_bones": 10
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/wolfbeast.animation.json",
+          "track": "animation.wolfbeast.run",
+          "loop": true,
+          "length": 0.5,
+          "missing_bones": [],
+          "animated_bones": 8
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/wolfbeast.animation.json",
+          "track": "animation.wolfbeast.attack",
+          "loop": false,
+          "length": 0.29167,
+          "missing_bones": [],
+          "animated_bones": 9
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/wolfbeast.animation.json",
+          "track": "dash",
+          "loop": false,
+          "length": 0.5,
+          "missing_bones": [],
+          "animated_bones": 8
+        }
+      ],
+      "model_classes": [
+        "net/mcreator/trueprimepiecetwo/entity/model/WolfModel.class",
+        "net/mcreator/trueprimepiecetwo/item/model/WolfbeastarmorModel.class"
+      ]
+    },
+    {
+      "file": "assets/trueprimepiecetwo/geo/leopardbeastrework.geo.json",
+      "sha256": "45a9efaa81dd7801d222b1e6efb3e1cda6f4f7d73b4790d396351a12ab231406",
+      "bones": 11,
+      "cubes": 14,
+      "textures": {
+        "assets/trueprimepiecetwo/textures/entities/leopardbeastrework.png": {
+          "size": [
+            128,
+            128
+          ],
+          "sha256": "8e8da2e16adcc7aa3b12b7b38a83a5b190b4ac7613af00efcb892d4db3469d83"
+        }
+      },
+      "animations": [
+        {
+          "file": "assets/trueprimepiecetwo/animations/leopardbeastrework.animation.json",
+          "track": "idle",
+          "loop": true,
+          "length": 4,
+          "missing_bones": [],
+          "animated_bones": 10
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/leopardbeastrework.animation.json",
+          "track": "run",
+          "loop": true,
+          "length": 0.5,
+          "missing_bones": [],
+          "animated_bones": 9
+        },
+        {
+          "file": "assets/trueprimepiecetwo/animations/leopardbeastrework.animation.json",
+          "track": "attack",
+          "loop": false,
+          "length": 0.3333,
+          "missing_bones": [],
+          "animated_bones": 9
+        }
+      ],
+      "model_classes": [
+        "net/mcreator/trueprimepiecetwo/entity/model/LeopardBeastReworkModel.class"
+      ]
+    }
+  ],
+  "fruits": [
+    {
+      "priority": "3",
+      "models": [
+        "hikenfistt",
+        "flamepillar",
+        "entai"
+      ],
+      "java_models": [],
+      "photon": [
+        "hiken",
+        "meraburnburst",
+        "entaiboomyeah"
+      ],
+      "current_need": "Hiken/Entei et flammes actuelles déjà polis ; nouvelles silhouettes et recettes optionnelles.",
+      "decision": "Comparaison visuelle avant changement ; préserver le dégagement de caméra alpha21. Ne pas importer Entai explosion avec animation manquante.",
+      "fruit": "mera_mera",
+      "techniques": 7,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/hikenfistt.geo.json",
+        "assets/trueprimepiecetwo/geo/flamepillar.geo.json",
+        "assets/trueprimepiecetwo/geo/entai.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/hiken.fx",
+        "assets/photon/fx/meraburnburst.fx",
+        "assets/photon/fx/entaiboomyeah.fx"
+      ],
+      "java_model_classes": [],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "3",
+      "models": [
+        "3dmagmatest"
+      ],
+      "java_models": [
+        "Modelmagmafist",
+        "Modelmagmahandrender",
+        "Modelmagmahound"
+      ],
+      "photon": [
+        "magmaimpact",
+        "magmapuddle",
+        "magulogia"
+      ],
+      "current_need": "Poings et chien magma actuels déjà conservés/polis ; alternatives à comparer.",
+      "decision": "Comparer poing, chien et impacts ; priorité inférieure aux formes encore adaptées. Ne pas changer la permanence des mutations de terrain.",
+      "fruit": "magu_magu",
+      "techniques": 5,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/3dmagmatest.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/magmaimpact.fx",
+        "assets/photon/fx/magmapuddle.fx",
+        "assets/photon/fx/magulogia.fx"
+      ],
+      "java_model_classes": [
+        "net/mcreator/trueprimepiecetwo/client/model/Modelmagmafist.class",
+        "net/mcreator/trueprimepiecetwo/client/model/Modelmagmahandrender.class",
+        "net/mcreator/trueprimepiecetwo/client/model/Modelmagmahound.class"
+      ],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "1",
+      "models": [
+        "amaru"
+      ],
+      "java_models": [],
+      "photon": [
+        "pgoroamaruaura10",
+        "goroaura",
+        "goroburst"
+      ],
+      "current_need": "Amaru actuel adapté à partir du modèle Daibutsu ; silhouette électrique spécifique disponible.",
+      "decision": "Porter le modèle Amaru, ses 8 pistes et la texture amaru ; conserver amaruu comme couche lumineuse vérifiée. FX Photon séparés.",
+      "fruit": "goro_goro",
+      "techniques": 7,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/amaru.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/pgoroamaruaura10.fx",
+        "assets/photon/fx/goroaura.fx",
+        "assets/photon/fx/goroburst.fx"
+      ],
+      "java_model_classes": [],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "hie_hie",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "3",
+      "models": [
+        "pikamirror"
+      ],
+      "java_models": [
+        "Modelpikasword"
+      ],
+      "photon": [
+        "pikashine",
+        "pikaslashes",
+        "pikaswordhit"
+      ],
+      "current_need": "Amano ver15 déjà conservée ; miroir dédié et nouveaux impacts lumineux disponibles.",
+      "decision": "Priorité au miroir Yata ; comparer l’épée avant remplacement. Les clones lumineux du JAR ne deviennent pas de nouvelles techniques du catalogue.",
+      "fruit": "pika_pika",
+      "techniques": 8,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/pikamirror.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/pikashine.fx",
+        "assets/photon/fx/pikaslashes.fx",
+        "assets/photon/fx/pikaswordhit.fx"
+      ],
+      "java_model_classes": [
+        "net/mcreator/trueprimepiecetwo/client/model/Modelpikasword.class"
+      ],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "yami_yami",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "suna_suna",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "moku_moku",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "mori_mori",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "2",
+      "models": [
+        "gumpistol",
+        "gumgatling",
+        "gear2stuff",
+        "gearthree",
+        "g4luffy"
+      ],
+      "java_models": [
+        "Modelgear5",
+        "Modelcloudring",
+        "Modelcloudring2"
+      ],
+      "photon": [
+        "gearactivateburst",
+        "pgear2smoke48",
+        "newgatling"
+      ],
+      "current_need": "Gears actuels et nuages partiellement créés pour le port ; bras/gestes plus spécialisés disponibles.",
+      "decision": "Porter les bras et overlays. Gear 4 est un modèle de PNJ Luffy : adapter au skin joueur. Gear 5 Java ne constitue pas une forme animée complète prouvée. Pas de nouvelle technique implicite.",
+      "fruit": "gomu_gomu",
+      "techniques": 4,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/gumpistol.geo.json",
+        "assets/trueprimepiecetwo/geo/gumgatling.geo.json",
+        "assets/trueprimepiecetwo/geo/gear2stuff.geo.json",
+        "assets/trueprimepiecetwo/geo/gearthree.geo.json",
+        "assets/trueprimepiecetwo/geo/g4luffy.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/gearactivateburst.fx",
+        "assets/photon/fx/pgear2smoke48.fx",
+        "assets/photon/fx/newgatling.fx"
+      ],
+      "java_model_classes": [
+        "net/mcreator/trueprimepiecetwo/client/model/Modelgear5.class",
+        "net/mcreator/trueprimepiecetwo/client/model/Modelcloudring.class",
+        "net/mcreator/trueprimepiecetwo/client/model/Modelcloudring2.class"
+      ],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "1",
+      "models": [
+        "wolfbeast"
+      ],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Forme quadrupède actuelle adaptée ; loup complet dédié avec atlas disponible.",
+      "decision": "Porter la forme complète et ses 4 pistes ; ne pas remplacer par un PNJ Jabra ou un Sulong.",
+      "fruit": "inu_inu_wolf",
+      "techniques": 8,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/wolfbeast.geo.json"
+      ],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Pas de nouvelle girafe complète correspondante ; référence précédente déjà utilisée.",
+      "fruit": "ushi_ushi_giraffe",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "1",
+      "models": [
+        "leopardbeastrework",
+        "leopardhybridrework"
+      ],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Forme complète actuelle adaptée ; nouvelle forme quadrupède et hybride dédié disponibles.",
+      "decision": "Choisir beast rework avec 3 pistes et texture dédiée ; hybrid rework en complément. Conserver la variante glow vérifiée.",
+      "fruit": "neko_neko_leopard",
+      "techniques": 7,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/leopardbeastrework.geo.json",
+        "assets/trueprimepiecetwo/geo/leopardhybridrework.geo.json"
+      ],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Pas de nouvelle chauve-souris complète correspondante.",
+      "fruit": "batto_batto",
+      "techniques": 6,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "1",
+      "models": [
+        "buddha"
+      ],
+      "java_models": [],
+      "photon": [
+        "buddhaglow",
+        "buddhastep"
+      ],
+      "current_need": "Ensemble dédié Bouddha avec gestes de paume et onde, à comparer au modèle actuel.",
+      "decision": "Porter modèle + texture item/buddha + 7 pistes ; conserver tailles, dégâts et cycles serveur actuels.",
+      "fruit": "hito_hito_daibutsu",
+      "techniques": 5,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/buddha.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/buddhaglow.fx",
+        "assets/photon/fx/buddhastep.fx"
+      ],
+      "java_model_classes": [],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Pas de nouveau Pachycéphalosaure correspondant ; aucun remplacement par un autre dinosaure.",
+      "fruit": "ryu_ryu_pachycephalosaurus",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Yamato trouvé est un PNJ humanoïde, pas la forme complète Makami.",
+      "fruit": "inu_inu_okuchi_no_makami",
+      "techniques": 7,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "1",
+      "models": [
+        "torifullform"
+      ],
+      "java_models": [],
+      "photon": [
+        "toritransformation",
+        "toriheal",
+        "bluebird"
+      ],
+      "current_need": "Forme complète actuelle adaptée et ailes additionnelles procédurales ; ensemble complet alternatif disponible.",
+      "decision": "Comparer le modèle complet et ses 9 pistes. Aucun défaut de couleur de queue : couleur déjà confirmée par utilisateur. Hybride hors import automatique.",
+      "fruit": "tori_tori_phoenix",
+      "techniques": 6,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/torifullform.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/toritransformation.fx",
+        "assets/photon/fx/toriheal.fx",
+        "assets/photon/fx/bluebird.fx"
+      ],
+      "java_model_classes": [],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "3",
+      "models": [
+        "bolobreathbeam"
+      ],
+      "java_models": [
+        "Modeldragonwindblade"
+      ],
+      "photon": [
+        "bolobreath",
+        "boloboom",
+        "windbladefx"
+      ],
+      "current_need": "Modèle de dragon actuel conservé sur demande ; souffle et lames de vent peuvent être comparés séparément.",
+      "decision": "Candidats uniquement pour Boro/Kaifu. Aucun remplacement du modèle, du squelette ou du pilotage alpha22.",
+      "fruit": "uo_uo_seiryu",
+      "techniques": 8,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/bolobreathbeam.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/bolobreath.fx",
+        "assets/photon/fx/boloboom.fx",
+        "assets/photon/fx/windbladefx.fx"
+      ],
+      "java_model_classes": [
+        "net/mcreator/trueprimepiecetwo/client/model/Modeldragonwindblade.class"
+      ],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Pas de nouvelle forme complète Ptéranodon correspondante ; conserver la référence existante.",
+      "fruit": "ryu_ryu_pteranodon",
+      "techniques": 3,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Pas de nouveau Brachiosaure correspondant ; Allosaure est un autre fruit.",
+      "fruit": "ryu_ryu_brachiosaurus",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Aucun tigre à dents de sabre complet correspondant trouvé dans la nouvelle référence.",
+      "fruit": "neko_neko_sabertiger",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "2",
+      "models": [
+        "guracrack",
+        "guracrackground",
+        "guracracksea",
+        "gurauppercut"
+      ],
+      "java_models": [],
+      "photon": [
+        "gurafissure",
+        "guraglass",
+        "gurawave1"
+      ],
+      "current_need": "Fractures actuelles du ver15 ; nouvelles variantes air, sol et mer et recettes FX disponibles.",
+      "decision": "Comparer les surfaces de fracture ; adapter les FX au renderer du port et aux épisodes existants. Destruction du terrain définitive conservée.",
+      "fruit": "gura_gura",
+      "techniques": 6,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/guracrack.geo.json",
+        "assets/trueprimepiecetwo/geo/guracrackground.geo.json",
+        "assets/trueprimepiecetwo/geo/guracracksea.geo.json",
+        "assets/trueprimepiecetwo/geo/gurauppercut.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/gurafissure.fx",
+        "assets/photon/fx/guraglass.fx",
+        "assets/photon/fx/gurawave1.fx"
+      ],
+      "java_model_classes": [],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Perona est un PNJ ; pas un remplacement des fantômes ou de Kumacy.",
+      "fruit": "horo_horo",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "2",
+      "models": [
+        "ursusshock"
+      ],
+      "java_models": [
+        "Modelpaw"
+      ],
+      "photon": [
+        "ursuskaboom",
+        "ursusvromm",
+        "pawpuff",
+        "pnikyupawtrail1"
+      ],
+      "current_need": "PadHo/Ursus actuels ver15 ; nouvelle empreinte Ursus et recettes de compression/impact disponibles.",
+      "decision": "Comparer Ursus Shock et ses 2 pistes ; porter les FX avec leurs sprites. Painpaw et Paweffectt sont des carriers invisibles, pas des remplacements visibles.",
+      "fruit": "nikyu_nikyu",
+      "techniques": 5,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/ursusshock.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/ursuskaboom.fx",
+        "assets/photon/fx/ursusvromm.fx",
+        "assets/photon/fx/pawpuff.fx",
+        "assets/photon/fx/pnikyupawtrail1.fx"
+      ],
+      "java_model_classes": [
+        "net/mcreator/trueprimepiecetwo/client/model/Modelpaw.class"
+      ],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "zushi_zushi",
+      "techniques": 6,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "bisu_bisu",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "2",
+      "models": [
+        "buzzcut"
+      ],
+      "java_models": [
+        "Modelmochifist",
+        "Modelmochihands",
+        "Modelmochigun",
+        "Modelyakimochi"
+      ],
+      "photon": [
+        "mochisplash",
+        "buzzcutboom"
+      ],
+      "current_need": "Bras et donuts ver15 présents ; modèles spécifiques de poings et Buzz Cut à comparer.",
+      "decision": "Adapter poings aux 6 techniques existantes et Buzz Cut à Zangiri ; ne pas substituer un donut roulant au Muso Donatsu sans correspondance.",
+      "fruit": "mochi_mochi",
+      "techniques": 6,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/buzzcut.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/mochisplash.fx",
+        "assets/photon/fx/buzzcutboom.fx"
+      ],
+      "java_model_classes": [
+        "net/mcreator/trueprimepiecetwo/client/model/Modelmochifist.class",
+        "net/mcreator/trueprimepiecetwo/client/model/Modelmochihands.class",
+        "net/mcreator/trueprimepiecetwo/client/model/Modelmochigun.class",
+        "net/mcreator/trueprimepiecetwo/client/model/Modelyakimochi.class"
+      ],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "uta_uta",
+      "techniques": 7,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "imu",
+      "techniques": 3,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "kira_kira",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "supa_supa",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "riki_riki",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "mero_mero",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "kiro_kiro",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "bomu_bomu",
+      "techniques": 5,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "2",
+      "models": [
+        "takt1",
+        "takt2",
+        "takt3",
+        "takt4",
+        "takt5",
+        "takt6"
+      ],
+      "java_models": [
+        "Modelamputateproj"
+      ],
+      "photon": [
+        "roomopen",
+        "proom50x50",
+        "shambles"
+      ],
+      "current_need": "ROOM/Shambles/Amputation sont des adaptations du port ; nouvelles recettes visuelles et rochers différenciés disponibles.",
+      "decision": "Adapter ROOM et Shambles ; les six rochers servent au StoneOpe existant. Injection Shot et Gamma Knife ne font pas partie des 4 techniques actuelles.",
+      "fruit": "ope_ope",
+      "techniques": 4,
+      "geometry_files": [
+        "assets/trueprimepiecetwo/geo/takt1.geo.json",
+        "assets/trueprimepiecetwo/geo/takt2.geo.json",
+        "assets/trueprimepiecetwo/geo/takt3.geo.json",
+        "assets/trueprimepiecetwo/geo/takt4.geo.json",
+        "assets/trueprimepiecetwo/geo/takt5.geo.json",
+        "assets/trueprimepiecetwo/geo/takt6.geo.json"
+      ],
+      "photon_files": [
+        "assets/photon/fx/roomopen.fx",
+        "assets/photon/fx/proom50x50.fx",
+        "assets/photon/fx/shambles.fx"
+      ],
+      "java_model_classes": [
+        "net/mcreator/trueprimepiecetwo/client/model/Modelamputateproj.class"
+      ],
+      "status": "CANDIDAT_NON_IMPORTE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "aro_aro",
+      "techniques": 4,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Conserver les ressources ver15 et adaptations déjà documentées ; aucune preuve de remplacement plus approprié.",
+      "fruit": "kage_kage",
+      "techniques": 6,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    },
+    {
+      "priority": "conserver",
+      "models": [],
+      "java_models": [],
+      "photon": [],
+      "current_need": "Aucune alternative mieux correspondante établie dans cette réserve.",
+      "decision": "Napoleon est une arme ; il ne remplace pas Zeus/Prometheus. Détails des visages toujours à vérifier.",
+      "fruit": "soru_soru",
+      "techniques": 7,
+      "geometry_files": [],
+      "photon_files": [],
+      "java_model_classes": [],
+      "status": "CONSERVER_POUR_CETTE_PASSE"
+    }
+  ]
+}

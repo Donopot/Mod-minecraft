@@ -1,0 +1,377 @@
+{
+  "reference_sha256": "328b8ea70071750b654b07e8a03bccbcec66a155680269254b03a01de7de9db0",
+  "files": [
+    {
+      "source": "assets/trueprimepiecetwo/geo/amaru.geo.json",
+      "path": "assets/minepiece/upgrade24/amaru.geo.json",
+      "sha256": "f228e8edfbae4b5fdf97977349b3f682fe74b8574d97c9958b10d4399cb2176e",
+      "bytes": 6550
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/amaru.animation.json",
+      "path": "assets/minepiece/upgrade24/amaru.animation.json",
+      "sha256": "23307af6c81af7fdb94e50e2e066eafc2a04d75436601de6f9eb1ba0b37d6586",
+      "bytes": 32496
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/amaru.png",
+      "path": "assets/minepiece/upgrade24/amaru.png",
+      "sha256": "4a3d76b6628a6b87945dab815a9fd668d6f3ba03174cc925a0723fb98cb6c7a7",
+      "bytes": 19664
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/amaruu.png",
+      "path": "assets/minepiece/upgrade24/amaru_glow.png",
+      "sha256": "40c2a6cb6761b8b2483c71d39c0299bc93e30fb84a96e609460478daede73a76",
+      "bytes": 19687
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/torifullform.geo.json",
+      "path": "assets/minepiece/upgrade24/torifullform.geo.json",
+      "sha256": "aa73af2744c0a66da445fa8e9a3005baf8f53d9ce09b9f5fe0c083c4ae519a21",
+      "bytes": 7011
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/torifullform.animation.json",
+      "path": "assets/minepiece/upgrade24/torifullform.animation.json",
+      "sha256": "33077c594f0fa62a379bd7f136d80b541e7421002faad291b96e8044bb7b7fa0",
+      "bytes": 40798
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/torifullform2new.png",
+      "path": "assets/minepiece/upgrade24/torifullform.png",
+      "sha256": "dfd8e1fdcb8a76c7ae21d8a8687033dee99205c3a3750082450114bee8b9fb29",
+      "bytes": 12810
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/buddha.geo.json",
+      "path": "assets/minepiece/upgrade24/buddha.geo.json",
+      "sha256": "454d1cd43a0d8bae6ec6db5ab0c1d03a15820b4f6229c2e00fa10c5e35e7b7e4",
+      "bytes": 2852
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/buddha.animation.json",
+      "path": "assets/minepiece/upgrade24/buddha.animation.json",
+      "sha256": "6550910217d327e35cad95606a4f33ea005150a81e69106d1a14caa7e202eb06",
+      "bytes": 17218
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/item/buddha.png",
+      "path": "assets/minepiece/upgrade24/buddha.png",
+      "sha256": "40a5169053c41e9ad99aa1c74c83dc2e1f391f5e6569175330d9648b23c4f6b0",
+      "bytes": 5930
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/wolfbeast.geo.json",
+      "path": "assets/minepiece/upgrade24/wolfbeast.geo.json",
+      "sha256": "7a27fdc06bcb6cd9d06d8cb2f27f05539032ceaba2ab9ab3e49fc16dd3dae2b2",
+      "bytes": 3293
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/wolfbeast.animation.json",
+      "path": "assets/minepiece/upgrade24/wolfbeast.animation.json",
+      "sha256": "88a0a0aa00b23dfda580f49f68d52eef1af910baa4ec88111762b448c0bea8d5",
+      "bytes": 14070
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/item/wolfbeast.png",
+      "path": "assets/minepiece/upgrade24/wolfbeast.png",
+      "sha256": "8a092a68b14f97ae6594b574979f180fee35ed5c3c7369b29a5cca26d7bc5687",
+      "bytes": 2463
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/leopardbeastrework.geo.json",
+      "path": "assets/minepiece/upgrade24/leopardbeastrework.geo.json",
+      "sha256": "45a9efaa81dd7801d222b1e6efb3e1cda6f4f7d73b4790d396351a12ab231406",
+      "bytes": 2721
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/leopardbeastrework.animation.json",
+      "path": "assets/minepiece/upgrade24/leopardbeastrework.animation.json",
+      "sha256": "20d0db60ca1aee3cd6f89062832c96b08115a96a9dd88a725c636bba134a7fe0",
+      "bytes": 13741
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/leopardbeastrework.png",
+      "path": "assets/minepiece/upgrade24/leopardbeastrework.png",
+      "sha256": "8e8da2e16adcc7aa3b12b7b38a83a5b190b4ac7613af00efcb892d4db3469d83",
+      "bytes": 5030
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/leopardbeastreworkglow.png",
+      "path": "assets/minepiece/upgrade24/leopardbeastrework_glow.png",
+      "sha256": "1a2b3066f797fe88d9c63f6d6f9c3a85acb7df0d1bd188d926c402446d7e5a3d",
+      "bytes": 169
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/gumpistol.geo.json",
+      "path": "assets/minepiece/upgrade24/gumpistol.geo.json",
+      "sha256": "a0bdae8ca316c7d2ff43e41fcbf5041aea4373e5f019ad926c0b80a2b280da92",
+      "bytes": 1910
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/gumpistol.animation.json",
+      "path": "assets/minepiece/upgrade24/gumpistol.animation.json",
+      "sha256": "d7f68decce68449fd8ad27cd9d1b77b24d18433b63ac9a4fdea10839f8097a68",
+      "bytes": 11445
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/gumgatling.geo.json",
+      "path": "assets/minepiece/upgrade24/gumgatling.geo.json",
+      "sha256": "5fd57b81f6dd2732e86689fee1a2d99d6326b73cd9a6ab70a2679614249899da",
+      "bytes": 3009
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/gumgatling.animation.json",
+      "path": "assets/minepiece/upgrade24/gumgatling.animation.json",
+      "sha256": "17303b276c0b746e57bef99b4bd9bd3d49cfe764337dd69138ec7947ab545dc2",
+      "bytes": 103825
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/guracrack.geo.json",
+      "path": "assets/minepiece/upgrade24/guracrack.geo.json",
+      "sha256": "0107f10881d2d9520c9692546a63ba713f9067974789b47b8aa1c4e377133cac",
+      "bytes": 616
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/guracrack.animation.json",
+      "path": "assets/minepiece/upgrade24/guracrack.animation.json",
+      "sha256": "a3ed541762ff30a91c52556b57290b53d2beffde78c6896bb544b465fca572ba",
+      "bytes": 534
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/guracracks1.png",
+      "path": "assets/minepiece/upgrade24/guracrack.png",
+      "sha256": "77aee3f2d2e69cc31ce725b2e21998dd12c34e54b3d255f18647e35752b231dc",
+      "bytes": 1518
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/guracrackground.geo.json",
+      "path": "assets/minepiece/upgrade24/guracrackground.geo.json",
+      "sha256": "d14c63bc0443c56e553d0587576a9fb4142595ab0dca908be71c4a1f0ee57ace",
+      "bytes": 536
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/guracrackground.animation.json",
+      "path": "assets/minepiece/upgrade24/guracrackground.animation.json",
+      "sha256": "8bc853cf6b8eceb537025f321637f048e7c04f14bf49ab126623579858885ed5",
+      "bytes": 394
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/guracracks1.png",
+      "path": "assets/minepiece/upgrade24/guracrackground.png",
+      "sha256": "77aee3f2d2e69cc31ce725b2e21998dd12c34e54b3d255f18647e35752b231dc",
+      "bytes": 1518
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/guracracksea.geo.json",
+      "path": "assets/minepiece/upgrade24/guracracksea.geo.json",
+      "sha256": "1c212781b0e5a4f30ed518b5be64e91c1554aeefb59f1e5dce955758bcbb04c3",
+      "bytes": 649
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/guracracksea.animation.json",
+      "path": "assets/minepiece/upgrade24/guracracksea.animation.json",
+      "sha256": "a9dcd1dd46fc2a7471356fce393cb2d3750e06f4c38973792cfc59dd4657066c",
+      "bytes": 391
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/guracracks1.png",
+      "path": "assets/minepiece/upgrade24/guracracksea.png",
+      "sha256": "77aee3f2d2e69cc31ce725b2e21998dd12c34e54b3d255f18647e35752b231dc",
+      "bytes": 1518
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/gurauppercut.geo.json",
+      "path": "assets/minepiece/upgrade24/gurauppercut.geo.json",
+      "sha256": "595a3ba7c132231a9f04b1bc40fa4d2e6b54f4148a10d95b1b17d9f082834d7d",
+      "bytes": 536
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/gurauppercut.animation.json",
+      "path": "assets/minepiece/upgrade24/gurauppercut.animation.json",
+      "sha256": "8bc853cf6b8eceb537025f321637f048e7c04f14bf49ab126623579858885ed5",
+      "bytes": 394
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/guracracks1.png",
+      "path": "assets/minepiece/upgrade24/gurauppercut.png",
+      "sha256": "77aee3f2d2e69cc31ce725b2e21998dd12c34e54b3d255f18647e35752b231dc",
+      "bytes": 1518
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/takt1.geo.json",
+      "path": "assets/minepiece/upgrade24/takt1.geo.json",
+      "sha256": "9e59be6db605f57d8d3c040a08742a0d9aa65d3f416ebb63eff4c5becef6c37f",
+      "bytes": 1955
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/takt1.animation.json",
+      "path": "assets/minepiece/upgrade24/takt1.animation.json",
+      "sha256": "2389942e8f3aac234cbe671107e83fba2ea3f87f2e664b12c5b4452b9e931c71",
+      "bytes": 5097
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/taktrocks.png",
+      "path": "assets/minepiece/upgrade24/takt1.png",
+      "sha256": "791598dc82bb47e1e504de46309a6c35b26d39649a9fd98cca07bf1cea2bdac7",
+      "bytes": 505
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/takt2.geo.json",
+      "path": "assets/minepiece/upgrade24/takt2.geo.json",
+      "sha256": "fb93483e6c8caafcc842adae4290df44719041ed644ba2914df15ac07a1d2b88",
+      "bytes": 2048
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/takt2.animation.json",
+      "path": "assets/minepiece/upgrade24/takt2.animation.json",
+      "sha256": "2389942e8f3aac234cbe671107e83fba2ea3f87f2e664b12c5b4452b9e931c71",
+      "bytes": 5097
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/taktrocks.png",
+      "path": "assets/minepiece/upgrade24/takt2.png",
+      "sha256": "791598dc82bb47e1e504de46309a6c35b26d39649a9fd98cca07bf1cea2bdac7",
+      "bytes": 505
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/takt3.geo.json",
+      "path": "assets/minepiece/upgrade24/takt3.geo.json",
+      "sha256": "9fa581522d9cf00d00a4c697b7267ddb8425989f3b4daac638e0641f0ff90d29",
+      "bytes": 2004
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/takt3.animation.json",
+      "path": "assets/minepiece/upgrade24/takt3.animation.json",
+      "sha256": "2389942e8f3aac234cbe671107e83fba2ea3f87f2e664b12c5b4452b9e931c71",
+      "bytes": 5097
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/taktrocks.png",
+      "path": "assets/minepiece/upgrade24/takt3.png",
+      "sha256": "791598dc82bb47e1e504de46309a6c35b26d39649a9fd98cca07bf1cea2bdac7",
+      "bytes": 505
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/takt4.geo.json",
+      "path": "assets/minepiece/upgrade24/takt4.geo.json",
+      "sha256": "e8d989e379fa18b2bdcddc98dc53287bd53d930f06dc4dbbed3c4ca145b8b5b0",
+      "bytes": 1957
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/takt4.animation.json",
+      "path": "assets/minepiece/upgrade24/takt4.animation.json",
+      "sha256": "2389942e8f3aac234cbe671107e83fba2ea3f87f2e664b12c5b4452b9e931c71",
+      "bytes": 5097
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/taktrocks.png",
+      "path": "assets/minepiece/upgrade24/takt4.png",
+      "sha256": "791598dc82bb47e1e504de46309a6c35b26d39649a9fd98cca07bf1cea2bdac7",
+      "bytes": 505
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/takt5.geo.json",
+      "path": "assets/minepiece/upgrade24/takt5.geo.json",
+      "sha256": "3bd82366fd05a9afc27c30f77861b527d2ddb9af03e1edc17d6daa2b2a55fcff",
+      "bytes": 2006
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/takt5.animation.json",
+      "path": "assets/minepiece/upgrade24/takt5.animation.json",
+      "sha256": "2389942e8f3aac234cbe671107e83fba2ea3f87f2e664b12c5b4452b9e931c71",
+      "bytes": 5097
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/taktrocks.png",
+      "path": "assets/minepiece/upgrade24/takt5.png",
+      "sha256": "791598dc82bb47e1e504de46309a6c35b26d39649a9fd98cca07bf1cea2bdac7",
+      "bytes": 505
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/takt6.geo.json",
+      "path": "assets/minepiece/upgrade24/takt6.geo.json",
+      "sha256": "8d5d4a7728f995f218ed503775acb6d95da6088e8a35c67dcde85eb4caedd30c",
+      "bytes": 2003
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/takt6.animation.json",
+      "path": "assets/minepiece/upgrade24/takt6.animation.json",
+      "sha256": "2389942e8f3aac234cbe671107e83fba2ea3f87f2e664b12c5b4452b9e931c71",
+      "bytes": 5097
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/taktrocks.png",
+      "path": "assets/minepiece/upgrade24/takt6.png",
+      "sha256": "791598dc82bb47e1e504de46309a6c35b26d39649a9fd98cca07bf1cea2bdac7",
+      "bytes": 505
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/buzzcut.geo.json",
+      "path": "assets/minepiece/upgrade24/buzzcut.geo.json",
+      "sha256": "ec4a91fef1333214fc1244129f259be36156fcf80ad9965e771cd4bb17f709d9",
+      "bytes": 10261
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/buzzcut.animation.json",
+      "path": "assets/minepiece/upgrade24/buzzcut.animation.json",
+      "sha256": "3652bd7c3b84154f270b2b5ca2682336aa74deb47b89360ca86b7a196e1fe1d6",
+      "bytes": 7172
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/buzzcut.png",
+      "path": "assets/minepiece/upgrade24/buzzcut.png",
+      "sha256": "3392de3bfb7a1e90612bcc355f4b851680030c5d1fcb80e9eba119494e2f9940",
+      "bytes": 2857
+    },
+    {
+      "source": "assets/trueprimepiecetwo/geo/ursusshock.geo.json",
+      "path": "assets/minepiece/upgrade24/ursusshock.geo.json",
+      "sha256": "b381754af5400adc2fc400c1971511fbbadf3491e4c13e432ff54b151d026a64",
+      "bytes": 768
+    },
+    {
+      "source": "assets/trueprimepiecetwo/animations/ursusshock.animation.json",
+      "path": "assets/minepiece/upgrade24/ursusshock.animation.json",
+      "sha256": "5539a80d0f919bebc84b0f5286338240a7bb1171475aea8e6020fb154b83e3ff",
+      "bytes": 2314
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/ursusshock.png",
+      "path": "assets/minepiece/upgrade24/ursusshock.png",
+      "sha256": "ce8601102040b6f7e3e835680682ce6c3561d250eefd72b718ac5d98f26ce305",
+      "bytes": 2012
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/mochifist.png",
+      "path": "assets/minepiece/upgrade24/mochifist.png",
+      "sha256": "dacfe31c8099bb64d62e57b51e7b6007f3f0965cdeee60a0012b083e691c7af4",
+      "bytes": 5425
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/mochifisthaki.png",
+      "path": "assets/minepiece/upgrade24/mochifisthaki.png",
+      "sha256": "341464af3ba22625bd23180b564913b50a6164fbc6ca0933ee4d1741766d762b",
+      "bytes": 5638
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/yakimochi.png",
+      "path": "assets/minepiece/upgrade24/yakimochi.png",
+      "sha256": "778269e02f0bd6efd6f6224ea8d06229d990c46e03d248481f809b258bf34e98",
+      "bytes": 217
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/paweffect.png",
+      "path": "assets/minepiece/upgrade24/paweffect.png",
+      "sha256": "3234b5ecf17a9ecbcd3d56ea5c6de118128fffe819fb557edbc409c800f6c59c",
+      "bytes": 245
+    },
+    {
+      "source": "assets/trueprimepiecetwo/textures/entities/cloudring2.png",
+      "path": "assets/minepiece/upgrade24/cloudring2.png",
+      "sha256": "f0bf0141803e24a68c5618b8d9f0e745ee16d174859774cfa48e7d05f3127811",
+      "bytes": 572
+    }
+  ]
+}

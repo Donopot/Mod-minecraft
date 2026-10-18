@@ -1,3 +1,25 @@
+# État du 18 octobre 2026 — alpha25
+
+Les deux lots demandés sont intégrés et testés : cinq transformations, puis Gomu/Gura/Ope/Mochi/Nikyu. 681 contrôles natifs ciblés passent à 20 TPS ; la session de dix minutes fournit 220 contrôles et 20 captures inspectées par client. [Portée et limites](PRIORITY-ASSETS-WORKORDER.md), [preuves](PRIORITY-ASSETS-PREUVES-ALPHA25.json). Amaru : objets tenus encore sur anciennes attaches. Gear5 : corps joueur adapté, collier importé. Photon non porté. Haki inchangé. Aucun profil habituel modifié. Branche locale `codex/onepiece-priority-assets`, sans push demandé pour cette livraison.
+
+---
+
+# Revue fruit par fruit du 18 octobre 2026 — alpha 23
+
+Branche `codex/onepiece-fruit-review`. [Bilan des 40 fruits / 213 techniques](CHECK-40-FRUITS-ALPHA23.md), [CSV par fruit](CHECK-40-FRUITS-ALPHA23.csv) et [preuves des recettes](CHECK-40-PREUVES-ALPHA23.json). JAR final `defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706` : 335 sources compilées. Replis génériques `sword`/`swim` absents reproduits sur alpha22 puis corrigés ; trois contrôles de régression réussis. Dégagement caméra White Blow / Dark Ball corrigé depuis la lentille réelle et la taille du mesh : 519 assertions numériques et reprise 32+32 captures réussies, inspectées. Particules Yami encore denses : réserve de lisibilité.
+
+Douze scènes graphiques fraîches sur alpha22, 2326 captures regroupées et inspectées pour les 40 fruits ; reprise ciblée alpha23. Les 1807 assets, 426 sélections de base et 213 décisions terrain sont identiques ; quatre classes modifiées depuis alpha22, limitées aux replis et à la visibilité des deux profils (plus instrumentation graphique). Les nouveaux assets restent en réserve. Dragon conservé ; diagnostic Phoenix conforme à la queue correctement identifiée par l'utilisateur.
+
+3874 contrôles natifs distincts réussis sur le JAR final par recettes complémentaires. Mera/Magu/Goro, historiques et permanence à20TPS ; huit lots à80TPS. Le premier B02 accéléré conserve deux échecs (position Shambles, compteur d'explosion refusée) ; sa reprise isolée à20TPS réussit363/363, sans cause exacte de l'écart revendiquée. Les sept autres lots passent entièrement, dont B05 458/458, B06 535/535 et B07 502/502. Rapports, échecs et reprises conservés. Aucun monde/mod personnel modifié ; laboratoires arrêtés, diagnostic séparé du mod livré. Haki non modifié, à traiter après cette revue. Les réserves artistiques (formes adaptées, Soru, Nikyu, particules et caméra dans les cratères) restent explicites.
+
+---
+
+# Recherche d’assets du 18 octobre 2026
+
+[Comparaison des références à alpha 22](ASSETS-A-METTRE-A-JOUR.md) : 40 fruits examinés, 14 avec candidats et décisions détaillées en CSV/JSON. Premier lot proposé : Amaru, Phoenix complet, Bouddha, Loup, Léopard. Cinq ensembles reliés par les modèles source, 31 pistes avec os existants et durées valides, sept textures référencées décodées. Nouveau JAR : 172 géométries Gecko, 380 effets Photon lisibles mais moteur/dépendances à adapter. Défauts de source identifiés : os Body absent du Phoenix hybride, animation d’explosion Entai manquante, carriers de foudre/patte invisibles. Gear 4 trouvé est un PNJ Luffy et exige une adaptation au skin joueur. Modèle du dragon et couleur de queue Phoenix conservés. Aucun changement de JAR ou d’asset de jeu ; aucune validation artistique nouvelle. Prochain lot ensuite : Gomu, Gura, Ope, Mochi, Nikyu.
+
+---
+
 # État du 18 octobre 2026 — dragon alpha 22
 
 Branche `codex/onepiece-dragon-flight` : [squelette et pilotage Seiryu](DRAGON-ALPHA22.md). Le modèle actuel est conservé ; ses 24 sections suivent le chemin en 3D, le vol suit le regard et freine au relâchement. La caméra arrière passe au-dessus de l’épaule et conserve un contrôle de collision avec les murs et plafonds. JAR final `db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c` : 335 sources compilées, 1 807 assets et toutes les classes serveur identiques à alpha 21. Tests numériques PASS ; 59 contrôles natifs sur le final, couverture de 188 contrôles Seiryu sur les mêmes classes serveur, 16 contrôles acteur et 2 observateur sur deux clients réels. 9+9 captures finales et deux planches inspectées. Corps/queue visuels, collision de déplacement autour de la tête ; acceptation artistique humaine en attente. Le paquet local est préparé sans installation dans les mods habituels ni modification des mondes personnels.

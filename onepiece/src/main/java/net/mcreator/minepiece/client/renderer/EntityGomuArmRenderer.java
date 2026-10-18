@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
  */
 public class EntityGomuArmRenderer extends GeoEntityRenderer<EntityGomuArmEntity, EntityRenderState> {
    private final SourcePrimitiveVisuals sourcePrimitives=new SourcePrimitiveVisuals();
+   private final SourcePriorityEffects priorityEffects=new SourcePriorityEffects();
    private static final com.geckolib.constant.dataticket.DataTicket<Float> THICKNESS=com.geckolib.constant.dataticket.DataTicket.create("elastic_thickness",Float.class);
    private static final java.util.Set<String> SEEN=new java.util.HashSet<>();
    private static final com.geckolib.constant.dataticket.DataTicket<Boolean> HIDE_NATIVE_CORE =
@@ -38,6 +39,11 @@ public class EntityGomuArmRenderer extends GeoEntityRenderer<EntityGomuArmEntity
       ((GeoRenderState)state).addGeckolibData(THICKNESS,animatable.getThickness());
       ((GeoRenderState) state).addGeckolibData(PROFILE, animatable.getVisualProfile());
       ((GeoRenderState) state).addGeckolibData(DIRECTION, animatable.getLookAngle());
+      ((GeoRenderState)state).addGeckolibData(EntityGomuArmModel.OWNER_SKIN,net.minecraft.resources.Identifier.fromNamespaceAndPath("minepiece",OriginalAssetVisuals.texturePath(OriginalAssetVisuals.texture(animatable.getVisualProfile(),animatable.getTexture()))));
+      if(animatable.getVisualProfile().startsWith("b05_native_gomu_") && animatable.ownerEntity() instanceof net.minecraft.client.player.AbstractClientPlayer owner){
+         ((GeoRenderState)state).addGeckolibData(EntityGomuArmModel.OWNER_SKIN,owner.getSkin().body().texturePath());
+         if(Boolean.getBoolean("opworldlike.visualCapture")&&SEEN.add("owner:"+animatable.getId()))org.slf4j.LoggerFactory.getLogger("MinePieceAssets").info("[elastic-owner-skin] entity={} owner={} synchronized={} texture={}",animatable.getId(),owner.getUUID(),animatable.getEntityData().get(EntityGomuArmEntity.OWNER_ID)==owner.getId(),owner.getSkin().body().texturePath());
+      }
       var client=net.minecraft.client.Minecraft.getInstance();
       String visualId=animatable.getVisualProfile();
       double coreRadius=1.35*OriginalAssetVisuals.modelScale(visualId)*animatable.getStretch();
@@ -72,6 +78,7 @@ public class EntityGomuArmRenderer extends GeoEntityRenderer<EntityGomuArmEntity
       net.mcreator.minepiece.client.Batch06VisualLab.rendered(id);
       net.mcreator.minepiece.client.Batch04VisualLab.rendered(id);
       net.mcreator.minepiece.client.Batch03VisualLab.rendered(id);
+      if(priorityEffects.submit(id,geo.getOrDefaultGeckolibData(EntityGomuArmModel.STRETCH_TICKET,1F),geo.getOrDefaultGeckolibData(DIRECTION,net.minecraft.world.phys.Vec3.ZERO),0,state,stack,collector))return;
       if(sourcePrimitives.submit(id,geo.getOrDefaultGeckolibData(EntityGomuArmModel.STRETCH_TICKET,1F),geo.getOrDefaultGeckolibData(DIRECTION,net.minecraft.world.phys.Vec3.ZERO),state,stack,collector))return;
       if(OriginalAssetVisuals.nativeMesh(id)){
          if(!geo.getOrDefaultGeckolibData(HIDE_NATIVE_CORE,false)){

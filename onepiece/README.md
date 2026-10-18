@@ -1,9 +1,11 @@
 # One Piece — port Fabric 26.3
 
-Version de développement **1.0.1-alpha.22** : [dragon Seiryu, squelette suivant le trajet et vol selon le regard en 3D](docs/DRAGON-ALPHA22.md), avec une vue arrière dégagée. Le modèle existant est conservé. Les [corrections Mera et caméra](docs/MERA-CAMERA-ALPHA21.md), ainsi que les [HUD et raccourcis reconfigurables](../docs/HUD-KEYBINDINGS.md), sont conservés. Le catalogue reste de **40 fruits et 213 techniques**, avec des formes hybrides et complètes. Les assets restent ceux de l'alpha 19 : 53 profils reliés aux visuels de MinePiece ver15, 60 fichiers originaux contrôlés et 8 adaptations de pistes. Les réserves graphiques documentées restent ouvertes ; aucune acceptation artistique humaine n’est implicite.
+Version de développement **1.0.1-alpha.25** : [cinq transformations prioritaires et Gomu/Gura/Ope/Mochi/Nikyu](docs/PRIORITY-ASSETS-WORKORDER.md), avec [preuves et limites](docs/PRIORITY-ASSETS-PREUVES-ALPHA25.json). Les 40 fruits/213 techniques sont conservés ; cette version ne prétend pas refaire toute leur acceptation artistique. Le dragon Seiryu alpha22, la permanence du terrain et le Haki restent inchangés.
 
 - [Décisions sur les 40 fruits](docs/ASSETS-MINEPIECE-40.md)
 - [Nouvelle réserve d’assets True Prime Piece Two](docs/REFERENCE-TRUEPRIMEPIECE.md)
+- [Assets à mettre à jour : 14 fruits candidats, premier lot de 5 transformations](docs/ASSETS-A-METTRE-A-JOUR.md)
+- [Bilan fruit par fruit alpha 23](docs/CHECK-40-FRUITS-ALPHA23.csv) et [preuves des recettes](docs/CHECK-40-PREUVES-ALPHA23.json)
 - [Audit des 40 fruits sur alpha 21](docs/CHECK-40-FRUITS-ALPHA21.md) : catalogue et mécaniques couverts ; diagnostic de couleur Phoenix retiré après identification correcte de la queue par l’utilisateur.
 - [Validation des assets](docs/ASSETS-ALPHA19-VALIDATION.md)
 - [Suivi et historique](docs/HANDOFF.md)
@@ -11,7 +13,7 @@ Version de développement **1.0.1-alpha.22** : [dragon Seiryu, squelette suivant
 
 ## Dépendances et ressources
 
-Java 25, Minecraft 26.3, Fabric Loader 0.19.5 et Fabric API 0.162.0+26.3. Placer GeckoLib 5.5.7 et Player Animation Library 1.2.8 dans `libs/`, comme indiqué dans [libs/README.md](libs/README.md). Rétablir les ressources visuelles privées depuis le paquet correspondant avec `python tools/import-private-assets.py --jar <paquet.jar>`. Les JAR de référence Forge restent des références locales.
+Java 25, Minecraft 26.3, Fabric Loader 0.19.5 et Fabric API 0.162.0+26.3. Placer GeckoLib 5.5.7 et Player Animation Library 1.2.8 dans `libs/`, comme indiqué dans [libs/README.md](libs/README.md). Restaurer les 62 fichiers prioritaires avec `python tools/import_priority_assets.py --reference <trueprimepiecetwo-infusedrocknroll.jar>` (empreinte contrôlée). Rétablir les autres ressources visuelles privées depuis le paquet correspondant avec `python tools/import-private-assets.py --jar <paquet.jar>`. Les JAR de référence Forge restent des références locales.
 
 ## Compilation
 

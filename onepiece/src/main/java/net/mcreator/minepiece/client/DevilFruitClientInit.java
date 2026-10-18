@@ -143,6 +143,7 @@ public final class DevilFruitClientInit implements ClientModInitializer {
       net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
          skillHeld=false;
          TransformClientState.clear();
+         RigClientState.clear();
          DevilFruitClientState.reset();
       });
       ClientTickEvents.START_CLIENT_TICK.register(client -> {

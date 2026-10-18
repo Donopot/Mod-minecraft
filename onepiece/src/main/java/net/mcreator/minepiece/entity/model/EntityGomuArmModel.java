@@ -16,6 +16,7 @@ public class EntityGomuArmModel extends GeoModel<EntityGomuArmEntity> {
    public static final DataTicket<String> TEXTURE_TICKET = DataTicket.create("gomu_texture", String.class);
    /** Étirement du bras jusqu'au point d'impact (FRUIT-GOMU_GOMU-03), rempli par le renderer. */
    public static final DataTicket<Float> STRETCH_TICKET = DataTicket.create("gomu_stretch", Float.class);
+   public static final DataTicket<Identifier> OWNER_SKIN=DataTicket.create("elastic_owner_skin",Identifier.class);
 
    @Override
    public Identifier getModelResource(GeoRenderState state) {
@@ -25,6 +26,10 @@ public class EntityGomuArmModel extends GeoModel<EntityGomuArmEntity> {
 
    @Override
    public Identifier getTextureResource(GeoRenderState state) {
+      var skin=state.getGeckolibData(OWNER_SKIN);
+      // Armament / white Gear coatings still take precedence over the owner's base skin.
+      String original=state.getOrDefaultGeckolibData(TEXTURE_TICKET,"luffy");
+      if(skin!=null && original.equals("luffy"))return skin;
       String texture = state.getOrDefaultGeckolibData(TEXTURE_TICKET, "luffy");
       return Identifier.fromNamespaceAndPath("minepiece", net.mcreator.minepiece.client.renderer.OriginalAssetVisuals.texturePath(texture));
    }

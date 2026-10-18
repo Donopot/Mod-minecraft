@@ -131,7 +131,8 @@ public record TechniqueVisualProfile(Kind kind, int color, float radius) {
          case "b02_gravity_horizontal" -> new TechniqueVisualProfile(Kind.B02_HORIZONTAL,0xD6B38BFF,2);
          case "b02_gravity_down","b02_gravity_field" -> new TechniqueVisualProfile(Kind.B02_GRAVITY,0xD9AB83F3,3);
          case "b02_room" -> new TechniqueVisualProfile(Kind.B02_ROOM,0xA573DAFF,8);
-         case "b02_ope_swap","b02_paw_travel","b02_dash" -> new TechniqueVisualProfile(Kind.B01_BEAM,0xD99ADCFB,1);
+         case "b02_ope_swap" -> new TechniqueVisualProfile(Kind.B02_HORIZONTAL,0xE58CEBFF,1);
+         case "b02_paw_travel","b02_dash" -> new TechniqueVisualProfile(Kind.B01_BEAM,0xD99ADCFB,1);
          case "b02_meteor","b02_meteorsmall" -> new TechniqueVisualProfile(Kind.B02_METEOR,0xFF746458,id.equals("b02_meteor")?1.4F:.8F);
          case "b02_rock_impact" -> new TechniqueVisualProfile(Kind.B02_ORBIT,0xCDAA9E90,.35F);
 

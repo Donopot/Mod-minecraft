@@ -79,7 +79,9 @@ public class PlayerTransformLayer extends RenderLayer<AvatarRenderState, PlayerM
    }
 
    private final net.mcreator.minepiece.client.model.GomuGearModel gomu,haki,cloud;
+   private final net.mcreator.minepiece.client.model.GearCloudCollar cloudCollar=new net.mcreator.minepiece.client.model.GearCloudCollar();
    private final net.mcreator.minepiece.client.model.AmaruModel amaru;
+   private final Map<String,net.mcreator.minepiece.client.model.SourceRigModel> priorityRigs=new HashMap<>();
    private final ModelenelDrum amaruDrums;
    private static final Identifier AMARU_BODY=tex("amaru_body");
    private static final Identifier AMARU_ENERGY=tex("amaru_energy");
@@ -99,6 +101,8 @@ public class PlayerTransformLayer extends RenderLayer<AvatarRenderState, PlayerM
    public PlayerTransformLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
       super(renderer);
       EntityModelSet es = Minecraft.getInstance().getEntityModels();
+      for(String rig:new String[]{"amaru","torifullform","buddha","wolfbeast","leopardbeastrework"})
+         priorityRigs.put(rig,new net.mcreator.minepiece.client.model.SourceRigModel(rig));
       kaidoDragon=new net.mcreator.minepiece.client.model.KaidoDragonModel();
       phoenixWings=new net.mcreator.minepiece.client.model.MythicalBeastModel(es.bakeLayer(net.mcreator.minepiece.client.model.MythicalBeastModel.PHOENIX_WINGS),8);
       makamiFace=new net.mcreator.minepiece.client.model.MythicalBeastModel(es.bakeLayer(net.mcreator.minepiece.client.model.MythicalBeastModel.MAKAMI_FACE),6);
@@ -292,10 +296,28 @@ public class PlayerTransformLayer extends RenderLayer<AvatarRenderState, PlayerM
          data.minepiece$setPoses(net.mcreator.minepiece.client.TransformPoses.capture(getParentModel()));
          if(state.skin!=null)stoneAware(gomu,state.skin.body().texturePath(),poseStack,collector,lightCoords,state,playerForm==2?0xFFFF9D9D:-1,0);
          if(playerForm==4)stoneAware(haki,tex("tex_white2"),poseStack,collector,lightCoords,state,0xFF292128,1);
-         if(playerForm==5)stoneAware(cloud,tex("tex_white3"),poseStack,collector,lightCoords,state,-1,1);
+         if(playerForm==5){stoneAware(cloud,tex("tex_white3"),poseStack,collector,lightCoords,state,-1,1);stoneAware(cloudCollar,Identifier.fromNamespaceAndPath("minepiece","upgrade24/cloudring2.png"),poseStack,collector,lightCoords,state,-1,1);}
          net.mcreator.minepiece.client.Batch05VisualLab.rendered("gear-"+(int)playerForm);return;
       }
       String beastKey=fruitId.replace("minepiece:item_devil_fruit_","");
+      String priority=beastKey.equals("goro_goro")?"amaru":playerForm==2?switch(beastKey){
+         case "tori_tori_phoenix"->"torifullform";case "hito_hito_daibutsu"->"buddha";
+         case "inu_inu_wolf"->"wolfbeast";case "neko_neko_leopard"->"leopardbeastrework";default->"";
+      }:"";
+      if(!priority.isEmpty()){
+         data.minepiece$setPoses(net.mcreator.minepiece.client.TransformPoses.capture(getParentModel()));
+         float scale=switch(priority){case "amaru"->.285F;case "buddha"->.797F;case "torifullform"->.55F;case "leopardbeastrework"->.794F;default->1.01F;};
+         poseStack.pushPose();poseStack.translate(0,1.5,0);poseStack.scale(scale,scale,scale);poseStack.translate(0,-1.5,0);
+         var model=priorityRigs.get(priority);var texture=Identifier.fromNamespaceAndPath("minepiece","upgrade24/"+priority+".png");
+         stoneAware(model,texture,poseStack,collector,priority.equals("amaru")?15728880:lightCoords,state,-1,0);
+         if(!((net.mcreator.minepiece.client.ParameciaRenderData)state).minepiece$stone() && (priority.equals("amaru")||priority.equals("leopardbeastrework"))){
+            var glow=Identifier.fromNamespaceAndPath("minepiece","upgrade24/"+priority+"_glow.png");
+            collector.order(1).submitModel(model,state,poseStack,net.minecraft.client.renderer.rendertype.RenderTypes.entityTranslucentEmissive(glow),15728880,net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY,state.isInvisible?0x25FFFFFF:-1,null,state.outlineColor);
+         }
+         poseStack.popPose();
+         if(playerForm==2){net.mcreator.minepiece.client.Batch06VisualLab.rendered("beast-"+fruitId);net.mcreator.minepiece.client.Batch07VisualLab.rendered("beast-"+fruitId);}
+         return;
+      }
             if(playerForm==2 && ancientBeasts.containsKey(beastKey)){
          data.minepiece$setPoses(net.mcreator.minepiece.client.TransformPoses.capture(getParentModel()));
          stoneAware(ancientBeasts.get(beastKey),beastKey.equals("ryu_ryu_brachiosaurus")?tex("b08_brachiosaurus_guard"):tex("tex_white3"),poseStack,collector,lightCoords,state,beastKey.equals("ryu_ryu_brachiosaurus")?-1:0xFF6EABC9,0);

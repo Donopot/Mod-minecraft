@@ -13,6 +13,7 @@ public final class ClientVisualLab {
    private static int ticks;
    public static void register() {
       if (!Boolean.getBoolean("opworldlike.visualCapture")) return;
+      if(Boolean.getBoolean("opworldlike.prioritySoak")){PrioritySoakLab.register();return;}
       if("batch08".equals(System.getProperty("opworldlike.visualScenario"))) {Batch08VisualLab.register();return;}
       if("batch07".equals(System.getProperty("opworldlike.visualScenario"))) {Batch07VisualLab.register();return;}
       if("batch06".equals(System.getProperty("opworldlike.visualScenario"))) {Batch06VisualLab.register();return;}

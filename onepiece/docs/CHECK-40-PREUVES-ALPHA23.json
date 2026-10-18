@@ -1,0 +1,429 @@
+{
+  "version": "1.0.1-alpha.23",
+  "sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+  "fruit_count": 40,
+  "technique_count": 213,
+  "native_distinct": 3874,
+  "native_scopes": {
+    "checks": 59,
+    "mera_checks": 92,
+    "magu_checks": 74,
+    "goro_checks": 142,
+    "historical_checks": 307,
+    "permanent_checks": 31,
+    "batch01_checks": 345,
+    "batch03_checks": 418,
+    "batch04_checks": 365,
+    "batch08_checks": 183,
+    "batch07_checks": 502,
+    "batch06_checks": 535,
+    "batch05_checks": 458,
+    "batch02_checks": 363
+  },
+  "native_recipes": [
+    {
+      "recipe": "normal-20",
+      "lab_id": "run-65724561b5434fe6be0ce4904c9ae360",
+      "sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+      "scopes": {
+        "checks": 59,
+        "mera_checks": 92,
+        "magu_checks": 74,
+        "goro_checks": 142,
+        "historical_checks": 307,
+        "permanent_checks": 31
+      },
+      "status": "passed",
+      "failures": {},
+      "process_stopped": true
+    },
+    {
+      "recipe": "batches-80",
+      "lab_id": "run-044930e35f604a5b82ff6f53b01168d5",
+      "sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+      "scopes": {
+        "checks": 59,
+        "batch01_checks": 345,
+        "batch02_checks": 363,
+        "batch03_checks": 418,
+        "batch04_checks": 365,
+        "batch08_checks": 183,
+        "batch07_checks": 502,
+        "batch06_checks": 535,
+        "batch05_checks": 458
+      },
+      "status": "failed",
+      "failures": {
+        "batch02_checks": [
+          "ope/shambles/swap",
+          "core/explosion-refused"
+        ]
+      },
+      "process_stopped": true
+    },
+    {
+      "recipe": "batch02-retake-20",
+      "lab_id": "run-c4a3b92a352b4875bd28d4fda56220be",
+      "sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+      "scopes": {
+        "checks": 59,
+        "batch02_checks": 363
+      },
+      "status": "passed",
+      "failures": {},
+      "process_stopped": true
+    }
+  ],
+  "visual_baseline_version": "1.0.1-alpha.22",
+  "visual_sessions": [
+    {
+      "scenario": "mera",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-e81886367a19464984b3c80aed819c35",
+      "actor_images": 51,
+      "observer_images": 24,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "observer_live_checks": 2,
+        "actor_live_checks": 1
+      }
+    },
+    {
+      "scenario": "magu",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-2b2d43ed36d8442d9946f218c264a395",
+      "actor_images": 55,
+      "observer_images": 40,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "observer_live_checks": 1,
+        "actor_pal_checks": 8,
+        "observer_pal_checks": 8,
+        "actor_live_checks": 1
+      }
+    },
+    {
+      "scenario": "goro",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-28c50a11a2ff4f04aabe94c337bd0519",
+      "actor_images": 49,
+      "observer_images": 49,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "observer_live_checks": 1,
+        "actor_pal_checks": 11,
+        "observer_pal_checks": 11,
+        "actor_live_checks": 1,
+        "native_storm_checks": 3
+      }
+    },
+    {
+      "scenario": "amaru",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-13535bcfa5e74d7bac7a8e8635722705",
+      "actor_images": 12,
+      "observer_images": 12,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 13,
+        "observer_checks": 13
+      }
+    },
+    {
+      "scenario": "batch01",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-ed78e56ccc7a4b199eac424c331f6ab4",
+      "actor_images": 104,
+      "observer_images": 104,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 33,
+        "actor_pal_checks": 50,
+        "observer_checks": 26,
+        "observer_pal_checks": 50,
+        "native_player_checks": 5
+      }
+    },
+    {
+      "scenario": "batch02",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-d7a001c8e82447aa8da4c9994803fb5f",
+      "actor_images": 130,
+      "observer_images": 130,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 34,
+        "actor_pal_checks": 52,
+        "observer_checks": 26,
+        "observer_pal_checks": 52
+      }
+    },
+    {
+      "scenario": "batch03",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-fb63da7d93bd4c4eb00667ef91def15e",
+      "actor_images": 120,
+      "observer_images": 120,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 38,
+        "actor_pal_checks": 50,
+        "observer_checks": 36,
+        "observer_pal_checks": 50,
+        "native_player_checks": 2
+      }
+    },
+    {
+      "scenario": "batch04",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-24f7889fe8b24fd88d817eeb082f47a5",
+      "actor_images": 105,
+      "observer_images": 105,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 29,
+        "actor_pal_checks": 46,
+        "observer_checks": 27,
+        "observer_pal_checks": 46
+      }
+    },
+    {
+      "scenario": "batch05",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-ca9c80602eab4039ac61741f478d832f",
+      "actor_images": 136,
+      "observer_images": 136,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 34,
+        "actor_pal_checks": 60,
+        "observer_checks": 34,
+        "observer_pal_checks": 60
+      }
+    },
+    {
+      "scenario": "batch06",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-f7a6ae1d03114487bdf3dbfe6301f202",
+      "actor_images": 185,
+      "observer_images": 185,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 46,
+        "actor_pal_checks": 82,
+        "observer_checks": 46,
+        "observer_pal_checks": 82,
+        "native_player_checks": 3
+      }
+    },
+    {
+      "scenario": "batch07",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-4049df68f763404da19d9b72727371ef",
+      "actor_images": 175,
+      "observer_images": 175,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 47,
+        "actor_pal_checks": 78,
+        "observer_checks": 47,
+        "observer_pal_checks": 78
+      }
+    },
+    {
+      "scenario": "batch08",
+      "jar_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+      "passed": true,
+      "lab_id": "run-9e6f1595a20e4d2fa2dfe2951dd66053",
+      "actor_images": 62,
+      "observer_images": 62,
+      "images_inspected": true,
+      "evaluated_checks": {
+        "actor_checks": 16,
+        "actor_pal_checks": 28,
+        "observer_checks": 16,
+        "observer_pal_checks": 28
+      }
+    }
+  ],
+  "retake_alpha23": {
+    "lab_id": "run-f5aae943c773459386813fff6f93ecbb",
+    "sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+    "passed": true,
+    "reviewed": true,
+    "camera_logs": {
+      "actor": [
+        "[batch01-camera] whiteblow hidden lensDistance=0.24700787046066033",
+        "[batch01-camera] whiteblow visible lensDistance=3.5930862434881488",
+        "[batch01-camera] darkball hidden lensDistance=0.34582833273475544",
+        "[batch01-camera] darkball visible lensDistance=2.811804708996168"
+      ],
+      "observer": [
+        "[batch01-camera] whiteblow visible lensDistance=23.205602730647858",
+        "[batch01-camera] darkball visible lensDistance=22.847431390848225"
+      ]
+    },
+    "actor_images": 32,
+    "observer_images": 32,
+    "notes": "64 captures inspected in two contact sheets, Dark Ball frame32 additionally compared individually against alpha22; dense black particles remain a readability reserve."
+  },
+  "camera_unit_assertions": 519,
+  "runtime_fallback_checks": 3,
+  "artistic_acceptance": false,
+  "haki_changed": false,
+  "visual_images_alpha22": 2326,
+  "catalogue_audit": {
+    "version": "1.0.1-alpha.23",
+    "sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+    "fruit_count": 40,
+    "technique_count": 213,
+    "fruit_techniques": {
+      "mera_mera": 7,
+      "magu_magu": 5,
+      "goro_goro": 7,
+      "hie_hie": 5,
+      "pika_pika": 8,
+      "yami_yami": 4,
+      "suna_suna": 5,
+      "moku_moku": 4,
+      "mori_mori": 4,
+      "gomu_gomu": 4,
+      "inu_inu_wolf": 8,
+      "ushi_ushi_giraffe": 5,
+      "neko_neko_leopard": 7,
+      "batto_batto": 6,
+      "hito_hito_daibutsu": 5,
+      "ryu_ryu_pachycephalosaurus": 5,
+      "inu_inu_okuchi_no_makami": 7,
+      "tori_tori_phoenix": 6,
+      "uo_uo_seiryu": 8,
+      "ryu_ryu_pteranodon": 3,
+      "ryu_ryu_brachiosaurus": 5,
+      "neko_neko_sabertiger": 5,
+      "gura_gura": 6,
+      "horo_horo": 5,
+      "nikyu_nikyu": 5,
+      "zushi_zushi": 6,
+      "bisu_bisu": 4,
+      "mochi_mochi": 6,
+      "uta_uta": 7,
+      "imu": 3,
+      "kira_kira": 5,
+      "supa_supa": 4,
+      "riki_riki": 5,
+      "mero_mero": 4,
+      "kiro_kiro": 4,
+      "bomu_bomu": 5,
+      "ope_ope": 4,
+      "aro_aro": 4,
+      "kage_kage": 6,
+      "soru_soru": 7
+    },
+    "source_visual_profiles": 53,
+    "registered_player_animations": 477,
+    "runtime_report_supplied": true,
+    "errors": [],
+    "warnings": [],
+    "passed": true,
+    "visual_acceptance": false
+  },
+  "parity_with_alpha22": {
+    "old_sha256": "db2e88e42a3257659e28a4f5cb836a080b8aa274fbddb7b532854ee90fa27f2c",
+    "new_sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+    "assets_compared": 1807,
+    "assets_changed": [],
+    "entries_added": [],
+    "entries_removed": [],
+    "changed_entries": [
+      "fabric.mod.json",
+      "net/mcreator/minepiece/client/Batch01VisualLab.class",
+      "net/mcreator/minepiece/client/EffectCameraVisibility.class",
+      "net/mcreator/minepiece/client/renderer/SkillProjectileRenderer.class",
+      "net/mcreator/minepiece/procedures/TechniqueAnimations.class"
+    ],
+    "runtime_catalogue_unchanged": true
+  },
+  "packed_assets": {
+    "sha256": "defd0d4c9a3cf1f93dc4d13fbb9554f43c6fd84eb336db09995a00824e823706",
+    "json_count": 1054,
+    "technique_visual_references": 95,
+    "issues": [],
+    "warnings": [
+      {
+        "kind": "uv-outside-atlas",
+        "file": "assets/minepiece/geckolib/models/abyss.geo.json",
+        "bone": "Circle1",
+        "face": "north",
+        "uv": [
+          112,
+          48,
+          64,
+          48
+        ],
+        "atlas": [
+          16,
+          16
+        ]
+      },
+      {
+        "kind": "uv-outside-atlas",
+        "file": "assets/minepiece/geckolib/models/abyss.geo.json",
+        "bone": "Circle1",
+        "face": "east",
+        "uv": [
+          -32,
+          48,
+          -80,
+          48
+        ],
+        "atlas": [
+          16,
+          16
+        ]
+      },
+      {
+        "kind": "uv-outside-atlas",
+        "file": "assets/minepiece/geckolib/models/abyss.geo.json",
+        "bone": "Circle1",
+        "face": "south",
+        "uv": [
+          16,
+          48,
+          -32,
+          48
+        ],
+        "atlas": [
+          16,
+          16
+        ]
+      },
+      {
+        "kind": "uv-outside-atlas",
+        "file": "assets/minepiece/geckolib/models/abyss.geo.json",
+        "bone": "Circle1",
+        "face": "west",
+        "uv": [
+          64,
+          48,
+          16,
+          48
+        ],
+        "atlas": [
+          16,
+          16
+        ]
+      }
+    ]
+  }
+}

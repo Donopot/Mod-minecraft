@@ -80,7 +80,14 @@ public final class TechniqueEffectGeometry {
             case B03_PUNCH -> {sphere(out,pose,direction.scale(.3),.42,profile.color());for(int i=0;i<4;i++)sphere(out,pose,direction.scale(.6).add(u.scale((i-1.5)*.18)),.14,0xFFF1C197);ring(out,pose,direction.scale(.8),u,v,radius*(.2+smooth(age/12)),.035,0xC7F4E4C7);}
 
             case B02_GRAVITY -> {Vec3 x=new Vec3(1,0,0),z=new Vec3(0,0,1);double size=Math.abs(radius);for(int i=0;i<3;i++){double y=(i*.5+age*.035)%1.7;ring(out,pose,new Vec3(0,y,0),x,z,size*(.3+i*.23),.025,profile.color());for(int side:new int[]{-1,1}){Vec3 c=new Vec3(side*size*.45,y,0);tapered(out,pose,c,c.add(0,-.35,0),.035,.002,profile.color());}}}
-            case B02_ROOM -> {Vec3 x=new Vec3(1,0,0),z=new Vec3(0,0,1),y=new Vec3(0,1,0);double size=Math.abs(radius);ring(out,pose,Vec3.ZERO,x,z,size,.025,profile.color());for(int axis=0;axis<6;axis++){double theta=axis*Math.PI/6;Vec3 horizontal=x.scale(Math.cos(theta)).add(z.scale(Math.sin(theta)));Vec3 previous=null;for(int j=0;j<=24;j++){double a=j*Math.PI/24;Vec3 c=horizontal.scale(Math.cos(a)*size).add(y.scale(Math.sin(a)*size));if(previous!=null)tapered(out,pose,previous,c,.018,.018,profile.color());previous=c;}}}
+            case B02_ROOM -> {
+               Vec3 x=new Vec3(1,0,0),z=new Vec3(0,0,1),y=new Vec3(0,1,0);double size=Math.abs(radius);
+               ring(out,pose,Vec3.ZERO,x,z,size,.045,0xD579E6FF);
+               for(int axis=0;axis<8;axis++){double theta=axis*Math.PI/8;Vec3 horizontal=x.scale(Math.cos(theta)).add(z.scale(Math.sin(theta)));Vec3 previous=null;
+                  for(int j=0;j<=32;j++){double a=j*Math.PI/32;Vec3 c=horizontal.scale(Math.cos(a)*size).add(y.scale(Math.sin(a)*size));if(previous!=null)tapered(out,pose,previous,c,.025,.025,profile.color());previous=c;}}
+               // Moving latitude makes the dome readable from inside; the outer boundary keeps its actual radius.
+               double latitude=(age%60)/60*Math.PI/2;ring(out,pose,y.scale(Math.sin(latitude)*size),x,z,Math.cos(latitude)*size,.03,0x9064DFFF);
+            }
             case B02_ORBIT -> {for(int i=0;i<3;i++){double a=i*Math.PI*2/3+age*.12;Vec3 c=u.scale(Math.cos(a)*Math.abs(radius)).add(v.scale(Math.sin(a)*Math.abs(radius)));sphere(out,pose,c,.05,profile.color());}ring(out,pose,Vec3.ZERO,u,v,Math.abs(radius),.01,alpha(profile.color(),.5));}
             case B02_METEOR -> {sphere(out,pose,Vec3.ZERO,radius,profile.color());for(int i=0;i<5;i++){double a=i*2.399+age*.05;Vec3 c=u.scale(Math.cos(a)*radius*.85).add(v.scale(Math.sin(a)*radius*.85));sphere(out,pose,c,radius*.23,i%2==0?0xFF8E7A63:0xFF4F423A);tapered(out,pose,c,c.subtract(direction.scale(1.3)),.08,.005,0xDEFFB552);}}
 

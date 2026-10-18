@@ -28,6 +28,10 @@ public final class EffectCameraVisibilityTest {
       check(EffectCameraVisibility.meraMeshClearance("goro_raigo",1)==0,"other fruit policy preserved");
       check(EffectCameraVisibility.pendingMeshClearance(2.5F)>2.5,"pending large factory mesh clears eyes");
       check(EffectCameraVisibility.pendingMeshClearance(0)>0,"pending default mesh has clearance");
+      check(EffectCameraVisibility.elementalMeshClearance("darkball",1.1F)>2.6,"dark ball clears the eye-level sphere");
+      check(EffectCameraVisibility.elementalMeshClearance("whiteblow",1.3F)>2.8,"white blow clears the eye-level centre");
+      check(EffectCameraVisibility.elementalMeshClearance("darkball",2)>EffectCameraVisibility.elementalMeshClearance("darkball",1),"elemental clearance follows scale");
+      check(EffectCameraVisibility.elementalMeshClearance("laser1",1)==0,"other elemental profiles unchanged");
       System.out.println("Camera visibility: "+checks+" assertions PASS");
    }
 }

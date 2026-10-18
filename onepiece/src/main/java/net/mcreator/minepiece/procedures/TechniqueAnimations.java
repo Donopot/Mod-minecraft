@@ -71,7 +71,7 @@ public final class TechniqueAnimations {
       "punch_gomu_pistol2", "punch_left", "punch_overhead", "punch_right", "punch_right_jinbe",
       "ragnaraku1", "raimei_hakke1", "right_arm_front", "right_arm_front2", "right_arm_up",
       "right_leg_front", "rin", "rokuogan", "rotation2", "sanzen_sekai1", "sanzen_sekai2",
-      "speed_attack1", "speed_attack_sword", "sprint2", "swim", "sword", "sword_overhead",
+      "speed_attack1", "speed_attack_sword", "sprint2", "sword_overhead",
       "sword_rotate", "sword_to_left", "sword_to_right", "togen_totsuka1", "togen_totsuka2",
       "toragari1", "toragari2", "ul_zugan", "ursus_shock", "yamiyami_blackhole",
       "yasakani_no_magatama"
@@ -365,13 +365,15 @@ public final class TechniqueAnimations {
          boolean epee = player.getMainHandItem().is(net.minecraft.tags.ItemTags.SWORDS);
          String cote = player.getRandom().nextBoolean() ? "right" : "left";
          nom = switch (move.type()) {
-            case MELEE -> epee ? "sword" : "punch_" + cote;
+            case MELEE -> epee ? "sword_to_" + cote : "punch_" + cote;
             case PROJECTILE -> "both_arm_front";
             case EFFECT -> "both_arm_up";
             case BUFF -> "energy_charge";
             default -> "clap";
          };
       }
+      // Empty means the source asks for vanilla movement rather than an authored PAL gesture.
+      if (nom.isEmpty()) return "";
       if (!disponibles().contains(nom)) {
          introuvables++;
          if (!manquants.contains(nom)) {
@@ -450,7 +452,8 @@ public final class TechniqueAnimations {
             case 2 -> "headbutt_2";
             default -> "head_overhead";
          };
-         case -15 -> n2 == 10 ? "rotation2" : "swim";
+         // No PAL swim track is shipped; retain vanilla swimming instead of advertising a missing file.
+         case -15 -> n2 == 10 ? "rotation2" : "";
          case -16 -> "enkai";
          case -17 -> "clap";
          case -18 -> "sprint2";

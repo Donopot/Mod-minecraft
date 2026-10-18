@@ -1,0 +1,93 @@
+{
+  "version": "1.0.1-alpha.25",
+  "jar_sha256": "d5029c6dd87bf924e9e6bfa7ad1f84e9279d111f4dfd723a6967c57d19b69205",
+  "source_count": 345,
+  "reference_sha256": "328b8ea70071750b654b07e8a03bccbcec66a155680269254b03a01de7de9db0",
+  "reserved_resource_files": 62,
+  "numeric_animation_tracks": 63,
+  "numeric_assertions": 166764,
+  "combat_terrain_procedures_identical_to_alpha23": true,
+  "changed_entity_metadata": "EntityGomuArmEntity.OWNER_ID; matching client/server version required",
+  "first_batch": {
+    "r1_images_reviewed": 332,
+    "amaru_r2_images_reviewed": 24,
+    "native_geometry_and_forms_passed": true,
+    "incomplete_attempt_retained": true
+  },
+  "second_batch": {
+    "r1_images_reviewed": 252,
+    "r2_images_reviewed": 100,
+    "r2_scope": [
+      "mochi_mochi",
+      "ope_ope"
+    ],
+    "buzzcut_placement_corrected_after_visual_review": true
+  },
+  "native": {
+    "lab_id": "run-41df0b39e10f4364a410f9a281c514fe",
+    "tick_rate": 20,
+    "suites": {
+      "checks": {
+        "passed": 59,
+        "failed": 0
+      },
+      "batch02_checks": {
+        "passed": 363,
+        "failed": 0
+      },
+      "batch03_checks": {
+        "passed": 143,
+        "failed": 0
+      },
+      "batch05_checks": {
+        "passed": 116,
+        "failed": 0
+      }
+    },
+    "gomu_retake_lab_id": "run-06163dbcd7dc4ee1a34300a51432acae",
+    "incomplete_attempt": {
+      "lab_id": "run-41df0b39e10f4364a410f9a281c514fe",
+      "status": "error",
+      "reason": "Invalid Gomu runner filter gomu_gomu selected no tests; owned lab stopped after successful core/B02/Mochi suites. Gomu rerun separately with gomu; original error report retained."
+    }
+  },
+  "soak": {
+    "lab_id": "run-fa96d88cf06b4c58b211ceefa2b797a4",
+    "artifact_sha256": "d5029c6dd87bf924e9e6bfa7ad1f84e9279d111f4dfd723a6967c57d19b69205",
+    "roles": {
+      "actor": {
+        "seconds": 600.0107967,
+        "checks_passed": 220,
+        "checks_failed": 0,
+        "samples": 60,
+        "heap_mib_range": [
+          407,
+          1007
+        ],
+        "max_effects": 2,
+        "max_rig_cache": 2,
+        "captures_reviewed": 20
+      },
+      "observer": {
+        "seconds": 600.3178394,
+        "checks_passed": 220,
+        "checks_failed": 0,
+        "samples": 60,
+        "heap_mib_range": [
+          404,
+          966
+        ],
+        "max_effects": 2,
+        "max_rig_cache": 2,
+        "captures_reviewed": 20
+      }
+    }
+  },
+  "limitations": [
+    "Amaru held items still use old hand attachments",
+    "Gear5 remains a player adaptation with imported cloud collar",
+    "Photon effects are not executed",
+    "One actor and one observer; not a public-server stress test",
+    "Haki unchanged; other visual refinements remain listed"
+  ]
+}
