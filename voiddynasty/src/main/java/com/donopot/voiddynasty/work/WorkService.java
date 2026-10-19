@@ -611,6 +611,35 @@ public final class WorkService {
         return sb.toString();
     }
 
+    private static final List<net.minecraft.world.level.ChunkPos> forcedChunks = new ArrayList<>();
+
+    /**
+     * Garde la zone d'une mission chargee ET tickable (ticket FORCED = niveau entite). Sans cela,
+     * loin de tout joueur, les chunks sont charges sans tick : le compagnon n'a ni physique ni IA,
+     * il flotte et refuse de descendre dans un trou. Les tickets sont relaches a la fermeture.
+     */
+    static void forceChunks(ServerLevel level, BlockPos min, BlockPos max) {
+        releaseChunks(level);
+        int minX = Math.min(min.getX(), max.getX()), maxX = Math.max(min.getX(), max.getX());
+        int minZ = Math.min(min.getZ(), max.getZ()), maxZ = Math.max(min.getZ(), max.getZ());
+        int count = 0;
+        for (int cx = minX >> 4; cx <= maxX >> 4 && count < 256; cx++) {
+            for (int cz = minZ >> 4; cz <= maxZ >> 4 && count < 256; cz++) {
+                var chunk = new net.minecraft.world.level.ChunkPos(cx, cz);
+                level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
+                forcedChunks.add(chunk);
+                count++;
+            }
+        }
+    }
+
+    static void releaseChunks(ServerLevel level) {
+        for (var chunk : forcedChunks) {
+            level.getChunkSource().removeTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
+        }
+        forcedChunks.clear();
+    }
+
     static boolean loadedNeighborhood(ServerLevel level, BlockPos pos) {
         if (!level.hasChunkAt(pos)) return false;
         for (Direction direction : Direction.values()) if (!level.hasChunkAt(pos.relative(direction))) return false;
@@ -1001,6 +1030,7 @@ public final class WorkService {
         state.missionId = "";
         state.journal.clear(); state.depots.clear();
         state.jobName = null; state.hasDepot = false; state.rollbackStarted = false;
+        releaseChunks(level);
         state.tool = ItemStack.EMPTY; state.toolId = "";
         state.lastStop = "chantier valide — ressources laissees dans les depots; rollback abandonne";
         state.setDirty(); return true;

@@ -57,10 +57,16 @@ final class StairMining {
     record Plan(List<Step> steps, BlockPos target) {}
 
     private static final Map<String, Plan> PLANS = new HashMap<>();
+    /** Tentatives d'impulsion par marche (descente dans le trou d'un bloc). */
+    private static final Map<String, Integer> DESCEND_TRIES = new HashMap<>();
+    private static final Map<String, Long> DESCEND_LAST = new HashMap<>();
+    private static final int MAX_DESCEND_TRIES = 8;
     private static final Map<String, Integer> INDEX = new HashMap<>();
     private static final Map<String, Integer> FAILURES = new HashMap<>();
 
     static void forget(String missionId) {
+        DESCEND_TRIES.remove(missionId);
+        DESCEND_LAST.remove(missionId);
         PLANS.remove(missionId);
         INDEX.remove(missionId);
     }
@@ -203,9 +209,16 @@ final class StairMining {
      */
     private static Volume volume(ServerLevel level, WorkMission mission, BlockPos feet, BlockPos delta) {
         BlockPos perp = delta.getZ() != 0 ? new BlockPos(1, 0, 0) : new BlockPos(0, 0, 1);
+        BlockPos opposite = new BlockPos(-perp.getX(), 0, -perp.getZ());
         String firstReason = null;
-        for (BlockPos side : List.of(perp, new BlockPos(-perp.getX(), 0, -perp.getZ()))) {
-            Volume volume = variant(level, mission, feet, side);
+        // 1. palier large (3 colonnes) : le compagnon mesure 1.09 bloc, il chevauche deux colonnes
+        //    et se tient sinon sur la dalle voisine du trou, sans jamais tomber dedans.
+        Volume wide = variant(level, mission, feet, perp, 3);
+        if (wide != null) return wide;
+        if (firstReason == null) firstReason = lastReason;
+        // 2. replis : 2 colonnes, d'un cote puis de l'autre.
+        for (BlockPos side : List.of(perp, opposite)) {
+            Volume volume = variant(level, mission, feet, side, Math.max(1, WIDTH));
             if (volume != null) return volume;
             if (firstReason == null) firstReason = lastReason;
         }
@@ -213,10 +226,11 @@ final class StairMining {
         return null;
     }
 
-    private static Volume variant(ServerLevel level, WorkMission mission, BlockPos feet, BlockPos side) {
+    private static Volume variant(ServerLevel level, WorkMission mission, BlockPos feet, BlockPos side, int width) {
         List<BlockPos> cells = new ArrayList<>();
         List<BlockPos> support = new ArrayList<>();
-        for (int w = 0; w < Math.max(1, WIDTH); w++) {
+        int left = (width - 1) / 2;
+        for (int w = -left; w <= width - 1 - left; w++) {
             BlockPos column = w == 0 ? feet : feet.offset(side.getX() * w, 0, side.getZ() * w);
             for (int h = 0; h < HEIGHT; h++) cells.add(column.above(h));
             support.add(column.below());
@@ -359,6 +373,16 @@ final class StairMining {
             // franchie alors que le compagnon etait encore au-dessus du palier.
             boolean arrived = horizontal <= 1.2 && Math.abs(bot.getY() - feet.getY()) <= 0.6;
             if (!arrived) {
+                // Descente d'un bloc : la navigation vanilla refuse souvent d'entrer dans le puits.
+                // On guide le deplacement puis, sans progres, on imprime une impulsion mesuree.
+                if (step.kind() == Kind.DESCEND_STEP && feet.getY() < bot.getY() - 0.4
+                        && Math.abs(feet.getX() - bot.getX()) <= 2.5 && Math.abs(feet.getZ() - bot.getZ()) <= 2.5
+                        && descend(level, mob, step.from(), feet, key)) {
+                    state.lastStop = "escalier : descente vers " + feet.toShortString()
+                            + " (marche " + (index + 1) + "/" + plan.steps().size()
+                            + ", essai " + DESCEND_TRIES.getOrDefault(key, 0) + "/" + MAX_DESCEND_TRIES + ")";
+                    return true;
+                }
                 approach(level, mob, feet);
                 state.lastStop = "escalier : passage vers " + feet.toShortString()
                         + " (marche " + (index + 1) + "/" + plan.steps().size() + ")";
@@ -371,6 +395,8 @@ final class StairMining {
             // Une marche franchie est un progres reel : on remet a zero le detecteur de blocage.
             state.movementCells.clear();
             state.idleTicks = 0;
+            DESCEND_TRIES.remove(key);
+            DESCEND_LAST.remove(key);
             state.lastStop = "escalier : marche " + index + "/" + plan.steps().size() + " franchie";
             System.out.println("[STAIR] franchi marche " + index + "/" + plan.steps().size()
                     + " feet=" + feet.toShortString());
@@ -382,6 +408,44 @@ final class StairMining {
         forget(key);
         FAILURES.remove(key);
         return false;
+    }
+
+    /**
+     * Descente dans le puits d'un bloc. Deux temps : guidage par le MoveControl vers le centre du
+     * palier, puis — si le compagnon n'a pas bouge depuis 12 ticks — une impulsion horizontale
+     * courte vers le palier et une composante verticale negative. Jamais de teleportation : la
+     * gravite et les collisions du jeu restent seules responsables de la chute.
+     */
+    private static boolean descend(ServerLevel level, Mob mob, BlockPos from, BlockPos feet, String key) {
+        int tries = DESCEND_TRIES.getOrDefault(key, 0);
+        if (tries >= MAX_DESCEND_TRIES) {
+            DESCEND_TRIES.remove(key);
+            DESCEND_LAST.remove(key);
+            return false;
+        }
+        mob.getNavigation().stop();
+        // Le compagnon mesure 1.09 bloc : centre sur le palier, son emprise chevauche encore la
+        // dalle de la marche precedente et il ne tombe jamais. On vise donc un point decale de
+        // 0.55 bloc au-dela du bord, dans le sens de la descente.
+        double biasX = Integer.compare(feet.getX(), from.getX()) * 0.55;
+        double biasZ = Integer.compare(feet.getZ(), from.getZ()) * 0.55;
+        double targetX = feet.getX() + 0.5 + biasX;
+        double targetZ = feet.getZ() + 0.5 + biasZ;
+        mob.getMoveControl().setWantedPosition(targetX, feet.getY() + 0.05, targetZ, 1.0);
+        long now = level.getGameTime();
+        long last = DESCEND_LAST.getOrDefault(key, 0L);
+        if (last == 0L) { DESCEND_LAST.put(key, now); return true; }
+        if (now - last < 12L) return true;
+        double dx = targetX - mob.getX();
+        double dz = targetZ - mob.getZ();
+        double norm = Math.sqrt(dx * dx + dz * dz);
+        if (norm > 0.001) { dx = dx / norm * 0.14; dz = dz / norm * 0.14; } else { dx = 0; dz = 0; }
+        mob.setDeltaMovement(dx, -0.30, dz);
+        mob.syncVelocity = true;
+        DESCEND_TRIES.put(key, tries + 1);
+        DESCEND_LAST.put(key, now);
+        System.out.println("[STAIR] impulsion descente vers " + feet + " (essai " + (tries + 1) + ")");
+        return true;
     }
 
     private static boolean atFeet(LivingEntity bot, BlockPos feet) {

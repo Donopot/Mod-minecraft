@@ -172,6 +172,8 @@ public final class MissionService {
         }
         if (s.missions.size() >= HISTORY_MAX) return error("HISTORY_FULL", "Mission history retained; no automatic eviction");
         if (s.jobName != null || !s.invSlots.isEmpty() || !s.journal.isEmpty()) return error("WORKER_BUSY", "Close or reconcile the previous job first");
+        // La zone doit etre chargee et tickable pendant toute la mission (physique du compagnon).
+        WorkService.forceChunks(level, proposed.min, proposed.max);
         if (level.isOutsideBuildHeight(proposed.min) || level.isOutsideBuildHeight(proposed.max)
                 || !level.getWorldBorder().isWithinBounds(proposed.min) || !level.getWorldBorder().isWithinBounds(proposed.max))
             return error("INVALID_ZONE", "Zone outside dimension bounds");
