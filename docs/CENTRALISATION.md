@@ -1,5 +1,9 @@
 # Organisation des sources
 
+## Build Minecraft unifié — alpha 8
+
+Depuis le 19 octobre 2026, `voiddynasty/` compile les sources du mod principal et celles de `voiddynasty-bridge/` dans un seul mod `voiddynasty`. Les deux dossiers restent canoniques, sans duplication de sources. Le pack [1.3.0-alpha.8](../client-local/voiddynasty-1.3.0-alpha.8) contient trois JAR : le mod unifié, Fabric API et GeckoLib. L'ancien bridge séparé est incompatible avec ce nouveau JAR. La DLL RT et l'ancien assistant restent séparés ; [installation et limites](../voiddynasty/docs/BUILD-UNIFIE-ALPHA8.md). Les sections suivantes décrivent l'organisation historique.
+
 Le commit initial 5c25f8f contient les projets VOID DYNASTY et son bridge. La centralisation ajoute la suite de logistique et le port One Piece sans remplacer ces deux dossiers.
 
 ## Suite de logistique 0.7.1 — bridge unique
