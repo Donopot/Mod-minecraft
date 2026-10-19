@@ -18,9 +18,11 @@ parser.add_argument('--build-only',action='store_true',help='Focus on constructi
 parser.add_argument('--empty-only',action='store_true',help='Only run empty/exhausted selection regressions')
 parser.add_argument('--navigation-only',action='store_true',help='Focus on movement, excavated stairs, route changes and clean restart')
 parser.add_argument('--brain-only',action='store_true',help='Exercise native AI validation, bags, ownership, MCP observation and clean restart; no LLM calls')
+parser.add_argument('--recovery-only',action='store_true',help='Exercise companion bag recovery after death, dimension change and clean restart; no LLM calls')
 parser.add_argument('--accept-eula',action='store_true',required=True,help='Explicit acceptance of Minecraft EULA for the disposable server')
 args=parser.parse_args()
 if args.brain_only: args.empty_only=True
+if args.recovery_only: args.empty_only=True
 if args.build_only: args.next_only=True
 if args.next_only: args.missions=True
 repo=Path(__file__).resolve().parents[2];work=args.output.resolve();work.mkdir(parents=True,exist_ok=True)
@@ -34,8 +36,10 @@ test_sources=[test]
 test_sources.append(test.with_name('WorkEmptyServerTest.java'))
 test_sources.append(test.with_name('WorkNavigationServerTest.java'))
 if args.brain_only: test_sources.append(test.with_name('BrainSafetyServerTest.java'))
+if args.recovery_only: test_sources.append(test.with_name('BrainRecoveryServerTest.java'))
 if args.missions: test_sources.extend([test.with_name('MissionServerTest.java'),test.with_name('WorkNextServerTest.java')])
-r=subprocess.run([str(jdk/'javac.exe'),'--release','25','-proc:none','-encoding','UTF-8','-cp',cp,'-d',str(classes),*map(str,test_sources)],capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=60)
+javac=jdk/('javac.exe' if os.name=='nt' else 'javac');javab=jdk/('java.exe' if os.name=='nt' else 'java')
+r=subprocess.run([str(javac),'--release','25','-proc:none','-encoding','UTF-8','-cp',cp,'-d',str(classes),*map(str,test_sources)],capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=60)
 (work/'server-test-compile.log').write_text(r.stdout+r.stderr,encoding='utf-8')
 if r.returncode:print(r.stdout+r.stderr);raise SystemExit(1)
 lab=work/('lab-'+uuid.uuid4().hex);lab.mkdir();mods=lab/'mods';mods.mkdir()
@@ -60,7 +64,7 @@ def run_phase(rcon,name):
  result=rcon.cmd('workcheck '+name);print(name,result,flush=True);results.append({'phase':name,'result':result})
  if 'PASS '+name not in result:raise RuntimeError(result)
 def launch():
- output=(lab/('process-'+str(len(results))+'.log')).open('w',encoding='utf-8');proc=subprocess.Popen([str(jdk/'java.exe'),'@'+str(lab/'launch.args')],cwd=lab,stdout=output,stderr=subprocess.STDOUT)
+ output=(lab/('process-'+str(len(results))+'.log')).open('w',encoding='utf-8');proc=subprocess.Popen([str(javab),'@'+str(lab/'launch.args')],cwd=lab,stdout=output,stderr=subprocess.STDOUT)
  deadline=time.monotonic()+120
  while time.monotonic()<deadline:
   log=lab/'logs/latest.log';text=log.read_text(encoding='utf-8',errors='replace') if log.exists() else ''
@@ -89,6 +93,13 @@ try:
   (lab/'logs/latest.log').rename(lab/'logs/brain-before-restart.log')
   proc,rcon,output=launch();time.sleep(2)
   asyncio.run(brain_after(rcon,lab,results,mission_notes))
+ if args.recovery_only:
+  from brain_recovery_acceptance import before_restart as rec_before,after_restart as rec_after
+  rec_before(rcon,lab,results,mission_notes)
+  rcon.cmd('save-all flush');rcon.cmd('stop');proc.wait(timeout=45);rcon.sock.close();rcon=None;output.close()
+  (lab/'logs/latest.log').rename(lab/'logs/recovery-before-restart.log')
+  proc,rcon,output=launch();time.sleep(2)
+  rec_after(rcon,lab,results,mission_notes)
  if not args.next_only and not args.empty_only and not args.navigation_only:
   time.sleep(3)
   run_phase(rcon,'rollback');run_phase(rcon,'mining')

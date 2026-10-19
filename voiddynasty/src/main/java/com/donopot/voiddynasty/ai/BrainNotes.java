@@ -3,47 +3,67 @@ package com.donopot.voiddynasty.ai;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.storage.LevelResource;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Memoire de faits du Servitor : ce qu'il a appris et qui doit survivre a la session.
+ * Mémoire de faits du Servitor, <b>propre à chaque monde</b>.
  *
- * <p>Un fichier JSON a cote de la config du monde. On n'y met que des faits durables et
- * verifiables (« filon de fer en 120, -54, 88 », « tunnel vers la base depuis -30, 65, 12 »),
- * jamais l'etat runtime : une note perimee coute plus cher qu'une note absente.</p>
+ * <p>Un fichier par monde, dans le dossier du monde : deux sauvegardes différentes ne partagent
+ * donc plus la même mémoire, et supprimer un monde supprime ses notes. Une note est un fait
+ * durable et vérifiable (« filon de fer en 120, -54, 88 »), jamais un état d'exécution.</p>
+ *
+ * <p>Aucune erreur n'est avalée : une écriture qui échoue lève {@link BrainNotesException} et
+ * l'appelant doit le dire à l'opérateur. Une lecture impossible renvoie une liste vide en
+ * conservant le fichier illisible sous un nom d'archive, pour ne rien détruire.</p>
  */
 public final class BrainNotes {
 
+    /** Erreur de persistance, à remonter telle quelle à l'opérateur. */
+    public static final class BrainNotesException extends RuntimeException {
+        public BrainNotesException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final int MAX_NOTES = 200;
+    private static final String FILE_NAME = "voiddynasty-servitor-notes.json";
 
     private BrainNotes() {}
 
-    private static Path path() {
-        Path dir = FabricLoader.getInstance().getConfigDir();
-        return dir.resolve("voiddynasty-servitor-notes.json");
+    /** Fichier de notes du monde courant : {@code <monde>/voiddynasty/voiddynasty-servitor-notes.json}. */
+    static Path path(ServerLevel level) {
+        return level.getServer().getWorldPath(LevelResource.ROOT)
+                .resolve("voiddynasty").resolve(FILE_NAME);
     }
 
-    /** Ajoute une note, avec la position et la dimension ou elle a ete prise. */
+    /** Ancien emplacement global, repris une seule fois dans le premier monde qui en a besoin. */
+    private static Path legacyPath() {
+        return net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve(FILE_NAME);
+    }
+
+    /** Ajoute une note avec la position et la dimension où elle a été prise. */
     public static String add(ServerLevel level, LivingEntity bot, String text) {
         String note = text == null ? "" : text.trim();
         if (note.isEmpty()) return "note vide : rien enregistre";
         if (note.length() > 400) note = note.substring(0, 400);
 
-        JsonArray notes = load();
+        JsonArray notes = load(level);
         JsonObject entry = new JsonObject();
         entry.addProperty("note", note);
         entry.addProperty("monde", level.dimension().identifier().toString());
@@ -55,16 +75,16 @@ public final class BrainNotes {
         notes.add(entry);
 
         while (notes.size() > MAX_NOTES) notes.remove(0);
-        save(notes);
+        save(level, notes);
         return "note #" + notes.size() + " enregistree (" + p.toShortString() + ") : " + note;
     }
 
-    /** Les N dernieres notes, de la plus ancienne a la plus recente. */
-    public static String list(int count) {
-        JsonArray notes = load();
-        if (notes.isEmpty()) return "aucune note enregistree";
+    /** Les N dernières notes du monde, de la plus ancienne à la plus récente. */
+    public static String list(ServerLevel level, int count) {
+        JsonArray notes = load(level);
+        if (notes.isEmpty()) return "aucune note enregistree dans ce monde";
         int from = Math.max(0, notes.size() - Math.max(1, count));
-        StringBuilder sb = new StringBuilder("memoire (").append(notes.size()).append(" notes) : ");
+        StringBuilder sb = new StringBuilder("memoire de ce monde (").append(notes.size()).append(" notes) : ");
         for (int i = from; i < notes.size(); i++) {
             JsonObject o = notes.get(i).getAsJsonObject();
             sb.append("\n[").append(i + 1).append("] ").append(str(o, "note"))
@@ -74,42 +94,11 @@ public final class BrainNotes {
         return sb.toString();
     }
 
-    private static String str(JsonObject o, String key) {
-        return o.has(key) ? o.get(key).getAsString() : "?";
-    }
-
-    private static JsonArray load() {
-        Path p = path();
-        if (!Files.exists(p)) return new JsonArray();
-        try {
-            String json = Files.readString(p, StandardCharsets.UTF_8);
-            if (json.isBlank()) return new JsonArray();
-            return JsonParser.parseString(json).getAsJsonArray();
-        } catch (IOException | RuntimeException e) {
-            return new JsonArray();
-        }
-    }
-
-    private static void save(JsonArray notes) {
-        Path p = path();
-        try {
-            Files.createDirectories(p.getParent());
-            Files.writeString(p, GSON.toJson(notes), StandardCharsets.UTF_8);
-        } catch (IOException ignored) {
-        }
-    }
-
-    /** Pour les tests : tout oublier. */
-    public static String clear() {
-        save(new JsonArray());
-        return "memoire videe";
-    }
-
-    /** Recherche simple par mot-cle, pour retrouver un filon ou un tunnel. */
-    public static String search(String keyword) {
+    /** Recherche par mot-clé, ou les 10 dernières notes si le mot-clé est vide. */
+    public static String search(ServerLevel level, String keyword) {
         String k = keyword == null ? "" : keyword.toLowerCase();
-        if (k.isBlank()) return list(10);
-        JsonArray notes = load();
+        if (k.isBlank()) return list(level, 10);
+        JsonArray notes = load(level);
         List<String> hits = new ArrayList<>();
         for (int i = 0; i < notes.size(); i++) {
             JsonObject o = notes.get(i).getAsJsonObject();
@@ -118,7 +107,74 @@ public final class BrainNotes {
                         + str(o, "y") + ", " + str(o, "z"));
             }
         }
-        return hits.isEmpty() ? "aucune note ne contient '" + keyword + "'"
+        return hits.isEmpty() ? "aucune note de ce monde ne contient '" + keyword + "'"
                 : hits.size() + " note(s) :\n" + String.join("\n", hits);
+    }
+
+    /** Vide la mémoire du monde. Explicite : le fichier est réécrit, pas supprimé. */
+    public static String clear(ServerLevel level) {
+        save(level, new JsonArray());
+        return "memoire de ce monde videe";
+    }
+
+    private static String str(JsonObject o, String key) {
+        return o.has(key) ? o.get(key).getAsString() : "?";
+    }
+
+    /** Charge les notes du monde ; reprend une fois l'ancien fichier global s'il existe. */
+    static JsonArray load(ServerLevel level) {
+        Path p = path(level);
+        if (!Files.exists(p)) {
+            JsonArray legacy = loadLegacy();
+            if (legacy != null) {
+                save(level, legacy);
+                return legacy;
+            }
+            return new JsonArray();
+        }
+        try {
+            String json = Files.readString(p, StandardCharsets.UTF_8);
+            if (json.isBlank()) return new JsonArray();
+            JsonElement parsed = JsonParser.parseString(json);
+            return parsed.isJsonArray() ? parsed.getAsJsonArray() : new JsonArray();
+        } catch (IOException | RuntimeException e) {
+            // On ne détruit rien : le fichier illisible est mis de côté, l'erreur est dite.
+            Path backup = p.resolveSibling(FILE_NAME + ".corrompu-" + System.currentTimeMillis());
+            try {
+                Files.move(p, backup, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ignored) {
+                // le message ci-dessous dit déjà que la lecture a échoué
+            }
+            throw new BrainNotesException("memoire de ce monde illisible (archive : "
+                    + backup.getFileName() + ")", e);
+        }
+    }
+
+    /** Reprise de l'ancien fichier global, une seule fois par monde. */
+    private static JsonArray loadLegacy() {
+        Path legacy = legacyPath();
+        if (!Files.exists(legacy)) return null;
+        try {
+            String json = Files.readString(legacy, StandardCharsets.UTF_8);
+            if (json.isBlank()) return null;
+            JsonElement parsed = JsonParser.parseString(json);
+            if (!parsed.isJsonArray() || parsed.getAsJsonArray().isEmpty()) return null;
+            return parsed.getAsJsonArray();
+        } catch (IOException | RuntimeException e) {
+            return null; // legacy illisible : on ne bloque pas le monde pour autant
+        }
+    }
+
+    /** Écrit les notes ; toute erreur est levée, jamais ignorée. */
+    static void save(ServerLevel level, JsonArray notes) {
+        Path p = path(level);
+        try {
+            Files.createDirectories(p.getParent());
+            Path tmp = p.resolveSibling(FILE_NAME + ".tmp");
+            Files.writeString(tmp, GSON.toJson(notes), StandardCharsets.UTF_8);
+            Files.move(tmp, p, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new BrainNotesException("ecriture impossible dans " + p.getParent(), e);
+        }
     }
 }

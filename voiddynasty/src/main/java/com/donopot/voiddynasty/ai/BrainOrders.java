@@ -74,6 +74,7 @@ public final class BrainOrders {
             case "work_capabilities" -> com.donopot.voiddynasty.work.MissionService.capabilities().toString();
             case "work_submit" -> com.donopot.voiddynasty.work.MissionService.submit(level,
                     com.google.gson.JsonParser.parseString(order.strArg("spec")).getAsJsonObject(),bot).toString();
+            case "routine_gather" -> BrainRoutine.start(level, bot, order.strArg("spec"));
             case "work_status" -> com.donopot.voiddynasty.work.MissionService.status(level,order.strArg("mission_id")).toString();
             case "work_control" -> com.donopot.voiddynasty.work.MissionService.control(level,order.strArg("mission_id"),order.strArg("action")).toString();
             case "attack_nearest" -> {
@@ -97,11 +98,23 @@ public final class BrainOrders {
                     new BlockPos(order.intArg("x"), order.intArg("y"), order.intArg("z")),
                     order.args().has("half") ? order.intArg("half") : 2,
                     order.args().has("layers") ? order.intArg("layers") : 2);
-            case "remember" -> BrainNotes.add(level, bot, order.strArg("note"));
-            case "recall" -> BrainNotes.search(order.strArg("query"));
+            case "remember" -> note(() -> BrainNotes.add(level, bot, order.strArg("note")));
+            case "recall" -> note(() -> BrainNotes.search(level, order.strArg("query")));
+            case "note_list" -> note(() -> BrainNotes.list(level, 20));
             case "where" -> where(level, bot, order.strArg("player"));
             default -> "ordre ignore : " + name;
         };
+    }
+
+    /** Toute panne de persistance est dite, jamais transformee en succes silencieux. */
+    private static String note(java.util.concurrent.Callable<String> action) {
+        try {
+            return action.call();
+        } catch (BrainNotes.BrainNotesException e) {
+            return "memoire NON enregistree : " + e.getMessage();
+        } catch (Exception e) {
+            return "memoire en erreur : " + e.getMessage();
+        }
     }
 
     private static int clamp(BrainTools.Order order, BrainConfig cfg) {
