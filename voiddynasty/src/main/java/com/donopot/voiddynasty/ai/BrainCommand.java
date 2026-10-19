@@ -96,6 +96,18 @@ public final class BrainCommand {
                                                 .then(Commands.argument("z", IntegerArgumentType.integer())
                                                         .executes(ctx -> moveTo(ctx))))))
                         .then(Commands.literal("status").executes(BrainCommand::moveStatus)))
+                .then(Commands.literal("craft")
+                        .then(Commands.literal("list")
+                                .executes(ctx -> craftList(ctx, ""))
+                                .then(Commands.argument("filtre", StringArgumentType.word())
+                                        .executes(ctx -> craftList(ctx, StringArgumentType.getString(ctx, "filtre")))))
+                        .then(Commands.literal("make")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 4096))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(BrainCommand::craftMake))))))))
                 .then(Commands.literal("brain")
                         .then(Commands.literal("on").executes(BrainCommand::on))
                         .then(Commands.literal("off").executes(BrainCommand::off))
@@ -145,6 +157,32 @@ public final class BrainCommand {
         };
         ctx.getSource().sendSuccess(() -> Component.literal("VDVIEW " + kind + " " + json), false);
         return 1;
+    }
+
+    /** Livre de recettes du serveur : ce que le compagnon peut fabriquer, et avec quelle station. */
+    private static int craftList(CommandContext<CommandSourceStack> ctx, String filter) {
+        ServerLevel level = ctx.getSource().getLevel();
+        com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.recipes(level, filter, 40);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return 1;
+    }
+
+    /** Fabrique depuis le contenu d'un coffre, a condition d'etre a portee d'une table si besoin. */
+    private static int craftMake(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.craft(level, bot, pos,
+                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"));
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return out.get("ok").getAsBoolean() ? 1 : 0;
     }
 
     /** Ordre de deplacement : passe par BrainOrders pour reutiliser la validation et les garde-fous. */

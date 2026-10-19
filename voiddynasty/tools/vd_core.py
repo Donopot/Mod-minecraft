@@ -405,6 +405,55 @@ async def servitor_mission_wait(mission_id,timeout_seconds=10,dimension="overwor
         await asyncio.sleep(min(.5,deadline-now))
 
 
+def _craft_call(tail, dimension="overworld", timeout=60):
+    """Appelle les commandes de craft du mod et lit le marqueur VDCRAFT."""
+    try:
+        dim = _dimension(dimension)
+    except ValueError as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    try:
+        reply = rcon("execute in " + dim + " run servitor craft " + tail, timeout=timeout)[0]
+    except (RuntimeError, OSError) as error:
+        return {"ok": False, "error": "SERVER_UNAVAILABLE", "detail": str(error)}
+    if "VDCRAFT " not in reply:
+        return {"ok": False, "error": "PROTOCOL_ERROR", "detail": reply[:200]}
+    try:
+        return json.loads(reply.split("VDCRAFT ", 1)[1].strip())
+    except ValueError:
+        return {"ok": False, "error": "PROTOCOL_ERROR", "detail": reply[:200]}
+
+
+def servitor_recipes(filter="", dimension="overworld"):
+    """Livre de recettes du serveur : resultat, ingredients, station (bag = 2x2, table = 3x3).
+
+    Ne rien inventer : cette liste est la seule verite sur ce qui est craftable.
+    """
+    if filter is None:
+        filter = ""
+    if not isinstance(filter, str) or not re.fullmatch(r"[A-Za-z0-9_:./-]{0,64}", filter):
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "Invalid filter"}
+    return _craft_call("list " + filter if filter else "list", dimension)
+
+
+def servitor_craft(item, count, chest, dimension="overworld"):
+    """Fabrique `count` exemplaires de `item` depuis le contenu du coffre `chest`.
+
+    Les ingredients sont pris dans le coffre et le resultat y est remis. Une recette 3x3 exige
+    une table de craft a moins de 5 blocs du compagnon ; une recette 2x2 se fait sans table.
+    Le plan de dependance (planches -> batons -> etabli) reste a la charge de l'appelant.
+    """
+    if not isinstance(item, str) or not re.fullmatch(r"(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+", item):
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "Invalid item identifier"}
+    if type(count) is not int or not 1 <= count <= 4096:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "count must be an integer in 1..4096"}
+    try:
+        pos = _position(chest)
+    except (ValueError, TypeError) as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    # Brigadier n'accepte pas ':' hors guillemets : on cite toujours l'identifiant.
+    return _craft_call('make "%s" %d %d %d %d' % (item if ":" in item else "minecraft:" + item, count, pos[0], pos[1], pos[2]), dimension)
+
+
 def servitor_move(mode="status", player="", x=0, y=0, z=0, distance=3, dimension="overworld"):
     """Deplacement du compagnon : rejoindre un joueur, aller a des coordonnees, suivre, ou lire l'etat.
 

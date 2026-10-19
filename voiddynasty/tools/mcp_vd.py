@@ -79,6 +79,25 @@ async def tool_servitor_mission_wait(mission_id: str,timeout_seconds: StrictInt=
     return await vd_core.servitor_mission_wait(mission_id,timeout_seconds,dimension)
 
 
+def tool_servitor_recipes(filter: str = "", dimension: str = "overworld") -> dict:
+    """Livre de recettes du serveur : pour chaque recette, le resultat, les ingredients et la
+    station requise ("bag" = grille 2x2 sans table, "table" = grille 3x3 a portee d'une table).
+    A appeler AVANT de promettre un craft : ne jamais inventer une recette ni ses ingredients.
+    """
+    return vd_core.servitor_recipes(filter=filter, dimension=dimension)
+
+
+def tool_servitor_craft(item: str, count: StrictInt, chest: List[StrictInt],
+                        dimension: str = "overworld") -> dict:
+    """Fabrique `count` exemplaires de `item` depuis le contenu du coffre `chest` [x,y,z].
+    Les ingredients sont consommes dans le coffre et le resultat y est remis. Erreurs explicites :
+    MISSING_INGREDIENTS (avec la liste), NEEDS_CRAFTING_TABLE, CHEST_FULL, NO_RECIPE.
+    Pour un objet en plusieurs etapes (planches -> batons -> etabli), enchainer un appel par etape
+    et relire servitor_recipes entre chaque.
+    """
+    return vd_core.servitor_craft(item=item, count=count, chest=chest, dimension=dimension)
+
+
 def tool_servitor_move(mode: str = "status", player: str = "", x: StrictInt = 0, y: StrictInt = 0,
                        z: StrictInt = 0, distance: StrictFloat = 3.0, dimension: str = "overworld") -> dict:
     """Deplacer le compagnon : mode "come" (rejoindre le joueur), "follow" (le suivre),
@@ -168,6 +187,7 @@ for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest
                 (tool_servitor_status, "servitor_status"), (tool_servitor_players, "servitor_players"),
                 (tool_servitor_look, "servitor_look"), (tool_servitor_work, "servitor_work"),
                 (tool_servitor_move, "servitor_move"), (tool_servitor_excavate, "servitor_excavate"),
+                (tool_servitor_recipes, "servitor_recipes"), (tool_servitor_craft, "servitor_craft"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
         server.add_tool(fn, name=nom)
