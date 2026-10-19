@@ -11,8 +11,14 @@ import java.util.*;
 
 /** Opt-in excavation. Width accounts for the servitor's 1.09-block hitbox. */
 public final class WorkAccess {
-    public static final int MAX_BLOCKS = 256, SEARCH_NODES = 512;
-    private static final Set<String> ROCK = Set.of("minecraft:stone", "minecraft:deepslate", "minecraft:dirt", "minecraft:coarse_dirt", "minecraft:granite", "minecraft:andesite", "minecraft:diorite", "minecraft:tuff");
+    public static final int MAX_BLOCKS = 1024, SEARCH_NODES = 1024;
+    // Surface et sous-sol meubles : sans ces blocs, un escalier d'acces ne peut pas demarrer sur
+    // de l'herbe (le palier de depart exige une couronne 3x3 degageable).
+    private static final Set<String> ROCK = Set.of("minecraft:stone", "minecraft:deepslate", "minecraft:dirt",
+            "minecraft:coarse_dirt", "minecraft:rooted_dirt", "minecraft:grass_block", "minecraft:podzol",
+            "minecraft:mycelium", "minecraft:dirt_path", "minecraft:granite", "minecraft:andesite",
+            "minecraft:diorite", "minecraft:tuff", "minecraft:calcite", "minecraft:gravel", "minecraft:sand",
+            "minecraft:red_sand", "minecraft:sandstone", "minecraft:clay");
     private WorkAccess() {}
     static boolean enabled(WorkState s) { WorkMission m=MissionService.active(s); return m!=null && m.build==null && m.access.equals("excavate"); }
     static boolean contains(WorkMission m,BlockPos p) { return p.getX()>=m.min.getX() && p.getX()<=m.max.getX() && p.getY()>=m.min.getY() && p.getY()<=m.max.getY() && p.getZ()>=m.min.getZ() && p.getZ()<=m.max.getZ(); }
@@ -70,19 +76,63 @@ public final class WorkAccess {
         }
         return List.of();
     }
+    private static final Map<String,Integer> FLOOR_RETRIES = new HashMap<>();
+
+    /**
+     * Deplace le compagnon vers la surface porteuse 3x3 la plus proche quand il se tient sur une
+     * pente. Borne a trois tentatives par mission : au-dela on laisse l'appelant pauser proprement.
+     */
+    private static boolean relocateToFloor(ServerLevel level, WorkState s, LivingEntity bot) {
+        WorkMission m = MissionService.active(s);
+        String key = m == null ? "" : m.id;
+        int attempts = FLOOR_RETRIES.getOrDefault(key, 0);
+        if (attempts >= 3) return false;
+        if (!(bot instanceof Mob mob)) return false;
+        BlockPos start = bot.blockPosition();
+        BlockPos best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (int dx = -6; dx <= 6; dx++) for (int dz = -6; dz <= 6; dz++) for (int dy = -2; dy <= 1; dy++) {
+            BlockPos candidate = start.offset(dx, dy, dz);
+            if (!level.hasChunkAt(candidate) || !WorkStairs.floor(level, candidate)) continue;
+            if (!clearance(candidate).stream().allMatch(p -> level.getBlockState(p).isAir())) continue;
+            double distance = candidate.distSqr(start);
+            if (distance < bestDistance) { bestDistance = distance; best = candidate; }
+        }
+        if (best == null) return false;
+        var path = mob.getNavigation().createPath(best, 0);
+        if (path == null || !path.canReach()) return false;
+        mob.getNavigation().moveTo(path, 1.0);
+        FLOOR_RETRIES.put(key, attempts + 1);
+        s.lastStop = "deplacement vers un palier stable " + best.toShortString() + " (tentative " + (attempts + 1) + "/3)";
+        return true;
+    }
+
     /** Work through one clearance cell at a time; every block uses the normal mining receipt path. */
     static void tick(ServerLevel level,WorkState s,LivingEntity bot,BlockPos target) {
         if(!(bot instanceof Mob mob)) return;
         WorkMission m=MissionService.active(s);
         if(s.accessRoute.isEmpty()) {
             s.accessFrom=null;
+            // Un escalier ne peut pas partir d'un sol en pente ou d'une avancee : le palier de
+            // depart exige une surface 3x3 porteuse. On se deplace d'abord vers une telle surface.
+            if(!WorkStairs.floor(level,bot.blockPosition()) && relocateToFloor(level,s,bot)) return;
             s.accessRoute.addAll(route(level,s,bot.blockPosition(),target));
             if(s.accessRoute.isEmpty()) {
                 var plan=WorkStairs.plan(level,s,bot,target);
                 s.accessRoute.addAll(plan.path());
                 if(!s.accessRoute.isEmpty()) s.accessFrom=plan.start().immutable();
             }
-            if(s.accessRoute.isEmpty()) {WorkService.pause(s,"ACCESS_NO_SAFE_ROUTE");return;}
+            if(s.accessRoute.isEmpty()) {
+                BlockPos start=bot.blockPosition();
+                s.lastStop="ACCESS_NO_SAFE_ROUTE: start="+start.toShortString()
+                        +" target="+target.toShortString()
+                        +" floor="+WorkStairs.floor(level,start)
+                        +" safe="+WorkStairs.safe(level,s,start,start)
+                        +" rise="+(start.getY()-target.getY())
+                        +" enabled="+enabled(s);
+                WorkService.pause(s,"ACCESS_NO_SAFE_ROUTE");
+                return;
+            }
             s.nextPathTick=0;
         }
         BlockPos next=s.accessRoute.getFirst();

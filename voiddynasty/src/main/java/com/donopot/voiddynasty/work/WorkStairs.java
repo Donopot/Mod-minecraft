@@ -11,7 +11,7 @@ import java.util.*;
 /** Excavated landings: three blocks long/wide, at most one block up or down per landing.
  * Existing floors are never mined or supplied. Every return step remains climbable. */
 final class WorkStairs {
-    static final int MAX_RISE = 8, RADIUS = 24;
+    static final int MAX_RISE = 32, RADIUS = 48;
     private WorkStairs() {}
 
     static boolean floor(ServerLevel level, BlockPos feet) {

@@ -57,6 +57,11 @@ public final class SupplyService {
         public int subDepth;
         public int placements;
         public int resumes;
+        public int accessDug;
+        public BlockPos accessOrigin;
+        public int zoneMinY;
+        public int zoneCenterX;
+        public int zoneCenterZ;
         public final JsonArray placed = new JsonArray();
         public long startedTick;
         public String gatherMissionId = "";
@@ -493,9 +498,40 @@ public final class SupplyService {
                 : entry.get("item").getAsString();
         int amount = Math.min(entry.get("missing").getAsInt(), 64);
         JsonArray zone = entry.getAsJsonArray("suggested_zone");
-        JsonArray min = zone.get(0).getAsJsonArray();
-        JsonArray max = zone.get(1).getAsJsonArray();
-        BlockPos origin = bot.blockPosition();
+        int zMinX = zone.get(0).getAsJsonArray().get(0).getAsInt();
+        int zMinY = zone.get(0).getAsJsonArray().get(1).getAsInt();
+        int zMinZ = zone.get(0).getAsJsonArray().get(2).getAsInt();
+        int zMaxX = zone.get(1).getAsJsonArray().get(0).getAsInt();
+        int zMaxY = zone.get(1).getAsJsonArray().get(1).getAsInt();
+        int zMaxZ = zone.get(1).getAsJsonArray().get(2).getAsInt();
+        BlockPos origin = job.accessOrigin != null ? job.accessOrigin : bot.blockPosition();
+        job.zoneMinY = Math.min(zMinY, zMaxY);
+        job.zoneCenterX = (zMinX + zMaxX) / 2;
+        job.zoneCenterZ = (zMinZ + zMaxZ) / 2;
+
+        // Cible souterraine : le moteur ne creuse un escalier QUE dans la zone de la mission
+        // (garde-fou : il ne fouille pas le monde hors zone). On elargit donc la zone vers le haut
+        // pour y inclure le couloir d'acces depuis la surface ; l'escalier est alors creuse par la
+        // mission elle-meme, avec son propre suivi de route et ses recus.
+        boolean deep = zMaxY < origin.getY() - 2;
+        if (deep) {
+            // Le moteur ne creuse que DANS la zone : elle doit donc contenir le compagnon (point de
+            // depart de l'escalier), la colonne de descente et le gisement.
+            zMinX = Math.min(zMinX - 1, origin.getX() - 1);
+            zMaxX = Math.max(zMaxX + 1, origin.getX() + 1);
+            zMinZ = Math.min(zMinZ - 1, origin.getZ() - 1);
+            zMaxZ = Math.max(zMaxZ + 1, origin.getZ() + 1);
+            zMinY = Math.min(zMinY, origin.getY() - 1);
+            zMaxY = Math.max(zMaxY, origin.getY());
+            long volume = (long) (zMaxX - zMinX + 1) * (zMaxY - zMinY + 1) * (zMaxZ - zMinZ + 1);
+            if (volume > 32768) {
+                fail("ZONE_TROP_GRANDE", "Couloir d'acces impossible : " + volume + " blocs > 32768");
+                return;
+            }
+            log("COULOIR_ACCES", "zone elargie vers le haut pour creuser l'escalier : "
+                    + new BlockPos(zMinX, zMinY, zMinZ).toShortString() + " -> "
+                    + new BlockPos(zMaxX, zMaxY, zMaxZ).toShortString() + " (" + volume + " blocs)");
+        }
         JsonObject request = new JsonObject();
         request.addProperty("schema", 1);
         request.addProperty("type", "GATHER");
@@ -503,12 +539,11 @@ public final class SupplyService {
         request.addProperty("request_id", requestId);
         request.addProperty("item", item);
         request.addProperty("amount", amount);
-        request.add("min", posJson(min));
-        request.add("max", posJson(max));
+        request.add("min", posArray(zMinX, zMinY, zMinZ));
+        request.add("max", posArray(zMaxX, zMaxY, zMaxZ));
         request.add("destination", MissionService.positionJson(job.chest));
         request.add("origin", MissionService.positionJson(origin));
-        int top = Math.max(min.get(1).getAsInt(), max.get(1).getAsInt());
-        request.addProperty("access", top >= origin.getY() - 1 ? "surface" : "excavate");
+        request.addProperty("access", deep || zMaxY > origin.getY() - 1 ? "excavate" : "surface");
 
         JsonObject result = MissionService.submit(level, request, bot);
         if (!result.get("ok").getAsBoolean()) {
@@ -541,6 +576,9 @@ public final class SupplyService {
         if (!mission.terminal()) {
             job.note = "recolte en cours : " + mission.status + " (" + mission.delivered + "/" + job.gatherAmount + " livres)";
             if ("PAUSED".equals(mission.status)) {
+                // Acces souterrain impossible : on creuse nous-memes un escalier jusqu'a la zone,
+                // puis on relance la mission depuis le pied de l'escalier.
+                String reason = mission.reason == null ? "" : mission.reason;
                 // Une pause du moteur (route impossible, ouvrier occupe) se repare une fois, puis
                 // on annule la mission et on retente sur une autre zone.
                 if (job.resumes < 1) {
@@ -601,6 +639,14 @@ public final class SupplyService {
     }
 
     private static JsonArray posJson(JsonArray array) {
+        return array;
+    }
+
+    private static JsonArray posArray(int x, int y, int z) {
+        JsonArray array = new JsonArray();
+        array.add(x);
+        array.add(y);
+        array.add(z);
         return array;
     }
 

@@ -261,6 +261,8 @@ public final class CraftService {
         for (Map.Entry<String, Integer> entry : raw.entrySet()) {
             int shortfall = Math.max(0, entry.getValue());
             if (shortfall == 0) continue;
+            ready = false;   // une matiere premiere manquante n'est pas "pret"
+
             JsonObject miss = new JsonObject();
             miss.addProperty("item", entry.getKey());
             miss.addProperty("missing", shortfall);
