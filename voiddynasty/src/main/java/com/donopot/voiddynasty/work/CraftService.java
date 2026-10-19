@@ -241,7 +241,8 @@ public final class CraftService {
         }
 
         JsonArray stepArray = new JsonArray();
-        for (int i = ordered.size() - 1; i >= 0; i--) stepArray.add(ordered.get(i)); // ingredients d'abord
+        // L'ordre d'insertion est deja celui de l'execution : ingredients avant l'item final.
+        for (JsonObject step : ordered) stepArray.add(step);
 
         BlockPos center = bot.blockPosition();
         // La boite de recherche doit rester sous la limite d'observation du mod : on la reduit si besoin.
@@ -254,11 +255,12 @@ public final class CraftService {
             r--;
         }
         JsonArray missing = new JsonArray();
-        boolean ready = true;
+        // Pret = plus une seule etape a executer (les etapes disent deja ce qui manque a fabriquer
+        // ou a recolter : un ingredient disponible ne cree pas d'etape).
+        boolean ready = steps.isEmpty();
         for (Map.Entry<String, Integer> entry : raw.entrySet()) {
             int shortfall = Math.max(0, entry.getValue());
             if (shortfall == 0) continue;
-            ready = false;
             JsonObject miss = new JsonObject();
             miss.addProperty("item", entry.getKey());
             miss.addProperty("missing", shortfall);
@@ -356,9 +358,26 @@ public final class CraftService {
                 smelt.accepts().forEach(accepts::add);
                 step.add("accepts", accepts);
                 step.addProperty("fuel", "carburant du meme coffre (voir fuels_in_chest)");
-                steps.add(step);
                 alternatives.put(smelt.input(), smelt.accepts());
-                String failure = expand(level, smelt.input(), batches, depth + 1, left, raw, steps, nodes, alternatives);
+                // Le coffre peut contenir n'importe quel item accepte par la recette (toutes les
+                // essences de buches pour du charbon de bois) : on consomme d'abord ceux-la.
+                int covered = 0;
+                for (String alt : smelt.accepts()) {
+                    if (covered >= remaining) break;
+                    int available2 = left.getOrDefault(alt, 0);
+                    if (available2 <= 0) continue;
+                    int take = Math.min(available2, remaining - covered);
+                    left.put(alt, available2 - take);
+                    covered += take;
+                }
+                int needMore = remaining - covered;
+                if (needMore <= 0) {
+                    nodes.remove(item);
+                    return null;
+                }
+                String failure = expand(level, smelt.input(), needMore, depth + 1, left, raw, steps, nodes, alternatives);
+                // Post-ordre : les etapes des ingredients sont ajoutees avant celle de l'item.
+                steps.add(step);
                 nodes.remove(item);
                 if (failure != null) return failure;
                 return null;
@@ -387,7 +406,21 @@ public final class CraftService {
         for (Ingredient cell : plan.cells()) {
             String id = describe(cell);
             needs.add(id);
-            String failure = expand(level, id, batches, depth + 1, left, raw, steps, nodes, alternatives);
+            // Un ingredient a tag accepte n'importe quel item du tag (toutes les planches pour
+            // des batons) : on consomme d'abord ceux qui sont deja dans le coffre.
+            int covered = 0;
+            for (var holder : cell.items().toList()) {
+                if (covered >= batches) break;
+                String alt = BuiltInRegistries.ITEM.getKey(holder.value()).toString();
+                int available3 = left.getOrDefault(alt, 0);
+                if (available3 <= 0) continue;
+                int take = Math.min(available3, batches - covered);
+                left.put(alt, available3 - take);
+                covered += take;
+            }
+            int needMore = batches - covered;
+            if (needMore <= 0) continue;
+            String failure = expand(level, id, needMore, depth + 1, left, raw, steps, nodes, alternatives);
             if (failure != null) {
                 nodes.remove(item);
                 return failure;
@@ -427,9 +460,18 @@ public final class CraftService {
         int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
         int used = 0;
-        for (int i = 0; i < matches.size() && used < 3; i++) {
+        // On prend les blocs les PLUS BAS : un tronc flottant en haut d'arbre est inatteignable
+        // pour un compagnon qui marche, la base est ce qui compte.
+        List<JsonObject> sorted = new ArrayList<>();
+        for (int i = 0; i < matches.size(); i++) {
             JsonObject match = matches.get(i).getAsJsonObject();
-            if (!match.has("position")) continue;
+            if (match.has("position")) sorted.add(match);
+        }
+        sorted.sort((left2, right2) -> Integer.compare(
+                left2.getAsJsonArray("position").get(1).getAsInt(),
+                right2.getAsJsonArray("position").get(1).getAsInt()));
+        for (JsonObject match : sorted) {
+            if (used >= 3) break;
             JsonArray pos = match.getAsJsonArray("position");
             int x = pos.get(0).getAsInt(), y = pos.get(1).getAsInt(), z = pos.get(2).getAsInt();
             minX = Math.min(minX, x); maxX = Math.max(maxX, x);
@@ -449,6 +491,80 @@ public final class CraftService {
         zone.add(MissionService.positionJson(new BlockPos(minX, minY, minZ)));
         zone.add(MissionService.positionJson(new BlockPos(maxX, maxY, maxZ)));
         return zone;
+    }
+
+    /** Zone large autour du gisement le plus proche : utile quand la zone serree est inatteignable. */
+    public static JsonArray wideZone(ServerLevel level, String item, JsonArray box, BlockPos chest, BlockPos near) {
+        if (box == null || box.size() < 2) return null;
+        BlockPos min = toPos(box.get(0).getAsJsonArray());
+        BlockPos max = toPos(box.get(1).getAsJsonArray());
+        JsonObject found = WorkObservation.inspect(level, findRequest(item, min, max));
+        if (!found.get("ok").getAsBoolean() || found.get("matches_total").getAsInt() == 0) return null;
+        JsonArray matches = found.getAsJsonArray("matches");
+        BlockPos best = null;
+        double bestDist = Double.MAX_VALUE;
+        for (int i = 0; i < matches.size(); i++) {
+            JsonObject match = matches.get(i).getAsJsonObject();
+            if (!match.has("position")) continue;
+            BlockPos pos = toPos(match.getAsJsonArray("position"));
+            double dist = near == null ? 0 : pos.distSqr(near);
+            if (best == null || dist < bestDist) { bestDist = dist; best = pos; }
+        }
+        if (best == null) return null;
+        // Cube autour du gisement, en descendant sous le bloc trouve pour inclure la base / l'acces.
+        JsonArray zone = new JsonArray();
+        JsonArray low = new JsonArray();
+        low.add(best.getX() - 8); low.add(Math.max(level.getMinY(), best.getY() - 10)); low.add(best.getZ() - 8);
+        JsonArray high = new JsonArray();
+        high.add(best.getX() + 8); high.add(Math.min(level.getMaxY(), best.getY() + 4)); high.add(best.getZ() + 8);
+        zone.add(low);
+        zone.add(high);
+        return excludeChest(zone, chest);
+    }
+
+    /** Zone serree recalculee a la demande autour des premiers blocs reellement presents. */
+    public static JsonArray tightZone(ServerLevel level, String item, JsonArray box, BlockPos exclude) {
+        if (box == null || box.size() < 2) return null;
+        BlockPos min = toPos(box.get(0).getAsJsonArray());
+        BlockPos max = toPos(box.get(1).getAsJsonArray());
+        JsonObject found = WorkObservation.inspect(level, findRequest(item, min, max));
+        if (!found.get("ok").getAsBoolean() || found.get("matches_total").getAsInt() == 0) return null;
+        JsonArray zone = suggestedZone(found.getAsJsonArray("matches"));
+        if (zone == null) return null;
+        return excludeChest(zone, exclude);
+    }
+
+    /** Retire le coffre de destination (et son support) de la zone de recolte. */
+    public static JsonArray excludeChest(JsonArray zone, BlockPos chest) {
+        if (chest == null || zone == null || zone.size() < 2) return zone;
+        int minX = zone.get(0).getAsJsonArray().get(0).getAsInt();
+        int minY = zone.get(0).getAsJsonArray().get(1).getAsInt();
+        int minZ = zone.get(0).getAsJsonArray().get(2).getAsInt();
+        int maxX = zone.get(1).getAsJsonArray().get(0).getAsInt();
+        int maxY = zone.get(1).getAsJsonArray().get(1).getAsInt();
+        int maxZ = zone.get(1).getAsJsonArray().get(2).getAsInt();
+        int x = chest.getX(), y = chest.getY(), z = chest.getZ();
+        boolean inside = x >= minX && x <= maxX && z >= minZ && z <= maxZ && y >= minY - 1 && y <= maxY;
+        if (!inside) return zone;
+        int left = x - minX, right = maxX - x, front = z - minZ, back = maxZ - z;
+        int smallest = Math.min(Math.min(left, right), Math.min(front, back));
+        if (smallest == left) minX = x + 1;
+        else if (smallest == right) maxX = x - 1;
+        else if (smallest == front) minZ = z + 1;
+        else maxZ = z - 1;
+        if (minX > maxX || minZ > maxZ) return null;
+        JsonArray out = new JsonArray();
+        JsonArray low = new JsonArray();
+        low.add(minX); low.add(minY); low.add(minZ);
+        JsonArray high = new JsonArray();
+        high.add(maxX); high.add(maxY); high.add(maxZ);
+        out.add(low);
+        out.add(high);
+        return out;
+    }
+
+    private static BlockPos toPos(JsonArray array) {
+        return new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
     }
 
     private static long boxVolume(BlockPos min, BlockPos max) {
@@ -539,6 +655,24 @@ public final class CraftService {
             left -= take;
         }
         return left == 0;
+    }
+
+    /** Table de craft la plus proche d'une position de reference (rayon 8), ou null. */
+    public static BlockPos nearbyTable(ServerLevel level, BlockPos center) {
+        BlockPos best = null;
+        double bestDist = Double.MAX_VALUE;
+        for (int dx = -8; dx <= 8; dx++) {
+            for (int dy = -3; dy <= 3; dy++) {
+                for (int dz = -8; dz <= 8; dz++) {
+                    BlockPos pos = center.offset(dx, dy, dz);
+                    if (!level.hasChunkAt(pos)) continue;
+                    if (!level.getBlockState(pos).is(Blocks.CRAFTING_TABLE)) continue;
+                    double dist = pos.distSqr(center);
+                    if (dist < bestDist) { bestDist = dist; best = pos; }
+                }
+            }
+        }
+        return best;
     }
 
     private static boolean craftingTableNear(ServerLevel level, BlockPos center) {

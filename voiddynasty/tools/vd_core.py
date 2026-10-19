@@ -456,6 +456,53 @@ def servitor_materials(item, count, chest, radius=16, dimension="overworld"):
         item if ":" in item else "minecraft:" + item, count, pos[0], pos[1], pos[2], radius), dimension)
 
 
+def _supply_call(tail, dimension="overworld", timeout=60):
+    """Appelle les commandes d'approvisionnement autonome et lit le marqueur VDSUPPLY."""
+    try:
+        dim = _dimension(dimension)
+    except ValueError as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    try:
+        reply = rcon("execute in " + dim + " run servitor supply " + tail, timeout=timeout)[0]
+    except (RuntimeError, OSError) as error:
+        return {"ok": False, "error": "SERVER_UNAVAILABLE", "detail": str(error)}
+    if "VDSUPPLY " not in reply:
+        return {"ok": False, "error": "PROTOCOL_ERROR", "detail": reply[:200]}
+    try:
+        return json.loads(reply.split("VDSUPPLY ", 1)[1].strip())
+    except ValueError:
+        return {"ok": False, "error": "PROTOCOL_ERROR", "detail": reply[:200]}
+
+
+def servitor_supply(item, count, chest, dimension="overworld"):
+    """UNE demande, et le moteur enchaine seul recolte -> fonte -> craft jusqu'au coffre.
+
+    Rien a orchestrer ensuite : lance-le, puis interroge servitor_supply_status. Le job s'arrete
+    seul (DONE / FAILED avec la raison) ou sur servitor_supply_cancel. Garde-fous moteur :
+    16 actions, 4 recoltes, 15 minutes.
+    """
+    if not isinstance(item, str) or not re.fullmatch(r"(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+", item):
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "Invalid item identifier"}
+    if type(count) is not int or not 1 <= count <= 1024:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "count must be an integer in 1..1024"}
+    try:
+        pos = _position(chest)
+    except (ValueError, TypeError) as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    return _supply_call('start "%s" %d %d %d %d' % (
+        item if ":" in item else "minecraft:" + item, count, pos[0], pos[1], pos[2]), dimension)
+
+
+def servitor_supply_status(dimension="overworld"):
+    """Etat de l'approvisionnement en cours : statut, note, journal des actions, mission de recolte."""
+    return _supply_call("status", dimension)
+
+
+def servitor_supply_cancel(dimension="overworld"):
+    """Annule l'approvisionnement en cours (la mission de recolte deja lancee n'est pas annulee)."""
+    return _supply_call("cancel", dimension)
+
+
 def servitor_smelt_recipes(filter="", dimension="overworld"):
     """Recettes de fonte du serveur : entree, sortie, temps de cuisson (200 ticks = 10 s), experience.
 

@@ -96,6 +96,22 @@ def tool_servitor_materials(item: str, count: StrictInt, chest: List[StrictInt],
     return vd_core.servitor_materials(item=item, count=count, chest=chest, radius=radius, dimension=dimension)
 
 
+def tool_servitor_supply(item: str, count: StrictInt, chest: List[StrictInt], dimension: str = "overworld") -> dict:
+    """UNE demande : le moteur enchaine seul recolte -> fonte -> craft jusqu'a `count` de `item`
+    dans le coffre. Ne rien orchestrer ensuite : interroger servitor_supply_status."""
+    return vd_core.servitor_supply(item=item, count=count, chest=chest, dimension=dimension)
+
+
+def tool_servitor_supply_status(dimension: str = "overworld") -> dict:
+    """Etat, note et journal de l'approvisionnement autonome en cours (ou 'aucun')."""
+    return vd_core.servitor_supply_status(dimension=dimension)
+
+
+def tool_servitor_supply_cancel(dimension: str = "overworld") -> dict:
+    """Annule l'approvisionnement autonome en cours."""
+    return vd_core.servitor_supply_cancel(dimension=dimension)
+
+
 def tool_servitor_smelt_recipes(filter: str = "", dimension: str = "overworld") -> dict:
     """Recettes de FONTE du serveur (four) : entree, sortie, temps de cuisson, experience.
     Filtre sur le resultat ou l'entree. Une recette absente ici ne se fond pas."""
@@ -219,6 +235,9 @@ for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest
                 (tool_servitor_smelt_recipes, "servitor_smelt_recipes"),
                 (tool_servitor_smelt_fuels, "servitor_smelt_fuels"),
                 (tool_servitor_smelt, "servitor_smelt"),
+                (tool_servitor_supply, "servitor_supply"),
+                (tool_servitor_supply_status, "servitor_supply_status"),
+                (tool_servitor_supply_cancel, "servitor_supply_cancel"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
         server.add_tool(fn, name=nom)

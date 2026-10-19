@@ -162,7 +162,7 @@ public final class SmeltService {
         }
 
         long cookingTicks = (long) plan.cookingTime() * count;
-        Fuel fuel = pickFuel(level, work, plan.accepts());
+        Fuel fuel = pickFuel(level, work, plan.accepts(), plan.output());
         if (fuel == null) {
             JsonObject error = error("NO_FUEL", "Aucun carburant dans le coffre : il faut un item avec un pouvoir "
                     + "calorifique (charbon, bois, planches, lave...)");
@@ -222,12 +222,13 @@ public final class SmeltService {
     private record Fuel(String item, int ticksPerUnit) {}
 
     /** Carburant au meilleur rendement present dans le coffre, jamais l'item qu'on veut fondre. */
-    private static Fuel pickFuel(ServerLevel level, List<ItemStack> work, List<String> inputs) {
+    private static Fuel pickFuel(ServerLevel level, List<ItemStack> work, List<String> inputs, String output) {
         Fuel best = null;
         for (ItemStack stack : work) {
             if (stack.isEmpty()) continue;
             String id = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-            if (inputs.contains(id)) continue;
+            // Ni l'entree ni la sortie ne peuvent servir de carburant : sinon on brule ce qu'on fabrique.
+            if (inputs.contains(id) || id.equals(output)) continue;
             int ticks = burnTicks(level, stack);
             if (ticks <= 0) continue;
             if (best == null || ticks > best.ticksPerUnit()) best = new Fuel(id, ticks);
@@ -285,6 +286,24 @@ public final class SmeltService {
     }
 
     // ------------------------------------------------------------------ outils
+
+    /** Four le plus proche d'une position de reference (rayon 8), ou null. */
+    public static BlockPos nearbyFurnace(ServerLevel level, BlockPos center) {
+        BlockPos best = null;
+        double bestDist = Double.MAX_VALUE;
+        for (int dx = -8; dx <= 8; dx++) {
+            for (int dy = -3; dy <= 3; dy++) {
+                for (int dz = -8; dz <= 8; dz++) {
+                    BlockPos pos = center.offset(dx, dy, dz);
+                    if (!level.hasChunkAt(pos)) continue;
+                    if (!(level.getBlockState(pos).getBlock() instanceof AbstractFurnaceBlock)) continue;
+                    double dist = pos.distSqr(center);
+                    if (dist < bestDist) { bestDist = dist; best = pos; }
+                }
+            }
+        }
+        return best;
+    }
 
     private static boolean furnaceNear(ServerLevel level, BlockPos center) {
         for (int dx = -STATION_RADIUS; dx <= STATION_RADIUS; dx++) {

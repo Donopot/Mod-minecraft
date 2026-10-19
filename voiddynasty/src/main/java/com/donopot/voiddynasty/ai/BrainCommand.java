@@ -117,6 +117,16 @@ public final class BrainCommand {
                                                         .then(Commands.argument("y", IntegerArgumentType.integer())
                                                                 .then(Commands.argument("z", IntegerArgumentType.integer())
                                                                         .executes(BrainCommand::craftMake))))))))
+                .then(Commands.literal("supply")
+                        .then(Commands.literal("status").executes(BrainCommand::supplyStatus))
+                        .then(Commands.literal("cancel").executes(BrainCommand::supplyCancel))
+                        .then(Commands.literal("start")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 1024))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(BrainCommand::supplyStart))))))))
                 .then(Commands.literal("smelt")
                         .then(Commands.literal("list")
                                 .executes(ctx -> smeltList(ctx, ""))
@@ -191,6 +201,33 @@ public final class BrainCommand {
         com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.recipes(level, filter, 40);
         ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
         return 1;
+    }
+
+    /** Demarre un approvisionnement autonome : recolte, fonte et craft enchaines par le moteur. */
+    private static int supplyStart(CommandContext<CommandSourceStack> ctx) {
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        var out = com.donopot.voiddynasty.work.SupplyService.start(ctx.getSource().getLevel(),
+                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"), pos);
+        final var payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDSUPPLY " + payload), false);
+        return payload.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    private static int supplyStatus(CommandContext<CommandSourceStack> ctx) {
+        var out = com.donopot.voiddynasty.work.SupplyService.statusJson();
+        final var payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDSUPPLY " + payload), false);
+        return 1;
+    }
+
+    private static int supplyCancel(CommandContext<CommandSourceStack> ctx) {
+        var out = com.donopot.voiddynasty.work.SupplyService.cancel();
+        final var payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDSUPPLY " + payload), false);
+        return payload.get("ok").getAsBoolean() ? 1 : 0;
     }
 
     /** Liste les recettes de fonte du serveur. */
