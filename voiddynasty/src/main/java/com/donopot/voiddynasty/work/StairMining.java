@@ -45,6 +45,13 @@ final class StairMining {
     /** Largeur du tunnel : 2 pour le servitor (hitbox 1.09 > 1 bloc). 3 = elargissement. */
     static final int WIDTH = 2;
     static final int MAX_STEPS = 96;
+    /**
+     * Longueur de palier mesuree au banc d'essai (alpha.86) : le compagnon ne quitte le support
+     * superieur qu'apres ~2 blocs de marche au-dela du bord (AABB 1.09). Une marche de 1 bloc
+     * d'avance le laisse pose sur la dalle precedente ; 3 blocs garantissent la chute puis
+     * l'appui sur le palier inferieur.
+     */
+    static final int TREAD = 3;
     private static final int MAX_FAILURES = 4;
 
     private StairMining() {}
@@ -203,12 +210,56 @@ final class StairMining {
         return new Step(Kind.WALK, from, feet, volume.cells(), volume.support());
     }
 
+    /**
+     * Descente : le palier vise est a {@link #TREAD} blocs d'avance et un bloc plus bas. Tout le
+     * volume de passage (les TREAD colonnes du palier, deux niveaux, largeur du tunnel) doit etre
+     * degage avant le franchissement, sinon la chute est bloquee par la dalle precedente.
+     */
     private static Step step(ServerLevel level, WorkMission mission, BlockPos from, Direction dir) {
-        BlockPos feet = from.offset(dir.getStepX(), -1, dir.getStepZ());
         BlockPos delta = new BlockPos(dir.getStepX(), 0, dir.getStepZ());
-        Volume volume = volume(level, mission, feet, delta);
-        if (volume == null) return null;
-        return new Step(Kind.DESCEND_STEP, from, feet, volume.cells(), volume.support());
+        BlockPos perp = delta.getZ() != 0 ? new BlockPos(1, 0, 0) : new BlockPos(0, 0, 1);
+        for (BlockPos side : List.of(perp, new BlockPos(-perp.getX(), 0, -perp.getZ()))) {
+            List<BlockPos> cells = new ArrayList<>();
+            List<BlockPos> support = new ArrayList<>();
+            boolean ok = true;
+            for (int i = 1; i <= TREAD && ok; i++) {
+                BlockPos base = from.offset(dir.getStepX() * i, -1, dir.getStepZ() * i);
+                for (int w = 0; w < Math.max(1, WIDTH); w++) {
+                    BlockPos column = w == 0 ? base : base.offset(side.getX() * w, 0, side.getZ() * w);
+                    for (int h = 0; h < HEIGHT; h++) cells.add(column.above(h));
+                    support.add(column.below());
+                }
+            }
+            for (BlockPos cell : cells) {
+                if (!validCell(level, mission, cell)) { ok = false; break; }
+            }
+            if (!ok) continue;
+            for (BlockPos appui : support) {
+                if (!support(level, appui)) { ok = false; break; }
+                if (cells.contains(appui)) { ok = false; break; }
+            }
+            if (!ok) continue;
+            BlockPos feet = from.offset(dir.getStepX() * TREAD, -1, dir.getStepZ() * TREAD);
+            return new Step(Kind.DESCEND_STEP, from, feet, List.copyOf(cells), List.copyOf(support));
+        }
+        lastReason = "palier de " + TREAD + " blocs impraticable dans " + dir;
+        return null;
+    }
+
+    /** Verification d'une cellule de volume : chunk, zone, claim, fluides, bloc excavable. */
+    private static boolean validCell(ServerLevel level, WorkMission mission, BlockPos cell) {
+        if (!level.hasChunkAt(cell) || !WorkService.loadedNeighborhood(level, cell)) { lastReason = "chunk " + cell.toShortString(); return false; }
+        if (level.isOutsideBuildHeight(cell)) { lastReason = "hauteur " + cell.toShortString(); return false; }
+        if (!level.getWorldBorder().isWithinBounds(cell)) { lastReason = "bordure " + cell.toShortString(); return false; }
+        if (ClaimIntegration.isClaimProtected(level, cell)) { lastReason = "claim " + cell.toShortString(); return false; }
+        if (WorkService.touchesFluid(level, cell)) { lastReason = "fluide " + cell.toShortString(); return false; }
+        var block = level.getBlockState(cell);
+        if (block.isAir()) return true;
+        if (!WorkAccess.safe(level, stateOf(level), cell)) {
+            lastReason = "bloc " + cell.toShortString() + " " + BuiltInRegistries.BLOCK.getKey(block.getBlock());
+            return false;
+        }
+        return true;
     }
 
     /** Volumes retenus pour une transition : cellules a degager et appuis exiges. */
