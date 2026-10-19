@@ -16,7 +16,13 @@ public class Servitor1Entity extends ChaosCultistEntity {
 
     /** Keep native navigation/move controls, remove combat and wandering only for workers. */
     public void setWorkMode() {
-        if (workMode) return;
+        if (workMode) {
+            // Un worker recharge depuis une sauvegarde arrive en NoAI=true (voir
+            // readAdditionalSaveData). Le drapeau workMode est deja vrai : sans cette ligne,
+            // setWorkMode() ne rendait jamais l'IA et le compagnon restait immobile pour toujours.
+            setNoAi(false);
+            return;
+        }
         workMode = true;
         addTag("voiddynasty_work");
         goalSelector.removeAllGoals(goal -> true);

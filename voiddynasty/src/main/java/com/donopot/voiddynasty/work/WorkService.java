@@ -151,7 +151,9 @@ public final class WorkService {
                 pause(state, "servitor absent ou dimension incorrecte — /work resume");
                 continue;
             }
-            if (bot instanceof Servitor1Entity worker) worker.setWorkMode();
+            // wake() leve explicitement le NoAI pose au chargement d'une sauvegarde : c'est le seul
+            // point qui autorise la reprise physique du compagnon quand un chantier tourne.
+            if (bot instanceof Servitor1Entity worker) { worker.setWorkMode(); worker.wake(); }
             ensureTicking(level, state, bot);
             double oldProgress = state.progress;
             int oldDone = state.done;
