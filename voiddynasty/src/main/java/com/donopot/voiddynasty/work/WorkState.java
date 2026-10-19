@@ -71,6 +71,8 @@ public final class WorkState extends SavedData {
 
     // ---- outil ----
     public String toolId = "";           // "" = mains nues
+    /** Plafond de hauteur du couloir d'acces (surface de depart), Integer.MIN_VALUE si aucun. */
+    public int accessCeiling = Integer.MIN_VALUE;
     public int toolDamage = 0;
     public int toolBlocks = 0;           // blocs cassés avec l'outil courant
 

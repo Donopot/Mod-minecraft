@@ -215,6 +215,19 @@ public final class WorkService {
         // C. à portée ?
         if (distanceSq(bot, target) > REACH * REACH || !visible(level, bot, target)) {
             if(WorkAccess.enabled(state)) {
+                // Un chemin vanilla qui n'avance plus ne doit pas immobiliser le chantier : au-dela
+                // de 60 ticks sans mouvement reel, on rend la main au planificateur d'acces, qui
+                // bascule sur l'escalier si aucune marche a niveau n'existe.
+                if (StairMining.owns(MissionService.active(state))) {
+                    StairMining.drive(level, state, bot, target);
+                    return;
+                }
+                if (state.accessRoute.isEmpty() && state.idleTicks > 60) {
+                    if (bot instanceof Mob stuck) stuck.getNavigation().stop();
+                    state.accessRoute.clear();
+                    WorkAccess.tick(level, state, bot, target);
+                    return;
+                }
                 if(!state.accessRoute.isEmpty() || !stepToward(level,state,bot,target)) WorkAccess.tick(level,state,bot,target);
                 return;
             }
@@ -340,7 +353,7 @@ public final class WorkService {
 
         // Revalidate after travel/mining delay, before touching the block or ledger.
         WorkMission mission = MissionService.active(state);
-        if (blockState.isAir() || (access ? !WorkAccess.enabled(state) || !WorkAccess.safe(level,state,pos)
+        if (blockState.isAir() || (access ? !WorkAccess.enabled(state) || !WorkAccess.safe(level,state,pos,state.accessCeiling)
                 : mission != null && !MissionService.matches(mission, blockState))
                 || skip(level, state, pos, blockState)) {
             if(access) {state.accessRoute.clear();state.accessBlock=null;state.accessFrom=null;state.progress=0;}

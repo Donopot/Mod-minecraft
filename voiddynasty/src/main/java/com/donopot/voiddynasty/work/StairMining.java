@@ -78,6 +78,11 @@ final class StairMining {
      * s'effacer : l'escalier a ses propres bornes (45 s par marche, 5 min au total, 5 recuperations)
      * et publie sa phase. Sans cela, le worker met la mission en pause au milieu d'un creusement.
      */
+    /** Le planificateur possede la mission des qu'il a un etat d'execution : il la garde. */
+    static boolean owns(WorkMission mission) {
+        return mission != null && EXECS.containsKey(mission.id);
+    }
+
     static boolean driving(WorkMission mission) {
         return mission != null && EXECS.containsKey(mission.id);
     }
@@ -110,6 +115,10 @@ final class StairMining {
         WorkMission mission = MissionService.active(state);
         BlockPos start = bot.blockPosition();
         if (mission == null) return null;
+        // Le couloir part de la surface : sa borne haute est la hauteur de depart, pas le plafond
+        // de la zone miniere (sinon aucune entree n'est jamais praticable au-dessus de la cible).
+        accessTop = start.getY() + 2;
+        state.accessCeiling = accessTop;
         // 1. Trouver une entree praticable au-dessus de la cible (colonne porteuse, 2 blocs libres).
         BlockPos surface = entrance(level, mission, target, start);
         if (surface == null) {
@@ -131,6 +140,7 @@ final class StairMining {
     }
 
     private static String lastReason = "";
+    private static int accessTop = Integer.MIN_VALUE;
 
     /**
      * Colonne d'entree la plus proche de la cible : sommet porteur a hauteur du compagnon (+/-3),
@@ -158,10 +168,10 @@ final class StairMining {
 
     /** Toutes les cellules autour du point (marge donnee, deux niveaux) sont-elles dans la zone ? */
     private static boolean insideMargin(WorkMission mission, BlockPos feet, int margin) {
+        // Emprise horizontale seulement : la hauteur du couloir est reglee par accessTop.
         for (int dx = -margin; dx <= margin; dx++) {
             for (int dz = -margin; dz <= margin; dz++) {
-                if (!WorkAccess.contains(mission, feet.offset(dx, 0, dz))) return false;
-                if (!WorkAccess.contains(mission, feet.offset(dx, 1, dz))) return false;
+                if (!WorkAccess.columnOf(mission, feet.offset(dx, 0, dz))) return false;
             }
         }
         return true;
@@ -255,7 +265,7 @@ final class StairMining {
         if (WorkService.touchesFluid(level, cell)) { lastReason = "fluide " + cell.toShortString(); return false; }
         var block = level.getBlockState(cell);
         if (block.isAir()) return true;
-        if (!WorkAccess.safe(level, stateOf(level), cell)) {
+        if (!WorkAccess.safe(level, stateOf(level), cell, accessTop)) {
             lastReason = "bloc " + cell.toShortString() + " " + BuiltInRegistries.BLOCK.getKey(block.getBlock());
             return false;
         }
@@ -306,7 +316,7 @@ final class StairMining {
             if (WorkService.touchesFluid(level, cell)) { lastReason = "fluide " + cell.toShortString(); return null; }
             var block = level.getBlockState(cell);
             if (block.isAir()) continue;
-            if (!WorkAccess.safe(level, stateOf(level), cell)) {
+            if (!WorkAccess.safe(level, stateOf(level), cell, accessTop)) {
                 lastReason = "bloc " + cell.toShortString() + " "
                     + BuiltInRegistries.BLOCK.getKey(block.getBlock())
                     + " : " + WorkAccess.why(level, stateOf(level), cell);
@@ -381,8 +391,13 @@ final class StairMining {
 
     // ------------------------------------------------------------------ machine a etats
 
-    /** Cycle d'execution d'un escalier : plan -> degagement -> descente -> verification. */
-    enum Phase { PLAN_STEP, CLEAR_STEP, DESCEND, VERIFY, RECOVER }
+    /**
+     * Cycle d'execution d'un escalier. DESCEND ne valide plus l'arrivee : il constate seulement le
+     * franchissement du niveau. L'atterrissage reel est mesure a part (LANDING_VERIFY), puis
+     * l'alignement horizontal jusqu'au palier planifie (ALIGN), et seule STEP_VERIFY incremente
+     * l'index de marche.
+     */
+    enum Phase { PLAN_STEP, CLEAR_STEP, DESCEND, LANDING_VERIFY, ALIGN, STEP_VERIFY, RECOVER }
 
     private static final class Exec {
         Plan plan;
@@ -394,16 +409,26 @@ final class StairMining {
         int attempts;
         int recovers;
         int stepRecovers;
+        int alignTries;
+        int alignDigs;
         String signature = "";
         String lastSignature = "";
         int sameSignature;
         Phase lastPhase = null;
+        Vec3 actualLanding;
+        Vec3 plannedLanding;
+        BlockPos exit;
+        double alignX, alignZ;
+        long alignMoveTick;
     }
 
     private static final Map<String, Exec> EXECS = new HashMap<>();
-    private static final long STEP_TIMEOUT = 45L * 20L;      // ticks par marche
+    private static final long STEP_TIMEOUT = 45L * 20L;      // ticks par marche (toutes phases)
+    private static final long LANDING_TIMEOUT = 6L * 20L;    // stabilisation apres chute
     private static final long STAIR_TIMEOUT = 300L * 20L;    // ticks pour l'escalier entier
+    private static final long ALIGN_STILL = 40L;             // ticks sans bouger en ALIGN
     private static final int MAX_RECOVERS = 5, MAX_STEP_RECOVERS = 2, MAX_VERIFY_RETRIES = 3;
+    private static final int MAX_ALIGN_TRIES = 6, MAX_ALIGN_DIGS = 12;
 
     private static Exec exec(String key) {
         return EXECS.computeIfAbsent(key, k -> new Exec());
@@ -413,6 +438,8 @@ final class StairMining {
         ex.phase = phase;
         ex.phaseStart = now;
         if (phase == Phase.CLEAR_STEP) { ex.attempts = 0; ex.stepStart = now; }
+        if (phase == Phase.ALIGN) { ex.alignTries = 0; ex.alignDigs = 0; ex.alignMoveTick = now;
+            ex.alignX = Double.NaN; ex.alignZ = Double.NaN; }
     }
 
     private static void stairFail(WorkState state, Exec ex, String key, String code, String detail) {
@@ -436,6 +463,11 @@ final class StairMining {
         String key = mission.id;
         Exec ex = exec(key);
         long now = level.getGameTime();
+        if (ex.startTick == 0L) {
+            System.out.println("[STAIR_ENTER] mission=" + key + " pos=" + bot.blockPosition()
+                    + " target=" + (target == null ? "?" : target.toShortString())
+                    + " rise=" + (bot.blockPosition().getY() - (target == null ? 0 : target.getY())));
+        }
         if (ex.startTick == 0L) { ex.startTick = now; ex.phaseStart = now; }
         if (now - ex.startTick > STAIR_TIMEOUT) {
             stairFail(state, ex, key, "STAIR_TIMEOUT", "5 minutes sans terminer l'escalier");
@@ -454,7 +486,9 @@ final class StairMining {
             case PLAN_STEP -> planStep(level, state, bot, mob, target, key, ex, now);
             case CLEAR_STEP -> clearStep(level, state, bot, mob, target, key, ex, now);
             case DESCEND -> descendStep(level, state, bot, mob, target, key, ex, now);
-            case VERIFY -> verifyStep(level, state, bot, mob, target, key, ex, now);
+            case LANDING_VERIFY -> landingVerify(level, state, bot, mob, target, key, ex, now);
+            case ALIGN -> align(level, state, bot, mob, target, key, ex, now);
+            case STEP_VERIFY -> stepVerify(level, state, bot, mob, target, key, ex, now);
             case RECOVER -> recover(level, state, bot, target, key, ex, now);
         }
         return true;
@@ -504,7 +538,7 @@ final class StairMining {
         if (step.kind() == Kind.DESCEND_STEP) cells.addAll(footprintCells(bot, step.feet()));
         for (BlockPos cell : cells) {
             if (level.getBlockState(cell).isAir()) continue;
-            if (!WorkAccess.safe(level, state, cell)) {
+            if (!WorkAccess.safe(level, state, cell, accessTop)) {
                 signatureFail(state, ex, key, "CLEAR_REFUSED", cell + " : " + WorkAccess.why(level, state, cell));
                 return;
             }
@@ -515,27 +549,7 @@ final class StairMining {
                         + " approche " + cell.toShortString();
                 return;
             }
-            mob.getNavigation().stop();
-            if (state.accessBlock == null || !state.accessBlock.equals(cell)) {
-                state.accessBlock = cell;
-                state.progress = 0;
-            }
-            state.progress += WorkService.speedMult() / 20.0;
-            var bs = level.getBlockState(cell);
-            if (state.progress < WorkService.breakSeconds(level, state, cell, bs)) {
-                state.lastStop = "escalier CLEAR " + cell.toShortString() + " "
-                        + BuiltInRegistries.BLOCK.getKey(bs.getBlock());
-                return;
-            }
-            String block = BuiltInRegistries.BLOCK.getKey(bs.getBlock()).toString();
-            WorkService.breakTarget(level, state, bot, cell, true);
-            boolean confirmed = level.getBlockState(cell).isAir();
-            state.movementCells.clear();
-            state.idleTicks = 0;
-            state.setDirty();
-            System.out.println("[STAIR_CLEAR] index=" + ex.index + " phase=CLEAR_STEP cell=" + cell.toShortString()
-                    + " block=" + block + " confirmed=" + confirmed);
-            return;
+            if (digStep(level, state, bot, mob, cell, "CLEAR_STEP", ex)) return;
         }
         // Volume degage : on verifie les appuis avant de descendre.
         for (BlockPos appui : step.support()) {
@@ -547,20 +561,63 @@ final class StairMining {
         enter(ex, Phase.DESCEND, now);
     }
 
-    /** Descente (ou marche) vers le palier, avec guidage puis impulsion bornee. */
+    /**
+     * Casse une cellule avec progression reelle et confirmation par relecture.
+     * @return true si une action (approche, progression ou casse) a consomme ce tick.
+     */
+    private static boolean digStep(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                                   BlockPos cell, String phase, Exec ex) {
+        double distance = WorkService.distanceSq(bot, cell);
+        if (distance > WorkService.reach() * WorkService.reach() || !WorkService.visible(level, bot, cell)) {
+            approach(level, mob, cell);
+            state.lastStop = "escalier " + phase + " approche " + cell.toShortString();
+            return true;
+        }
+        mob.getNavigation().stop();
+        if (state.accessBlock == null || !state.accessBlock.equals(cell)) {
+            state.accessBlock = cell;
+            state.progress = 0;
+        }
+        state.progress += WorkService.speedMult() / 20.0;
+        var bs = level.getBlockState(cell);
+        if (state.progress < WorkService.breakSeconds(level, state, cell, bs)) {
+            state.lastStop = "escalier " + phase + " " + cell.toShortString() + " "
+                    + BuiltInRegistries.BLOCK.getKey(bs.getBlock());
+            return true;
+        }
+        String block = BuiltInRegistries.BLOCK.getKey(bs.getBlock()).toString();
+        WorkService.breakTarget(level, state, bot, cell, true);
+        boolean confirmed = level.getBlockState(cell).isAir();
+        state.movementCells.clear();
+        state.idleTicks = 0;
+        state.setDirty();
+        System.out.println("[STAIR_CLEAR] index=" + ex.index + " phase=" + phase + " cell=" + cell.toShortString()
+                + " block=" + block + " confirmed=" + confirmed);
+        return true;
+    }
+
+    /**
+     * Descente : on ne valide plus l'arrivee au palier, seulement le franchissement du niveau.
+     * L'atterrissage reel et l'alignement sont traites par les phases suivantes.
+     */
     private static void descendStep(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
                                     BlockPos target, String key, Exec ex, long now) {
         Step step = ex.plan.steps().get(ex.index);
         BlockPos feet = step.feet();
-        if (arrived(bot, feet)) {
-            enter(ex, Phase.VERIFY, now);
+        double dy = bot.getY() - feet.getY();
+        if (dy <= 0.7) {
+            System.out.println("[STAIR_DESCEND] index=" + ex.index + " crossed level pos="
+                    + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ())
+                    + " planned=" + feet.toShortString() + " dy=" + String.format(java.util.Locale.ROOT, "%.2f", dy));
+            enter(ex, Phase.LANDING_VERIFY, now);
             return;
         }
         if (now - ex.stepStart > STEP_TIMEOUT) {
-            signatureFail(state, ex, key, "STEP_TIMEOUT", "aucune arrivée en 45 s vers " + feet.toShortString());
+            signatureFail(state, ex, key, "STEP_TIMEOUT", "aucune descente en 45 s vers " + feet.toShortString()
+                    + " (pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ()) + ")");
             return;
         }
-        if (step.kind() == Kind.DESCEND_STEP && feet.getY() < bot.getY() - 0.4) {
+        if (step.kind() == Kind.DESCEND_STEP) {
             if (!descend(level, mob, step.from(), feet, key)) {
                 signatureFail(state, ex, key, "DESCEND_BLOCKED", "impulsions épuisées vers " + feet.toShortString());
                 return;
@@ -574,26 +631,156 @@ final class StairMining {
                 + " vers " + feet.toShortString();
     }
 
-    /** Verification fondee sur les coordonnees reelles, l'AABB et l'appui. stepIndex incremente ici. */
-    private static void verifyStep(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+    /**
+     * Atterrissage : on mesure la position reelle, l'appui sous l'AABB et l'absence de penetration.
+     * Une entite encore en l'air ou posee sur du vide n'est jamais declaree arrivee.
+     */
+    private static void landingVerify(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                                      BlockPos target, String key, Exec ex, long now) {
+        Step step = ex.plan.steps().get(ex.index);
+        BlockPos feet = step.feet();
+        BlockPos here = BlockPos.containing(bot.position());
+        double dy = bot.getY() - feet.getY();
+        boolean levelOk = Math.abs(dy) <= 0.7;
+        boolean grounded = bot.onGround();
+        boolean stable = Math.abs(bot.getDeltaMovement().y) < 0.08;
+        boolean supported = footprintSupported(level, bot, here);
+        boolean free = level.noCollision(bot, bot.getBoundingBox().deflate(0.02));
+        boolean danger = danger(level, here);
+        if (ex.actualLanding == null || now % 10L == 0L) {
+            System.out.println("[STAIR_LANDING] index=" + ex.index
+                    + " planned=" + feet.toShortString()
+                    + " actual=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ())
+                    + " dy=" + String.format(java.util.Locale.ROOT, "%.2f", dy)
+                    + " level=" + levelOk + " grounded=" + grounded + " stable=" + stable
+                    + " supported=" + supported + " free=" + free + " danger=" + danger
+                    + " aabb=" + fmt(bot.getBoundingBox()));
+        }
+        if (levelOk && grounded && stable && supported && free && !danger) {
+            Vec3 landing = bot.position();
+            ex.actualLanding = landing;
+            ex.plannedLanding = centre(feet);
+            ex.exit = feet;
+            System.out.println("[STAIR_ALIGN] index=" + ex.index
+                    + " from=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", landing.x, landing.y, landing.z)
+                    + " to=" + feet.toShortString()
+                    + " dx=" + String.format(java.util.Locale.ROOT, "%.2f", feet.getX() + 0.5 - landing.x)
+                    + " dz=" + String.format(java.util.Locale.ROOT, "%.2f", feet.getZ() + 0.5 - landing.z));
+            enter(ex, Phase.ALIGN, now);
+            return;
+        }
+        if (now - ex.phaseStart > LANDING_TIMEOUT) {
+            signatureFail(state, ex, key, "LANDING_FAILED", "atterrissage non stable"
+                    + " level=" + levelOk + " grounded=" + grounded + " supported=" + supported
+                    + " free=" + free + " danger=" + danger);
+            return;
+        }
+        mob.setDeltaMovement(Vec3.ZERO.x, mob.getDeltaMovement().y, Vec3.ZERO.z);
+        state.lastStop = "escalier LANDING marche " + (ex.index + 1) + " stabilisation";
+    }
+
+    /**
+     * Alignement : trajectoire horizontale a hauteur constante depuis l'atterrissage reel jusqu'au
+     * palier planifie. Les cellules solides intermediaires sont creusees (une par tick), puis le
+     * deplacement est confirme par la position reelle, pas par l'emission de la commande.
+     */
+    private static void align(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                              BlockPos target, String key, Exec ex, long now) {
+        Step step = ex.plan.steps().get(ex.index);
+        BlockPos exit = step.feet();
+        double cx = exit.getX() + 0.5, cz = exit.getZ() + 0.5;
+        double dist = Math.hypot(bot.getX() - cx, bot.getZ() - cz);
+        boolean levelOk = Math.abs(bot.getY() - exit.getY()) <= 0.7;
+        if (dist <= 1.05 && levelOk) {
+            System.out.println("[STAIR_ALIGN] index=" + ex.index + " aligned dist="
+                    + String.format(java.util.Locale.ROOT, "%.2f", dist) + " pos="
+                    + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ()));
+            enter(ex, Phase.STEP_VERIFY, now);
+            return;
+        }
+        if (now - ex.phaseStart > STEP_TIMEOUT) {
+            signatureFail(state, ex, key, "ALIGN_TIMEOUT", "alignement impossible vers " + exit.toShortString()
+                    + " depuis " + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ()));
+            return;
+        }
+        BlockPos here = bot.blockPosition();
+        int stepX = Integer.signum(exit.getX() - here.getX());
+        int stepZ = Integer.signum(exit.getZ() - here.getZ());
+        // 1. degager la cellule suivante sur le trajet, a hauteur de palier constante
+        if (stepX != 0 || stepZ != 0) {
+            BlockPos next = here.offset(stepX, 0, stepZ);
+            for (int h = 0; h < HEIGHT; h++) {
+                BlockPos cell = next.above(h);
+                if (level.getBlockState(cell).isAir()) continue;
+                if (!WorkAccess.safe(level, state, cell, accessTop)) {
+                    signatureFail(state, ex, key, "ALIGN_REFUSED", cell + " : " + WorkAccess.why(level, state, cell));
+                    return;
+                }
+                if (ex.alignDigs >= MAX_ALIGN_DIGS) {
+                    signatureFail(state, ex, key, "ALIGN_BLOCKED", "trop de blocs sur le trajet (" + ex.alignDigs + ")");
+                    return;
+                }
+                boolean acted = digStep(level, state, bot, mob, cell, "ALIGN", ex);
+                if (level.getBlockState(cell).isAir()) ex.alignDigs++;
+                state.lastStop = "escalier ALIGN degagement " + cell.toShortString();
+                if (acted) return;
+            }
+        }
+        // 2. avancer horizontalement, sans jamais viser un autre niveau
+        if (now % 8L == 0L) {
+            mob.getNavigation().stop();
+            mob.getMoveControl().setWantedPosition(cx, bot.getY(), cz, 1.0);
+        }
+        // 3. confirmer le mouvement reel
+        if (Double.isNaN(ex.alignX) || now - ex.alignMoveTick > ALIGN_STILL) {
+            double moved = Double.isNaN(ex.alignX) ? 99.0
+                    : Math.hypot(bot.getX() - ex.alignX, bot.getZ() - ex.alignZ);
+            if (moved < 0.05 && !Double.isNaN(ex.alignX)) {
+                ex.alignTries++;
+                System.out.println("[STAIR_ALIGN] index=" + ex.index + " immobile essai=" + ex.alignTries
+                        + " pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ())
+                        + " cible=" + exit.toShortString() + " dist=" + String.format(java.util.Locale.ROOT, "%.2f", dist));
+                if (ex.alignTries > MAX_ALIGN_TRIES) {
+                    signatureFail(state, ex, key, "ALIGN_STUCK", "aucun mouvement confirmé vers " + exit.toShortString());
+                    return;
+                }
+                // impulsion horizontale mesuree, sans changer la hauteur du palier
+                double dx = cx - bot.getX(), dz = cz - bot.getZ();
+                double norm = Math.sqrt(dx * dx + dz * dz);
+                if (norm > 0.001) mob.setDeltaMovement(dx / norm * 0.12, mob.getDeltaMovement().y, dz / norm * 0.12);
+                mob.syncVelocity = true;
+            }
+            ex.alignX = bot.getX();
+            ex.alignZ = bot.getZ();
+            ex.alignMoveTick = now;
+        }
+        state.lastStop = "escalier ALIGN marche " + (ex.index + 1) + "/" + ex.plan.steps().size()
+                + " dist=" + String.format(java.util.Locale.ROOT, "%.2f", dist);
+    }
+
+    /** Verification finale : seule cette phase incremente l'index de marche. */
+    private static void stepVerify(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
                                    BlockPos target, String key, Exec ex, long now) {
         Step step = ex.plan.steps().get(ex.index);
         BlockPos feet = step.feet();
         BlockPos here = bot.blockPosition();
-        boolean positionOk = Math.abs(here.getX() - feet.getX()) <= 1
-                && Math.abs(here.getZ() - feet.getZ()) <= 1
-                && Math.abs(bot.getY() - feet.getY()) <= 0.6;
-        boolean supportOk = support(level, feet.below());
-        boolean volumeOk = true;
-        for (BlockPos cell : footprintCells(bot, feet)) {
-            if (!level.getBlockState(cell).isAir()) { volumeOk = false; break; }
-        }
-        System.out.println("[STAIR_VERIFY] index=" + ex.index + " pos=" + here.toShortString()
-                + " expected=" + feet.toShortString() + " support=" + supportOk
-                + " volume=" + volumeOk + " aabb=" + fmt(bot.getBoundingBox()));
-        if (positionOk && supportOk && volumeOk) {
+        double dx = bot.getX() - (feet.getX() + 0.5);
+        double dz = bot.getZ() - (feet.getZ() + 0.5);
+        double dy = bot.getY() - feet.getY();
+        boolean positionOk = Math.abs(dx) <= 1.05 && Math.abs(dz) <= 1.05 && Math.abs(dy) <= 0.7;
+        boolean supportOk = footprintSupported(level, bot, here);
+        boolean free = level.noCollision(bot, bot.getBoundingBox().deflate(0.02));
+        System.out.println("[STAIR_VERIFY] index=" + ex.index
+                + " pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ())
+                + " expected=" + feet.toShortString()
+                + " dx=" + String.format(java.util.Locale.ROOT, "%.2f", dx)
+                + " dz=" + String.format(java.util.Locale.ROOT, "%.2f", dz)
+                + " dy=" + String.format(java.util.Locale.ROOT, "%.2f", dy)
+                + " support=" + supportOk + " free=" + free + " aabb=" + fmt(bot.getBoundingBox()));
+        if (positionOk && supportOk && free) {
             ex.index++;
             ex.stepRecovers = 0;
+            ex.attempts = 0;
             DESCEND_TRIES.remove(key);
             DESCEND_LAST.remove(key);
             state.accessBlock = null;
@@ -617,10 +804,25 @@ final class StairMining {
         }
         ex.attempts++;
         if (ex.attempts > MAX_VERIFY_RETRIES) {
-            signatureFail(state, ex, key, "VERIFY_FAILED", "position/support/volume non conformes");
+            signatureFail(state, ex, key, "VERIFY_FAILED", "position/support/collision non conformes");
             return;
         }
-        enter(ex, Phase.DESCEND, now);
+        // Position hors tolerance mais niveau et appui corrects : on reprend l'alignement.
+        enter(ex, Phase.ALIGN, now);
+    }
+
+    /** Danger immediat sous ou autour du palier : lave, feu, magma, neige poudree. */
+    private static boolean danger(ServerLevel level, BlockPos here) {
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                for (int dy = -1; dy <= 0; dy++) {
+                    var bs = level.getBlockState(here.offset(dx, dy, dz));
+                    if (WorkService.touchesFluid(level, here.offset(dx, dy, dz))) return true;
+                    if (bs.is(net.minecraft.tags.BlockTags.FIRE)) return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

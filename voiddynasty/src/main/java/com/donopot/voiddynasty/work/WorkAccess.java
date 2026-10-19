@@ -48,8 +48,18 @@ public final class WorkAccess {
 
     /** Seule porte d'entree d'une mutation d'excavation : zone, claim, fluides, entites, chute. */
     static boolean safe(ServerLevel level, WorkState s, BlockPos p) {
+        return safe(level, s, p, Integer.MIN_VALUE);
+    }
+
+    /**
+     * Variante pour un couloir d'acces : la zone miniere borne la profondeur (Y minimum) et
+     * l'emprise horizontale, mais le tunnel peut traverser les couches situees entre la surface
+     * et le plafond de la zone. {@code accessTop} est la hauteur de depart du compagnon.
+     */
+    static boolean safe(ServerLevel level, WorkState s, BlockPos p, int accessTop) {
         WorkMission m = MissionService.active(s);
-        if (m == null || !contains(m, p) || level.isOutsideBuildHeight(p) || !level.getWorldBorder().isWithinBounds(p)
+        boolean inZone = m != null && (contains(m, p) || (columnOf(m, p) && p.getY() >= m.min.getY() && p.getY() <= accessTop));
+        if (m == null || !inZone || level.isOutsideBuildHeight(p) || !level.getWorldBorder().isWithinBounds(p)
                 || !WorkService.loadedNeighborhood(level, p) || ClaimIntegration.isClaimProtected(level, p)) return false;
         var block = level.getBlockState(p);
         // La vegetation (herbes, buissons, fleurs, pousses) et le bois (troncs, feuilles, racines)
@@ -89,6 +99,12 @@ public final class WorkAccess {
     }
 
     /** Degagement d'un palier de marche a niveau (couronne 3x3, utilise seulement pour le chemin). */
+    /** Meme colonne (X/Z) que la zone, sans contrainte de hauteur. */
+    static boolean columnOf(WorkMission m, BlockPos p) {
+        return p.getX() >= m.min.getX() && p.getX() <= m.max.getX()
+                && p.getZ() >= m.min.getZ() && p.getZ() <= m.max.getZ();
+    }
+
     static List<BlockPos> clearance(BlockPos feet) {
         List<BlockPos> cells = new ArrayList<>();
         for (int y = 1; y >= 0; y--) for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++) cells.add(feet.offset(x, y, z));
