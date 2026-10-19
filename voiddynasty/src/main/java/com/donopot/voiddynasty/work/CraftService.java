@@ -217,7 +217,8 @@ public final class CraftService {
         Map<String, Integer> raw = new LinkedHashMap<>();
         List<JsonObject> steps = new ArrayList<>();
         Set<String> nodes = new LinkedHashSet<>();
-        String failure = expand(level, wanted, count, 0, left, raw, steps, nodes);
+        Map<String, List<String>> alternatives = new LinkedHashMap<>();
+        String failure = expand(level, wanted, count, 0, left, raw, steps, nodes, alternatives);
         if (failure != null) return error("NO_RECIPE", failure);
 
         // Les fontes identiques sont regroupees : une seule mission de four pour N lingots.
@@ -276,6 +277,28 @@ public final class CraftService {
                 if (found.get("ok").getAsBoolean()) {
                     miss.addProperty("found_in_box", found.get("matches_total").getAsInt());
                     miss.addProperty("absence_proven", found.has("conclusive_absence") && found.get("conclusive_absence").getAsBoolean());
+                    // Rien trouve pour cette variante : on essaie les autres items acceptes par la recette
+                    // (n'importe quelle buche convient pour faire du charbon de bois).
+                    if (found.get("matches_total").getAsInt() == 0 && alternatives.containsKey(entry.getKey())) {
+                        for (String alt : alternatives.get(entry.getKey())) {
+                            if (alt.equals(entry.getKey()) || !MissionService.SOURCES.containsKey(alt)) continue;
+                            JsonObject other = WorkObservation.inspect(level, findRequest(alt, min, max));
+                            if (!other.get("ok").getAsBoolean() || other.get("matches_total").getAsInt() == 0) continue;
+                            miss.addProperty("alternative_input", alt);
+                            JsonArray altBlocks = new JsonArray();
+                            MissionService.SOURCES.get(alt).forEach(altBlocks::add);
+                            miss.add("source_blocks", altBlocks);
+                            miss.addProperty("found_in_box", other.get("matches_total").getAsInt());
+                            miss.addProperty("absence_proven", false);
+                            found = other;
+                            break;
+                        }
+                    }
+                    // Zone de recolte prete a l'emploi : la boite des premiers blocs trouves, sans plus.
+                    if (found.has("matches") && found.getAsJsonArray("matches").size() > 0) {
+                        JsonArray zone = suggestedZone(found.getAsJsonArray("matches"));
+                        if (zone != null) miss.add("suggested_zone", zone);
+                    }
                 } else {
                     miss.addProperty("find_error", String.valueOf(found.get("detail")));
                 }
@@ -298,7 +321,8 @@ public final class CraftService {
     }
 
     private static String expand(ServerLevel level, String item, int qty, int depth, Map<String, Integer> left,
-                                 Map<String, Integer> raw, List<JsonObject> steps, Set<String> nodes) {
+                                 Map<String, Integer> raw, List<JsonObject> steps, Set<String> nodes,
+                                 Map<String, List<String>> alternatives) {
         if (qty <= 0) return null;
         int available = left.getOrDefault(item, 0);
         int taken = Math.min(available, qty);
@@ -328,9 +352,13 @@ public final class CraftService {
                 needs.add(smelt.input());
                 step.add("needs", needs);
                 step.addProperty("input", smelt.input());
+                JsonArray accepts = new JsonArray();
+                smelt.accepts().forEach(accepts::add);
+                step.add("accepts", accepts);
                 step.addProperty("fuel", "carburant du meme coffre (voir fuels_in_chest)");
                 steps.add(step);
-                String failure = expand(level, smelt.input(), batches, depth + 1, left, raw, steps, nodes);
+                alternatives.put(smelt.input(), smelt.accepts());
+                String failure = expand(level, smelt.input(), batches, depth + 1, left, raw, steps, nodes, alternatives);
                 nodes.remove(item);
                 if (failure != null) return failure;
                 return null;
@@ -359,7 +387,7 @@ public final class CraftService {
         for (Ingredient cell : plan.cells()) {
             String id = describe(cell);
             needs.add(id);
-            String failure = expand(level, id, batches, depth + 1, left, raw, steps, nodes);
+            String failure = expand(level, id, batches, depth + 1, left, raw, steps, nodes, alternatives);
             if (failure != null) {
                 nodes.remove(item);
                 return failure;
@@ -392,6 +420,35 @@ public final class CraftService {
         request.add("max", MissionService.positionJson(max));
         request.addProperty("limit", 8);
         return request;
+    }
+
+    /** Boite serree autour des premiers blocs trouves (3 maximum), volume plafonne a 64 blocs. */
+    private static JsonArray suggestedZone(JsonArray matches) {
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+        int used = 0;
+        for (int i = 0; i < matches.size() && used < 3; i++) {
+            JsonObject match = matches.get(i).getAsJsonObject();
+            if (!match.has("position")) continue;
+            JsonArray pos = match.getAsJsonArray("position");
+            int x = pos.get(0).getAsInt(), y = pos.get(1).getAsInt(), z = pos.get(2).getAsInt();
+            minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+            minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z);
+            used++;
+        }
+        if (used == 0) return null;
+        // Une marge d'un bloc, puis on resserre pour ne pas depasser la limite de volume d'une mission.
+        minX--; minY--; minZ--;
+        maxX++; maxY++; maxZ++;
+        while ((long) (maxX - minX + 1) * (maxY - minY + 1) * (maxZ - minZ + 1) > 64) {
+            if (maxX - minX >= maxZ - minZ) { maxX--; minX++; } else { maxZ--; minZ++; }
+            if (maxX < minX || maxZ < minZ) break;
+        }
+        JsonArray zone = new JsonArray();
+        zone.add(MissionService.positionJson(new BlockPos(minX, minY, minZ)));
+        zone.add(MissionService.positionJson(new BlockPos(maxX, maxY, maxZ)));
+        return zone;
     }
 
     private static long boxVolume(BlockPos min, BlockPos max) {

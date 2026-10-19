@@ -40,7 +40,8 @@ public final class SmeltService {
     private SmeltService() {}
 
     /** Une recette de fonte resolue : entree, sortie, temps et experience par piece. */
-    record Plan(String id, String output, int outputCount, String input, int cookingTime, float experience) {
+    record Plan(String id, String output, int outputCount, String input, List<String> accepts,
+                int cookingTime, float experience) {
         int perBatch() { return outputCount; }
     }
 
@@ -63,6 +64,9 @@ public final class SmeltService {
             entry.addProperty("result", plan.output());
             entry.addProperty("result_count", plan.outputCount());
             entry.addProperty("input", plan.input());
+            JsonArray accepts = new JsonArray();
+            plan.accepts().forEach(accepts::add);
+            entry.add("accepts", accepts);
             entry.addProperty("cooking_ticks", plan.cookingTime());
             entry.addProperty("experience", plan.experience());
             entry.addProperty("station", "four");
@@ -99,10 +103,13 @@ public final class SmeltService {
     private static Plan plan(String id, SmeltingRecipe recipe) {
         List<Ingredient> ingredients = recipe.placementInfo().ingredients();
         if (ingredients.isEmpty() || ingredients.get(0).isEmpty()) return null;
-        String input = ingredients.get(0).items().findFirst()
-                .map(holder -> BuiltInRegistries.ITEM.getKey(holder.value()).toString())
-                .orElse(null);
-        if (input == null) return null;
+        List<String> accepts = new ArrayList<>();
+        for (var holder : ingredients.get(0).items().toList()) {
+            accepts.add(BuiltInRegistries.ITEM.getKey(holder.value()).toString());
+        }
+        if (accepts.isEmpty()) return null;
+        // L'entree affichee est celle que le compagnon sait recolter, sinon la premiere du tag.
+        String input = accepts.stream().filter(SmeltService::gatherable).findFirst().orElse(accepts.get(0));
         ItemStack result;
         try {
             ItemStack probe = new ItemStack(ingredients.get(0).items().findFirst()
@@ -113,7 +120,7 @@ public final class SmeltService {
         }
         if (result == null || result.isEmpty()) return null;
         return new Plan(id, BuiltInRegistries.ITEM.getKey(result.getItem()).toString(), result.getCount(),
-                input, Math.max(1, recipe.cookingTime()), recipe.experience());
+                input, List.copyOf(accepts), Math.max(1, recipe.cookingTime()), recipe.experience());
     }
 
     // ------------------------------------------------------------------ fonte
@@ -140,7 +147,7 @@ public final class SmeltService {
 
         int available = 0;
         for (ItemStack stack : work) {
-            if (!stack.isEmpty() && BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(plan.input())) {
+            if (!stack.isEmpty() && plan.accepts().contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) {
                 available += stack.getCount();
             }
         }
@@ -155,7 +162,7 @@ public final class SmeltService {
         }
 
         long cookingTicks = (long) plan.cookingTime() * count;
-        Fuel fuel = pickFuel(level, work, plan.input());
+        Fuel fuel = pickFuel(level, work, plan.accepts());
         if (fuel == null) {
             JsonObject error = error("NO_FUEL", "Aucun carburant dans le coffre : il faut un item avec un pouvoir "
                     + "calorifique (charbon, bois, planches, lave...)");
@@ -179,7 +186,7 @@ public final class SmeltService {
             return error;
         }
 
-        consume(work, plan.input(), count);
+        consumeAny(work, plan.accepts(), count);
         consume(work, fuel.item(), (int) fuelsNeeded);
         int produced = count * plan.outputCount();
         var outputItem = BuiltInRegistries.ITEM.get(identifier(plan.output()))
@@ -215,12 +222,12 @@ public final class SmeltService {
     private record Fuel(String item, int ticksPerUnit) {}
 
     /** Carburant au meilleur rendement present dans le coffre, jamais l'item qu'on veut fondre. */
-    private static Fuel pickFuel(ServerLevel level, List<ItemStack> work, String input) {
+    private static Fuel pickFuel(ServerLevel level, List<ItemStack> work, List<String> inputs) {
         Fuel best = null;
         for (ItemStack stack : work) {
             if (stack.isEmpty()) continue;
             String id = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-            if (id.equals(input)) continue;
+            if (inputs.contains(id)) continue;
             int ticks = burnTicks(level, stack);
             if (ticks <= 0) continue;
             if (best == null || ticks > best.ticksPerUnit()) best = new Fuel(id, ticks);
@@ -290,6 +297,18 @@ public final class SmeltService {
             }
         }
         return false;
+    }
+
+    /** Consomme un item accepte par le tag de la recette (n'importe quelle buche pour du charbon de bois). */
+    private static void consumeAny(List<ItemStack> inventory, List<String> accepts, int count) {
+        int left = count;
+        for (ItemStack slot : inventory) {
+            if (left <= 0) break;
+            if (slot.isEmpty() || !accepts.contains(BuiltInRegistries.ITEM.getKey(slot.getItem()).toString())) continue;
+            int take = Math.min(left, slot.getCount());
+            slot.shrink(take);
+            left -= take;
+        }
     }
 
     private static void consume(List<ItemStack> inventory, String item, int count) {
