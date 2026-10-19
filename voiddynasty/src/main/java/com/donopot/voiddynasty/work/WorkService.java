@@ -516,6 +516,30 @@ public final class WorkService {
 
     /** Va au coffre et vide l'inventaire. Renvoie true quand c'est fait. */
     static boolean stepTowardDepot(ServerLevel level, WorkState state, LivingEntity bot) {
+        // Depot de mission : quand une destination a ete fournie, le reste du sac y est depose.
+        // Sans cela, la finalisation tournait sur un depot inexistant (depots=0) et ne liberait
+        // jamais le chantier, donc le compagnon restait bloque en WORKER_BUSY.
+        WorkMission mission = MissionService.active(state);
+        if (state.depots.isEmpty() && mission != null) {
+            Container destination = MissionService.destinationOf(level, mission);
+            if (destination != null) {
+                BlockPos dest = mission.destination;
+                if (distanceSq(bot, dest) > REACH * REACH || !visible(level, bot, dest)) {
+                    stepToward(level, state, bot, dest);
+                    return false;
+                }
+                List<ItemStack> stacks = invToStacks(state);
+                int total = 0;
+                for (ItemStack stack : stacks) total += stack.getCount();
+                List<ItemStack> left = insertAll(destination, stacks);
+                state.invSlots.clear(); state.invSlots.addAll(WorkInventory.copy(left));
+                state.deposited += total - leftCount(left);
+                state.lastStop = "";
+                state.setDirty();
+                if (!left.isEmpty()) pause(state, "destination pleine — sac conserve");
+                return left.isEmpty();
+            }
+        }
         if (!state.hasDepot) {
             WorkDepot.request(state);
             return false;
@@ -1036,8 +1060,14 @@ public final class WorkService {
 
     /** Explicitly release rollback history. Never throw away carried resources. */
     public static boolean commit(ServerLevel level, WorkState state) {
-        if (state.needsRecovery() || state.hasJob() || state.rollbackRemaining > 0 || !state.invSlots.isEmpty()) return false;
-        WorkMission mission = MissionService.active(state);
+        WorkMission activeMission = MissionService.active(state);
+        // Un chantier dont la mission est terminale (ANNULEE, ECHOUEE, TERMINEE) ne doit pas rester
+        // verrouille : sinon le compagnon reste indefiniment en WORKER_BUSY. Le sac doit toutefois
+        // etre vide (aucun objet n'est efface ici).
+        boolean released = activeMission == null || activeMission.terminal();
+        if (state.needsRecovery() || (state.hasJob() && !released) || state.rollbackRemaining > 0
+                || !state.invSlots.isEmpty()) return false;
+        WorkMission mission = activeMission;
         if (mission != null && !mission.terminal()) return false;
         discardServitor(level, state);
         state.servitorUuid = ""; state.pendingServitor = null;

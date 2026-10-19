@@ -150,6 +150,8 @@ public final class MissionService {
                 && p.getZ() >= m.min.getZ() && p.getZ() <= m.max.getZ();
     }
 
+    static Container destinationOf(ServerLevel level, WorkMission m) { return destination(level, m); }
+
     static Container destination(ServerLevel level, WorkMission m) {
         if (!level.hasChunkAt(m.destination) || ClaimIntegration.isClaimProtected(level, m.destination)) return null;
         var be = level.getBlockEntity(m.destination);
@@ -235,7 +237,10 @@ public final class MissionService {
                 if (WorkService.resume(level) == null) return error("RESUME_REFUSED", s.lastStop);
                 m.status = "PREPARING"; m.reason = "";
             }
-            case "cancel" -> { if (!m.terminal()) { WorkService.stop(level); m.status = "CANCELLED"; m.reason = "OPERATOR_CANCEL"; } }
+            case "cancel" -> { if (!m.terminal()) { WorkService.stop(level); m.status = "CANCELLED"; m.reason = "OPERATOR_CANCEL";
+                // Annulation depuis DELIVERING : on ne repart pas en livraison a la prochaine reprise
+                // (le sac et son contenu restent intacts).
+                s.finishing = false; s.goingToDepot = false; s.setDirty(); } }
             case "deposit" -> {
                 if (!m.terminal()) return error("DEPOSIT_REFUSED", "Cancel or finish mission before deposit-only recovery");
                 if (!s.invSlots.isEmpty() && WorkService.deposit(level) == null) return error("DEPOSIT_REFUSED", s.lastStop);
@@ -291,9 +296,27 @@ public final class MissionService {
         WorkMission m = active(s); if (m == null || m.status.equals("CANCELLED")) return false;
         if(m.build!=null) {if(m.terminal()) return false;BuildService.tick(level,s,bot,m);return true;}
         if (m.delivered >= m.amount) {
+            // Objectif atteint. Ce qui reste dans le sac (blocs hors objectif) est depose dans le
+            // meme coffre de destination : le sac se vide, donc le chantier peut se conclure et le
+            // travailleur se libere. Si le coffre est plein, on s'arrete en le disant — le sac et
+            // son contenu restent intacts, rien n'est efface.
             m.status = "STORING_REMAINDER";
-            if (s.invSlots.isEmpty()) WorkService.conclude(level, s); else s.finishing = true;
-            s.setDirty(); return s.invSlots.isEmpty();
+            if (s.invSlots.isEmpty()) { WorkService.conclude(level, s); s.setDirty(); return true; }
+            Container rest = destination(level, m);
+            if (rest == null) { WorkService.pause(s, "DESTINATION_UNAVAILABLE"); return true; }
+            if (WorkService.distanceSq(bot, m.destination) > WorkService.reach() * WorkService.reach()
+                    || !WorkService.visible(level, bot, m.destination)) {
+                WorkService.stepToward(level, s, bot, m.destination);
+                return true;
+            }
+            WorkInventory.Transfer store = WorkInventory.transfer(s.invSlots, rest, stack -> true, Integer.MAX_VALUE);
+            for (int i = 0; i < rest.getContainerSize(); i++) rest.setItem(i, store.container().get(i));
+            rest.setChanged();
+            s.invSlots.clear(); s.invSlots.addAll(store.bag());
+            s.setDirty();
+            if (!s.invSlots.isEmpty()) { WorkService.pause(s, "DESTINATION_FULL"); return true; }
+            WorkService.conclude(level, s);
+            return true;
         }
         // Sac presque plein : on va vider au coffre puis on reprend, au lieu de se bloquer.
         if (!s.finishing && !s.goingToDepot && s.invSlots.size() >= 32) s.goingToDepot = true;
@@ -314,10 +337,12 @@ public final class MissionService {
         target.setChanged(); s.invSlots.clear(); s.invSlots.addAll(plan.bag()); m.delivered += plan.count();
         s.goingToDepot = false; s.setDirty();
         if (m.delivered >= m.amount) {
-            if (s.invSlots.isEmpty()) WorkService.conclude(level, s); else s.finishing = true;
+            if (s.invSlots.isEmpty()) { WorkService.conclude(level, s); return true; }
+            s.finishing = true;   // le remainder sera depose au prochain tick par la branche ci-dessus
+            return false;
         } else if (s.cursorY < s.minY || s.finishing) {
-            if (s.invSlots.isEmpty()) WorkService.conclude(level, s);
-            else WorkService.pause(s, "INVENTORY_BLOCKED");
+            if (s.invSlots.isEmpty()) { WorkService.conclude(level, s); return true; }
+            WorkService.pause(s, "INVENTORY_BLOCKED");
         }
         return true;
     }

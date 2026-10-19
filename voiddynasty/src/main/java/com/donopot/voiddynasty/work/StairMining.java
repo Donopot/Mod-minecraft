@@ -605,9 +605,15 @@ final class StairMining {
         Step step = ex.plan.steps().get(ex.index);
         BlockPos feet = step.feet();
         double dy = bot.getY() - feet.getY();
-        if (dy <= 0.7) {
-            System.out.println("[STAIR_DESCEND] index=" + ex.index + " crossed level pos="
-                    + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ())
+        boolean walk = step.kind() != Kind.DESCEND_STEP;
+        // Une transition de descente n'est franchie que si le niveau inferieur est REELLEMENT
+        // atteint : partir de startFeetY et exiger exactement startFeetY - 1 interdit tout
+        // faux succes sur un simple deplacement horizontal (dy = 0).
+        boolean crossed = walk ? Math.abs(dy) <= 0.5 : bot.getY() <= step.from().getY() - 1 + 0.05;
+        if (crossed) {
+            System.out.println("[STAIR_DESCEND] index=" + ex.index + " kind=" + step.kind()
+                    + " startFeetY=" + step.from().getY() + " expectedFeetY=" + feet.getY()
+                    + " pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ())
                     + " planned=" + feet.toShortString() + " dy=" + String.format(java.util.Locale.ROOT, "%.2f", dy));
             enter(ex, Phase.LANDING_VERIFY, now);
             return;
@@ -767,10 +773,16 @@ final class StairMining {
         double dx = bot.getX() - (feet.getX() + 0.5);
         double dz = bot.getZ() - (feet.getZ() + 0.5);
         double dy = bot.getY() - feet.getY();
-        boolean positionOk = Math.abs(dx) <= 1.05 && Math.abs(dz) <= 1.05 && Math.abs(dy) <= 0.7;
+        boolean descend = step.kind() == Kind.DESCEND_STEP;
+        // Descente : le niveau doit etre exactement celui attendu (startFeetY - 1).
+        // Marche a niveau : simple tolerance de terrain.
+        boolean levelOk = descend ? Math.abs(dy) <= 0.05 && Math.abs(bot.getY() - (step.from().getY() - 1)) <= 0.05
+                : Math.abs(dy) <= 0.5;
+        boolean positionOk = Math.abs(dx) <= 1.05 && Math.abs(dz) <= 1.05 && levelOk;
         boolean supportOk = footprintSupported(level, bot, here);
         boolean free = level.noCollision(bot, bot.getBoundingBox().deflate(0.02));
-        System.out.println("[STAIR_VERIFY] index=" + ex.index
+        System.out.println("[STAIR_VERIFY] index=" + ex.index + " kind=" + step.kind()
+                + " expectedFeetY=" + feet.getY() + " levelOk=" + levelOk
                 + " pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ())
                 + " expected=" + feet.toShortString()
                 + " dx=" + String.format(java.util.Locale.ROOT, "%.2f", dx)
@@ -788,6 +800,9 @@ final class StairMining {
             state.movementCells.clear();
             state.idleTicks = 0;
             System.out.println("[STAIR_STEP] index=" + ex.index + "/" + ex.plan.steps().size()
+                    + " kind=" + step.kind() + " startFeetY=" + step.from().getY()
+                    + " expectedFeetY=" + feet.getY() + " actualFeetY="
+                    + String.format(java.util.Locale.ROOT, "%.2f", bot.getY())
                     + " confirmed feet=" + feet.toShortString() + " pos=" + here.toShortString());
             if (ex.index >= ex.plan.steps().size()) {
                 System.out.println("[STAIR_DONE] steps=" + ex.plan.steps().size() + " pos=" + here);
