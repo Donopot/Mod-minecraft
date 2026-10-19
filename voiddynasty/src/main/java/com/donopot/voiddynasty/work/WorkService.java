@@ -246,17 +246,25 @@ public final class WorkService {
     }
 
     /** Choisit la prochaine cible en avançant le curseur, en sautant ce qu'on ne touche pas. */
+    /** Derniere cellule examinee par la recherche de cible : sert a diagnostiquer un chantier immobile. */
+    public static String lastScanNote = "aucun scan encore";
+
     private static boolean pickTarget(ServerLevel level, WorkState state) {
         for (int scan = 0; scan < 64; scan++) {
             if (state.cursorY < state.minY) {
+                lastScanNote = "curseur epuise (y=" + state.cursorY + " < minY=" + state.minY + ")";
                 return false;
             }
             BlockPos pos = new BlockPos(state.cursorX, state.cursorY, state.cursorZ);
             if (!loadedNeighborhood(level, pos)) { pause(state, "chunk decharge — /work resume"); return false; }
             BlockState blockState = level.getBlockState(pos);
             WorkMission mission = MissionService.active(state);
-            if (!blockState.isAir() && (mission == null || MissionService.matches(mission, blockState))
-                    && !skip(level, state, pos, blockState)) {
+            boolean matched = !blockState.isAir() && (mission == null || MissionService.matches(mission, blockState));
+            boolean skipped = matched && skip(level, state, pos, blockState);
+            lastScanNote = pos.toShortString() + " " + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(blockState.getBlock())
+                    + (matched ? "" : " (ne correspond pas)") + (skipped ? " (laisse)" : "")
+                    + " | mission=" + (mission == null ? "aucune" : mission.item + "/" + mission.status);
+            if (matched && !skipped) {
                 state.hasTarget = true;
                 state.targetX = pos.getX();
                 state.targetY = pos.getY();

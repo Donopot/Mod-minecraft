@@ -82,6 +82,20 @@ public final class BrainCommand {
                                 .executes(ctx -> view(ctx, "look", 8))
                                 .then(Commands.argument("radius", IntegerArgumentType.integer(2, 24))
                                         .executes(ctx -> view(ctx, "look", IntegerArgumentType.getInteger(ctx, "radius"))))))
+                .then(Commands.literal("move")
+                        .then(Commands.literal("come")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(ctx -> move(ctx, "come_to_player", StringArgumentType.getString(ctx, "player"), 0)))
+                                .executes(ctx -> move(ctx, "come_to_player", "", 0)))
+                        .then(Commands.literal("follow")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(ctx -> move(ctx, "follow_player", StringArgumentType.getString(ctx, "player"), 3))))
+                        .then(Commands.literal("goto")
+                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                        .executes(ctx -> moveTo(ctx))))))
+                        .then(Commands.literal("status").executes(BrainCommand::moveStatus)))
                 .then(Commands.literal("brain")
                         .then(Commands.literal("on").executes(BrainCommand::on))
                         .then(Commands.literal("off").executes(BrainCommand::off))
@@ -130,6 +144,83 @@ public final class BrainCommand {
             default -> BrainView.look(level, bot, radius);
         };
         ctx.getSource().sendSuccess(() -> Component.literal("VDVIEW " + kind + " " + json), false);
+        return 1;
+    }
+
+    /** Ordre de deplacement : passe par BrainOrders pour reutiliser la validation et les garde-fous. */
+    private static int move(CommandContext<CommandSourceStack> ctx, String order, String player, double distance) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        com.google.gson.JsonObject args = new com.google.gson.JsonObject();
+        String name = player;
+        if (name.isEmpty()) {
+            var playerEntity = ctx.getSource().getPlayer();
+            if (playerEntity == null) {
+                ctx.getSource().sendFailure(Component.literal("Precise un joueur."));
+                return 0;
+            }
+            name = playerEntity.getScoreboardName();
+        }
+        args.addProperty("player", name);
+        if (order.equals("follow_player")) args.addProperty("distance", distance);
+        return dispatchMove(ctx, level, bot, order, args);
+    }
+
+    private static int moveTo(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        com.google.gson.JsonObject args = new com.google.gson.JsonObject();
+        args.addProperty("x", IntegerArgumentType.getInteger(ctx, "x"));
+        args.addProperty("y", IntegerArgumentType.getInteger(ctx, "y"));
+        args.addProperty("z", IntegerArgumentType.getInteger(ctx, "z"));
+        return dispatchMove(ctx, level, bot, "goto", args);
+    }
+
+    private static int dispatchMove(CommandContext<CommandSourceStack> ctx, ServerLevel level, LivingEntity bot,
+                                    String order, com.google.gson.JsonObject args) {
+        // Un compagnon sauvegarde/recharge est fige (NoAI) : un ordre explicite le reveille.
+        if (bot instanceof com.donopot.voiddynasty.entity.Servitor1Entity worker) worker.wake();
+        String report = BrainOrders.apply(new BrainTools.Order(order, args), level, bot, BrainConfig.get());
+        com.google.gson.JsonObject out = new com.google.gson.JsonObject();
+        boolean ok = !report.startsWith("REFUSE");
+        out.addProperty("ok", ok);
+        out.addProperty("order", order);
+        out.addProperty("report", report);
+        var pos = new com.google.gson.JsonArray();
+        pos.add(bot.getX()); pos.add(bot.getY()); pos.add(bot.getZ());
+        out.add("bot_pos", pos);
+        out.addProperty("task", TaskRunner.describe(bot));
+        ctx.getSource().sendSuccess(() -> Component.literal("VDMOVE " + out), false);
+        return ok ? 1 : 0;
+    }
+
+    /** Etat du deplacement en cours, sans rien modifier. */
+    private static int moveStatus(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        com.google.gson.JsonObject out = new com.google.gson.JsonObject();
+        if (bot == null) {
+            out.addProperty("ok", true);
+            out.addProperty("present", false);
+            ctx.getSource().sendSuccess(() -> Component.literal("VDMOVE " + out), false);
+            return 1;
+        }
+        out.addProperty("ok", true);
+        out.addProperty("present", true);
+        out.addProperty("task", TaskRunner.describe(bot));
+        out.addProperty("busy", TaskRunner.current(bot) != null);
+        var pos = new com.google.gson.JsonArray();
+        pos.add(bot.getX()); pos.add(bot.getY()); pos.add(bot.getZ());
+        out.add("bot_pos", pos);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDMOVE " + out), false);
         return 1;
     }
 

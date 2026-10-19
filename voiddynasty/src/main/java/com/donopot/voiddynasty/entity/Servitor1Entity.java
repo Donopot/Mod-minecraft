@@ -29,6 +29,15 @@ public class Servitor1Entity extends ChaosCultistEntity {
         getNavigation().stop();
     }
 
+    /**
+     * Un compagnon recharge depuis une sauvegarde reste volontairement immobile (setNoAi(true))
+     * jusqu'a ce qu'un ordre explicite le reveille. Sans cela, un simple deplacement ne fait rien.
+     */
+    public void wake() {
+        if (entityTags().contains("voiddynasty_work")) setWorkMode();
+        setNoAi(false);
+    }
+
     @Override
     protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
         super.readAdditionalSaveData(input);

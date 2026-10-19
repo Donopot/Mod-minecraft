@@ -405,6 +405,74 @@ async def servitor_mission_wait(mission_id,timeout_seconds=10,dimension="overwor
         await asyncio.sleep(min(.5,deadline-now))
 
 
+def servitor_move(mode="status", player="", x=0, y=0, z=0, distance=3, dimension="overworld"):
+    """Deplacement du compagnon : rejoindre un joueur, aller a des coordonnees, suivre, ou lire l'etat.
+
+    mode = "come" (rejoindre le joueur), "follow" (le suivre), "goto" (coordonnees), "status".
+    Le mod repond VDMOVE <json> ; un deplacement dure plusieurs secondes : relire le status ensuite.
+    """
+    if mode not in ("come", "follow", "goto", "status"):
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "mode must be come, follow, goto or status"}
+    try:
+        dim = _dimension(dimension)
+    except ValueError as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    if mode == "status":
+        tail = "move status"
+    elif mode == "goto":
+        if not all(type(v) is int for v in (x, y, z)):
+            return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "x, y, z must be integers"}
+        tail = "move goto %d %d %d" % (x, y, z)
+    else:
+        if not isinstance(player, str) or not player.strip():
+            return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "player name is required"}
+        tail = "move " + mode + " " + player.strip()
+        if mode == "follow":
+            tail += " " + str(int(distance))
+    try:
+        reply = rcon("execute in " + dim + " run servitor " + tail, timeout=60)[0]
+    except (RuntimeError, OSError) as error:
+        return {"ok": False, "error": "SERVER_UNAVAILABLE", "detail": str(error)}
+    if "VDMOVE " not in reply:
+        return {"ok": False, "error": "PROTOCOL_ERROR", "detail": reply[:200]}
+    try:
+        return json.loads(reply.split("VDMOVE ", 1)[1].strip())
+    except ValueError:
+        return {"ok": False, "error": "PROTOCOL_ERROR", "detail": reply[:200]}
+
+
+def servitor_excavate(request_id, zone_min, zone_max, destination, origin, dimension="overworld", access="excavate"):
+    """Vide entierement une zone (mine a ciel ouvert, tranchee, cavite) et depose les objets au coffre.
+
+    Pas d'item ni d'amount : le but est la zone videe. Volume maximum 32768 blocs, donc une
+    grande mine se decoupe en tranches successives de 8192 blocs ou moins.
+    """
+    try:
+        _dimension(dimension)
+        if access not in ("surface", "excavate"):
+            raise ValueError("Use surface or excavate access")
+        if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", request_id):
+            raise ValueError("request_id must have 1..64 letters, digits, underscores or hyphens")
+        a, b = _position(zone_min), _position(zone_max)
+        mn = [min(x, y) for x, y in zip(a, b)]
+        mx = [max(x, y) for x, y in zip(a, b)]
+        volume = 1
+        for lo, hi in zip(mn, mx):
+            volume *= hi - lo + 1
+        if volume > 32768:
+            raise ValueError("Zone exceeds 32768 blocks: decoupe la mine en tranches")
+        target, start = _position(destination), _position(origin)
+        for point in (target, [target[0], target[1] - 1, target[2]]):
+            if all(lo <= n <= hi for lo, n, hi in zip(mn, point, mx)):
+                raise ValueError("Destination and support must be outside the excavation zone")
+        payload = {"schema": 1, "type": "EXCAVATE", "request_id": request_id, "min": mn, "max": mx,
+                   "destination": target, "origin": start, "access": access}
+    except (ValueError, TypeError) as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    encoded = base64.urlsafe_b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode().rstrip("=")
+    return _mission_call("submit " + encoded, dimension)
+
+
 def servitor_gather(request_id, item, amount, zone_min, zone_max, destination, origin, dimension="overworld", access="surface"):
     """Submit a bounded gather mission. Reuse request_id for retries of the exact same request."""
     try:

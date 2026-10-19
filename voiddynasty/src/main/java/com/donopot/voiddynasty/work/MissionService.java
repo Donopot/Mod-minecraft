@@ -47,7 +47,11 @@ public final class MissionService {
         return state.missions.stream().filter(m -> m.id.equals(state.missionId)).findFirst().orElse(null);
     }
 
+    /** Item special des missions EXCAVATE : la zone entiere est la cible. */
+    public static final String EXCAVATE_ITEM = "*";
+
     public static boolean matches(WorkMission mission, BlockState block) {
+        if (EXCAVATE_ITEM.equals(mission.item)) return !block.isAir();
         return SOURCES.getOrDefault(mission.item, Set.of()).contains(BuiltInRegistries.BLOCK.getKey(block.getBlock()).toString());
     }
 
@@ -61,7 +65,8 @@ public final class MissionService {
 
     public static JsonObject capabilities() {
         JsonObject out = new JsonObject(); out.addProperty("ok", true); out.addProperty("api_version", 1);
-        JsonArray types = new JsonArray(); types.add("GATHER"); types.add("BUILD"); out.add("mission_types", types);
+        JsonArray types = new JsonArray(); types.add("GATHER"); types.add("BUILD"); types.add("EXCAVATE"); out.add("mission_types", types);
+        out.addProperty("excavate", "EXCAVATE vide toute la zone (min, max) et depose les objets au coffre : champs schema=1, type=EXCAVATE, request_id, min, max, destination, origin, access optionnel. Pas d'item, pas d'amount. Le but est la zone videe, pas un nombre d'objets.");
         JsonArray resources = new JsonArray(); SOURCES.keySet().forEach(resources::add); out.add("gather_items", resources);
         out.addProperty("max_volume", 32768); out.addProperty("max_amount", 4096);
         JsonArray perceptions=new JsonArray();perceptions.add("OBSERVE");perceptions.add("FIND");out.add("observation_types",perceptions);out.addProperty("observation_max_results",WorkObservation.MAX_RESULTS);
@@ -91,13 +96,19 @@ public final class MissionService {
     public static WorkMission parse(JsonObject obj) {
         if(obj.has("type") && obj.get("type").getAsString().equals("BUILD")) return parseBuild(obj);
         Set<String> fields=new HashSet<>(obj.keySet());fields.remove("access");
-        if (!fields.equals(Set.of("schema", "type", "request_id", "item", "amount", "min", "max", "destination", "origin")))
-            throw new IllegalArgumentException("Invalid or missing mission fields");
-        if (integer(obj.get("schema")) != 1 || !obj.get("type").getAsString().equals("GATHER"))
-            throw new IllegalArgumentException("Unsupported mission schema/type");
-        String request = obj.get("request_id").getAsString(), item = obj.get("item").getAsString();
-        if (!request.matches("[A-Za-z0-9_-]{1,64}") || !SOURCES.containsKey(item)) throw new IllegalArgumentException("Invalid request id or unsupported resource");
-        int count = integer(obj.get("amount")); if (count < 1 || count > 4096) throw new IllegalArgumentException("Amount must be 1..4096");
+        boolean excavate = obj.has("type") && obj.get("type").getAsString().equals("EXCAVATE");
+        Set<String> required = excavate
+                ? Set.of("schema", "type", "request_id", "min", "max", "destination", "origin")
+                : Set.of("schema", "type", "request_id", "item", "amount", "min", "max", "destination", "origin");
+        if (!fields.equals(required))
+            throw new IllegalArgumentException(excavate
+                    ? "Invalid or missing EXCAVATE fields (no item, no amount: the zone is the goal)"
+                    : "Invalid or missing mission fields");
+        if (integer(obj.get("schema")) != 1) throw new IllegalArgumentException("Unsupported mission schema/type");
+        String request = obj.get("request_id").getAsString();
+        String item = excavate ? EXCAVATE_ITEM : obj.get("item").getAsString();
+        if (!request.matches("[A-Za-z0-9_-]{1,64}") || !(excavate || SOURCES.containsKey(item)))
+            throw new IllegalArgumentException("Invalid request id or unsupported resource");
         BlockPos a = position(obj.get("min")), b = position(obj.get("max"));
         BlockPos min = new BlockPos(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()));
         BlockPos max = new BlockPos(Math.max(a.getX(), b.getX()), Math.max(a.getY(), b.getY()), Math.max(a.getZ(), b.getZ()));
@@ -105,6 +116,9 @@ public final class MissionService {
                 || (long)max.getZ()-min.getZ()+1 > 32768) throw new IllegalArgumentException("Zone exceeds 32768 blocks");
         long volume = (long)(max.getX()-min.getX()+1) * (max.getY()-min.getY()+1) * (max.getZ()-min.getZ()+1);
         if (volume > 32768) throw new IllegalArgumentException("Zone exceeds 32768 blocks");
+        // EXCAVATE : le but est la zone videe, pas un nombre d'objets. amount = volume sert de plafond interne.
+        int count = excavate ? (int) volume : integer(obj.get("amount"));
+        if (!excavate && (count < 1 || count > 4096)) throw new IllegalArgumentException("Amount must be 1..4096");
         BlockPos destination = position(obj.get("destination")), origin = position(obj.get("origin"));
         WorkMission m = new WorkMission(UUID.randomUUID().toString(), request, item, count, min, max, destination, origin);
         m.access=obj.has("access")?obj.get("access").getAsString():"surface";
@@ -247,8 +261,15 @@ public final class MissionService {
         WorkMission m = active(s);
         if (m == null || m.status.equals("CANCELLED")) return;
         if(m.build!=null) {m.status=m.placed==m.amount?"SUCCEEDED":"INCOMPLETE";m.reason=m.status.equals("SUCCEEDED")?"":"BUILD_UNFINISHED";return;}
-        m.status = m.delivered >= m.amount ? "SUCCEEDED" : "INCOMPLETE";
-        m.reason = m.status.equals("SUCCEEDED") ? "" : s.cursorY < s.minY ? "SOURCE_EXHAUSTED" : "STOPPED_BEFORE_GOAL";
+        if (EXCAVATE_ITEM.equals(m.item)) {
+            // Le but d'un EXCAVATE est la zone videe : le curseur est la seule verite.
+            boolean cleared = s.cursorY < s.minY;
+            m.status = cleared ? "SUCCEEDED" : "INCOMPLETE";
+            m.reason = cleared ? "ZONE_CLEARED" : "STOPPED_BEFORE_GOAL";
+        } else {
+            m.status = m.delivered >= m.amount ? "SUCCEEDED" : "INCOMPLETE";
+            m.reason = m.status.equals("SUCCEEDED") ? "" : s.cursorY < s.minY ? "SOURCE_EXHAUSTED" : "STOPPED_BEFORE_GOAL";
+        }
     }
 
     static void mined(WorkState s, List<ItemStack> drops) {
@@ -257,7 +278,9 @@ public final class MissionService {
     }
 
     private static boolean isItem(WorkMission m, ItemStack stack) {
-        return !stack.isEmpty() && BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(m.item);
+        if (stack.isEmpty()) return false;
+        if (EXCAVATE_ITEM.equals(m.item)) return true; // tout ce qui tombe appartient au chantier
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(m.item);
     }
 
     /** True means this tick was consumed by delivery/completion rather than another mining action. */
@@ -269,6 +292,8 @@ public final class MissionService {
             if (s.invSlots.isEmpty()) WorkService.conclude(level, s); else s.finishing = true;
             s.setDirty(); return s.invSlots.isEmpty();
         }
+        // Sac presque plein : on va vider au coffre puis on reprend, au lieu de se bloquer.
+        if (!s.finishing && !s.goingToDepot && s.invSlots.size() >= 32) s.goingToDepot = true;
         if (!(s.finishing || s.goingToDepot || m.collected >= m.amount || s.cursorY < s.minY)) {
             m.status = s.buildingDepot || !s.hasDepot ? "PREPARING" : "MINING";
             return false;

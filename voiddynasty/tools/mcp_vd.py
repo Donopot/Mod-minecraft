@@ -14,7 +14,8 @@ Compatible avec MCP Python SDK 1.30.0 (voir requirements-mcp.txt).
 import sys
 
 from mcp.server.fastmcp import FastMCP
-from pydantic import StrictInt
+from pydantic import StrictFloat, StrictInt
+from typing import List
 
 import vd_core
 
@@ -76,6 +77,26 @@ async def tool_servitor_mission_wait(mission_id: str,timeout_seconds: StrictInt=
     """Wait up to 30 seconds for this exact mission UUID. Pending means work continues; retry observation
     rather than duplicating a submission. Paused/attention require a decision; acceptance is never completion."""
     return await vd_core.servitor_mission_wait(mission_id,timeout_seconds,dimension)
+
+
+def tool_servitor_move(mode: str = "status", player: str = "", x: StrictInt = 0, y: StrictInt = 0,
+                       z: StrictInt = 0, distance: StrictFloat = 3.0, dimension: str = "overworld") -> dict:
+    """Deplacer le compagnon : mode "come" (rejoindre le joueur), "follow" (le suivre),
+    "goto" (coordonnees x,y,z) ou "status" (ou il en est). Un deplacement dure plusieurs
+    secondes : rappeler le status pour savoir s'il est arrive avant d'enchainer une mission.
+    """
+    return vd_core.servitor_move(mode=mode, player=player, x=x, y=y, z=z, distance=distance, dimension=dimension)
+
+
+def tool_servitor_excavate(request_id: str, zone_min: List[StrictInt], zone_max: List[StrictInt],
+                           destination: List[StrictInt], origin: List[StrictInt],
+                           access: str = "excavate", dimension: str = "overworld") -> dict:
+    """Vider entierement une zone (mine a ciel ouvert, tranchee, cavite) et deposer les objets au coffre.
+    Pas d'item ni d'amount : le but est la zone videe. Volume max 32768 blocs, donc une grande
+    mine se decoupe en tranches successives ; relire servitor_mission_status entre chaque tranche.
+    """
+    return vd_core.servitor_excavate(request_id=request_id, zone_min=zone_min, zone_max=zone_max,
+                                     destination=destination, origin=origin, access=access, dimension=dimension)
 
 
 def tool_servitor_gather(request_id: str, item: str, amount: StrictInt, zone_min: list[StrictInt],
@@ -146,6 +167,7 @@ for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest
                 (tool_servitor_build_estimate,"servitor_build_estimate"),(tool_servitor_build,"servitor_build"),
                 (tool_servitor_status, "servitor_status"), (tool_servitor_players, "servitor_players"),
                 (tool_servitor_look, "servitor_look"), (tool_servitor_work, "servitor_work"),
+                (tool_servitor_move, "servitor_move"), (tool_servitor_excavate, "servitor_excavate"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
         server.add_tool(fn, name=nom)

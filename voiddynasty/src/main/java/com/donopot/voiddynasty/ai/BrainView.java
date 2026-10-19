@@ -53,6 +53,7 @@ public final class BrainView {
         }
         BlockPos pos = bot.blockPosition();
         out.addProperty("present", true);
+        out.addProperty("awake", !(bot instanceof net.minecraft.world.entity.Mob noAiMob) || !noAiMob.isNoAi());
         out.addProperty("type", EntityType.getKey(bot.getType()).toString());
         out.add("pos", MissionService.positionJson(pos));
         out.addProperty("health", round1(bot.getHealth()));
@@ -123,6 +124,12 @@ public final class BrainView {
         out.addProperty("skipped", state.skipped);
         out.addProperty("total", state.total);
         out.addProperty("last_stop", state.lastStop == null ? "" : state.lastStop);
+        out.addProperty("progress", state.progress);
+        out.addProperty("cursor_y", state.cursorY);
+        out.addProperty("min_y", state.minY);
+        out.addProperty("has_target", state.hasTarget);
+        out.addProperty("target", state.hasTarget ? new BlockPos(state.targetX, state.targetY, state.targetZ).toShortString() : "");
+        out.addProperty("scan_note", com.donopot.voiddynasty.work.WorkService.lastScanNote);
         out.addProperty("scope", "Etat interne du moteur de chantier ; last_stop dit pourquoi il attend");
         return out.toString();
     }
