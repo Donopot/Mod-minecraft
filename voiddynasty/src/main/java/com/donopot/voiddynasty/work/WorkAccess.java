@@ -27,7 +27,11 @@ public final class WorkAccess {
         if (m==null || !contains(m,p) || level.isOutsideBuildHeight(p) || !level.getWorldBorder().isWithinBounds(p)
                 || !WorkService.loadedNeighborhood(level,p) || ClaimIntegration.isClaimProtected(level,p)) return false;
         var block=level.getBlockState(p);
-        if (!ROCK.contains(BuiltInRegistries.BLOCK.getKey(block.getBlock()).toString()) && !MissionService.matches(m,block)) return false;
+        // La vegetation (herbes, buissons, fleurs, pousses) se traverse sans outil : elle ne doit
+        // pas bloquer un couloir d'acces.
+        boolean vegetation = block.getBlock() instanceof net.minecraft.world.level.block.BushBlock;
+        if (!vegetation && !ROCK.contains(BuiltInRegistries.BLOCK.getKey(block.getBlock()).toString())
+                && !MissionService.matches(m,block)) return false;
         if (block.hasBlockEntity() || !block.getFluidState().isEmpty() || WorkService.touchesFluid(level,p)) return false;
         // Never open a falling ceiling or undermine attached containers.
         var above=level.getBlockState(p.above());
@@ -46,11 +50,10 @@ public final class WorkAccess {
             if(!block.isAir() && !safe(level,s,cell)) return false;
             if(WorkService.touchesFluid(level,cell)) return false;
         }
-        for(int x=-1;x<=1;x++) for(int z=-1;z<=1;z++) {
-            BlockPos floor=feet.offset(x,-1,z);
-            if(!level.hasChunkAt(floor) || !level.getBlockState(floor).isFaceSturdy(level,floor,Direction.UP)
-                    || !level.getBlockState(floor).getFluidState().isEmpty()) return false;
-        }
+        // Un seul bloc porteur suffit : le compagnon peut longer une vire ou une berge.
+        BlockPos floor=feet.below();
+        if(!level.hasChunkAt(floor) || !level.getBlockState(floor).isFaceSturdy(level,floor,Direction.UP)
+                || !level.getBlockState(floor).getFluidState().isEmpty()) return false;
         return true;
     }
     static List<BlockPos> route(ServerLevel level,WorkState s,BlockPos start,BlockPos target) {
@@ -77,6 +80,7 @@ public final class WorkAccess {
         return List.of();
     }
     private static final Map<String,Integer> FLOOR_RETRIES = new HashMap<>();
+    private static final Map<String,Integer> REACH_RETRIES = new HashMap<>();
 
     /**
      * Deplace le compagnon vers la surface porteuse 3x3 la plus proche quand il se tient sur une
@@ -163,7 +167,21 @@ public final class WorkAccess {
             return;
         }
         boolean clear=cells.stream().allMatch(p->level.getBlockState(p).isAir());
-        if(!clear) {WorkService.pause(s,"ACCESS_OUT_OF_REACH");return;}
+        if(!clear) {
+            // Bloc hors de portee : on s'approche au lieu d'abandonner (3 tentatives par mission).
+            BlockPos stuck=cells.stream().filter(p->!level.getBlockState(p).isAir()).findFirst().orElse(next);
+            String key=(m==null?"":m.id);
+            int tries=REACH_RETRIES.getOrDefault(key,0);
+            if(tries<3) {
+                REACH_RETRIES.put(key,tries+1);
+                var path=mob.getNavigation().createPath(stuck,1);
+                if(path!=null && path.canReach()) mob.getNavigation().moveTo(path,1.0);
+                s.lastStop="approche du bloc hors portee "+stuck.toShortString()+" (tentative "+(tries+1)+"/3)";
+                return;
+            }
+            WorkService.pause(s,"ACCESS_OUT_OF_REACH");
+            return;
+        }
         // Vanilla centers wide mobs on a multi-cell node, not at block + 0.5.
         double offset=Math.floor(bot.getBbWidth()+1.0)*.5;
         if(bot.distanceToSqr(next.getX()+offset,next.getY(),next.getZ()+offset)<.36 && bot.onGround()) {

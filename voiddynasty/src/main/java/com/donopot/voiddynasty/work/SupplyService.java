@@ -141,6 +141,8 @@ public final class SupplyService {
     // ------------------------------------------------------------------ boucle
 
     private static void tick(ServerLevel level) {
+        // Fin de job (ou job terminal) : on relache les chunks forces par l'approvisionnement.
+        if (job.terminal()) releaseZone(level);
         LivingEntity bot = com.donopot.voiddynasty.ai.BrainSpawn.find(level);
         if (bot == null) {
             fail("NO_SERVITOR", "Aucun servitor dans cette dimension");
@@ -522,7 +524,7 @@ public final class SupplyService {
             zMinZ = Math.min(zMinZ - 1, origin.getZ() - 1);
             zMaxZ = Math.max(zMaxZ + 1, origin.getZ() + 1);
             zMinY = Math.min(zMinY, origin.getY() - 1);
-            zMaxY = Math.max(zMaxY, origin.getY());
+            zMaxY = Math.max(zMaxY, origin.getY() + 2);   // hauteur libre au-dessus du compagnon
             long volume = (long) (zMaxX - zMinX + 1) * (zMaxY - zMinY + 1) * (zMaxZ - zMinZ + 1);
             if (volume > 32768) {
                 fail("ZONE_TROP_GRANDE", "Couloir d'acces impossible : " + volume + " blocs > 32768");
@@ -532,6 +534,7 @@ public final class SupplyService {
                     + new BlockPos(zMinX, zMinY, zMinZ).toShortString() + " -> "
                     + new BlockPos(zMaxX, zMaxY, zMaxZ).toShortString() + " (" + volume + " blocs)");
         }
+        forceZone(level, zMinX, zMinZ, zMaxX, zMaxZ);
         JsonObject request = new JsonObject();
         request.addProperty("schema", 1);
         request.addProperty("type", "GATHER");
@@ -624,6 +627,33 @@ public final class SupplyService {
             }
             fail("RECOLTE_VIDE", "La recolte de " + job.gatherItem + " n'a rien livre (" + reason + ")");
         }
+    }
+
+    /**
+     * Garde la zone de recolte chargee pendant la mission. Sans joueur connecte, les chunks se
+     * dechargent et le moteur refuse alors tout deplacement ("chunk decharge") : la recolte
+     * echouait en ACCESS_NO_SAFE_ROUTE alors que le terrain etait praticable.
+     */
+    private static final java.util.List<net.minecraft.world.level.ChunkPos> forcedChunks = new java.util.ArrayList<>();
+
+    private static void forceZone(ServerLevel level, int minX, int minZ, int maxX, int maxZ) {
+        releaseZone(level);
+        for (int cx = minX >> 4; cx <= maxX >> 4; cx++) {
+            for (int cz = minZ >> 4; cz <= maxZ >> 4; cz++) {
+                var chunk = new net.minecraft.world.level.ChunkPos(cx, cz);
+                level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
+                forcedChunks.add(chunk);
+            }
+        }
+        if (!forcedChunks.isEmpty()) log("CHUNKS", forcedChunks.size() + " chunks gardes charges pour la recolte");
+    }
+
+    private static void releaseZone(ServerLevel level) {
+        if (forcedChunks.isEmpty()) return;
+        for (var chunk : forcedChunks) {
+            level.getChunkSource().removeTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
+        }
+        forcedChunks.clear();
     }
 
     // ------------------------------------------------------------------ outils

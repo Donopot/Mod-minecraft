@@ -14,16 +14,25 @@ final class WorkStairs {
     static final int MAX_RISE = 32, RADIUS = 48;
     private WorkStairs() {}
 
+    /**
+     * Support d'une marche : UN bloc porteur sous les pieds. Une marche descend d'un cran vers
+     * l'avant, donc creuser la suivante ne retire jamais le support de celle ou l'on se tient.
+     * Les quatre voisins du dessous sont seulement verifies comme non fluides (pas de croute
+     * au-dessus de la lave).
+     */
     static boolean floor(ServerLevel level, BlockPos feet) {
-        for (int x=-1;x<=1;x++) for (int z=-1;z<=1;z++) {
-            BlockPos p=feet.offset(x,-1,z);
-            if (!WorkService.loadedNeighborhood(level,p) || level.isOutsideBuildHeight(p)
-                    || !level.getWorldBorder().isWithinBounds(p) || ClaimIntegration.isClaimProtected(level,p)) return false;
-            var state=level.getBlockState(p);
-            if (!state.isFaceSturdy(level,p,Direction.UP) || !state.getFluidState().isEmpty()
-                    || state.hasBlockEntity() || state.getBlock() instanceof net.minecraft.world.level.block.FallingBlock
-                    || state.is(net.minecraft.world.level.block.Blocks.MAGMA_BLOCK)
-                    || WorkService.touchesFluid(level,p)) return false;
+        BlockPos p=feet.below();
+        if (!WorkService.loadedNeighborhood(level,p) || level.isOutsideBuildHeight(p)
+                || !level.getWorldBorder().isWithinBounds(p) || ClaimIntegration.isClaimProtected(level,p)) return false;
+        var state=level.getBlockState(p);
+        if (!state.isFaceSturdy(level,p,Direction.UP) || !state.getFluidState().isEmpty()
+                || state.hasBlockEntity() || state.getBlock() instanceof net.minecraft.world.level.block.FallingBlock
+                || state.is(net.minecraft.world.level.block.Blocks.MAGMA_BLOCK)
+                || WorkService.touchesFluid(level,p)) return false;
+        for (Direction d:List.of(Direction.NORTH,Direction.SOUTH,Direction.EAST,Direction.WEST)) {
+            BlockPos side=p.relative(d);
+            if (!level.hasChunkAt(side)) return false;
+            if (!level.getBlockState(side).getFluidState().isEmpty() || WorkService.touchesFluid(level,side)) return false;
         }
         return true;
     }
