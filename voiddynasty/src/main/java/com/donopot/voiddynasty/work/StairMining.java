@@ -66,7 +66,17 @@ final class StairMining {
 
     /** Vrai si un escalier pilote cette mission : le detecteur de stagnation du chantier doit
      *  alors s'effacer, l'escalier ayant ses propres bornes (8 essais, 96 marches). */
+    /**
+     * Vrai si un escalier pilote cette mission. Le detecteur de stagnation du chantier doit alors
+     * s'effacer : l'escalier a ses propres bornes (45 s par marche, 5 min au total, 5 recuperations)
+     * et publie sa phase. Sans cela, le worker met la mission en pause au milieu d'un creusement.
+     */
+    static boolean driving(WorkMission mission) {
+        return mission != null && EXECS.containsKey(mission.id);
+    }
+
     static void forget(String missionId) {
+        EXECS.remove(missionId);
         DESCEND_TRIES.remove(missionId);
         DESCEND_LAST.remove(missionId);
         PLANS.remove(missionId);
@@ -288,7 +298,7 @@ final class StairMining {
      * AUDIT alpha.76 : trace brute de l'etat physique du compagnon. Aucune decision ne depend de
      * cette methode ; elle existe pour expliquer une immobilité, pas pour la contourner.
      */
-    private static void trace(ServerLevel level, LivingEntity bot, BlockPos target, String phase) {
+    private static void trace(ServerLevel level, LivingEntity bot, BlockPos target, Exec ex) {
         long now = level.getGameTime();
         if (now - lastTraceTick < 5) return;
         lastTraceTick = now;
@@ -300,7 +310,10 @@ final class StairMining {
             navPath += " prog=" + nav.isInProgress() + " done=" + nav.isDone();
         }
         var task = com.donopot.voiddynasty.ai.TaskRunner.current(bot);
-        System.out.println("[STAIR_TRACE] t=" + now + " phase=" + phase
+        System.out.println("[STAIR_TRACE] t=" + now + " phase=" + ex.phase + " index=" + ex.index
+                + " attempts=" + ex.attempts + " recovers=" + ex.recovers
+                + " idleTicks=" + WorkState.get(level).idleTicks
+                + " aabb=" + fmt(bot.getBoundingBox())
                 + " pos=" + String.format(java.util.Locale.ROOT, "%.3f,%.3f,%.3f", bot.getX(), bot.getY(), bot.getZ())
                 + " block=" + bot.blockPosition().toShortString()
                 + " delta=" + String.format(java.util.Locale.ROOT, "%.3f,%.3f,%.3f",
@@ -315,6 +328,53 @@ final class StairMining {
                 + " target=" + target.toShortString());
     }
 
+    // ------------------------------------------------------------------ machine a etats
+
+    /** Cycle d'execution d'un escalier : plan -> degagement -> descente -> verification. */
+    enum Phase { PLAN_STEP, CLEAR_STEP, DESCEND, VERIFY, RECOVER }
+
+    private static final class Exec {
+        Plan plan;
+        int index;
+        Phase phase = Phase.PLAN_STEP;
+        long startTick;
+        long phaseStart;
+        long stepStart;
+        int attempts;
+        int recovers;
+        int stepRecovers;
+        String signature = "";
+        String lastSignature = "";
+        int sameSignature;
+        Phase lastPhase = null;
+    }
+
+    private static final Map<String, Exec> EXECS = new HashMap<>();
+    private static final long STEP_TIMEOUT = 45L * 20L;      // ticks par marche
+    private static final long STAIR_TIMEOUT = 300L * 20L;    // ticks pour l'escalier entier
+    private static final int MAX_RECOVERS = 5, MAX_STEP_RECOVERS = 2, MAX_VERIFY_RETRIES = 3;
+
+    private static Exec exec(String key) {
+        return EXECS.computeIfAbsent(key, k -> new Exec());
+    }
+
+    private static void enter(Exec ex, Phase phase, long now) {
+        ex.phase = phase;
+        ex.phaseStart = now;
+        if (phase == Phase.CLEAR_STEP) { ex.attempts = 0; ex.stepStart = now; }
+    }
+
+    private static void stairFail(WorkState state, Exec ex, String key, String code, String detail) {
+        state.lastStop = code + " : " + detail + " (marche " + (ex.index + 1) + ")";
+        System.out.println("[STAIR_FAIL] code=" + code + " detail=" + detail
+                + " index=" + ex.index + " phase=" + ex.phase + " pos=" + state.lastStop);
+        ex.plan = null;
+        ex.index = 0;
+        EXECS.remove(key);
+        PLANS.remove(key);
+        WorkService.pause(state, code);
+    }
+
     static boolean drive(ServerLevel level, WorkState state, LivingEntity bot, BlockPos target) {
         WorkMission mission = MissionService.active(state);
         if (mission == null || !(bot instanceof Mob mob)) return false;
@@ -323,222 +383,259 @@ final class StairMining {
             return false;
         }
         String key = mission.id;
-
-        Plan plan = PLANS.get(key);
-        if (plan == null) {
-            plan = plan(level, state, bot, target);
-            if (plan == null || plan.steps().isEmpty()) {
-                int failures = FAILURES.merge(key, 1, Integer::sum);
-                state.lastStop = "escalier impossible : aucune transition praticable depuis "
-                        + bot.blockPosition().toShortString() + " vers " + target.toShortString()
-                        + " (tentative " + failures + "/" + MAX_FAILURES + ")";
-                System.out.println("[STAIR] echec planification depuis " + bot.blockPosition()
-                        + " vers " + target + " (tentative " + failures + ") : " + lastReason);
-                return false;
-            }
-            PLANS.put(key, plan);
-            INDEX.put(key, 0);
-            System.out.println("[STAIR] plan " + plan.steps().size() + " transitions depuis "
-                    + bot.blockPosition() + " vers " + target);
-        }
-
-        int index = INDEX.getOrDefault(key, 0);
-        while (index < plan.steps().size()) {
-            trace(level, bot, plan.steps().get(index).feet(), "step" + index);
-            Step step = plan.steps().get(index);
-            // 1. Securiser : les appuis reels existent-ils toujours ?
-            for (BlockPos support : step.support()) {
-                if (!support(level, support)) {
-                    state.lastStop = "appui disparu " + support.toShortString() + " : replanification";
-                    System.out.println("[STAIR] appui disparu " + support + " (marche " + index + ")");
-                    forget(key);
-                    return true;
-                }
-            }
-            // 2. Etre au palier superieur avant de creuser une descente (une marche WALK se rejoint
-            //    directement : exiger le point de depart ferait revenir le compagnon en arriere).
-            if (step.kind() == Kind.DESCEND_STEP && !atFeet(bot, step.from())) {
-                approach(level, mob, step.from());
-                state.lastStop = "escalier : marche " + (index + 1) + "/" + plan.steps().size()
-                        + ", deplacement vers " + step.from().toShortString();
-                return true;
-            }
-            // 3. Creuser les cellules solides, une operation par tick, avec relecture.
-            for (BlockPos cell : step.clear()) {
-                if (level.getBlockState(cell).isAir()) continue;
-                if (!WorkAccess.safe(level, state, cell)) {
-                    state.lastStop = "cellule refusee " + cell.toShortString() + " : replanification";
-                    System.out.println("[STAIR] cellule refusee " + cell + " "
-                            + BuiltInRegistries.BLOCK.getKey(level.getBlockState(cell).getBlock()));
-                    forget(key);
-                    return true;
-                }
-                double distance = WorkService.distanceSq(bot, cell);
-                if (distance > WorkService.reach() * WorkService.reach()
-                        || !WorkService.visible(level, bot, cell)) {
-                    approach(level, mob, cell);
-                    state.lastStop = "escalier : approche de " + cell.toShortString()
-                            + " (marche " + (index + 1) + "/" + plan.steps().size() + ")";
-                    return true;
-                }
-                mob.getNavigation().stop();
-                if (state.accessBlock == null || !state.accessBlock.equals(cell)) {
-                    state.accessBlock = cell;
-                    state.progress = 0;
-                }
-                state.progress += WorkService.speedMult() / 20.0;
-                var blockState = level.getBlockState(cell);
-                state.lastStop = "escalier : creuse " + cell.toShortString() + " "
-                        + BuiltInRegistries.BLOCK.getKey(blockState.getBlock())
-                        + " marche " + (index + 1) + "/" + plan.steps().size();
-                if (state.progress >= WorkService.breakSeconds(level, state, cell, blockState)) {
-                    System.out.println("[STAIR] marche=" + (index + 1) + "/" + plan.steps().size()
-                            + " kind=" + step.kind() + " mine=" + cell.toShortString()
-                            + " bloc=" + BuiltInRegistries.BLOCK.getKey(blockState.getBlock())
-                            + " from=" + step.from().toShortString()
-                            + " feet=" + step.feet().toShortString());
-                    WorkService.breakTarget(level, state, bot, cell, true);
-                    // Un bloc casse par l'escalier est un progres : sans cela le detecteur de
-                    // stagnation du chantier met la mission en pause en plein creusement.
-                    state.movementCells.clear();
-                    state.idleTicks = 0;
-                    state.setDirty();
-                }
-                return true;
-            }
-            // 3bis. Degagement de l'empreinte REELLE avant toute descente : le plan ne garantit que
-            //       des colonnes alignees, l'entite en occupe deux ou trois selon son centrage.
-            BlockPos feet = step.feet();
-            if (step.kind() == Kind.DESCEND_STEP) {
-                for (BlockPos cell : footprintCells(bot, feet)) {
-                    if (level.getBlockState(cell).isAir()) continue;
-                    if (!WorkAccess.safe(level, state, cell)) {
-                        state.lastStop = "empreinte refusee " + cell.toShortString() + " : "
-                                + WorkAccess.why(level, state, cell);
-                        System.out.println("[STAIR] empreinte refusee " + cell + " : "
-                                + WorkAccess.why(level, state, cell));
-                        forget(key);
-                        return true;
-                    }
-                    if (WorkService.distanceSq(bot, cell) > WorkService.reach() * WorkService.reach()
-                            || !WorkService.visible(level, bot, cell)) continue;
-                    mob.getNavigation().stop();
-                    if (state.accessBlock == null || !state.accessBlock.equals(cell)) {
-                        state.accessBlock = cell;
-                        state.progress = 0;
-                    }
-                    state.progress += WorkService.speedMult() / 20.0;
-                    var bs = level.getBlockState(cell);
-                    state.lastStop = "escalier : degage l'empreinte " + cell.toShortString() + " "
-                            + BuiltInRegistries.BLOCK.getKey(bs.getBlock());
-                    if (state.progress >= WorkService.breakSeconds(level, state, cell, bs)) {
-                        System.out.println("[STAIR] marche=" + (index + 1) + "/" + plan.steps().size()
-                                + " kind=FOOTPRINT mine=" + cell.toShortString()
-                                + " bloc=" + BuiltInRegistries.BLOCK.getKey(bs.getBlock()));
-                            WorkService.breakTarget(level, state, bot, cell, true);
-                            state.movementCells.clear();
-                            state.idleTicks = 0;
-                            state.setDirty();
-                    }
-                    return true;
-                }
-            }
-            // 4. Degagement complet et appuis verifies : avancer sur le palier.
-            double horizontal = Math.hypot(bot.getX() - (feet.getX() + 0.5), bot.getZ() - (feet.getZ() + 0.5));
-            // Le niveau doit etre le bon : une tolerance de 2 blocs faisait croire a une marche
-            // franchie alors que le compagnon etait encore au-dessus du palier.
-            boolean arrived = horizontal <= 1.2 && Math.abs(bot.getY() - feet.getY()) <= 0.6;
-            if (!arrived) {
-                // Descente d'un bloc : la navigation vanilla refuse souvent d'entrer dans le puits.
-                // On guide le deplacement puis, sans progres, on imprime une impulsion mesuree.
-                if (step.kind() == Kind.DESCEND_STEP && feet.getY() < bot.getY() - 0.4
-                        && Math.abs(feet.getX() - bot.getX()) <= 2.5 && Math.abs(feet.getZ() - bot.getZ()) <= 2.5
-                        && descend(level, mob, step.from(), feet, key)) {
-                    state.lastStop = "escalier : descente vers " + feet.toShortString()
-                            + " (marche " + (index + 1) + "/" + plan.steps().size()
-                            + ", essai " + DESCEND_TRIES.getOrDefault(key, 0) + "/" + MAX_DESCEND_TRIES + ")";
-                    return true;
-                }
-                approach(level, mob, feet);
-                state.lastStop = "escalier : passage vers " + feet.toShortString()
-                        + " (marche " + (index + 1) + "/" + plan.steps().size() + ")";
-                return true;
-            }
-            index++;
-            INDEX.put(key, index);
-            state.accessBlock = null;
-            state.progress = 0;
-            // Une marche franchie est un progres reel : on remet a zero le detecteur de blocage.
-            state.movementCells.clear();
-            state.idleTicks = 0;
-            DESCEND_TRIES.remove(key);
-            DESCEND_LAST.remove(key);
-            state.lastStop = "escalier : marche " + index + "/" + plan.steps().size() + " franchie";
-            System.out.println("[STAIR] franchi marche " + index + "/" + plan.steps().size()
-                    + " feet=" + feet.toShortString());
-        }
-
-        System.out.println("[STAIR] escalier termine (" + plan.steps().size() + " transitions) a "
-                + bot.blockPosition());
-        state.lastStop = "escalier termine : " + plan.steps().size() + " transitions";
-        forget(key);
-        FAILURES.remove(key);
-        return false;
-    }
-
-    /**
-     * Descente dans le puits d'un bloc. Deux temps : guidage par le MoveControl vers le centre du
-     * palier, puis — si le compagnon n'a pas bouge depuis 12 ticks — une impulsion horizontale
-     * courte vers le palier et une composante verticale negative. Jamais de teleportation : la
-     * gravite et les collisions du jeu restent seules responsables de la chute.
-     */
-    private static boolean descend(ServerLevel level, Mob mob, BlockPos from, BlockPos feet, String key) {
-        int tries = DESCEND_TRIES.getOrDefault(key, 0);
-        if (tries >= MAX_DESCEND_TRIES) {
-            // Descente impossible sur cette marche : on rend la main pour replanifier depuis
-            // l'etat reel (jamais de boucle infinie, jamais de teleportation).
-            DESCEND_TRIES.remove(key);
-            DESCEND_LAST.remove(key);
-            forget(key);
+        Exec ex = exec(key);
+        long now = level.getGameTime();
+        if (ex.startTick == 0L) { ex.startTick = now; ex.phaseStart = now; }
+        if (now - ex.startTick > STAIR_TIMEOUT) {
+            stairFail(state, ex, key, "STAIR_TIMEOUT", "5 minutes sans terminer l'escalier");
             return false;
         }
-        // Un seul arret de navigation au debut de la descente : le refaire a chaque tick annule
-        // la progression du MoveControl (le compagnon oscille sur place).
-        if (DESCEND_LAST.getOrDefault(key, 0L) == 0L) mob.getNavigation().stop();
-        // Le compagnon mesure 1.09 bloc : centre sur le palier, son emprise chevauche encore la
-        // dalle de la marche precedente et il ne tombe jamais. On vise donc un point decale de
-        // 0.55 bloc au-dela du bord, dans le sens de la descente.
-        // Marge calculee sur la largeur reelle : il faut que toute l'emprise quitte la dalle
-        // precedente (demi-largeur - 0.5) plus une marge de securite.
-        double bias = Math.max(0.18, (mob.getBbWidth() / 2.0 - 0.5) + 0.12);
-        double biasX = Integer.compare(feet.getX(), from.getX()) * bias;
-        double biasZ = Integer.compare(feet.getZ(), from.getZ()) * bias;
-        double targetX = feet.getX() + 0.5 + biasX;
-        double targetZ = feet.getZ() + 0.5 + biasZ;
-        long now = level.getGameTime();
-        long last = DESCEND_LAST.getOrDefault(key, 0L);
-        if (last == 0L) { DESCEND_LAST.put(key, now); last = now; }
-        if (now - last >= 8L) {
-            mob.getMoveControl().setWantedPosition(targetX, feet.getY() + 0.05, targetZ, 1.0);
+        trace(level, bot, target, ex);
+        // Une transition de phase est une progression reelle : le watchdog global est informe,
+        // mais aucune activite repetee ne remet le compteur a zero.
+        if (ex.lastPhase != ex.phase) {
+            ex.lastPhase = ex.phase;
+            state.idleTicks = 0;
+            state.movementCells.clear();
         }
-        if (now - last < 12L) return true;
-        double dx = targetX - mob.getX();
-        double dz = targetZ - mob.getZ();
-        double norm = Math.sqrt(dx * dx + dz * dz);
-        if (norm > 0.001) { dx = dx / norm * 0.14; dz = dz / norm * 0.14; } else { dx = 0; dz = 0; }
-        mob.setDeltaMovement(dx, -0.30, dz);
-        mob.syncVelocity = true;
-        DESCEND_TRIES.put(key, tries + 1);
-        DESCEND_LAST.put(key, now);
-        System.out.println("[STAIR] impulsion descente vers " + feet + " (essai " + (tries + 1) + ")");
+
+        switch (ex.phase) {
+            case PLAN_STEP -> planStep(level, state, bot, mob, target, key, ex, now);
+            case CLEAR_STEP -> clearStep(level, state, bot, mob, target, key, ex, now);
+            case DESCEND -> descendStep(level, state, bot, mob, target, key, ex, now);
+            case VERIFY -> verifyStep(level, state, bot, mob, target, key, ex, now);
+            case RECOVER -> recover(level, state, bot, target, key, ex, now);
+        }
         return true;
     }
 
+    /** Plan courant, ou replanification locale depuis la position physique reelle. */
+    private static void planStep(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                                 BlockPos target, String key, Exec ex, long now) {
+        boolean needPlan = ex.plan == null || ex.index >= ex.plan.steps().size();
+        if (!needPlan) {
+            Step step = ex.plan.steps().get(ex.index);
+            BlockPos here = bot.blockPosition();
+            int dx = Math.abs(here.getX() - step.from().getX());
+            int dz = Math.abs(here.getZ() - step.from().getZ());
+            int dy = Math.abs(here.getY() - step.from().getY());
+            if (dx > 2 || dz > 2 || dy > 2) {
+                // Plan desynchronise (cause A) : on recalcule depuis la position reelle, en gardant
+                // la destination globale et les excavations deja confirmees.
+                System.out.println("[STAIR_LOCAL] resync index=" + ex.index + " planFrom=" + step.from()
+                        + " realPos=" + here);
+                needPlan = true;
+            }
+        }
+        if (needPlan) {
+            Plan rebuilt = plan(level, state, bot, target);
+            if (rebuilt == null || rebuilt.steps().isEmpty()) {
+                enter(ex, Phase.RECOVER, now);
+                return;
+            }
+            ex.plan = rebuilt;
+            ex.index = 0;
+            System.out.println("[STAIR_PLAN] steps=" + rebuilt.steps().size()
+                    + " from=" + bot.blockPosition() + " target=" + target);
+            PLANS.put(key, rebuilt);
+        }
+        Step step = ex.plan.steps().get(ex.index);
+        state.lastStop = "escalier " + ex.phase + " marche " + (ex.index + 1) + "/" + ex.plan.steps().size()
+                + " -> " + step.feet().toShortString();
+        enter(ex, Phase.CLEAR_STEP, now);
+    }
+
+    /** Degagement : volume planifie puis empreinte reelle, une operation confirmee par tick. */
+    private static void clearStep(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                                  BlockPos target, String key, Exec ex, long now) {
+        Step step = ex.plan.steps().get(ex.index);
+        List<BlockPos> cells = new ArrayList<>(step.clear());
+        if (step.kind() == Kind.DESCEND_STEP) cells.addAll(footprintCells(bot, step.feet()));
+        for (BlockPos cell : cells) {
+            if (level.getBlockState(cell).isAir()) continue;
+            if (!WorkAccess.safe(level, state, cell)) {
+                signatureFail(state, ex, key, "CLEAR_REFUSED", cell + " : " + WorkAccess.why(level, state, cell));
+                return;
+            }
+            double distance = WorkService.distanceSq(bot, cell);
+            if (distance > WorkService.reach() * WorkService.reach() || !WorkService.visible(level, bot, cell)) {
+                approach(level, mob, cell);
+                state.lastStop = "escalier CLEAR marche " + (ex.index + 1) + "/" + ex.plan.steps().size()
+                        + " approche " + cell.toShortString();
+                return;
+            }
+            mob.getNavigation().stop();
+            if (state.accessBlock == null || !state.accessBlock.equals(cell)) {
+                state.accessBlock = cell;
+                state.progress = 0;
+            }
+            state.progress += WorkService.speedMult() / 20.0;
+            var bs = level.getBlockState(cell);
+            if (state.progress < WorkService.breakSeconds(level, state, cell, bs)) {
+                state.lastStop = "escalier CLEAR " + cell.toShortString() + " "
+                        + BuiltInRegistries.BLOCK.getKey(bs.getBlock());
+                return;
+            }
+            String block = BuiltInRegistries.BLOCK.getKey(bs.getBlock()).toString();
+            WorkService.breakTarget(level, state, bot, cell, true);
+            boolean confirmed = level.getBlockState(cell).isAir();
+            state.movementCells.clear();
+            state.idleTicks = 0;
+            state.setDirty();
+            System.out.println("[STAIR_CLEAR] index=" + ex.index + " phase=CLEAR_STEP cell=" + cell.toShortString()
+                    + " block=" + block + " confirmed=" + confirmed);
+            return;
+        }
+        // Volume degage : on verifie les appuis avant de descendre.
+        for (BlockPos appui : step.support()) {
+            if (!support(level, appui)) {
+                signatureFail(state, ex, key, "SUPPORT_LOST", appui.toShortString());
+                return;
+            }
+        }
+        enter(ex, Phase.DESCEND, now);
+    }
+
+    /** Descente (ou marche) vers le palier, avec guidage puis impulsion bornee. */
+    private static void descendStep(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                                    BlockPos target, String key, Exec ex, long now) {
+        Step step = ex.plan.steps().get(ex.index);
+        BlockPos feet = step.feet();
+        if (arrived(bot, feet)) {
+            enter(ex, Phase.VERIFY, now);
+            return;
+        }
+        if (now - ex.stepStart > STEP_TIMEOUT) {
+            signatureFail(state, ex, key, "STEP_TIMEOUT", "aucune arrivée en 45 s vers " + feet.toShortString());
+            return;
+        }
+        if (step.kind() == Kind.DESCEND_STEP && feet.getY() < bot.getY() - 0.4) {
+            if (!descend(level, mob, step.from(), feet, key)) {
+                signatureFail(state, ex, key, "DESCEND_BLOCKED", "impulsions épuisées vers " + feet.toShortString());
+                return;
+            }
+            state.lastStop = "escalier DESCEND marche " + (ex.index + 1) + "/" + ex.plan.steps().size()
+                    + " essai " + DESCEND_TRIES.getOrDefault(key, 0) + "/" + MAX_DESCEND_TRIES;
+            return;
+        }
+        approach(level, mob, feet);
+        state.lastStop = "escalier DESCEND marche " + (ex.index + 1) + "/" + ex.plan.steps().size()
+                + " vers " + feet.toShortString();
+    }
+
+    /** Verification fondee sur les coordonnees reelles, l'AABB et l'appui. stepIndex incremente ici. */
+    private static void verifyStep(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                                   BlockPos target, String key, Exec ex, long now) {
+        Step step = ex.plan.steps().get(ex.index);
+        BlockPos feet = step.feet();
+        BlockPos here = bot.blockPosition();
+        boolean positionOk = Math.abs(here.getX() - feet.getX()) <= 1
+                && Math.abs(here.getZ() - feet.getZ()) <= 1
+                && Math.abs(bot.getY() - feet.getY()) <= 0.6;
+        boolean supportOk = support(level, feet.below());
+        boolean volumeOk = true;
+        for (BlockPos cell : footprintCells(bot, feet)) {
+            if (!level.getBlockState(cell).isAir()) { volumeOk = false; break; }
+        }
+        System.out.println("[STAIR_VERIFY] index=" + ex.index + " pos=" + here.toShortString()
+                + " expected=" + feet.toShortString() + " support=" + supportOk
+                + " volume=" + volumeOk + " aabb=" + fmt(bot.getBoundingBox()));
+        if (positionOk && supportOk && volumeOk) {
+            ex.index++;
+            ex.stepRecovers = 0;
+            DESCEND_TRIES.remove(key);
+            DESCEND_LAST.remove(key);
+            state.accessBlock = null;
+            state.progress = 0;
+            state.movementCells.clear();
+            state.idleTicks = 0;
+            System.out.println("[STAIR_STEP] index=" + ex.index + "/" + ex.plan.steps().size()
+                    + " confirmed feet=" + feet.toShortString() + " pos=" + here.toShortString());
+            if (ex.index >= ex.plan.steps().size()) {
+                System.out.println("[STAIR_DONE] steps=" + ex.plan.steps().size() + " pos=" + here);
+                state.lastStop = "escalier termine : " + ex.plan.steps().size() + " transitions";
+                ex.plan = null;
+                ex.index = 0;
+                EXECS.remove(key);
+                PLANS.remove(key);
+                FAILURES.remove(key);
+                return;
+            }
+            enter(ex, Phase.PLAN_STEP, now);
+            return;
+        }
+        ex.attempts++;
+        if (ex.attempts > MAX_VERIFY_RETRIES) {
+            signatureFail(state, ex, key, "VERIFY_FAILED", "position/support/volume non conformes");
+            return;
+        }
+        enter(ex, Phase.DESCEND, now);
+    }
+
     /**
-     * Cellules reellement occupees par l'empreinte de collision du compagnon a hauteur du palier
-     * vise : toutes les colonnes que son AABB recouvre, aux deux niveaux du tunnel. Le plan raisonne
-     * en blocs alignes ; l'execution, elle, part de l'empreinte reelle — sinon une colonne solide
-     * reste sous l'entite (vColl) ou devant elle (hColl) et rien ne bouge.
+     * Recuperation locale bornee : on ne recalcule que le segment courant depuis la position
+     * reelle. Une meme signature d'echec repetee deux fois arrete proprement.
+     */
+    private static void recover(ServerLevel level, WorkState state, LivingEntity bot, BlockPos target,
+                                String key, Exec ex, long now) {
+        if (!ex.signature.isEmpty()) {
+            if (ex.signature.equals(ex.lastSignature)) {
+                ex.sameSignature++;
+            } else {
+                ex.lastSignature = ex.signature;
+                ex.sameSignature = 1;
+            }
+            ex.signature = "";
+        }
+        String current = ex.lastSignature + "@" + bot.blockPosition().toShortString();
+        ex.recovers++;
+        ex.stepRecovers++;
+        System.out.println("[STAIR_RECOVER] n=" + ex.recovers + " step=" + ex.stepRecovers
+                + " same=" + ex.sameSignature + " at=" + bot.blockPosition() + " reason=" + state.lastStop);
+        if (ex.sameSignature >= 2 || ex.recovers > MAX_RECOVERS || ex.stepRecovers > MAX_STEP_RECOVER_TOTAL) {
+            stairFail(state, ex, key, "STAIR_BLOCKED", "aucune solution locale (" + current + ")");
+            return;
+        }
+        Plan rebuilt = plan(level, state, bot, target);
+        if (rebuilt == null || rebuilt.steps().isEmpty()) {
+            stairFail(state, ex, key, "STAIR_NO_ROUTE", "aucune transition praticable : " + lastReason);
+            return;
+        }
+        ex.plan = rebuilt;
+        ex.index = 0;
+        PLANS.put(key, rebuilt);
+        System.out.println("[STAIR_RECOVER] nouveau plan " + rebuilt.steps().size() + " transitions depuis "
+                + bot.blockPosition());
+        enter(ex, Phase.PLAN_STEP, now);
+    }
+
+    private static final int MAX_STEP_RECOVER_TOTAL = 6;
+
+    private static void signatureFail(WorkState state, Exec ex, String key, String code, String detail) {
+        ex.signature = code + "@" + ex.index;
+        ex.phase = Phase.RECOVER;
+        state.lastStop = "escalier " + code + " : " + detail + " (marche " + (ex.index + 1) + ")";
+        System.out.println("[STAIR_SIGNAL] code=" + code + " index=" + ex.index + " detail=" + detail);
+    }
+
+    private static String fmt(net.minecraft.world.phys.AABB box) {
+        return String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f..%.2f,%.2f,%.2f",
+                box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+    }
+
+    /**
+     * Arrivee reelle : coordonnees Y de l'entite (pas le bloc arrondi). Une tolerance d'un bloc
+     * en Y faisait croire a une marche franchie alors que le compagnon etait encore au-dessus.
+     */
+    private static boolean arrived(LivingEntity bot, BlockPos feet) {
+        BlockPos here = bot.blockPosition();
+        return Math.abs(here.getX() - feet.getX()) <= 1 && Math.abs(here.getZ() - feet.getZ()) <= 1
+                && Math.abs(bot.getY() - feet.getY()) <= 0.6;
+    }
+
+    /**
+     * Cellules reellement occupees par l'empreinte de collision a hauteur du palier vise :
+     * toutes les colonnes que l'AABB recouvre, aux deux niveaux du tunnel.
      */
     private static List<BlockPos> footprintCells(LivingEntity bot, BlockPos feet) {
         var box = bot.getBoundingBox();
@@ -555,6 +652,42 @@ final class StairMining {
             }
         }
         return cells;
+    }
+
+    /**
+     * Descente physique d'un cran : guidage du MoveControl vers un point decale du bord (calcule
+     * sur la largeur reelle), puis impulsion mesuree si aucun progres. Aucune teleportation, aucune
+     * suppression de collision : la gravite et les collisions du jeu restent seules responsables.
+     */
+    private static boolean descend(ServerLevel level, Mob mob, BlockPos from, BlockPos feet, String key) {
+        int tries = DESCEND_TRIES.getOrDefault(key, 0);
+        if (tries >= MAX_DESCEND_TRIES) {
+            DESCEND_TRIES.remove(key);
+            DESCEND_LAST.remove(key);
+            return false;
+        }
+        long now = level.getGameTime();
+        long last = DESCEND_LAST.getOrDefault(key, 0L);
+        if (last == 0L) { mob.getNavigation().stop(); last = now; DESCEND_LAST.put(key, now); }
+        double bias = Math.max(0.18, (mob.getBbWidth() / 2.0 - 0.5) + 0.12);
+        double targetX = feet.getX() + 0.5 + Integer.compare(feet.getX(), from.getX()) * bias;
+        double targetZ = feet.getZ() + 0.5 + Integer.compare(feet.getZ(), from.getZ()) * bias;
+        if (now - last >= 8L) {
+            mob.getMoveControl().setWantedPosition(targetX, feet.getY() + 0.05, targetZ, 1.0);
+        }
+        if (now - last >= 12L) {
+            double dx = targetX - mob.getX();
+            double dz = targetZ - mob.getZ();
+            double norm = Math.sqrt(dx * dx + dz * dz);
+            if (norm > 0.001) { dx = dx / norm * 0.14; dz = dz / norm * 0.14; } else { dx = 0; dz = 0; }
+            mob.setDeltaMovement(dx, -0.30, dz);
+            mob.syncVelocity = true;
+            DESCEND_TRIES.put(key, tries + 1);
+            DESCEND_LAST.put(key, now);
+            System.out.println("[STAIR_IMPULSE] vers " + feet + " essai=" + (tries + 1)
+                    + " pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", mob.getX(), mob.getY(), mob.getZ()));
+        }
+        return true;
     }
 
     private static boolean atFeet(LivingEntity bot, BlockPos feet) {

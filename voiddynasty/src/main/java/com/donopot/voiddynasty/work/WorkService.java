@@ -406,6 +406,7 @@ public final class WorkService {
     // ---------------------------------------------------------------- déplacement
 
     static boolean navigationStalled(WorkState state, BlockPos cell, boolean worked) {
+        if (StairMining.driving(MissionService.active(state))) { return false; }
         if (worked) state.movementCells.clear();
         boolean discovered = state.movementCells.size() < 2048 && state.movementCells.add(cell.immutable());
         if (worked || discovered) state.idleTicks = 0;
