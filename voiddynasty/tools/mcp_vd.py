@@ -87,6 +87,15 @@ def tool_servitor_recipes(filter: str = "", dimension: str = "overworld") -> dic
     return vd_core.servitor_recipes(filter=filter, dimension=dimension)
 
 
+def tool_servitor_materials(item: str, count: StrictInt, chest: List[StrictInt], radius: StrictInt = 16,
+                            dimension: str = "overworld") -> dict:
+    """Plan d'approvisionnement AVANT de fabriquer : etapes de craft dans l'ordre, contenu du coffre,
+    et pour chaque matiere premiere manquante les blocs sources presents autour du compagnon
+    (`found_in_box`, `absence_proven`). Aucun bloc casse, rien fabrique : c'est un plan.
+    Utilise-le pour repondre a "il me faut X" au lieu de deviner les ingredients."""
+    return vd_core.servitor_materials(item=item, count=count, chest=chest, radius=radius, dimension=dimension)
+
+
 def tool_servitor_craft(item: str, count: StrictInt, chest: List[StrictInt],
                         dimension: str = "overworld") -> dict:
     """Fabrique `count` exemplaires de `item` depuis le contenu du coffre `chest` [x,y,z].
@@ -188,6 +197,7 @@ for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest
                 (tool_servitor_look, "servitor_look"), (tool_servitor_work, "servitor_work"),
                 (tool_servitor_move, "servitor_move"), (tool_servitor_excavate, "servitor_excavate"),
                 (tool_servitor_recipes, "servitor_recipes"), (tool_servitor_craft, "servitor_craft"),
+                (tool_servitor_materials, "servitor_materials"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
         server.add_tool(fn, name=nom)

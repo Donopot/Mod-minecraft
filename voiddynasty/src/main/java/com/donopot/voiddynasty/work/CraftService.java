@@ -17,8 +17,12 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Crafts : on n'apprend pas les recettes une par une au compagnon.
@@ -180,6 +184,156 @@ public final class CraftService {
             }
         }
         json.add("consumed", consumed);
+        return json;
+    }
+
+
+    // ------------------------------------------------------------------ plan d'approvisionnement
+
+    private static final int MAX_DEPTH = 4;
+    private static final int MAX_NODES = 24;
+
+    /**
+     * Arbre de dependances pour fabriquer {@code count} de {@code item} : ce qui est deja dans le
+     * coffre, ce qu'il faut fabriquer et dans quel ordre, et pour chaque matiere premiere manquante
+     * les blocs sources presents autour du compagnon. Aucun bloc n'est casse ici.
+     */
+    public static JsonObject materials(ServerLevel level, LivingEntity bot, BlockPos chestPos,
+                                       String item, int count, int radius) {
+        if (bot == null) return error("NO_SERVITOR", "Aucun servitor dans cette dimension");
+        if (count < 1 || count > MAX_BATCH) return error("INVALID_ARGUMENT", "count must be 1.." + MAX_BATCH);
+        int r = Math.max(4, Math.min(32, radius));
+        Container chest = container(level, chestPos);
+        if (chest == null) return error("INVALID_CHEST", "Loaded, unprotected chest or barrel required at " + chestPos.toShortString());
+
+        String wanted = item.contains(":") ? item : "minecraft:" + item;
+        Map<String, Integer> have = new LinkedHashMap<>();
+        for (int i = 0; i < chest.getContainerSize(); i++) {
+            ItemStack stack = chest.getItem(i);
+            if (stack.isEmpty()) continue;
+            have.merge(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), stack.getCount(), Integer::sum);
+        }
+        Map<String, Integer> left = new LinkedHashMap<>(have);
+        Map<String, Integer> raw = new LinkedHashMap<>();
+        List<JsonObject> steps = new ArrayList<>();
+        Set<String> nodes = new LinkedHashSet<>();
+        String failure = expand(level, wanted, count, 0, left, raw, steps, nodes);
+        if (failure != null) return error("NO_RECIPE", failure);
+
+        JsonArray stepArray = new JsonArray();
+        for (int i = steps.size() - 1; i >= 0; i--) stepArray.add(steps.get(i)); // ingredients d'abord
+
+        BlockPos center = bot.blockPosition();
+        BlockPos min = new BlockPos(center.getX() - r, Math.max(level.getMinY(), center.getY() - 16), center.getZ() - r);
+        BlockPos max = new BlockPos(center.getX() + r, Math.min(level.getMaxY(), center.getY() + 8), center.getZ() + r);
+        JsonArray missing = new JsonArray();
+        boolean ready = true;
+        for (Map.Entry<String, Integer> entry : raw.entrySet()) {
+            int shortfall = Math.max(0, entry.getValue());
+            if (shortfall == 0) continue;
+            ready = false;
+            JsonObject miss = new JsonObject();
+            miss.addProperty("item", entry.getKey());
+            miss.addProperty("missing", shortfall);
+            miss.addProperty("in_chest", have.getOrDefault(entry.getKey(), 0));
+            Set<String> sources = MissionService.SOURCES.get(entry.getKey());
+            if (sources == null) {
+                miss.addProperty("gatherable", false);
+                miss.addProperty("note", "Aucune mission de recolte pour cet item : il doit venir du joueur (coffre, echange, butin)");
+            } else {
+                miss.addProperty("gatherable", true);
+                JsonArray blocks = new JsonArray();
+                sources.forEach(blocks::add);
+                miss.add("source_blocks", blocks);
+                miss.add("search_box", searchBox(level, min, max));
+                JsonObject found = WorkObservation.inspect(level, findRequest(entry.getKey(), min, max));
+                if (found.get("ok").getAsBoolean()) {
+                    miss.addProperty("found_in_box", found.get("matches_total").getAsInt());
+                    miss.addProperty("absence_proven", found.has("conclusive_absence") && found.get("conclusive_absence").getAsBoolean());
+                }
+            }
+            missing.add(miss);
+        }
+
+        JsonObject json = new JsonObject();
+        json.addProperty("ok", true);
+        json.addProperty("item", wanted);
+        json.addProperty("want", count);
+        json.addProperty("ready", ready);
+        json.addProperty("station", steps.isEmpty() ? "aucune" : "voir etapes");
+        json.add("steps", stepArray);
+        json.add("in_chest", mapJson(have));
+        json.add("to_gather", missing);
+        json.addProperty("rule", "Une etape = un appel servitor_craft ou servitor_gather, puis verification du coffre. Aucun craft ne devine ses ingredients.");
+        return json;
+    }
+
+    private static String expand(ServerLevel level, String item, int qty, int depth, Map<String, Integer> left,
+                                 Map<String, Integer> raw, List<JsonObject> steps, Set<String> nodes) {
+        if (qty <= 0) return null;
+        int available = left.getOrDefault(item, 0);
+        int taken = Math.min(available, qty);
+        if (taken > 0) left.put(item, available - taken);
+        int remaining = qty - taken;
+        if (remaining == 0) return null;
+
+        Plan plan = bestRecipe(level, item);
+        if (plan == null || depth >= MAX_DEPTH || !nodes.add(item) || nodes.size() > MAX_NODES) {
+            raw.merge(item, remaining, Integer::sum);
+            return null;
+        }
+        int batches = (remaining + plan.result().getCount() - 1) / plan.result().getCount();
+        JsonObject step = new JsonObject();
+        step.addProperty("craft", item);
+        step.addProperty("times", batches);
+        step.addProperty("produces", batches * plan.result().getCount());
+        step.addProperty("station", plan.station());
+        JsonArray needs = new JsonArray();
+        for (Ingredient cell : plan.cells()) {
+            String id = describe(cell);
+            needs.add(id);
+            String failure = expand(level, id, batches, depth + 1, left, raw, steps, nodes);
+            if (failure != null) return failure;
+        }
+        step.add("needs", needs);
+        steps.add(step);
+        nodes.remove(item);
+        return null;
+    }
+
+    private static Plan bestRecipe(ServerLevel level, String item) {
+        Plan best = null;
+        for (RecipeHolder<?> holder : level.getServer().getRecipeManager().getRecipes()) {
+            if (!(holder.value() instanceof CraftingRecipe recipe)) continue;
+            Plan plan = plan(holder.id().identifier().toString(), recipe);
+            if (plan == null) continue;
+            if (!BuiltInRegistries.ITEM.getKey(plan.result().getItem()).toString().equals(item)) continue;
+            if (best == null || plan.perBatch() < best.perBatch()) best = plan;
+        }
+        return best;
+    }
+
+    private static JsonObject findRequest(String item, BlockPos min, BlockPos max) {
+        JsonObject request = new JsonObject();
+        request.addProperty("schema", 1);
+        request.addProperty("type", "FIND");
+        request.addProperty("item", item);
+        request.add("min", MissionService.positionJson(min));
+        request.add("max", MissionService.positionJson(max));
+        request.addProperty("limit", 8);
+        return request;
+    }
+
+    private static JsonArray searchBox(ServerLevel level, BlockPos min, BlockPos max) {
+        JsonArray box = new JsonArray();
+        box.add(MissionService.positionJson(min));
+        box.add(MissionService.positionJson(max));
+        return box;
+    }
+
+    private static JsonObject mapJson(Map<String, Integer> counts) {
+        JsonObject json = new JsonObject();
+        counts.forEach(json::addProperty);
         return json;
     }
 

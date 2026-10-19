@@ -101,6 +101,15 @@ public final class BrainCommand {
                                 .executes(ctx -> craftList(ctx, ""))
                                 .then(Commands.argument("filtre", StringArgumentType.word())
                                         .executes(ctx -> craftList(ctx, StringArgumentType.getString(ctx, "filtre")))))
+                        .then(Commands.literal("plan")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 4096))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(ctx -> craftPlan(ctx, 16))
+                                                                        .then(Commands.argument("rayon", IntegerArgumentType.integer(4, 32))
+                                                                                .executes(ctx -> craftPlan(ctx, IntegerArgumentType.getInteger(ctx, "rayon"))))))))))
                         .then(Commands.literal("make")
                                 .then(Commands.argument("item", StringArgumentType.string())
                                         .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 4096))
@@ -165,6 +174,24 @@ public final class BrainCommand {
         com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.recipes(level, filter, 40);
         ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
         return 1;
+    }
+
+    /** Plan d'approvisionnement : quoi fabriquer, dans quel ordre, et ce qu'il faut recolter. */
+    private static int craftPlan(CommandContext<CommandSourceStack> ctx, int radius) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.materials(level, bot, pos,
+                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"), radius);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return out.get("ok").getAsBoolean() ? 1 : 0;
     }
 
     /** Fabrique depuis le contenu d'un coffre, a condition d'etre a portee d'une table si besoin. */

@@ -435,6 +435,27 @@ def servitor_recipes(filter="", dimension="overworld"):
     return _craft_call("list " + filter if filter else "list", dimension)
 
 
+def servitor_materials(item, count, chest, radius=16, dimension="overworld"):
+    """Plan d'approvisionnement pour fabriquer `count` de `item` depuis le coffre `chest`.
+
+    Rend, dans l'ordre : les etapes de craft (ingredients d'abord), ce qui est deja dans le coffre,
+    et pour chaque matiere premiere manquante les blocs sources presents dans un rayon autour du
+    compagnon. Aucun bloc n'est casse et rien n'est fabrique : c'est le plan, pas l'action.
+    """
+    if not isinstance(item, str) or not re.fullmatch(r"(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+", item):
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "Invalid item identifier"}
+    if type(count) is not int or not 1 <= count <= 4096:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "count must be an integer in 1..4096"}
+    if type(radius) is not int or not 4 <= radius <= 32:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "radius must be an integer in 4..32"}
+    try:
+        pos = _position(chest)
+    except (ValueError, TypeError) as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    return _craft_call('plan "%s" %d %d %d %d %d' % (
+        item if ":" in item else "minecraft:" + item, count, pos[0], pos[1], pos[2], radius), dimension)
+
+
 def servitor_craft(item, count, chest, dimension="overworld"):
     """Fabrique `count` exemplaires de `item` depuis le contenu du coffre `chest`.
 
