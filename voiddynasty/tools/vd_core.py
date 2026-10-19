@@ -22,19 +22,40 @@ MC_DIR = os.environ.get("VD_SERVER_DIR", "/opt/data/workspace/mc-server")
 PROPS = os.path.join(MC_DIR, "server.properties")
 WORLD = os.environ.get("VD_WORLD_DIR", os.path.join(MC_DIR, "world8"))
 TOOLS = os.path.dirname(os.path.abspath(__file__))
+# Serveur distant : on garde 127.0.0.1 par défaut, donc rien ne change pour le banc local.
+RCON_HOST = os.environ.get("VD_RCON_HOST", "127.0.0.1")
 
 # commandes acceptées par l'outil générique : volontairement étroit.
 ALLOWED = ("fleet ", "vdyntest ", "work ", "list", "save-all", "say ", "time ", "weather ", "forceload ")
 
 
 def _props():
-    with open(PROPS, encoding="utf-8", errors="replace") as stream:
-        txt = stream.read()
-    m_pw = re.search(r"^rcon\.password=(.*)$", txt, re.M)
-    m_port = re.search(r"^rcon\.port=(\d+)$", txt, re.M)
-    if not m_pw or not m_port:
-        raise RuntimeError("rcon.password ou rcon.port absent de %s" % PROPS)
-    return m_pw.group(1), int(m_port.group(1))
+    """Mot de passe et port RCON, avec surcharge par l'environnement.
+
+    Par défaut on lit le server.properties local (banc d'essai). Pour piloter un
+    serveur distant — typiquement via un tunnel SSH — on fournit le secret par
+    VD_RCON_PASSWORD_FILE (chemin d'un fichier 600) ou VD_RCON_PASSWORD, et le
+    port par VD_RCON_PORT. Le mot de passe n'a alors jamais besoin d'être copié
+    dans un fichier de configuration versionné.
+    """
+    pw = os.environ.get("VD_RCON_PASSWORD")
+    port = os.environ.get("VD_RCON_PORT")
+    secret = os.environ.get("VD_RCON_PASSWORD_FILE")
+    if not pw and secret:
+        with open(secret, encoding="utf-8", errors="replace") as stream:
+            pw = stream.read().strip()
+    if not pw or not port:
+        with open(PROPS, encoding="utf-8", errors="replace") as stream:
+            txt = stream.read()
+        if not pw:
+            m_pw = re.search(r"^rcon\.password=(.*)$", txt, re.M)
+            pw = m_pw.group(1) if m_pw else None
+        if not port:
+            m_port = re.search(r"^rcon\.port=(\d+)$", txt, re.M)
+            port = m_port.group(1) if m_port else None
+    if not pw or not port:
+        raise RuntimeError("rcon.password ou rcon.port absent de %s (et absent de l'environnement)" % PROPS)
+    return pw, int(port)
 
 
 class Rcon:
@@ -43,7 +64,7 @@ class Rcon:
     def __init__(self, timeout=600):
         pw, port = _props()
         self.timeout=timeout
-        self.s = socket.create_connection(("127.0.0.1", port), min(15,timeout))
+        self.s = socket.create_connection((RCON_HOST, port), min(15,timeout))
         self.s.settimeout(timeout)
         self.rid = 0
         self._send(3, pw)
@@ -287,6 +308,74 @@ def servitor_observe(zone_min,zone_max,dimension="overworld",limit=16):
 def servitor_find(item,zone_min,zone_max,dimension="overworld",limit=16):
     """Observe source blocks for a supported gather item; counts blocks, never promises item drops."""
     return _observation('FIND',zone_min,zone_max,limit,dimension,item)
+
+
+def _view_call(kind, dimension="overworld", radius=None, timeout=30):
+    """Perception du compagnon : etat, joueurs connectes, environnement immediat.
+
+    Le mod repond sur une seule ligne prefixee par VDVIEW, comme pour les missions.
+    """
+    try:
+        dim = _dimension(dimension)
+    except ValueError as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    tail = "view " + kind
+    if radius is not None:
+        if type(radius) is not int or not 2 <= radius <= 24:
+            return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "radius must be an integer in 2..24"}
+        tail += " " + str(radius)
+    try:
+        reply = rcon("execute in " + dim + " run servitor " + tail, timeout=timeout)[0]
+    except (RuntimeError, OSError) as error:
+        # Premier appel apres un demarrage : le serveur accuse le coup et la reponse depasse
+        # le delai. On rejoue une fois sur une connexion neuve avant de declarer l'echec.
+        if "timed out" in str(error).lower():
+            try:
+                import time as _time
+                _time.sleep(2)
+                reply = rcon("execute in " + dim + " run servitor " + tail, timeout=timeout)[0]
+            except (RuntimeError, OSError) as second:
+                return {"ok": False, "error": "SERVER_UNAVAILABLE", "detail": str(second)}
+        else:
+            return {"ok": False, "error": "SERVER_UNAVAILABLE", "detail": str(error)}
+    marker = "VDVIEW "
+    if marker not in reply:
+        return {"ok": False, "error": "PROTOCOL_ERROR",
+                "detail": "Missing view JSON response; server may need the perception build"}
+    # Le mod renvoie "VDVIEW <kind> <json>" : on verifie le kind, sinon une reponse en retard
+    # (RCON peut decaler une reponse apres un timeout) serait attribuee au mauvais outil.
+    payload = reply.split(marker, 1)[1].lstrip()
+    echoed, _, rest = payload.partition(" ")
+    if echoed != kind:
+        return {"ok": False, "error": "PROTOCOL_ERROR",
+                "detail": "Reponse pour '%s' alors que '%s' etait demande (reponse RCON desalignee)" % (echoed, kind)}
+    try:
+        result, _ = json.JSONDecoder().raw_decode(rest)
+        if not isinstance(result, dict) or type(result.get("ok")) is not bool:
+            raise ValueError("Invalid response")
+        return result
+    except (ValueError, TypeError):
+        return {"ok": False, "error": "PROTOCOL_ERROR", "detail": "Invalid view JSON response"}
+
+
+def servitor_status(dimension="overworld"):
+    """Ou est le compagnon, dans quel etat, et existe-t-il seulement."""
+    return _view_call("status", dimension)
+
+
+def servitor_players(dimension="overworld"):
+    """Joueurs connectes : nom, dimension, position, distance au compagnon."""
+    return _view_call("players", dimension)
+
+
+def servitor_work(dimension="overworld"):
+    """Etat interne du moteur de chantier : has_depot, depots, compteurs, et last_stop (raison d'arret)."""
+    return _view_call("work", dimension)
+
+
+def servitor_look(radius=8, dimension="overworld"):
+    """Environnement immediat du compagnon : blocs, dangers, entites vivantes autour."""
+    return _view_call("look", dimension, radius)
 
 
 async def servitor_mission_wait(mission_id,timeout_seconds=10,dimension="overworld"):

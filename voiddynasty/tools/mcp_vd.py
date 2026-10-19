@@ -112,12 +112,40 @@ def tool_servitor_mission_control(mission_id: str, action: str, dimension: str =
     return vd_core.servitor_mission_control(mission_id,action,dimension)
 
 
+def tool_servitor_status(dimension: str = "overworld") -> dict:
+    """Where the companion is, whether it exists at all, its health, ground and inventory state.
+    Call this first when a mission seems to target the wrong place: it tells you if the servitor is
+    present in this dimension and where, instead of guessing from unloaded observations."""
+    return vd_core.servitor_status(dimension)
+
+
+def tool_servitor_players(dimension: str = "overworld") -> dict:
+    """Online players: name, dimension, position, health, game mode, op flag and distance to the companion.
+    Use it to work near a player or to report who is where. Distance is null when the companion is in
+    another dimension."""
+    return vd_core.servitor_players(dimension)
+
+
+def tool_servitor_work(dimension: str = "overworld") -> dict:
+    """Internal job state: whether a depot exists, depot count, done/total counters, and last_stop —
+    the engine's own reason for waiting. Use it when a mission stays PREPARING or PAUSED."""
+    return vd_core.servitor_work(dimension)
+
+
+def tool_servitor_look(radius: StrictInt = 8, dimension: str = "overworld") -> dict:
+    """The companion's immediate surroundings: block histogram, hazards, and every living entity within
+    radius (2..24) blocks with type, position, distance, hostility and health. Read-only."""
+    return vd_core.servitor_look(radius, dimension)
+
+
 for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest"),
                 (tool_scan_zone, "scan_zone"), (tool_place_ship, "place_ship"),
                 (tool_fleet, "fleet"), (tool_command, "command"),
                 (tool_servitor_capabilities, "servitor_capabilities"), (tool_servitor_gather, "servitor_gather"),
                 (tool_servitor_observe,"servitor_observe"),(tool_servitor_find,"servitor_find"),(tool_servitor_mission_wait,"servitor_mission_wait"),
                 (tool_servitor_build_estimate,"servitor_build_estimate"),(tool_servitor_build,"servitor_build"),
+                (tool_servitor_status, "servitor_status"), (tool_servitor_players, "servitor_players"),
+                (tool_servitor_look, "servitor_look"), (tool_servitor_work, "servitor_work"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
         server.add_tool(fn, name=nom)

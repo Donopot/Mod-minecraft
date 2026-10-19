@@ -29,6 +29,12 @@ public final class MissionService {
             map.put("minecraft:" + wood + "_log", Set.of("minecraft:" + wood + "_log"));
         map.put("minecraft:cobblestone", Set.of("minecraft:stone"));
         map.put("minecraft:cobbled_deepslate", Set.of("minecraft:deepslate"));
+        // Terrain courant : l'item collecte peut venir de plusieurs blocs (herbe, podzol, chemin -> terre).
+        map.put("minecraft:dirt", Set.of("minecraft:dirt", "minecraft:grass_block", "minecraft:coarse_dirt",
+                "minecraft:rooted_dirt", "minecraft:podzol", "minecraft:mycelium", "minecraft:dirt_path"));
+        map.put("minecraft:sand", Set.of("minecraft:sand"));
+        map.put("minecraft:red_sand", Set.of("minecraft:red_sand"));
+        map.put("minecraft:gravel", Set.of("minecraft:gravel"));
         for (String ore : List.of("diamond", "coal", "emerald", "redstone", "lapis", "iron", "copper", "gold")) {
             String item = Set.of("iron", "copper", "gold").contains(ore) ? "raw_" + ore : ore;
             if (ore.equals("lapis")) item = "lapis_lazuli";
@@ -160,6 +166,17 @@ public final class MissionService {
         if(proposed.build!=null) {String invalid=BuildService.validate(level,proposed);if(!invalid.isEmpty()) return error(invalid,"Build site refused before reserving resources");}
         WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin, companion);
         if (started == null) return error("START_REFUSED", s.lastStop);
+        // Collecte avec destination explicite : le coffre fourni TIENT LIEU de depot. Sans cela le
+        // moteur cherche a en construire un autour du compagnon, et sur un terrain encombre il
+        // peut boucler indefiniment en phase PREPARING au lieu de miner.
+        if (proposed.build == null) {
+            started.hasDepot = true;
+            started.buildingDepot = false;
+            started.depotPlanned = false;
+            started.depotX = proposed.destination.getX();
+            started.depotY = proposed.destination.getY();
+            started.depotZ = proposed.destination.getZ();
+        }
         s.missions.add(proposed); s.missionId = proposed.id;
         // Include the actual delivery chest in receipt recovery; never clear its other contents.
         s.depots.add(proposed.destination); s.setDirty();

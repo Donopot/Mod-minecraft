@@ -73,6 +73,15 @@ public final class BrainCommand {
                                 .then(Commands.argument("id", StringArgumentType.word())
                                         .executes(ctx -> bagAction(ctx, "drop")))))
                 .then(Commands.literal("stop").executes(BrainCommand::stop))
+                // Perception : ou est le compagnon, qui est connecte, ce qu'il y a autour.
+                .then(Commands.literal("view")
+                        .then(Commands.literal("status").executes(ctx -> view(ctx, "status", 0)))
+                        .then(Commands.literal("players").executes(ctx -> view(ctx, "players", 0)))
+                        .then(Commands.literal("work").executes(ctx -> view(ctx, "work", 0)))
+                        .then(Commands.literal("look")
+                                .executes(ctx -> view(ctx, "look", 8))
+                                .then(Commands.argument("radius", IntegerArgumentType.integer(2, 24))
+                                        .executes(ctx -> view(ctx, "look", IntegerArgumentType.getInteger(ctx, "radius"))))))
                 .then(Commands.literal("brain")
                         .then(Commands.literal("on").executes(BrainCommand::on))
                         .then(Commands.literal("off").executes(BrainCommand::off))
@@ -108,6 +117,21 @@ public final class BrainCommand {
     }
 
     // --------------------------------------------------------------- servitor
+
+    // --------------------------------------------------------------- perception
+
+    private static int view(CommandContext<CommandSourceStack> ctx, String kind, int radius) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        String json = switch (kind) {
+            case "status" -> BrainView.status(level, bot);
+            case "players" -> BrainView.players(level, bot);
+            case "work" -> BrainView.work(level);
+            default -> BrainView.look(level, bot, radius);
+        };
+        ctx.getSource().sendSuccess(() -> Component.literal("VDVIEW " + kind + " " + json), false);
+        return 1;
+    }
 
     private static int spawn(CommandContext<CommandSourceStack> ctx, int variant) {
         ServerLevel level = ctx.getSource().getLevel();
