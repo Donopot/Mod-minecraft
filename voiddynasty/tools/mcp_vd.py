@@ -96,6 +96,24 @@ def tool_servitor_materials(item: str, count: StrictInt, chest: List[StrictInt],
     return vd_core.servitor_materials(item=item, count=count, chest=chest, radius=radius, dimension=dimension)
 
 
+def tool_servitor_smelt_recipes(filter: str = "", dimension: str = "overworld") -> dict:
+    """Recettes de FONTE du serveur (four) : entree, sortie, temps de cuisson, experience.
+    Filtre sur le resultat ou l'entree. Une recette absente ici ne se fond pas."""
+    return vd_core.servitor_smelt_recipes(filter=filter, dimension=dimension)
+
+
+def tool_servitor_smelt_fuels(chest: List[StrictInt], dimension: str = "overworld") -> dict:
+    """Carburants reellement presents dans un coffre, avec leur pouvoir calorifique (ticks par piece)."""
+    return vd_core.servitor_smelt_fuels(chest=chest, dimension=dimension)
+
+
+def tool_servitor_smelt(item: str, count: StrictInt, chest: List[StrictInt],
+                        dimension: str = "overworld") -> dict:
+    """Fond `count` de `item` : entree et carburant consommes dans le coffre, resultat remis dedans.
+    Il faut un four a moins de 5 blocs du compagnon (NEEDS_FURNACE sinon)."""
+    return vd_core.servitor_smelt(item=item, count=count, chest=chest, dimension=dimension)
+
+
 def tool_servitor_craft(item: str, count: StrictInt, chest: List[StrictInt],
                         dimension: str = "overworld") -> dict:
     """Fabrique `count` exemplaires de `item` depuis le contenu du coffre `chest` [x,y,z].
@@ -198,6 +216,9 @@ for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest
                 (tool_servitor_move, "servitor_move"), (tool_servitor_excavate, "servitor_excavate"),
                 (tool_servitor_recipes, "servitor_recipes"), (tool_servitor_craft, "servitor_craft"),
                 (tool_servitor_materials, "servitor_materials"),
+                (tool_servitor_smelt_recipes, "servitor_smelt_recipes"),
+                (tool_servitor_smelt_fuels, "servitor_smelt_fuels"),
+                (tool_servitor_smelt, "servitor_smelt"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
         server.add_tool(fn, name=nom)

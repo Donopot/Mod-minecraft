@@ -220,12 +220,38 @@ public final class CraftService {
         String failure = expand(level, wanted, count, 0, left, raw, steps, nodes);
         if (failure != null) return error("NO_RECIPE", failure);
 
+        // Les fontes identiques sont regroupees : une seule mission de four pour N lingots.
+        Map<String, JsonObject> merged = new LinkedHashMap<>();
+        List<JsonObject> ordered = new ArrayList<>();
+        for (JsonObject step : steps) {
+            boolean smelt = step.has("kind") && "smelt".equals(step.get("kind").getAsString());
+            String key = step.get("craft").getAsString();
+            if (smelt && merged.containsKey(key)) {
+                JsonObject first = merged.get(key);
+                int times = first.get("times").getAsInt() + step.get("times").getAsInt();
+                first.addProperty("times", times);
+                first.addProperty("produces", first.get("produces").getAsInt() + step.get("produces").getAsInt());
+                long ticks = first.get("cooking_ticks").getAsLong() + step.get("cooking_ticks").getAsLong();
+                first.addProperty("cooking_ticks", ticks);
+                continue;
+            }
+            if (smelt) merged.put(key, step);
+            ordered.add(step);
+        }
+
         JsonArray stepArray = new JsonArray();
-        for (int i = steps.size() - 1; i >= 0; i--) stepArray.add(steps.get(i)); // ingredients d'abord
+        for (int i = ordered.size() - 1; i >= 0; i--) stepArray.add(ordered.get(i)); // ingredients d'abord
 
         BlockPos center = bot.blockPosition();
-        BlockPos min = new BlockPos(center.getX() - r, Math.max(level.getMinY(), center.getY() - 16), center.getZ() - r);
-        BlockPos max = new BlockPos(center.getX() + r, Math.min(level.getMaxY(), center.getY() + 8), center.getZ() + r);
+        // La boite de recherche doit rester sous la limite d'observation du mod : on la reduit si besoin.
+        BlockPos min;
+        BlockPos max;
+        while (true) {
+            min = new BlockPos(center.getX() - r, Math.max(level.getMinY(), center.getY() - 16), center.getZ() - r);
+            max = new BlockPos(center.getX() + r, Math.min(level.getMaxY(), center.getY() + 8), center.getZ() + r);
+            if (boxVolume(min, max) <= 32000 || r <= 4) break;
+            r--;
+        }
         JsonArray missing = new JsonArray();
         boolean ready = true;
         for (Map.Entry<String, Integer> entry : raw.entrySet()) {
@@ -250,6 +276,8 @@ public final class CraftService {
                 if (found.get("ok").getAsBoolean()) {
                     miss.addProperty("found_in_box", found.get("matches_total").getAsInt());
                     miss.addProperty("absence_proven", found.has("conclusive_absence") && found.get("conclusive_absence").getAsBoolean());
+                } else {
+                    miss.addProperty("find_error", String.valueOf(found.get("detail")));
                 }
             }
             missing.add(miss);
@@ -264,6 +292,7 @@ public final class CraftService {
         json.add("steps", stepArray);
         json.add("in_chest", mapJson(have));
         json.add("to_gather", missing);
+        json.add("fuels_in_chest", SmeltService.fuelEntries(level, chest));
         json.addProperty("rule", "Une etape = un appel servitor_craft ou servitor_gather, puis verification du coffre. Aucun craft ne devine ses ingredients.");
         return json;
     }
@@ -277,13 +306,51 @@ public final class CraftService {
         int remaining = qty - taken;
         if (remaining == 0) return null;
 
+        // Ce que le compagnon sait recolter est une matiere premiere : on ne le fabrique pas.
+        if (MissionService.SOURCES.containsKey(item)) {
+            raw.merge(item, remaining, Integer::sum);
+            return null;
+        }
+
+        // La fonte d'abord quand elle existe (minerai -> lingot), sinon un craft, sinon une matiere premiere.
+        if (depth < MAX_DEPTH && nodes.size() < MAX_NODES && nodes.add(item)) {
+            SmeltService.Plan smelt = SmeltService.plan(level, item);
+            if (smelt != null) {
+                int batches = (remaining + smelt.outputCount() - 1) / smelt.outputCount();
+                JsonObject step = new JsonObject();
+                step.addProperty("kind", "smelt");
+                step.addProperty("craft", item);
+                step.addProperty("times", batches);
+                step.addProperty("produces", batches * smelt.outputCount());
+                step.addProperty("station", "four");
+                step.addProperty("cooking_ticks", (long) smelt.cookingTime() * batches);
+                JsonArray needs = new JsonArray();
+                needs.add(smelt.input());
+                step.add("needs", needs);
+                step.addProperty("input", smelt.input());
+                step.addProperty("fuel", "carburant du meme coffre (voir fuels_in_chest)");
+                steps.add(step);
+                String failure = expand(level, smelt.input(), batches, depth + 1, left, raw, steps, nodes);
+                nodes.remove(item);
+                if (failure != null) return failure;
+                return null;
+            }
+            nodes.remove(item);
+        }
+
         Plan plan = bestRecipe(level, item);
-        if (plan == null || depth >= MAX_DEPTH || !nodes.add(item) || nodes.size() > MAX_NODES) {
+        if (plan == null) {
+            raw.merge(item, remaining, Integer::sum);
+            return null;
+        }
+        // Garde-fous : profondeur, taille de l'arbre, et cycle (un item ne se produit pas lui-meme).
+        if (depth >= MAX_DEPTH || nodes.size() >= MAX_NODES || !nodes.add(item)) {
             raw.merge(item, remaining, Integer::sum);
             return null;
         }
         int batches = (remaining + plan.result().getCount() - 1) / plan.result().getCount();
         JsonObject step = new JsonObject();
+        step.addProperty("kind", "craft");
         step.addProperty("craft", item);
         step.addProperty("times", batches);
         step.addProperty("produces", batches * plan.result().getCount());
@@ -293,7 +360,10 @@ public final class CraftService {
             String id = describe(cell);
             needs.add(id);
             String failure = expand(level, id, batches, depth + 1, left, raw, steps, nodes);
-            if (failure != null) return failure;
+            if (failure != null) {
+                nodes.remove(item);
+                return failure;
+            }
         }
         step.add("needs", needs);
         steps.add(step);
@@ -322,6 +392,10 @@ public final class CraftService {
         request.add("max", MissionService.positionJson(max));
         request.addProperty("limit", 8);
         return request;
+    }
+
+    private static long boxVolume(BlockPos min, BlockPos max) {
+        return (long) (max.getX() - min.getX() + 1) * (max.getY() - min.getY() + 1) * (max.getZ() - min.getZ() + 1);
     }
 
     private static JsonArray searchBox(ServerLevel level, BlockPos min, BlockPos max) {

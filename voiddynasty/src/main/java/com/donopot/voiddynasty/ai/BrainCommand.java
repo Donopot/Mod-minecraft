@@ -117,6 +117,23 @@ public final class BrainCommand {
                                                         .then(Commands.argument("y", IntegerArgumentType.integer())
                                                                 .then(Commands.argument("z", IntegerArgumentType.integer())
                                                                         .executes(BrainCommand::craftMake))))))))
+                .then(Commands.literal("smelt")
+                        .then(Commands.literal("list")
+                                .executes(ctx -> smeltList(ctx, ""))
+                                .then(Commands.argument("filtre", StringArgumentType.word())
+                                        .executes(ctx -> smeltList(ctx, StringArgumentType.getString(ctx, "filtre")))))
+                        .then(Commands.literal("fuels")
+                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                        .executes(BrainCommand::smeltFuels)))))
+                        .then(Commands.literal("make")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 4096))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(BrainCommand::smeltMake))))))))
                 .then(Commands.literal("brain")
                         .then(Commands.literal("on").executes(BrainCommand::on))
                         .then(Commands.literal("off").executes(BrainCommand::off))
@@ -176,6 +193,42 @@ public final class BrainCommand {
         return 1;
     }
 
+    /** Liste les recettes de fonte du serveur. */
+    private static int smeltList(CommandContext<CommandSourceStack> ctx, String filter) {
+        var out = com.donopot.voiddynasty.work.SmeltService.recipes(ctx.getSource().getLevel(), filter, 24);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return 1;
+    }
+
+    /** Carburants presents dans un coffre, avec leur pouvoir calorifique reel. */
+    private static int smeltFuels(CommandContext<CommandSourceStack> ctx) {
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        var out = com.donopot.voiddynasty.work.SmeltService.fuels(ctx.getSource().getLevel(), pos);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return out.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    /** Fonte depuis un coffre : entree et carburant consommes, resultat remis dans le meme coffre. */
+    private static int smeltMake(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        var out = com.donopot.voiddynasty.work.SmeltService.smelt(level, bot, pos,
+                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"));
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return out.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
     /** Plan d'approvisionnement : quoi fabriquer, dans quel ordre, et ce qu'il faut recolter. */
     private static int craftPlan(CommandContext<CommandSourceStack> ctx, int radius) {
         ServerLevel level = ctx.getSource().getLevel();
@@ -188,10 +241,23 @@ public final class BrainCommand {
                 IntegerArgumentType.getInteger(ctx, "x"),
                 IntegerArgumentType.getInteger(ctx, "y"),
                 IntegerArgumentType.getInteger(ctx, "z"));
-        com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.materials(level, bot, pos,
-                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"), radius);
-        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
-        return out.get("ok").getAsBoolean() ? 1 : 0;
+        com.google.gson.JsonObject out;
+        try {
+            out = com.donopot.voiddynasty.work.CraftService.materials(level, bot, pos,
+                    StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"), radius);
+        } catch (Throwable failure) {
+            out = new com.google.gson.JsonObject();
+            out.addProperty("ok", false);
+            out.addProperty("error", "PLANNER_FAILURE");
+            out.addProperty("detail", failure.getClass().getName() + ": " + String.valueOf(failure.getMessage()));
+            var frames = new com.google.gson.JsonArray();
+            StackTraceElement[] trace = failure.getStackTrace();
+            for (int i = 0; i < Math.min(12, trace.length); i++) frames.add(trace[i].toString());
+            out.add("trace", frames);
+        }
+        final com.google.gson.JsonObject payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + payload), false);
+        return payload.get("ok").getAsBoolean() ? 1 : 0;
     }
 
     /** Fabrique depuis le contenu d'un coffre, a condition d'etre a portee d'une table si besoin. */

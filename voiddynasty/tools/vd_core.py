@@ -405,14 +405,14 @@ async def servitor_mission_wait(mission_id,timeout_seconds=10,dimension="overwor
         await asyncio.sleep(min(.5,deadline-now))
 
 
-def _craft_call(tail, dimension="overworld", timeout=60):
-    """Appelle les commandes de craft du mod et lit le marqueur VDCRAFT."""
+def _craft_call(tail, dimension="overworld", timeout=60, root="craft"):
+    """Appelle les commandes craft/smelt du mod et lit le marqueur VDCRAFT."""
     try:
         dim = _dimension(dimension)
     except ValueError as error:
         return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
     try:
-        reply = rcon("execute in " + dim + " run servitor craft " + tail, timeout=timeout)[0]
+        reply = rcon("execute in " + dim + " run servitor " + root + " " + tail, timeout=timeout)[0]
     except (RuntimeError, OSError) as error:
         return {"ok": False, "error": "SERVER_UNAVAILABLE", "detail": str(error)}
     if "VDCRAFT " not in reply:
@@ -454,6 +454,43 @@ def servitor_materials(item, count, chest, radius=16, dimension="overworld"):
         return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
     return _craft_call('plan "%s" %d %d %d %d %d' % (
         item if ":" in item else "minecraft:" + item, count, pos[0], pos[1], pos[2], radius), dimension)
+
+
+def servitor_smelt_recipes(filter="", dimension="overworld"):
+    """Recettes de fonte du serveur : entree, sortie, temps de cuisson (200 ticks = 10 s), experience.
+
+    Aucune recette n'est codee en dur : c'est le livre du serveur. Une recette absente ici ne se
+    fond pas, meme si l'item existe.
+    """
+    tail = "list" + (" " + filter.strip() if filter and filter.strip() else "")
+    return _craft_call(tail, dimension, root="smelt")
+
+
+def servitor_smelt_fuels(chest, dimension="overworld"):
+    """Carburants presents dans un coffre, avec leur pouvoir calorifique reel (ticks par piece)."""
+    try:
+        pos = _position(chest)
+    except (ValueError, TypeError) as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    return _craft_call("fuels %d %d %d" % (pos[0], pos[1], pos[2]), dimension, root="smelt")
+
+
+def servitor_smelt(item, count, chest, dimension="overworld"):
+    """Fond `count` de `item` dans un four a portee, depuis un coffre.
+
+    Consomme l'entree ET le carburant dans le coffre, remet le resultat dans le meme coffre.
+    Erreurs : MISSING_INGREDIENTS, NO_FUEL, NOT_ENOUGH_FUEL, NEEDS_FURNACE, CHEST_FULL, NO_RECIPE.
+    """
+    if not isinstance(item, str) or not re.fullmatch(r"(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+", item):
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "Invalid item identifier"}
+    if type(count) is not int or not 1 <= count <= 4096:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": "count must be an integer in 1..4096"}
+    try:
+        pos = _position(chest)
+    except (ValueError, TypeError) as error:
+        return {"ok": False, "error": "INVALID_ARGUMENT", "detail": str(error)}
+    return _craft_call('make "%s" %d %d %d %d' % (
+        item if ":" in item else "minecraft:" + item, count, pos[0], pos[1], pos[2]), dimension, root="smelt")
 
 
 def servitor_craft(item, count, chest, dimension="overworld"):
