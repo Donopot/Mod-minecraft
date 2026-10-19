@@ -372,6 +372,8 @@ public final class CraftService {
                 }
                 int needMore = remaining - covered;
                 if (needMore <= 0) {
+                    // Toute l'entree est deja dans le coffre : l'etape reste a executer.
+                    steps.add(step);
                     nodes.remove(item);
                     return null;
                 }

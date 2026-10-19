@@ -53,6 +53,11 @@ public final class SupplyService {
         public long moveStartedTick;
         public int retries;
         public String forceWide = "";
+        public String subTarget = "";
+        public int subDepth;
+        public int placements;
+        public int resumes;
+        public final JsonArray placed = new JsonArray();
         public long startedTick;
         public String gatherMissionId = "";
         public String gatherItem = "";
@@ -169,6 +174,13 @@ public final class SupplyService {
             return;
         }
 
+        // Une station manquante (four/table) devient une sous-cible : on la fabrique et on la pose
+        // avant de reprendre l'objectif principal.
+        if (!job.subTarget.isEmpty()) {
+            runSubTarget(level, bot, chest);
+            return;
+        }
+
         // Le plan se calcule sur l'objectif complet : il deduit lui-meme ce qui est deja dans le coffre.
         JsonObject plan = CraftService.materials(level, bot, job.chest, job.item, job.count, PLAN_RADIUS);
         if (!plan.get("ok").getAsBoolean()) {
@@ -204,8 +216,17 @@ public final class SupplyService {
             return;
         }
         JsonObject step = steps.get(0).getAsJsonObject();
-        // La station doit etre a portee : sinon on y va d'abord (le compagnon marche, il ne se teleporte pas).
+        // La station doit etre a portee : sinon on y va d'abord, ou on la fabrique et on la pose.
         if (!ensureStation(level, bot, step)) return;
+        executeStep(level, bot, step);
+    }
+
+    /** Execute une etape du plan (craft ou fonte) sur le coffre de destination. */
+    private static boolean executeStep(ServerLevel level, LivingEntity bot, JsonObject step) {
+        if (job.actions >= MAX_ACTIONS) {
+            fail("TROP_D_ACTIONS", MAX_ACTIONS + " actions sans aboutir");
+            return false;
+        }
         String kind = step.get("kind").getAsString();
         String craft = step.get("craft").getAsString();
         int times = step.get("times").getAsInt();
@@ -216,12 +237,125 @@ public final class SupplyService {
         if (!result.get("ok").getAsBoolean()) {
             fail(kind.equals("smelt") ? "FONTE_REFUSEE" : "CRAFT_REFUSE",
                     craft + " x" + times + " : " + result.get("error") + " — " + result.get("detail"));
-            return;
+            return false;
         }
         log(kind.toUpperCase(), craft + " x" + times + " ok");
         // On re-planifie au tick suivant : le plan se recalcule toujours sur le coffre reel.
         job.status = "WORKING";
         job.note = craft + " x" + times + " fabrique";
+        return true;
+    }
+
+    /** Station absente : on la fabrique (sous-cible) puis on la posera pres du coffre. */
+    private static boolean provisionStation(ServerLevel level, String item) {
+        if (job.subDepth > 1) {
+            fail("STATION_IMPOSSIBLE", "Impossible de fabriquer " + item + " avec ce coffre");
+            return false;
+        }
+        // Un four se fabrique sur une table 3x3 : sans table, c'est elle qu'il faut d'abord.
+        if (item.equals("minecraft:furnace") && CraftService.nearbyTable(level, job.chest) == null) {
+            job.subTarget = "minecraft:crafting_table";
+            job.subDepth++;
+            job.status = "STATION";
+            job.note = "four absent : il faut d'abord une table de craft";
+            log("STATION", job.note);
+            return false;
+        }
+        job.subTarget = item;
+        job.status = "STATION";
+        job.note = item + " absent : fabrication puis pose pres du coffre";
+        log("STATION", job.note);
+        return false;
+    }
+
+    /** Sous-cible : fabriquer la station manquante, puis la poser. */
+    private static void runSubTarget(ServerLevel level, LivingEntity bot, Container chest) {
+        String item = job.subTarget;
+        if (countItem(chest, item) > 0) {
+            BlockPos pos = placeStation(level, bot, chest, item);
+            if (pos == null) {
+                fail("POSE_IMPOSSIBLE", "Aucun emplacement libre pres du coffre pour " + item);
+                return;
+            }
+            consumeItem(chest, item, 1);
+            job.placements++;
+            JsonObject placement = new JsonObject();
+            placement.addProperty("item", item);
+            placement.add("pos", MissionService.positionJson(pos));
+            job.placed.add(placement);
+            if (job.placements > 4) {
+                fail("TROP_DE_POSES", "Plus de 4 stations posees pour un seul approvisionnement");
+                return;
+            }
+            job.subTarget = "";
+            job.subDepth = 0;
+            job.status = "PLACING";
+            job.note = item + " pose en " + pos.toShortString();
+            log("POSE", job.note);
+            return;
+        }
+        JsonObject plan = CraftService.materials(level, bot, job.chest, item, 1, PLAN_RADIUS);
+        if (!plan.get("ok").getAsBoolean()) {
+            fail("STATION_IMPOSSIBLE", item + " : " + plan.get("detail"));
+            return;
+        }
+        JsonObject gather = pickGather(level, plan);
+        if (gather != null) {
+            if (job.gathers >= MAX_GATHERS) {
+                fail("TROP_DE_RECOLTES", "Recoltes epuisees pour fabriquer " + item);
+                return;
+            }
+            submitGather(level, bot, gather);
+            return;
+        }
+        JsonArray steps = plan.getAsJsonArray("steps");
+        if (steps == null || steps.isEmpty()) {
+            fail("STATION_IMPOSSIBLE", "Aucune etape pour fabriquer " + item + " : " + plan);
+            return;
+        }
+        JsonObject step = steps.get(0).getAsJsonObject();
+        if (!ensureStation(level, bot, step)) return;
+        executeStep(level, bot, step);
+    }
+
+    /** Pose la station sur une case vide, avec un support solide, pres du coffre, jamais dans un claim. */
+    private static BlockPos placeStation(ServerLevel level, LivingEntity bot, Container chest, String item) {
+        var holder = BuiltInRegistries.BLOCK.get(net.minecraft.resources.Identifier.parse(item)).orElse(null);
+        if (holder == null) return null;
+        var block = holder.value();
+        BlockPos base = job.chest;
+        for (int radius = 2; radius <= 6; radius++) {
+            for (int dy = -2; dy <= 2; dy++) {
+                for (int dx = -radius; dx <= radius; dx++) {
+                    for (int dz = -radius; dz <= radius; dz++) {
+                        if (Math.max(Math.abs(dx), Math.abs(dz)) != radius) continue;
+                        BlockPos pos = base.offset(dx, dy, dz);
+                        if (!level.hasChunkAt(pos)) continue;
+                        if (!level.getBlockState(pos).isAir()) continue;
+                        if (pos.distSqr(bot.blockPosition()) < 2) continue;
+                        var below = level.getBlockState(pos.below());
+                        if (below.isAir() || !below.isFaceSturdy(level, pos.below(), net.minecraft.core.Direction.UP)) continue;
+                        if (com.donopot.voiddynasty.compat.ClaimIntegration.isClaimProtected(level, pos)) continue;
+                        level.setBlockAndUpdate(pos, block.defaultBlockState());
+                        return pos;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private static void consumeItem(Container chest, String item, int count) {
+        int left = count;
+        for (int i = 0; i < chest.getContainerSize() && left > 0; i++) {
+            ItemStack stack = chest.getItem(i);
+            if (stack.isEmpty()) continue;
+            if (!BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(item)) continue;
+            int take = Math.min(left, stack.getCount());
+            stack.shrink(take);
+            left -= take;
+        }
+        chest.setChanged();
     }
 
     /** Amene le compagnon a portee de la station (four ou table) avant une etape. */
@@ -231,16 +365,10 @@ public final class SupplyService {
         BlockPos stationPos;
         if (kind.equals("smelt")) {
             stationPos = SmeltService.nearbyFurnace(level, job.chest);
-            if (stationPos == null) {
-                fail("NO_FURNACE", "Aucun four a moins de 8 blocs du coffre " + job.chest.toShortString());
-                return false;
-            }
+            if (stationPos == null) return provisionStation(level, "minecraft:furnace");
         } else if (station.equals("table")) {
             stationPos = CraftService.nearbyTable(level, job.chest);
-            if (stationPos == null) {
-                fail("NO_TABLE", "Aucune table de craft a moins de 8 blocs du coffre " + job.chest.toShortString());
-                return false;
-            }
+            if (stationPos == null) return provisionStation(level, "minecraft:crafting_table");
         } else {
             return true;
         }
@@ -412,6 +540,27 @@ public final class SupplyService {
         }
         if (!mission.terminal()) {
             job.note = "recolte en cours : " + mission.status + " (" + mission.delivered + "/" + job.gatherAmount + " livres)";
+            if ("PAUSED".equals(mission.status)) {
+                // Une pause du moteur (route impossible, ouvrier occupe) se repare une fois, puis
+                // on annule la mission et on retente sur une autre zone.
+                if (job.resumes < 1) {
+                    job.resumes++;
+                    MissionService.control(level, mission.id, "resume");
+                    log("REPRISE", "mission en pause (" + mission.reason + ") : reprise demandee");
+                } else {
+                    MissionService.control(level, mission.id, "cancel");
+                    job.gatherMissionId = "";
+                    job.status = "PLANNING";
+                    job.resumes = 0;
+                    if (job.retries < 2) {
+                        job.retries++;
+                        job.forceWide = job.gatherItem;
+                        log("NOUVELLE_TENTATIVE", "mission annulee (" + mission.reason + ") : zone large");
+                    } else {
+                        fail("RECOLTE_IMPOSSIBLE", "La recolte de " + job.gatherItem + " a echoue (" + mission.reason + ")");
+                    }
+                }
+            }
             return;
         }
         // La recolte est finie : on ferme le chantier (les ressources livrees restent dans le coffre)
@@ -516,6 +665,9 @@ public final class SupplyService {
         out.addProperty("actions", job.actions);
         out.addProperty("gathers", job.gathers);
         out.addProperty("gather_mission", job.gatherMissionId);
+        out.addProperty("sub_target", job.subTarget);
+        out.addProperty("placements", job.placements);
+        out.add("placed", job.placed);
         out.add("chest", MissionService.positionJson(job.chest));
         out.add("log", job.log);
         return out;
