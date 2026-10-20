@@ -121,6 +121,10 @@ public final class BrainView {
         out.addProperty("supply_chests", state.supplyChests);
         out.addProperty("supply_supports", state.supplySupports);
         out.addProperty("done", state.done);
+        // Compteurs separes : le quota productif ne compte que les blocs de la zone.
+        out.addProperty("zone_mined", state.zoneMined);
+        out.addProperty("access_broken", state.accessBroken);
+        out.addProperty("total_mined", state.done);
         out.addProperty("skipped", state.skipped);
         out.addProperty("total", state.total);
         out.addProperty("last_stop", state.lastStop == null ? "" : state.lastStop);

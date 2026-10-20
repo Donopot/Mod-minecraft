@@ -413,7 +413,17 @@ public final class WorkService {
         entry.drops = WorkInventory.copy(drops);
         entry.dropsKnown = true;
         state.journal.add(entry);
-        MissionService.mined(state, drops);
+        // Classement de l'operation AVANT comptage : un bloc de tunnel n'est jamais du butin.
+        WorkMission activeMission = MissionService.active(state);
+        boolean inZone = activeMission == null || WorkAccess.contains(activeMission, pos);
+        if (inZone) {
+            MissionService.mined(state, drops);
+            state.zoneMined++;
+        } else {
+            state.accessBroken++;
+            System.out.println("[MINE] pos=" + pos.toShortString() + " class=ACCESS"
+                    + " accessBroken=" + state.accessBroken + " zoneMined=" + state.zoneMined);
+        }
         state.invSlots.clear(); state.invSlots.addAll(replacement);
         state.done++;
         boolean wasTarget=state.hasTarget && state.targetX==pos.getX() && state.targetY==pos.getY() && state.targetZ==pos.getZ();

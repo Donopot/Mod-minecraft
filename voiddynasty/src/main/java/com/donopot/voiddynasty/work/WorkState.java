@@ -73,6 +73,10 @@ public final class WorkState extends SavedData {
     public String toolId = "";           // "" = mains nues
     /** Plafond de hauteur du couloir d'acces (surface de depart), Integer.MIN_VALUE si aucun. */
     public int accessCeiling = Integer.MIN_VALUE;
+    /** Blocs extraits dans la zone de mission (seul compteur du quota productif). */
+    public int zoneMined;
+    /** Blocs cassés hors zone (tunnel, escalier, couverture) : jamais comptés dans le quota. */
+    public int accessBroken;
     public int toolDamage = 0;
     public int toolBlocks = 0;           // blocs cassés avec l'outil courant
 
@@ -253,6 +257,8 @@ public final class WorkState extends SavedData {
             job.putIntArray("cursor", new int[]{s.cursorX, s.cursorY, s.cursorZ});
             job.putInt("total", s.total);
             job.putInt("done", s.done);
+            job.putInt("zone_mined", s.zoneMined);
+            job.putInt("access_broken", s.accessBroken);
             job.putInt("skipped", s.skipped);
             job.putBoolean("finished", s.finished);
             job.putBoolean("has_target", s.hasTarget);
@@ -334,6 +340,8 @@ public final class WorkState extends SavedData {
             }
             s.total = job.getInt("total").orElse(0);
             s.done = job.getInt("done").orElse(0);
+            s.zoneMined = job.getInt("zone_mined").orElse(0);
+            s.accessBroken = job.getInt("access_broken").orElse(0);
             s.skipped = job.getInt("skipped").orElse(0);
             s.finished = job.getBoolean("finished").orElse(false);
             s.hasTarget = job.getBoolean("has_target").orElse(false);
