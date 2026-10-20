@@ -89,6 +89,8 @@ final class StairMining {
 
     static void forget(String missionId) {
         EXECS.remove(missionId);
+        POSES.remove(missionId); POSE_CELLS.remove(missionId);
+        POSE_DIST.remove(missionId); POSE_STILL.remove(missionId);
         DESCEND_TRIES.remove(missionId);
         DESCEND_LAST.remove(missionId);
         PLANS.remove(missionId);
@@ -151,7 +153,9 @@ final class StairMining {
         double bestDistance = Double.MAX_VALUE;
         for (int dx = -8; dx <= 8; dx++) {
             for (int dz = -8; dz <= 8; dz++) {
-                for (int dy = 3; dy >= -3; dy--) {
+                // Meme niveau que le depart : une entree plus basse transformerait la marche
+                // a niveau (WALK) en descente deguisee, refusee a juste titre par ALIGN.
+                for (int dy = 0; dy >= 0; dy--) {
                     BlockPos feet = new BlockPos(target.getX() + dx, start.getY() + dy, target.getZ() + dz);
                     if (!level.hasChunkAt(feet) || !support(level, feet.below())) continue;
                     if (!level.getBlockState(feet).isAir() || !level.getBlockState(feet.above()).isAir()) continue;
@@ -543,10 +547,22 @@ final class StairMining {
                 return;
             }
             double distance = WorkService.distanceSq(bot, cell);
+            if (!WorkService.visible(level, bot, cell)) {
+                // Bloc masque par celui du dessus : on degage d'abord la couverture (creusement par
+                // le haut), au lieu de chercher une position de travail qui n'existe pas.
+                BlockPos over = cell.above();
+                if (!level.getBlockState(over).isAir()
+                        && WorkAccess.safe(level, state, over, accessTop)
+                        && WorkService.distanceSq(bot, over) <= WorkService.reach() * WorkService.reach()
+                        && WorkService.visible(level, bot, over)) {
+                    digStep(level, state, bot, mob, over, "OVERBURDEN", ex);
+                    return;
+                }
+            }
             if (distance > WorkService.reach() * WorkService.reach() || !WorkService.visible(level, bot, cell)) {
-                approach(level, mob, cell);
-                state.lastStop = "escalier CLEAR marche " + (ex.index + 1) + "/" + ex.plan.steps().size()
-                        + " approche " + cell.toShortString();
+                // Position de travail stable : on ne recalcule plus la cible d'approche a chaque
+                // tick (source de l'oscillation entre deux positions devant un bloc 2 niveaux plus bas).
+                approachPose(level, state, bot, mob, cell, key, ex);
                 return;
             }
             if (digStep(level, state, bot, mob, cell, "CLEAR_STEP", ex)) return;
@@ -594,6 +610,102 @@ final class StairMining {
         System.out.println("[STAIR_CLEAR] index=" + ex.index + " phase=" + phase + " cell=" + cell.toShortString()
                 + " block=" + block + " confirmed=" + confirmed);
         return true;
+    }
+
+    // ---- positions de travail (FindWorkPose) -------------------------------------------------
+
+    private static final Map<String, BlockPos> POSES = new HashMap<>();
+    private static final Map<String, BlockPos> POSE_CELLS = new HashMap<>();
+    private static final Map<String, Double> POSE_DIST = new HashMap<>();
+    private static final Map<String, Integer> POSE_STILL = new HashMap<>();
+
+    /**
+     * Choisit UNE position de travail sure d'ou le bloc est atteignable et visible, et la conserve
+     * pendant toute l'approche. Recalculee seulement si le monde change ou si l'approche stagne.
+     */
+    private static BlockPos findWorkPose(ServerLevel level, WorkState state, LivingEntity bot, BlockPos cell) {
+        WorkMission mission = MissionService.active(state);
+        if (mission == null) return null;
+        BlockPos best = null;
+        double bestScore = Double.MAX_VALUE;
+        double reach = WorkService.reach() - 0.4;
+        for (int dy = -2; dy <= 3; dy++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    BlockPos pose = cell.offset(dx, dy, dz);
+                    if (!poseValid(level, bot, pose, mission)) continue;
+                    Vec3 eye = new Vec3(pose.getX() + 0.5, pose.getY() + WorkService.eyeHeight(bot), pose.getZ() + 0.5);
+                    if (eye.distanceToSqr(Vec3.atCenterOf(cell)) > reach * reach) continue;
+                    if (!WorkService.lineOfSight(level, bot, eye, cell)) continue;
+                    double score = pose.distSqr(bot.blockPosition()) + Math.abs(dy) * 1.5;
+                    if (score < bestScore) { bestScore = score; best = pose; }
+                }
+            }
+        }
+        return best;
+    }
+
+    /** Position sure : zone autorisee, appui solide, deux cases libres, AABB sans collision, pas de danger. */
+    private static boolean poseValid(ServerLevel level, LivingEntity bot, BlockPos pose) {
+        WorkMission mission = MissionService.active(WorkState.get(level));
+        return poseValid(level, bot, pose, mission);
+    }
+
+    private static boolean poseValid(ServerLevel level, LivingEntity bot, BlockPos pose, WorkMission mission) {
+        if (mission == null || !WorkAccess.columnOf(mission, pose)) return false;
+        if (!level.hasChunkAt(pose) || level.isOutsideBuildHeight(pose)) return false;
+        if (!level.getBlockState(pose).isAir() || !level.getBlockState(pose.above()).isAir()) return false;
+        if (!support(level, pose.below())) return false;
+        if (WorkService.touchesFluid(level, pose)) return false;
+        var box = bot.getBoundingBox().move(pose.getX() + 0.5 - bot.getX(), pose.getY() - bot.getY(), pose.getZ() + 0.5 - bot.getZ());
+        return level.noCollision(bot, box);
+    }
+
+    /**
+     * Approche vers la position de travail conservee. Une seule cible par tentative ; un blocage
+     * mesure declenche un recalcul unique puis un echec explicite (aucune boucle d'approche).
+     */
+    private static void approachPose(ServerLevel level, WorkState state, LivingEntity bot, Mob mob,
+                                     BlockPos cell, String key, Exec ex) {
+        BlockPos pose = POSES.get(key);
+        if (pose == null || !cell.equals(POSE_CELLS.get(key)) || !poseValid(level, bot, pose)) {
+            pose = findWorkPose(level, state, bot, cell);
+            if (pose == null) {
+                signatureFail(state, ex, key, "NO_WORK_POSE", "aucune position de travail pour " + cell.toShortString());
+                return;
+            }
+            POSES.put(key, pose);
+            POSE_CELLS.put(key, cell);
+            POSE_DIST.remove(key);
+            POSE_STILL.put(key, 0);
+            System.out.println("[WORK_POSE] cell=" + cell.toShortString() + " pose=" + pose.toShortString()
+                    + " bot=" + bot.blockPosition().toShortString());
+        }
+        double distance = Math.sqrt(WorkService.distanceSq(bot, pose));
+        double previous = POSE_DIST.getOrDefault(key, Double.MAX_VALUE);
+        if (distance < previous - 0.05) {
+            POSE_DIST.put(key, distance);
+            POSE_STILL.put(key, 0);
+        } else {
+            int still = POSE_STILL.getOrDefault(key, 0) + 1;
+            POSE_STILL.put(key, still);
+            if (still == 60) {
+                System.out.println("[WORK_POSE] stagnation, recalcul unique cell=" + cell.toShortString());
+                POSES.remove(key);
+            }
+            if (still > 120) {
+                signatureFail(state, ex, key, "POSE_UNREACHABLE",
+                        "position " + pose.toShortString() + " inatteignable (" + still + " ticks)");
+                return;
+            }
+        }
+        if (level.getGameTime() % 8L == 0L) {
+            mob.getNavigation().stop();
+            mob.getMoveControl().setWantedPosition(pose.getX() + 0.5, pose.getY(), pose.getZ() + 0.5, 1.0);
+        }
+        state.lastStop = "escalier CLEAR marche " + (ex.index + 1) + "/" + ex.plan.steps().size()
+                + " pose " + pose.toShortString() + " -> " + cell.toShortString()
+                + " d=" + String.format(java.util.Locale.ROOT, "%.2f", distance);
     }
 
     /**
@@ -800,6 +912,8 @@ final class StairMining {
         if (positionOk && supportOk && free) {
             ex.index++;
             ex.stepRecovers = 0;
+            // Nouvelle marche : la position de travail de la precedente n'est plus valable.
+            POSES.remove(key); POSE_CELLS.remove(key); POSE_DIST.remove(key); POSE_STILL.remove(key);
             ex.attempts = 0;
             DESCEND_TRIES.remove(key);
             DESCEND_LAST.remove(key);

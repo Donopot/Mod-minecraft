@@ -450,6 +450,13 @@ public final class WorkService {
         return visibleFrom(level,bot,bot.getEyePosition(),target);
     }
 
+    /** Ligne de vue depuis un point arbitraire (position de travail candidate). */
+    public static boolean lineOfSight(ServerLevel level, LivingEntity bot, Vec3 eye, BlockPos target) {
+        return visibleFrom(level, bot, eye, target);
+    }
+
+    public static double eyeHeight(LivingEntity bot) { return bot.getEyeHeight(); }
+
     private static boolean visibleFrom(ServerLevel level,LivingEntity bot,Vec3 eye,BlockPos target) {
         // Un joueur mine un bloc par la face qu'il voit, pas par son centre : un bloc
         // dont le centre est occupe par un voisin reste minable si une face est degagee.
