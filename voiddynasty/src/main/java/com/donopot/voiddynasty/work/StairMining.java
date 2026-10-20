@@ -609,7 +609,15 @@ final class StairMining {
         // Une transition de descente n'est franchie que si le niveau inferieur est REELLEMENT
         // atteint : partir de startFeetY et exiger exactement startFeetY - 1 interdit tout
         // faux succes sur un simple deplacement horizontal (dy = 0).
-        boolean crossed = walk ? Math.abs(dy) <= 0.5 : bot.getY() <= step.from().getY() - 1 + 0.05;
+        if (walk) {
+            // Marche a niveau : aucune logique de chute. On va directement a l'alignement,
+            // sinon LANDING_VERIFY exige un contact au sol pour un simple deplacement horizontal.
+            System.out.println("[STAIR_WALK] index=" + ex.index + " from=" + step.from().toShortString()
+                    + " to=" + feet.toShortString());
+            enter(ex, Phase.ALIGN, now);
+            return;
+        }
+        boolean crossed = bot.getY() <= step.from().getY() - 1 + 0.05;
         if (crossed) {
             System.out.println("[STAIR_DESCEND] index=" + ex.index + " kind=" + step.kind()
                     + " startFeetY=" + step.from().getY() + " expectedFeetY=" + feet.getY()

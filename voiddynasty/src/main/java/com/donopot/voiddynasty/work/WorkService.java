@@ -151,9 +151,8 @@ public final class WorkService {
                 pause(state, "servitor absent ou dimension incorrecte — /work resume");
                 continue;
             }
-            // wake() leve explicitement le NoAI pose au chargement d'une sauvegarde : c'est le seul
-            // point qui autorise la reprise physique du compagnon quand un chantier tourne.
-            if (bot instanceof Servitor1Entity worker) { worker.setWorkMode(); worker.wake(); }
+            // Porte unique d'activation : leve le NoAI et le mode pilote sans reactiver les buts.
+            activateMovement(bot);
             ensureTicking(level, state, bot);
             double oldProgress = state.progress;
             int oldDone = state.done;
@@ -867,6 +866,40 @@ public final class WorkService {
         state.pendingServitor = servitor;
         state.awaitingServitor = false;
         return true;
+    }
+
+    /**
+     * Activation unique et idempotente du mouvement, commune a tous les chemins : chantier, depot,
+     * ordre manuel, reprise apres chargement. Un worker charge depuis une sauvegarde arrive en
+     * NoAI=true (readAdditionalSaveData) et en mode pilote (buts retires) : sans cette porte
+     * unique, une commande de deplacement etait acceptee sans jamais etre executee.
+     */
+    private static final Map<java.util.UUID, net.minecraft.world.level.ChunkPos> ENTITY_TICKING = new HashMap<>();
+
+    /**
+     * Maintient le chunk du compagnon au niveau « entity ticking ». Sans joueur a proximite, un
+     * chunk simplement charge ne tick pas les entites : aiStep() n'est jamais appele, la gravite
+     * n'est pas appliquee et AUCUN deplacement ne peut aboutir, quel que soit le controleur.
+     */
+    public static void keepTicking(ServerLevel level, LivingEntity bot) {
+        if (bot == null) return;
+        var chunk = bot.chunkPosition();
+        var previous = ENTITY_TICKING.put(bot.getUUID(), chunk);
+        if (chunk.equals(previous)) return;
+        if (previous != null) level.getChunkSource().removeTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, previous, 2);
+        level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 2);
+    }
+
+    public static void activateMovement(LivingEntity bot) {
+        if (bot == null) return;
+        if (bot instanceof Servitor1Entity s1) { s1.setWorkMode(); s1.wake(); }
+        if (bot instanceof com.donopot.voiddynasty.entity.ChaosCultistEntity cultist
+                && !bot.entityTags().contains("voiddynasty_pilot")) {
+            // Mode pilote : buts autonomes retires, navigation conservee. Jamais reapplique si deja fait.
+            cultist.passerEnModePilote();
+            bot.addTag("voiddynasty_pilot");
+        }
+        if (bot instanceof Mob mob) mob.setNoAi(false);
     }
 
     public static void discardServitor(ServerLevel level, WorkState state) {
