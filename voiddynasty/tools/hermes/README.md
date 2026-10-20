@@ -14,4 +14,28 @@ L'option SSH `-T` évite un terminal interactif et `BatchMode=yes` empêche une 
 
 Le rôle dispose d'actions de minage et de construction réelles dans les zones indiquées. Exécuter ce raccordement avec un compte dédié et garder l'accès RCON restreint à l'hôte Minecraft. L'exemple ne constitue pas à lui seul une isolation système des privilèges du compte SSH.
 
+## Piège vérifié : version du SDK MCP
+
+`mcp_vd.py` est écrit pour le SDK **mcp 1.30.0** (il importe `mcp.server.fastmcp`). Un agent récent
+peut embarquer **mcp 2.0**, où ce module n'existe plus : le serveur meurt au démarrage et le client
+affiche seulement `Connection closed`. Vérifier avant de brancher :
+
+```
+python -c "import importlib.metadata as m; print(m.version('mcp'))"
+```
+
+Si le Python de l'agent est en 2.x, lancer `mcp_vd.py` avec **son propre venv** épinglé sur 1.30 :
+
+```
+uv venv /opt/venvs/mcp-vd --python 3.13
+uv pip install --python /opt/venvs/mcp-vd/bin/python -r voiddynasty/tools/requirements-mcp.txt
+```
+
+puis pointer `command` sur `/opt/venvs/mcp-vd/bin/python`. Constaté sur cette installation :
+`hermes mcp test voiddynasty` → `✗ Connection failed: Connection closed` avec le venv de l'agent,
+`✓ Connected, Tools discovered: 15` avec le venv épinglé.
+
+Sur l'hôte Hermes, les variables `VD_SERVER_DIR` et `VD_WORLD_DIR` doivent être passées
+explicitement dans `env` : le client MCP ne transmet pas l'environnement du shell.
+
 Références de format et de configuration : [connexion aux serveurs MCP stdio](https://modelcontextprotocol.io/docs/develop/connect-local-servers), [configuration OpenSSH sous Windows](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh-server-configuration), [options du client SSH](https://man.openbsd.org/ssh.1). La connexion à Hermes et le transport SSH entre tes deux machines restent à tester sur ton infrastructure ; le protocole MCP local est testé par le laboratoire.

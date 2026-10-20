@@ -73,6 +73,77 @@ public final class BrainCommand {
                                 .then(Commands.argument("id", StringArgumentType.word())
                                         .executes(ctx -> bagAction(ctx, "drop")))))
                 .then(Commands.literal("stop").executes(BrainCommand::stop))
+                // Perception : ou est le compagnon, qui est connecte, ce qu'il y a autour.
+                .then(Commands.literal("view")
+                        .then(Commands.literal("status").executes(ctx -> view(ctx, "status", 0)))
+                        .then(Commands.literal("players").executes(ctx -> view(ctx, "players", 0)))
+                        .then(Commands.literal("work").executes(ctx -> view(ctx, "work", 0)))
+                        .then(Commands.literal("look")
+                                .executes(ctx -> view(ctx, "look", 8))
+                                .then(Commands.argument("radius", IntegerArgumentType.integer(2, 24))
+                                        .executes(ctx -> view(ctx, "look", IntegerArgumentType.getInteger(ctx, "radius"))))))
+                .then(Commands.literal("move")
+                        .then(Commands.literal("come")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(ctx -> move(ctx, "come_to_player", StringArgumentType.getString(ctx, "player"), 0)))
+                                .executes(ctx -> move(ctx, "come_to_player", "", 0)))
+                        .then(Commands.literal("follow")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(ctx -> move(ctx, "follow_player", StringArgumentType.getString(ctx, "player"), 3))))
+                        .then(Commands.literal("goto")
+                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                        .executes(ctx -> moveTo(ctx))))))
+                        .then(Commands.literal("status").executes(BrainCommand::moveStatus)))
+                .then(Commands.literal("craft")
+                        .then(Commands.literal("list")
+                                .executes(ctx -> craftList(ctx, ""))
+                                .then(Commands.argument("filtre", StringArgumentType.word())
+                                        .executes(ctx -> craftList(ctx, StringArgumentType.getString(ctx, "filtre")))))
+                        .then(Commands.literal("plan")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 4096))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(ctx -> craftPlan(ctx, 16))
+                                                                        .then(Commands.argument("rayon", IntegerArgumentType.integer(4, 32))
+                                                                                .executes(ctx -> craftPlan(ctx, IntegerArgumentType.getInteger(ctx, "rayon"))))))))))
+                        .then(Commands.literal("make")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 4096))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(BrainCommand::craftMake))))))))
+                .then(Commands.literal("supply")
+                        .then(Commands.literal("status").executes(BrainCommand::supplyStatus))
+                        .then(Commands.literal("cancel").executes(BrainCommand::supplyCancel))
+                        .then(Commands.literal("start")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 1024))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(BrainCommand::supplyStart))))))))
+                .then(Commands.literal("smelt")
+                        .then(Commands.literal("list")
+                                .executes(ctx -> smeltList(ctx, ""))
+                                .then(Commands.argument("filtre", StringArgumentType.word())
+                                        .executes(ctx -> smeltList(ctx, StringArgumentType.getString(ctx, "filtre")))))
+                        .then(Commands.literal("fuels")
+                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                        .executes(BrainCommand::smeltFuels)))))
+                        .then(Commands.literal("make")
+                                .then(Commands.argument("item", StringArgumentType.string())
+                                        .then(Commands.argument("nombre", IntegerArgumentType.integer(1, 4096))
+                                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                                        .then(Commands.argument("y", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                                        .executes(BrainCommand::smeltMake))))))))
                 .then(Commands.literal("brain")
                         .then(Commands.literal("on").executes(BrainCommand::on))
                         .then(Commands.literal("off").executes(BrainCommand::off))
@@ -108,6 +179,218 @@ public final class BrainCommand {
     }
 
     // --------------------------------------------------------------- servitor
+
+    // --------------------------------------------------------------- perception
+
+    private static int view(CommandContext<CommandSourceStack> ctx, String kind, int radius) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        String json = switch (kind) {
+            case "status" -> BrainView.status(level, bot);
+            case "players" -> BrainView.players(level, bot);
+            case "work" -> BrainView.work(level);
+            default -> BrainView.look(level, bot, radius);
+        };
+        ctx.getSource().sendSuccess(() -> Component.literal("VDVIEW " + kind + " " + json), false);
+        return 1;
+    }
+
+    /** Livre de recettes du serveur : ce que le compagnon peut fabriquer, et avec quelle station. */
+    private static int craftList(CommandContext<CommandSourceStack> ctx, String filter) {
+        ServerLevel level = ctx.getSource().getLevel();
+        com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.recipes(level, filter, 40);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return 1;
+    }
+
+    /** Demarre un approvisionnement autonome : recolte, fonte et craft enchaines par le moteur. */
+    private static int supplyStart(CommandContext<CommandSourceStack> ctx) {
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        var out = com.donopot.voiddynasty.work.SupplyService.start(ctx.getSource().getLevel(),
+                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"), pos);
+        final var payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDSUPPLY " + payload), false);
+        return payload.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    private static int supplyStatus(CommandContext<CommandSourceStack> ctx) {
+        var out = com.donopot.voiddynasty.work.SupplyService.statusJson();
+        final var payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDSUPPLY " + payload), false);
+        return 1;
+    }
+
+    private static int supplyCancel(CommandContext<CommandSourceStack> ctx) {
+        var out = com.donopot.voiddynasty.work.SupplyService.cancel();
+        final var payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDSUPPLY " + payload), false);
+        return payload.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    /** Liste les recettes de fonte du serveur. */
+    private static int smeltList(CommandContext<CommandSourceStack> ctx, String filter) {
+        var out = com.donopot.voiddynasty.work.SmeltService.recipes(ctx.getSource().getLevel(), filter, 24);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return 1;
+    }
+
+    /** Carburants presents dans un coffre, avec leur pouvoir calorifique reel. */
+    private static int smeltFuels(CommandContext<CommandSourceStack> ctx) {
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        var out = com.donopot.voiddynasty.work.SmeltService.fuels(ctx.getSource().getLevel(), pos);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return out.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    /** Fonte depuis un coffre : entree et carburant consommes, resultat remis dans le meme coffre. */
+    private static int smeltMake(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        var out = com.donopot.voiddynasty.work.SmeltService.smelt(level, bot, pos,
+                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"));
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return out.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    /** Plan d'approvisionnement : quoi fabriquer, dans quel ordre, et ce qu'il faut recolter. */
+    private static int craftPlan(CommandContext<CommandSourceStack> ctx, int radius) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        com.google.gson.JsonObject out;
+        try {
+            out = com.donopot.voiddynasty.work.CraftService.materials(level, bot, pos,
+                    StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"), radius);
+        } catch (Throwable failure) {
+            out = new com.google.gson.JsonObject();
+            out.addProperty("ok", false);
+            out.addProperty("error", "PLANNER_FAILURE");
+            out.addProperty("detail", failure.getClass().getName() + ": " + String.valueOf(failure.getMessage()));
+            var frames = new com.google.gson.JsonArray();
+            StackTraceElement[] trace = failure.getStackTrace();
+            for (int i = 0; i < Math.min(12, trace.length); i++) frames.add(trace[i].toString());
+            out.add("trace", frames);
+        }
+        final com.google.gson.JsonObject payload = out;
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + payload), false);
+        return payload.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    /** Fabrique depuis le contenu d'un coffre, a condition d'etre a portee d'une table si besoin. */
+    private static int craftMake(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        var pos = new net.minecraft.core.BlockPos(
+                IntegerArgumentType.getInteger(ctx, "x"),
+                IntegerArgumentType.getInteger(ctx, "y"),
+                IntegerArgumentType.getInteger(ctx, "z"));
+        com.google.gson.JsonObject out = com.donopot.voiddynasty.work.CraftService.craft(level, bot, pos,
+                StringArgumentType.getString(ctx, "item"), IntegerArgumentType.getInteger(ctx, "nombre"));
+        ctx.getSource().sendSuccess(() -> Component.literal("VDCRAFT " + out), false);
+        return out.get("ok").getAsBoolean() ? 1 : 0;
+    }
+
+    /** Ordre de deplacement : passe par BrainOrders pour reutiliser la validation et les garde-fous. */
+    private static int move(CommandContext<CommandSourceStack> ctx, String order, String player, double distance) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        com.google.gson.JsonObject args = new com.google.gson.JsonObject();
+        String name = player;
+        if (name.isEmpty()) {
+            var playerEntity = ctx.getSource().getPlayer();
+            if (playerEntity == null) {
+                ctx.getSource().sendFailure(Component.literal("Precise un joueur."));
+                return 0;
+            }
+            name = playerEntity.getScoreboardName();
+        }
+        args.addProperty("player", name);
+        if (order.equals("follow_player")) args.addProperty("distance", distance);
+        return dispatchMove(ctx, level, bot, order, args);
+    }
+
+    private static int moveTo(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        if (bot == null) {
+            ctx.getSource().sendFailure(Component.literal("Aucun servitor dans cette dimension."));
+            return 0;
+        }
+        com.google.gson.JsonObject args = new com.google.gson.JsonObject();
+        args.addProperty("x", IntegerArgumentType.getInteger(ctx, "x"));
+        args.addProperty("y", IntegerArgumentType.getInteger(ctx, "y"));
+        args.addProperty("z", IntegerArgumentType.getInteger(ctx, "z"));
+        return dispatchMove(ctx, level, bot, "goto", args);
+    }
+
+    private static int dispatchMove(CommandContext<CommandSourceStack> ctx, ServerLevel level, LivingEntity bot,
+                                    String order, com.google.gson.JsonObject args) {
+        // Un compagnon sauvegarde/recharge est fige (NoAI) : un ordre explicite le reveille.
+        if (bot instanceof com.donopot.voiddynasty.entity.Servitor1Entity worker) worker.wake();
+        String report = BrainOrders.apply(new BrainTools.Order(order, args), level, bot, BrainConfig.get());
+        com.google.gson.JsonObject out = new com.google.gson.JsonObject();
+        boolean ok = !report.startsWith("REFUSE");
+        out.addProperty("ok", ok);
+        out.addProperty("order", order);
+        out.addProperty("report", report);
+        var pos = new com.google.gson.JsonArray();
+        pos.add(bot.getX()); pos.add(bot.getY()); pos.add(bot.getZ());
+        out.add("bot_pos", pos);
+        out.addProperty("task", TaskRunner.describe(bot));
+        ctx.getSource().sendSuccess(() -> Component.literal("VDMOVE " + out), false);
+        return ok ? 1 : 0;
+    }
+
+    /** Etat du deplacement en cours, sans rien modifier. */
+    private static int moveStatus(CommandContext<CommandSourceStack> ctx) {
+        ServerLevel level = ctx.getSource().getLevel();
+        LivingEntity bot = BrainSpawn.find(level);
+        com.google.gson.JsonObject out = new com.google.gson.JsonObject();
+        if (bot == null) {
+            out.addProperty("ok", true);
+            out.addProperty("present", false);
+            ctx.getSource().sendSuccess(() -> Component.literal("VDMOVE " + out), false);
+            return 1;
+        }
+        out.addProperty("ok", true);
+        out.addProperty("present", true);
+        out.addProperty("task", TaskRunner.describe(bot));
+        out.addProperty("busy", TaskRunner.current(bot) != null);
+        var pos = new com.google.gson.JsonArray();
+        pos.add(bot.getX()); pos.add(bot.getY()); pos.add(bot.getZ());
+        out.add("bot_pos", pos);
+        ctx.getSource().sendSuccess(() -> Component.literal("VDMOVE " + out), false);
+        return 1;
+    }
 
     private static int spawn(CommandContext<CommandSourceStack> ctx, int variant) {
         ServerLevel level = ctx.getSource().getLevel();

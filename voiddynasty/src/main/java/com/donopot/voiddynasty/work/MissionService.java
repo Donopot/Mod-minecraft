@@ -29,6 +29,12 @@ public final class MissionService {
             map.put("minecraft:" + wood + "_log", Set.of("minecraft:" + wood + "_log"));
         map.put("minecraft:cobblestone", Set.of("minecraft:stone"));
         map.put("minecraft:cobbled_deepslate", Set.of("minecraft:deepslate"));
+        // Terrain courant : l'item collecte peut venir de plusieurs blocs (herbe, podzol, chemin -> terre).
+        map.put("minecraft:dirt", Set.of("minecraft:dirt", "minecraft:grass_block", "minecraft:coarse_dirt",
+                "minecraft:rooted_dirt", "minecraft:podzol", "minecraft:mycelium", "minecraft:dirt_path"));
+        map.put("minecraft:sand", Set.of("minecraft:sand"));
+        map.put("minecraft:red_sand", Set.of("minecraft:red_sand"));
+        map.put("minecraft:gravel", Set.of("minecraft:gravel"));
         for (String ore : List.of("diamond", "coal", "emerald", "redstone", "lapis", "iron", "copper", "gold")) {
             String item = Set.of("iron", "copper", "gold").contains(ore) ? "raw_" + ore : ore;
             if (ore.equals("lapis")) item = "lapis_lazuli";
@@ -41,7 +47,11 @@ public final class MissionService {
         return state.missions.stream().filter(m -> m.id.equals(state.missionId)).findFirst().orElse(null);
     }
 
+    /** Item special des missions EXCAVATE : la zone entiere est la cible. */
+    public static final String EXCAVATE_ITEM = "*";
+
     public static boolean matches(WorkMission mission, BlockState block) {
+        if (EXCAVATE_ITEM.equals(mission.item)) return !block.isAir();
         return SOURCES.getOrDefault(mission.item, Set.of()).contains(BuiltInRegistries.BLOCK.getKey(block.getBlock()).toString());
     }
 
@@ -55,14 +65,16 @@ public final class MissionService {
 
     public static JsonObject capabilities() {
         JsonObject out = new JsonObject(); out.addProperty("ok", true); out.addProperty("api_version", 1);
-        JsonArray types = new JsonArray(); types.add("GATHER"); types.add("BUILD"); out.add("mission_types", types);
+        JsonArray types = new JsonArray(); types.add("GATHER"); types.add("BUILD"); types.add("EXCAVATE"); out.add("mission_types", types);
+        out.addProperty("excavate", "EXCAVATE vide toute la zone (min, max) et depose les objets au coffre : champs schema=1, type=EXCAVATE, request_id, min, max, destination, origin, access optionnel. Pas d'item, pas d'amount. Le but est la zone videe, pas un nombre d'objets.");
         JsonArray resources = new JsonArray(); SOURCES.keySet().forEach(resources::add); out.add("gather_items", resources);
         out.addProperty("max_volume", 32768); out.addProperty("max_amount", 4096);
         JsonArray perceptions=new JsonArray();perceptions.add("OBSERVE");perceptions.add("FIND");out.add("observation_types",perceptions);out.addProperty("observation_max_results",WorkObservation.MAX_RESULTS);
-        out.addProperty("prospection", "Optional access=excavate clears horizontal passages or excavates 3-block landings with one-block steps and return headroom; existing floors required; inside authorized zone only");
+        out.addProperty("prospection", "Optional access=excavate ouvre un escalier de descente par transitions atomiques (tunnel 1x2, largeur configurable, un bloc de descente par bloc d'avance), support valide sous l'empreinte de collision, retour praticable, uniquement dans la zone autorisee");
         out.addProperty("access_max_blocks",WorkAccess.MAX_BLOCKS);
-        out.addProperty("access_max_rise",WorkStairs.MAX_RISE);
-        out.addProperty("access_search_radius",WorkStairs.RADIUS);
+        out.addProperty("access_max_rise",StairMining.MAX_STEPS);
+        out.addProperty("access_search_radius",24);
+        out.addProperty("access_tunnel","1x"+StairMining.HEIGHT+" (largeur "+StairMining.WIDTH+")");
         JsonArray plans=new JsonArray();BuildPlan.IDS.stream().sorted().forEach(plans::add);out.add("blueprints",plans);
         JsonArray materials=new JsonArray();BuildPlan.MATERIALS.stream().sorted().forEach(materials::add);out.add("build_materials",materials);
         return out;
@@ -85,13 +97,19 @@ public final class MissionService {
     public static WorkMission parse(JsonObject obj) {
         if(obj.has("type") && obj.get("type").getAsString().equals("BUILD")) return parseBuild(obj);
         Set<String> fields=new HashSet<>(obj.keySet());fields.remove("access");
-        if (!fields.equals(Set.of("schema", "type", "request_id", "item", "amount", "min", "max", "destination", "origin")))
-            throw new IllegalArgumentException("Invalid or missing mission fields");
-        if (integer(obj.get("schema")) != 1 || !obj.get("type").getAsString().equals("GATHER"))
-            throw new IllegalArgumentException("Unsupported mission schema/type");
-        String request = obj.get("request_id").getAsString(), item = obj.get("item").getAsString();
-        if (!request.matches("[A-Za-z0-9_-]{1,64}") || !SOURCES.containsKey(item)) throw new IllegalArgumentException("Invalid request id or unsupported resource");
-        int count = integer(obj.get("amount")); if (count < 1 || count > 4096) throw new IllegalArgumentException("Amount must be 1..4096");
+        boolean excavate = obj.has("type") && obj.get("type").getAsString().equals("EXCAVATE");
+        Set<String> required = excavate
+                ? Set.of("schema", "type", "request_id", "min", "max", "destination", "origin")
+                : Set.of("schema", "type", "request_id", "item", "amount", "min", "max", "destination", "origin");
+        if (!fields.equals(required))
+            throw new IllegalArgumentException(excavate
+                    ? "Invalid or missing EXCAVATE fields (no item, no amount: the zone is the goal)"
+                    : "Invalid or missing mission fields");
+        if (integer(obj.get("schema")) != 1) throw new IllegalArgumentException("Unsupported mission schema/type");
+        String request = obj.get("request_id").getAsString();
+        String item = excavate ? EXCAVATE_ITEM : obj.get("item").getAsString();
+        if (!request.matches("[A-Za-z0-9_-]{1,64}") || !(excavate || SOURCES.containsKey(item)))
+            throw new IllegalArgumentException("Invalid request id or unsupported resource");
         BlockPos a = position(obj.get("min")), b = position(obj.get("max"));
         BlockPos min = new BlockPos(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()));
         BlockPos max = new BlockPos(Math.max(a.getX(), b.getX()), Math.max(a.getY(), b.getY()), Math.max(a.getZ(), b.getZ()));
@@ -99,6 +117,9 @@ public final class MissionService {
                 || (long)max.getZ()-min.getZ()+1 > 32768) throw new IllegalArgumentException("Zone exceeds 32768 blocks");
         long volume = (long)(max.getX()-min.getX()+1) * (max.getY()-min.getY()+1) * (max.getZ()-min.getZ()+1);
         if (volume > 32768) throw new IllegalArgumentException("Zone exceeds 32768 blocks");
+        // EXCAVATE : le but est la zone videe, pas un nombre d'objets. amount = volume sert de plafond interne.
+        int count = excavate ? (int) volume : integer(obj.get("amount"));
+        if (!excavate && (count < 1 || count > 4096)) throw new IllegalArgumentException("Amount must be 1..4096");
         BlockPos destination = position(obj.get("destination")), origin = position(obj.get("origin"));
         WorkMission m = new WorkMission(UUID.randomUUID().toString(), request, item, count, min, max, destination, origin);
         m.access=obj.has("access")?obj.get("access").getAsString():"surface";
@@ -129,6 +150,8 @@ public final class MissionService {
                 && p.getZ() >= m.min.getZ() && p.getZ() <= m.max.getZ();
     }
 
+    static Container destinationOf(ServerLevel level, WorkMission m) { return destination(level, m); }
+
     static Container destination(ServerLevel level, WorkMission m) {
         if (!level.hasChunkAt(m.destination) || ClaimIntegration.isClaimProtected(level, m.destination)) return null;
         var be = level.getBlockEntity(m.destination);
@@ -151,6 +174,8 @@ public final class MissionService {
         }
         if (s.missions.size() >= HISTORY_MAX) return error("HISTORY_FULL", "Mission history retained; no automatic eviction");
         if (s.jobName != null || !s.invSlots.isEmpty() || !s.journal.isEmpty()) return error("WORKER_BUSY", "Close or reconcile the previous job first");
+        // La zone doit etre chargee et tickable pendant toute la mission (physique du compagnon).
+        WorkService.forceChunks(level, proposed.min, proposed.max);
         if (level.isOutsideBuildHeight(proposed.min) || level.isOutsideBuildHeight(proposed.max)
                 || !level.getWorldBorder().isWithinBounds(proposed.min) || !level.getWorldBorder().isWithinBounds(proposed.max))
             return error("INVALID_ZONE", "Zone outside dimension bounds");
@@ -160,6 +185,17 @@ public final class MissionService {
         if(proposed.build!=null) {String invalid=BuildService.validate(level,proposed);if(!invalid.isEmpty()) return error(invalid,"Build site refused before reserving resources");}
         WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin, companion);
         if (started == null) return error("START_REFUSED", s.lastStop);
+        // Collecte avec destination explicite : le coffre fourni TIENT LIEU de depot. Sans cela le
+        // moteur cherche a en construire un autour du compagnon, et sur un terrain encombre il
+        // peut boucler indefiniment en phase PREPARING au lieu de miner.
+        if (proposed.build == null) {
+            started.hasDepot = true;
+            started.buildingDepot = false;
+            started.depotPlanned = false;
+            started.depotX = proposed.destination.getX();
+            started.depotY = proposed.destination.getY();
+            started.depotZ = proposed.destination.getZ();
+        }
         s.missions.add(proposed); s.missionId = proposed.id;
         // Include the actual delivery chest in receipt recovery; never clear its other contents.
         s.depots.add(proposed.destination); s.setDirty();
@@ -201,7 +237,10 @@ public final class MissionService {
                 if (WorkService.resume(level) == null) return error("RESUME_REFUSED", s.lastStop);
                 m.status = "PREPARING"; m.reason = "";
             }
-            case "cancel" -> { if (!m.terminal()) { WorkService.stop(level); m.status = "CANCELLED"; m.reason = "OPERATOR_CANCEL"; } }
+            case "cancel" -> { if (!m.terminal()) { WorkService.stop(level); m.status = "CANCELLED"; m.reason = "OPERATOR_CANCEL";
+                // Annulation depuis DELIVERING : on ne repart pas en livraison a la prochaine reprise
+                // (le sac et son contenu restent intacts).
+                s.finishing = false; s.goingToDepot = false; s.setDirty(); } }
             case "deposit" -> {
                 if (!m.terminal()) return error("DEPOSIT_REFUSED", "Cancel or finish mission before deposit-only recovery");
                 if (!s.invSlots.isEmpty() && WorkService.deposit(level) == null) return error("DEPOSIT_REFUSED", s.lastStop);
@@ -230,8 +269,15 @@ public final class MissionService {
         WorkMission m = active(s);
         if (m == null || m.status.equals("CANCELLED")) return;
         if(m.build!=null) {m.status=m.placed==m.amount?"SUCCEEDED":"INCOMPLETE";m.reason=m.status.equals("SUCCEEDED")?"":"BUILD_UNFINISHED";return;}
-        m.status = m.delivered >= m.amount ? "SUCCEEDED" : "INCOMPLETE";
-        m.reason = m.status.equals("SUCCEEDED") ? "" : s.cursorY < s.minY ? "SOURCE_EXHAUSTED" : "STOPPED_BEFORE_GOAL";
+        if (EXCAVATE_ITEM.equals(m.item)) {
+            // Le but d'un EXCAVATE est la zone videe : le curseur est la seule verite.
+            boolean cleared = s.cursorY < s.minY;
+            m.status = cleared ? "SUCCEEDED" : "INCOMPLETE";
+            m.reason = cleared ? "ZONE_CLEARED" : "STOPPED_BEFORE_GOAL";
+        } else {
+            m.status = m.delivered >= m.amount ? "SUCCEEDED" : "INCOMPLETE";
+            m.reason = m.status.equals("SUCCEEDED") ? "" : s.cursorY < s.minY ? "SOURCE_EXHAUSTED" : "STOPPED_BEFORE_GOAL";
+        }
     }
 
     static void mined(WorkState s, List<ItemStack> drops) {
@@ -240,7 +286,9 @@ public final class MissionService {
     }
 
     private static boolean isItem(WorkMission m, ItemStack stack) {
-        return !stack.isEmpty() && BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(m.item);
+        if (stack.isEmpty()) return false;
+        if (EXCAVATE_ITEM.equals(m.item)) return true; // tout ce qui tombe appartient au chantier
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(m.item);
     }
 
     /** True means this tick was consumed by delivery/completion rather than another mining action. */
@@ -248,10 +296,30 @@ public final class MissionService {
         WorkMission m = active(s); if (m == null || m.status.equals("CANCELLED")) return false;
         if(m.build!=null) {if(m.terminal()) return false;BuildService.tick(level,s,bot,m);return true;}
         if (m.delivered >= m.amount) {
+            // Objectif atteint. Ce qui reste dans le sac (blocs hors objectif) est depose dans le
+            // meme coffre de destination : le sac se vide, donc le chantier peut se conclure et le
+            // travailleur se libere. Si le coffre est plein, on s'arrete en le disant — le sac et
+            // son contenu restent intacts, rien n'est efface.
             m.status = "STORING_REMAINDER";
-            if (s.invSlots.isEmpty()) WorkService.conclude(level, s); else s.finishing = true;
-            s.setDirty(); return s.invSlots.isEmpty();
+            if (s.invSlots.isEmpty()) { WorkService.conclude(level, s); s.setDirty(); return true; }
+            Container rest = destination(level, m);
+            if (rest == null) { WorkService.pause(s, "DESTINATION_UNAVAILABLE"); return true; }
+            if (WorkService.distanceSq(bot, m.destination) > WorkService.reach() * WorkService.reach()
+                    || !WorkService.visible(level, bot, m.destination)) {
+                WorkService.stepToward(level, s, bot, m.destination);
+                return true;
+            }
+            WorkInventory.Transfer store = WorkInventory.transfer(s.invSlots, rest, stack -> true, Integer.MAX_VALUE);
+            for (int i = 0; i < rest.getContainerSize(); i++) rest.setItem(i, store.container().get(i));
+            rest.setChanged();
+            s.invSlots.clear(); s.invSlots.addAll(store.bag());
+            s.setDirty();
+            if (!s.invSlots.isEmpty()) { WorkService.pause(s, "DESTINATION_FULL"); return true; }
+            WorkService.conclude(level, s);
+            return true;
         }
+        // Sac presque plein : on va vider au coffre puis on reprend, au lieu de se bloquer.
+        if (!s.finishing && !s.goingToDepot && s.invSlots.size() >= 32) s.goingToDepot = true;
         if (!(s.finishing || s.goingToDepot || m.collected >= m.amount || s.cursorY < s.minY)) {
             m.status = s.buildingDepot || !s.hasDepot ? "PREPARING" : "MINING";
             return false;
@@ -269,10 +337,12 @@ public final class MissionService {
         target.setChanged(); s.invSlots.clear(); s.invSlots.addAll(plan.bag()); m.delivered += plan.count();
         s.goingToDepot = false; s.setDirty();
         if (m.delivered >= m.amount) {
-            if (s.invSlots.isEmpty()) WorkService.conclude(level, s); else s.finishing = true;
+            if (s.invSlots.isEmpty()) { WorkService.conclude(level, s); return true; }
+            s.finishing = true;   // le remainder sera depose au prochain tick par la branche ci-dessus
+            return false;
         } else if (s.cursorY < s.minY || s.finishing) {
-            if (s.invSlots.isEmpty()) WorkService.conclude(level, s);
-            else WorkService.pause(s, "INVENTORY_BLOCKED");
+            if (s.invSlots.isEmpty()) { WorkService.conclude(level, s); return true; }
+            WorkService.pause(s, "INVENTORY_BLOCKED");
         }
         return true;
     }

@@ -38,21 +38,43 @@ final class WorkDepot {
                 && p.getZ() >= s.minZ && p.getZ() <= s.maxZ;
     }
 
+    /** Derniere raison de refus d'un emplacement, pour diagnostiquer un blocage de preparation. */
+    static String lastRefusal = "aucune recherche encore";
+
     private static boolean site(ServerLevel level, WorkState s, LivingEntity bot, BlockPos p) {
-        if (inside(s, p) || inside(s, p.below()) || s.depots.contains(p)) return false;
-        if (level.isOutsideBuildHeight(p.below()) || level.isOutsideBuildHeight(p.above())) return false;
-        if (!level.hasChunkAt(p) || !level.hasChunkAt(p.below()) || !level.hasChunkAt(p.above())) return false;
-        if (!level.getWorldBorder().isWithinBounds(p) || !level.getBlockState(p).isAir()
-                || !level.getBlockState(p.above()).isAir()) return false;
-        if (ClaimIntegration.isClaimProtected(level, p) || ClaimIntegration.isClaimProtected(level, p.below())) return false;
-        if (!level.getEntities(bot, new AABB(p)).isEmpty() || bot.getBoundingBox().intersects(new AABB(p))) return false;
+        if (inside(s, p) || inside(s, p.below()) || s.depots.contains(p)) {
+            lastRefusal = "dans la zone de minage ou deja un depot"; return false;
+        }
+        if (level.isOutsideBuildHeight(p.below()) || level.isOutsideBuildHeight(p.above())) {
+            lastRefusal = "hors des limites de hauteur"; return false;
+        }
+        if (!level.hasChunkAt(p) || !level.hasChunkAt(p.below()) || !level.hasChunkAt(p.above())) {
+            lastRefusal = "chunk non charge autour du site"; return false;
+        }
+        if (!level.getWorldBorder().isWithinBounds(p)) { lastRefusal = "hors worldborder"; return false; }
+        if (!level.getBlockState(p).isAir() || !level.getBlockState(p.above()).isAir()) {
+            lastRefusal = "case ou case au-dessus occupee (" + level.getBlockState(p).getBlock() + ")"; return false;
+        }
+        if (ClaimIntegration.isClaimProtected(level, p) || ClaimIntegration.isClaimProtected(level, p.below())) {
+            lastRefusal = "claim protege"; return false;
+        }
+        if (!level.getEntities(bot, new AABB(p)).isEmpty() || bot.getBoundingBox().intersects(new AABB(p))) {
+            lastRefusal = "entite deja presente dans la case"; return false;
+        }
         for (Direction d : Direction.values()) {
             BlockPos neighbor = p.relative(d);
-            if (!level.hasChunkAt(neighbor) || !level.getBlockState(neighbor).getFluidState().isEmpty()) return false;
-            if (d.getAxis().isHorizontal() && level.getBlockState(neighbor).is(Blocks.CHEST)) return false;
+            if (!level.hasChunkAt(neighbor) || !level.getBlockState(neighbor).getFluidState().isEmpty()) {
+                lastRefusal = "voisin non charge ou fluide"; return false;
+            }
+            if (d.getAxis().isHorizontal() && level.getBlockState(neighbor).is(Blocks.CHEST)) {
+                lastRefusal = "coffre deja adjacent"; return false;
+            }
         }
-        return level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)
-                || (s.supplySupports > 0 && level.getBlockState(p.below()).isAir());
+        boolean sturdy = level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP);
+        if (!sturdy && !(s.supplySupports > 0 && level.getBlockState(p.below()).isAir())) {
+            lastRefusal = "sol non porteur sous le site"; return false;
+        }
+        return true;
     }
 
     static boolean tick(ServerLevel level, WorkState s, LivingEntity bot) {
@@ -73,7 +95,10 @@ final class WorkDepot {
                         || !WorkService.visible(level, bot, p)) {
                     var path = WorkService.findWorkPath(level, bot, p);
                     // At most one expensive path search per preparation tick.
-                    if (path == null || !path.canReach()) { s.setDirty(); return false; }
+                    if (path == null || !path.canReach()) {
+                        s.lastStop = "site " + p.toShortString() + " inatteignable depuis le compagnon";
+                        s.setDirty(); return false;
+                    }
                     if (bot instanceof Mob mob) mob.getNavigation().moveTo(path, 1.0);
                     s.nextPathTick = level.getGameTime() + 20;
                 }
@@ -83,7 +108,10 @@ final class WorkDepot {
                 break;
             }
             s.setDirty();
-            if (!s.depotPlanned) { s.lastStop = "recherche d'un emplacement de depot par le servitor"; return false; }
+            if (!s.depotPlanned) {
+                s.lastStop = "recherche d'un emplacement de depot — " + lastRefusal;
+                return false;
+            }
         }
         BlockPos p = new BlockPos(s.planX, s.planY, s.planZ);
         if (!site(level, s, bot, p)) { s.depotPlanned = false; s.depotBuildTicks = 0; s.setDirty(); return false; }
