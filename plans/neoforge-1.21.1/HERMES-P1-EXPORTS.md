@@ -2,6 +2,8 @@
 
 Hermes seul accède au serveur et au monde `data-263`. Codex a terminé P0 côté dépôt ; aucun accès au serveur, aucun export réel et aucun collage n'ont été effectués depuis ce poste.
 
+**Suite aux exports rapportés dans `a807882` : lire d'abord la [revue P1](P1-REVUE-EXPORTS.md).** Les scripts initiaux avaient des défauts de format, géométrie et conservation des données. Leurs exports remappés ne sont pas autorisés au collage ; les 159 fichiers et 14 zones sans contenu ne suffisent pas à valider P1.
+
 ## À exécuter par Hermes
 
 1. Récupérer la branche `neoforge`, lire le plan complet et `contrat-ids.json`.

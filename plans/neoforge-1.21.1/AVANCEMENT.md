@@ -5,7 +5,7 @@ Référence : `plans/2026-10-21-PLAN-COMPLET-PORTAGE-NEOFORGE-1.21.1.md` sur la 
 | Phase | État | Preuve / suite |
 |---|---|---|
 | P0 — cadastre | **PASS** | Contrat canonique versionné, 88 IDs, 24 empreintes de sources ; GameTest compilé avec NeoForge 21.1.264 / Java 21 |
-| P1 — extraction | **EN ATTENTE HERMES** | 173 commandes d'export préparées en neuf lots ; aucun schematic réel validé ici |
+| P1 — extraction | **À REVALIDER AVEC HERMES** | Journal reçu : 159 fichiers/14 zones sans contenu ; défauts de format, géométrie et remappage constatés dans les scripts, corrigés et testés localement ; preuves réelles attendues |
 | P2 à P12 | **NON DÉMARRÉES** | Verrou du §10 : attendre PASS P1 avant P2 |
 
 ## Vérifications effectuées
@@ -24,4 +24,8 @@ Les bornes hautes du CSV sont exclusives : WorldEdit doit utiliser x2-1/z2-1/Y=3
 
 ## Prochaine action
 
-Hermes exécute le relais `HERMES-P1-EXPORTS.md` sur la copie du monde 26.3. Il retourne les preuves d'export et les NBT bruts pour préparer les adaptateurs. Le dossier `.runtime/neoforge-p1-hermes` généré localement contient les neuf lots et le manifeste vierge ; ils se régénèrent avec le script versionné, sans secret et sans connexion serveur.
+Hermes applique la [revue P1](P1-REVUE-EXPORTS.md) et le [relais P1](HERMES-P1-EXPORTS.md) sur la copie du monde 26.3. Les exports déjà remappés ne sont pas autorisés au collage. L'extracteur Python reste une prévisualisation des blocs/BE, sans entités/biomes. Les 14 zones annoncées vides restent à justifier ; le bilan ne valide donc pas P1.
+
+Après réception des commits `b10a0d5` et `a807882`, 13 tests de migration synthétique ont été ajoutés : **25 tests Python réussis au total**, contrat P0 inchangé. Le démarrage du serveur avec le pack tiers rapporté par Hermes ne constitue pas un démarrage de VoidDynasty NeoForge et ne valide pas P2.
+
+Le dossier `.runtime/neoforge-p1-hermes` généré localement contient les neuf lots et le manifeste vierge ; ils se régénèrent avec le script versionné, sans secret et sans connexion serveur.

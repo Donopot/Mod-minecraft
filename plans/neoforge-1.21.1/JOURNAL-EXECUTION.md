@@ -2,6 +2,13 @@
 
 > Données mesurées, pas d'estimation. Mis à jour au fil des phases.
 
+> **Revue du code après `a807882` : P1 non validée.** Les résultats ci-dessous
+> décrivent l'exécution historique des scripts initiaux. Leur vérificateur acceptait
+> un faux format v3 ; la géométrie et les types NBT n'étaient pas préservés et le
+> remappage pouvait supprimer les machines VoidDynasty. Voir les corrections et la
+> procédure de reprise dans [P1-REVUE-EXPORTS.md](P1-REVUE-EXPORTS.md). Ne pas coller
+> les exports remappés existants. Le pack tiers démarré ne valide pas P2.
+
 ## 2026-10-21 — Carte
 
 ### Extraction des zones

@@ -1,13 +1,14 @@
 #!/bin/bash
-# Lance l'extraction des 173 zones en arriere-plan sur le HP Mini (detache + log).
-set -u
-WORLD="$HOME/minecraft-server/data-263/world"
-CSV="$HOME/repos/Mod-minecraft/plans/neoforge-1.21.1/annexe-zones-export.csv"
-OUT="$HOME/minecraft-server/migration-schematics"
+# Prévisualisation des blocs uniquement : ne valide pas P1, aucun collage autorisé.
+set -eu
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+: "${WORLD:?Indiquer WORLD vers une copie cohérente et sauvegardée du monde source}"
+CSV="$SCRIPT_DIR/../../plans/neoforge-1.21.1/annexe-zones-export.csv"
+OUT="${OUT:-$HOME/minecraft-server/migration-schematics-preview-v2}"
 mkdir -p "$OUT"
 pgrep -f "extract_zones.py" >/dev/null && echo "deja en cours" || {
   cd "$HOME/minecraft-server" || exit 1
-  setsid nohup python3 /tmp/extract_zones.py "$WORLD" "$CSV" "$OUT" > /tmp/extract.log 2>&1 &
+  setsid nohup python3 "$SCRIPT_DIR/extract_zones.py" "$WORLD" "$CSV" "$OUT" > /tmp/extract.log 2>&1 &
   echo "extraction lancee (pid $!)"
 }
 sleep 30

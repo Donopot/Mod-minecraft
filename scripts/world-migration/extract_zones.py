@@ -2,74 +2,28 @@
 """Extrait des zones d'un monde Minecraft 26.3 vers des fichiers .schem (Sponge Schematic v3).
 
 Pourquoi : transplanter la map 26.3 vers un serveur 1.21.1 sans passer par 173 exports manuels
-dans WorldEdit. Le .schem produit se charge avec `//schem load <nom>` puis `//paste -e`.
+dans WorldEdit. Sortie de prévisualisation uniquement : entités et biomes non exportés.
+Ne constitue jamais une validation P1 ni une autorisation de collage.
 
 - Lecture directe des fichiers .mca (aucune dépendance, stdlib seule)
 - Palette de section -> BlockState string, BlockData en varint (YZX)
 - BlockEntities conservés (inventaires des super_chest / super_container)
 - Bornes Y calculées sur le contenu reel (pas -64..320 aveugle)
-- Idempotent : un .schem deja present et non vide est ignore (reprise apres interruption)
+- Refuse de réutiliser les anciens exports : utiliser un nouveau dossier de sortie.
 
 Usage:
   python3 extract_zones.py <monde> <zones.csv> <dossier_sortie> [--zone NOM] [--limit N]
 """
-import os, sys, csv, gzip, zlib, json, time
+import os, sys, csv, gzip, zlib, time
+from pathlib import Path
+from array import array
+from collections import OrderedDict
+from schematic_nbt import decode, plain, payload as nbt_payload, string_bytes
 
 # ---------------------------------------------------------------- NBT lecture
 
-class R:
-    def __init__(self, data):
-        self.d = data; self.i = 0
-
-    def u(self, n):
-        v = int.from_bytes(self.d[self.i:self.i + n], "big"); self.i += n; return v
-
-    def s(self, n):
-        v = self.d[self.i:self.i + n].decode("utf-8", "replace"); self.i += n; return v
-
-    def payload(self, t):
-        import struct
-        if t == 1:
-            v = self.u(1)
-            return v - 256 if v > 127 else v
-        if t == 2:
-            v = self.u(2)
-            return v - 65536 if v > 32767 else v
-        if t == 3:
-            v = self.u(4)
-            return v - 4294967296 if v > 2147483647 else v
-        if t == 4:
-            v = self.u(8)
-            return v - 18446744073709551616 if v > 9223372036854775807 else v
-        if t == 5:
-            v = struct.unpack(">f", self.d[self.i:self.i + 4])[0]; self.i += 4; return v
-        if t == 6:
-            v = struct.unpack(">d", self.d[self.i:self.i + 8])[0]; self.i += 8; return v
-        if t == 7:
-            n = self.u(4); v = self.d[self.i:self.i + n]; self.i += n; return v
-        if t == 8:
-            n = self.u(2); return self.s(n)
-        if t == 9:
-            et = self.u(1); n = self.u(4); return [self.payload(et) for _ in range(n)]
-        if t == 10:
-            out = {}
-            while True:
-                tt = self.u(1)
-                if tt == 0: return out
-                n = self.u(2); name = self.s(n)
-                out[name] = self.payload(tt)
-        if t == 11: n = self.u(4); return [self.payload(3) for _ in range(n)]
-        if t == 12: n = self.u(4); return [self.u(8) for _ in range(n)]
-        raise ValueError(f"tag inconnu {t} @ {self.i}")
-
-
 def read_nbt_bytes(raw):
-    r = R(raw)
-    t = r.u(1)
-    if t != 10:
-        raise ValueError("NBT racine non-compound")
-    r.u(2)  # nom racine
-    return r.payload(10)
+    return plain(decode(raw)[1])
 
 
 # ---------------------------------------------------------------- NBT ecriture
@@ -79,7 +33,7 @@ TYPES = {"byte": 1, "short": 2, "int": 3, "long": 4, "float": 5, "double": 6,
 
 
 def w_str(s):
-    b = s.encode("utf-8"); return len(b).to_bytes(2, "big") + b
+    return string_bytes(s)
 
 
 def tag(name, value):
@@ -122,8 +76,7 @@ def t_list(items):
         return b"\x00\x00\x00\x00\x00"
     tid = items[0][0]
     if any(i[0] != tid for i in items):
-        items = [("string", t_string(str(x))) for x in range(len(items))]
-        tid = "string"
+        raise ValueError("Liste NBT hétérogène : aucune conversion silencieuse")
     return bytes([TYPES[tid]]) + len(items).to_bytes(4, "big") + b"".join(i[1] for i in items)
 
 
@@ -138,7 +91,7 @@ def read_level_dataversion(world):
     for cand in ("level.dat", os.path.join("world", "level.dat")):
         p = os.path.join(world, cand) if cand == "level.dat" else os.path.join(world, cand)
         if os.path.exists(p):
-            raw = gzip.decompress(open(p, "rb").read())
+            raw = gzip.decompress(Path(p).read_bytes())
             d = read_nbt_bytes(raw)
             data = d.get("Data", d)
             return int(data.get("DataVersion", 0))
@@ -148,44 +101,6 @@ def read_level_dataversion(world):
 def region_path(world, cx, cz):
     rx, rz = cx >> 5, cz >> 5
     return os.path.join(world, "dimensions", "minecraft", "overworld", "region", f"r.{rx}.{rz}.mca")
-
-
-def iter_region_chunks(path):
-    """yield (cx, cz, nbt) pour chaque chunk valide du fichier de region."""
-    try:
-        data = open(path, "rb").read()
-    except FileNotFoundError:
-        return
-    if len(data) < 8192:
-        return
-    parts = os.path.basename(path)[:-4].split(".")
-    rx, rz = int(parts[1]), int(parts[2])
-    for i in range(1024):
-        off = int.from_bytes(data[i * 4:i * 4 + 3], "big")
-        cnt = data[i * 4 + 3]
-        if not off or not cnt:
-            continue
-        s = off * 4096
-        if s + 5 > len(data):
-            continue
-        ln = int.from_bytes(data[s:s + 4], "big")
-        comp = data[s + 4]
-        payload = data[s + 5:s + 4 + ln]
-        if ln <= 0 or ln > 32_000_000:
-            continue
-        try:
-            raw = gzip.decompress(payload) if comp == 1 else (zlib.decompress(payload) if comp == 2 else (payload if comp == 3 else None))
-        except Exception:
-            continue
-        if raw is None:
-            continue
-        try:
-            nbt = read_nbt_bytes(raw)
-        except Exception:
-            continue
-        cx = rx * 32 + (i % 32)
-        cz = rz * 32 + (i // 32)
-        yield cx, cz, nbt
 
 
 AIR = {"minecraft:air", "minecraft:cave_air", "minecraft:void_air"}
@@ -209,21 +124,22 @@ def base_id(state):
 
 
 class ChunkCache:
-    """Acces direct a un chunk par son slot dans le fichier de region (pas de scan, pas de re-parsing)."""
+    """Accès direct par slot ; cache borné pour les grandes zones."""
 
     MAX_FILES = 6
+    MAX_CHUNKS = 128
 
     def __init__(self, world):
         self.world = world
         self.files = {}
         self.order = []
-        self.chunks = {}
+        self.chunks = OrderedDict()
 
     def _file(self, rp):
         if rp in self.files:
             return self.files[rp]
         try:
-            data = open(rp, "rb").read()
+            data = Path(rp).read_bytes()
         except FileNotFoundError:
             data = b""
         self.files[rp] = data
@@ -236,32 +152,40 @@ class ChunkCache:
     def get(self, cx, cz):
         k = (cx, cz)
         if k in self.chunks:
+            self.chunks.move_to_end(k)
             return self.chunks[k]
         nbt = None
         data = self._file(region_path(self.world, cx, cz))
+        if data and len(data) < 8192:
+            raise ValueError(f"Région tronquée : {region_path(self.world, cx, cz)}")
         if len(data) >= 8192:
             i = (cx & 31) + (cz & 31) * 32
             off = int.from_bytes(data[i * 4:i * 4 + 3], "big")
             cnt = data[i * 4 + 3]
+            if bool(off) != bool(cnt):
+                raise ValueError(f"Entrée de localisation de chunk invalide : {cx},{cz}")
             if off and cnt:
                 s = off * 4096
+                if s < 8192 or s + cnt * 4096 > len(data):
+                    raise ValueError(f"Secteurs de chunk invalides : {cx},{cz}")
                 ln = int.from_bytes(data[s:s + 4], "big")
                 comp = data[s + 4]
                 payload = data[s + 5:s + 4 + ln]
-                if 0 < ln < 32_000_000:
-                    try:
-                        raw = gzip.decompress(payload) if comp == 1 else (
-                            zlib.decompress(payload) if comp == 2 else (payload if comp == 3 else None))
-                        if raw:
-                            nbt = read_nbt_bytes(raw)
-                    except Exception:
-                        nbt = None
+                if not 1 < ln <= cnt * 4096 - 4 or comp not in (1, 2, 3):
+                    raise ValueError(f"Compression ou longueur de chunk non prise en charge : {cx},{cz}")
+                raw = gzip.decompress(payload) if comp == 1 else (
+                    zlib.decompress(payload) if comp == 2 else payload)
+                nbt = read_nbt_bytes(raw)
         self.chunks[k] = nbt
+        while len(self.chunks) > self.MAX_CHUNKS:
+            self.chunks.popitem(last=False)
         return nbt
 
 
 
 def unpack(longs, bpe, mask, n=4096):
+    if len(longs) != (n + (64 // bpe) - 1) // (64 // bpe):
+        raise ValueError("Nombre de longs de section incohérent")
     out = [0] * n
     per = 64 // bpe
     idx = 0
@@ -324,13 +248,13 @@ def export_zone(world, cache, zone, x1, x2, z1, z2, ymin, ymax, out_path, datave
     width, length, height = x2 - x1, z2 - z1, ymax - ymin + 1
 
     # palette deterministe : air en 0, puis tri alphabetique
-    ordered = sorted(states)
-    if "minecraft:air" in ordered:
-        ordered.remove("minecraft:air")
-        ordered.insert(0, "minecraft:air")
+    ordered = ["minecraft:air"] + sorted(set(states) - {"minecraft:air"})
     palette = {s: i for i, s in enumerate(ordered)}
     fast = len(palette) <= 127 and not os.environ.get("FORCE_SLOW")   # 1 octet par bloc = varint identique
     blockdata = bytearray()
+    # Store by global x + z*width + y*width*length, not by chunk traversal order.
+    # A byte per cell for small palettes; fixed-width unsigned ints otherwise.
+    indices = bytearray(width * height * length) if len(palette) <= 256 else array('I', [0]) * (width * height * length)
     block_entities = []
 
     cx1, cx2 = x1 >> 4, (x2 - 1) >> 4
@@ -348,7 +272,6 @@ def export_zone(world, cache, zone, x1, x2, z1, z2, ymin, ymax, out_path, datave
                 if x_hi <= x_lo:
                     continue
                 n_row = x_hi - x_lo
-                n_rows = (y_hi - y_lo) * (z_hi - z_lo)
                 nbt = cache.get(cx, cz)
                 sec = None
                 if nbt:
@@ -357,37 +280,35 @@ def export_zone(world, cache, zone, x1, x2, z1, z2, ymin, ymax, out_path, datave
                             sec = s
                             break
                 if sec is None:
-                    if fast:
-                        blockdata += bytes([air]) * (n_row * n_rows)
-                    else:
-                        _vints(air, n_row * n_rows, blockdata)
                     continue
                 bs = sec.get("block_states") or {}
                 pal = bs.get("palette") or []
                 sec_states = [state_string(e) for e in pal]
                 if len(sec_states) <= 1:
-                    single = palette.get(sec_states[0], air) if sec_states else air
-                    if fast:
-                        blockdata += bytes([single]) * (n_row * n_rows)
-                    else:
-                        _vints(single, n_row * n_rows, blockdata)
-                    continue
-                bpe = max(4, (len(sec_states) - 1).bit_length())
-                mask = (1 << bpe) - 1
-                data = bs.get("data") or []
-                raw = unpack([int(v) for v in data], bpe, mask) if data else [0] * 4096
-                lut = [palette.get(s, air) for s in sec_states]
-                mapped = [lut[i] if i < len(lut) else air for i in raw]
+                    mapped = [palette[sec_states[0]] if sec_states else air] * 4096
+                else:
+                    bpe = max(4, (len(sec_states) - 1).bit_length())
+                    mask = (1 << bpe) - 1
+                    data = bs.get("data") or []
+                    raw = unpack([int(v) for v in data], bpe, mask)
+                    lut = [palette[s] for s in sec_states]
+                    if any(i >= len(lut) for i in raw):
+                        raise ValueError("Index de palette de section inconnu")
+                    mapped = [lut[i] for i in raw]
                 for y in range(y_lo, y_hi):
                     yl = (y & 15) * 256
                     for z in range(z_lo, z_hi):
                         base = yl + (z & 15) * 16 + (x_lo & 15)
                         row = mapped[base:base + n_row]
-                        if fast:
-                            blockdata += bytes(row)
-                        else:
-                            for v in row:
-                                varint(v, blockdata)
+                        dest = (x_lo-x1) + (z-z1)*width + (y-ymin)*width*length
+                        indices[dest:dest+n_row] = bytes(row) if isinstance(indices, bytearray) else array('I', row)
+
+    if fast:
+        blockdata = bytes(indices)
+    else:
+        for index in indices:
+            varint(index, blockdata)
+    del indices
 
     # block entities
     for cx in range(cx1, cx2 + 1):
@@ -402,10 +323,12 @@ def export_zone(world, cache, zone, x1, x2, z1, z2, ymin, ymax, out_path, datave
                 if x1 <= bx < x2 and z1 <= bz < z2 and ymin <= by <= ymax:
                     d = {"Id": ("string", t_string(be.get("id", "minecraft:chest"))),
                          "Pos": ("intarray", t_int_array([bx - x1, by - ymin, bz - z1]))}
+                    extra = {}
                     for k, v in be.items():
                         if k in ("x", "y", "z", "id", "keepPacked", "Pos", "Id"):
                             continue
-                        d[k] = _wrap(v)
+                        extra[k] = _wrap(v)
+                    d['Data'] = ('compound', comp_body(extra))
                     block_entities.append(d)
 
     root = {
@@ -415,27 +338,31 @@ def export_zone(world, cache, zone, x1, x2, z1, z2, ymin, ymax, out_path, datave
         "Height": ("short", t_short(height)),
         "Length": ("short", t_short(length)),
         "Offset": ("intarray", t_int_array([0, 0, 0])),
-        "PaletteMax": ("int", t_int(len(palette))),
-        "Palette": ("compound", comp_body({k: ("int", t_int(v)) for k, v in palette.items()})),
-        "BlockData": ("bytearray", t_byte_array(bytes(blockdata))),
-        "BlockEntities": ("list", t_list_comp(block_entities)),
+        "Metadata": ("compound", comp_body({
+            "VoidDynastyExtractionComplete": ("byte", t_byte(0)),
+            "MissingData": ("string", t_string("Entities,Biomes; P1 pending")),
+            "SourceOrigin": ("intarray", t_int_array([x1, ymin, z1])),
+        })),
+        "Blocks": ("compound", comp_body({
+            "Palette": ("compound", comp_body({k: ("int", t_int(v)) for k, v in palette.items()})),
+            "Data": ("bytearray", t_byte_array(bytes(blockdata))),
+            "BlockEntities": ("list", t_list_comp(block_entities)),
+        })),
     }
-    body = t_comp("", root)
-    with gzip.open(out_path, "wb", compresslevel=6) as f:
-        f.write(body)
+    body = t_comp("", {"Schematic": ("compound", comp_body(root))})
+    with open(out_path, "xb") as destination:
+        with gzip.GzipFile(fileobj=destination, mode="wb", compresslevel=6) as f:
+            f.write(body)
     return {"zone": zone, "width": width, "height": height, "length": length,
             "palette": len(palette), "blocks": width * height * length,
             "block_entities": len(block_entities), "bytes": os.path.getsize(out_path)}
 
 
-def _vints(value, count, out):
-    for _ in range(count):
-        varint(value, out)
-
-
-
 def _wrap(v):
     import struct
+    if hasattr(v, 'nbt_tag'):
+        names = {value:key for key,value in TYPES.items()}
+        return names[v.nbt_tag.kind], nbt_payload(v.nbt_tag)
     if isinstance(v, bool):
         return ("byte", t_byte(1 if v else 0))
     if isinstance(v, int):
@@ -443,7 +370,7 @@ def _wrap(v):
             return ("int", t_int(v))
         if -(2 ** 63) <= v < 2 ** 63:
             return ("long", int(v).to_bytes(8, "big", signed=True))
-        return ("string", t_string(str(v)))
+        raise ValueError("Entier hors limites NBT")
     if isinstance(v, float):
         return ("double", struct.pack(">d", v))
     if isinstance(v, str):
@@ -454,13 +381,7 @@ def _wrap(v):
         return ("list", t_list([_wrap(x) for x in v]))
     if isinstance(v, dict):
         return ("compound", comp_body({k: _wrap(x) for k, x in v.items()}))
-    return ("string", t_string(str(v)))
-
-
-def _span(x1, x2, z1, z2, cx, cz):
-    xs = min(x2, cx * 16 + 16) - max(x1, cx * 16)
-    zs = min(z2, cz * 16 + 16) - max(z1, cz * 16)
-    return max(0, xs) * max(0, zs)
+    raise ValueError("Type NBT inconnu")
 
 
 def main():
@@ -473,9 +394,13 @@ def main():
         if a == "--limit": limit = int(args[i + 1])
     os.makedirs(outdir, exist_ok=True)
     dataversion = read_level_dataversion(world)
+    if not dataversion:
+        raise ValueError("DataVersion source introuvable ; aucun export généré")
+    print("PREVIEW ONLY: entités et biomes non exportés. P1 NON VALIDÉE.", flush=True)
     print(f"DataVersion du monde: {dataversion}", flush=True)
     cache = ChunkCache(world)
-    rows = list(csv.DictReader(open(csv_path)))
+    with open(csv_path, encoding="utf-8", newline="") as source:
+        rows = list(csv.DictReader(source))
     if only:
         rows = [r for r in rows if r["zone"] == only]
     if limit:
@@ -484,14 +409,13 @@ def main():
     for r in rows:
         zone = r["zone"]
         out_path = os.path.join(outdir, zone + ".schem")
-        if os.path.exists(out_path) and os.path.getsize(out_path) > 200:
-            print(f"[skip] {zone} deja extrait", flush=True)
-            continue
+        if os.path.exists(out_path):
+            raise ValueError(f"{zone} existe déjà ; conserver l'original et utiliser un nouveau dossier")
         x1, x2, z1, z2 = int(r["x1"]), int(r["x2"]), int(r["z1"]), int(r["z2"])
         t0 = time.time()
         has, ymin, ymax, states = analyze_zone(cache, x1, x2, z1, z2)
         if not has:
-            print(f"[vide] {zone}", flush=True)
+            print(f"[A VERIFIER] {zone} sans contenu lu ; ne prouve pas une zone vide", flush=True)
             continue
         info = export_zone(world, cache, zone, x1, x2, z1, z2, ymin, ymax, out_path, dataversion, states)
         done += 1

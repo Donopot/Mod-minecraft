@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare les palettes des .schem a la registry de blocs d'une version cible.
+"""Inventaire indicatif des noms de blocs ; ne valide pas la compatibilité cible.
 
 But : mesurer ce qui ne collera PAS lors de la migration 26.3 -> 1.21.1.
 Usage: python3 check_block_compat.py <version_mc> <fichier.schem> [...]
@@ -7,8 +7,7 @@ Usage: python3 check_block_compat.py <version_mc> <fichier.schem> [...]
 import gzip, json, sys, urllib.request
 from collections import Counter
 
-sys.path.insert(0, "/opt/data/workspace/scripts")
-from extract_zones import read_nbt_bytes  # noqa: E402
+from schematic_nbt import load, plain, validate, varints
 
 UA = {"User-Agent": "hermes/1.0"}
 
@@ -19,7 +18,7 @@ def target_blocks(version):
         try:
             raw = urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60).read()
             if url.endswith(".gz"):
-                import io, gzip as gz
+                import gzip as gz
                 raw = gz.decompress(raw)
             data = json.loads(raw)
             names = {("minecraft:" + b["name"]) if not b["name"].startswith("minecraft:") else b["name"] for b in data}
@@ -27,17 +26,6 @@ def target_blocks(version):
         except Exception as e:
             last = e
     raise RuntimeError(f"impossible de recuperer la liste {version}: {last}")
-
-
-def read_varints(b):
-    out, v, shift = [], 0, 0
-    for byte in b:
-        v |= (byte & 0x7F) << shift
-        if byte & 0x80:
-            shift += 7
-        else:
-            out.append(v); v = shift = 0
-    return out
 
 
 def main():
@@ -48,10 +36,11 @@ def main():
     tot_unknown = Counter()
     tot_blocks = 0
     for path in files:
-        d = read_nbt_bytes(gzip.decompress(open(path, "rb").read()))
-        palette = d.get("Palette") or {}
-        idx = read_varints(d.get("BlockData") or b"")
-        counts = Counter(idx)
+        _, root = load(path)
+        validate(root)
+        d = plain(root.value['Schematic'])['Blocks']
+        palette = d['Palette']
+        counts = Counter(varints(d['Data']))
         total = sum(counts.values())
         tot_blocks += total
         unknown = {}
@@ -72,6 +61,7 @@ def main():
         print(f"  {n:9d}  {b}")
     if not tot_unknown:
         print("  aucun")
+    print("INVENTAIRE SEULEMENT : propriétés, mods, NBT et biomes non validés ; P1 reste en attente.")
 
 
 if __name__ == "__main__":

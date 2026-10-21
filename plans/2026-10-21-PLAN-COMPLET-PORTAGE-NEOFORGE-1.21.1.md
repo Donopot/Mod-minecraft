@@ -5,7 +5,7 @@
 
 ## Reprise d'exécution — 21 octobre 2026
 
-**P0 PASS** : contrat et GameTest compilé livrés. **P1 en attente d'Hermes**, qui seul accède au monde source ; P2 et la suite restent non démarrées. Détails et corrections de données : [avancement](neoforge-1.21.1/AVANCEMENT.md), [contrat figé](neoforge-1.21.1/contrat-ids.json), [relais Hermes](neoforge-1.21.1/HERMES-P1-EXPORTS.md).
+**P0 PASS** : contrat et GameTest compilé livrés. **P1 à revalider avec Hermes** après réception de son journal d'exports : les scripts initiaux avaient des défauts de format, géométrie et conservation des données. Corrections testées localement ; exports réels à régénérer/revérifier. Hermes seul accède au monde source ; P2 et la suite restent non démarrées. Voir la [revue P1](neoforge-1.21.1/P1-REVUE-EXPORTS.md), l'[avancement](neoforge-1.21.1/AVANCEMENT.md), le [contrat figé](neoforge-1.21.1/contrat-ids.json) et le [relais Hermes](neoforge-1.21.1/HERMES-P1-EXPORTS.md).
 
 Le baseline réel contient Fabric alpha.95. Les commandes d'export doivent convertir les bornes hautes exclusives du CSV vers les coordonnées inclusives WorldEdit (x2-1, z2-1, Y=319). Les clés de fours et les données du servitor exigent un traitement de migration explicite ; voir le contrat avant tout collage.
 
