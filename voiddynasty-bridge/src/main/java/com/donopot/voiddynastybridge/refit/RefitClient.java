@@ -14,7 +14,9 @@ public final class RefitClient {
    }
 
    public static void init() {
-      ModContainer var0 = (ModContainer)FabricLoader.getInstance().getModContainer("voiddynasty_bridge").orElseThrow();
+      // Legacy standalone builds own this pack; unified builds keep the same pack ID in the main mod.
+      ModContainer var0 = FabricLoader.getInstance().getModContainer("voiddynasty_bridge")
+         .orElseGet(() -> FabricLoader.getInstance().getModContainer("voiddynasty").orElseThrow());
       ResourceManagerHelper.registerBuiltinResourcePack(
          Identifier.fromNamespaceAndPath("voiddynasty_bridge", "refit"), var0, ResourcePackActivationType.ALWAYS_ENABLED
       );

@@ -1,10 +1,10 @@
 # Mod-minecraft — sources des mods
 
-## Foreuse laser
+## VOID DYNASTY unifié — alpha 8
 
-La version **1.3.0-alpha.95** ajoute une foreuse laser en 3D, avec tête rotative, faisceau lumineux continu, étincelles et son de fonctionnement. Maintenir le clic droit pour forer, puis relâcher pour arrêter. [Présentation et installation](voiddynasty/docs/LASER-DRILL-ALPHA95.md).
+[Pack client 1.3.0-alpha.8](client-local/voiddynasty-1.3.0-alpha.8) : **un seul JAR VOID DYNASTY**, réunissant le mod principal, le servitor alpha 7 et le bridge Minecraft (pad, coffres, armes et livraisons). Fabric API et GeckoLib restent séparés : trois fichiers dans `mods`. [Installation et build commun](voiddynasty/docs/BUILD-UNIFIE-ALPHA8.md). Retirer l'ancien bridge séparé lors du remplacement ; Rogue Trader reste facultatif.
 
-## Développement du servitor polyvalent
+## Historique : servitor alpha 5
 
 La correction **1.3.0-alpha.94** fiabilise l'exécution des tâches, les chunks actifs et les routines de récolte avec retour confirmé. Les routines conservées après redémarrage se reprennent explicitement avec `/servitor routine resume <id>`. [Installation, changements et vérifications](voiddynasty/docs/SERVITOR-ALPHA94.md).
 
@@ -22,23 +22,23 @@ Ce dépôt réunit les projets de développement Minecraft et la passerelle Rogu
 
 | Dossier | Contenu |
 |---|---|
-| `voiddynasty/` | Mod principal 1.3.0-alpha.95, flotte à six classes et missions du servitor. |
-| `voiddynasty-bridge/` | Source unique du bridge Minecraft 0.7.1 : pad dynamique, coffres, armes et logistique. |
+| `voiddynasty/` | Build unifié 1.3.0-alpha.8, flotte, servitor alpha 7 et intégration Minecraft du bridge. |
+| `voiddynasty-bridge/` | Source canonique du pad, des coffres, armes et livraisons, compilée dans le JAR principal. |
 | `voiddynasty-logistics/` | Suite 0.7.1 : adaptateur Rogue Trader, protocole, simulation, tests et assistant Windows. |
 | `onepiece/` | Port Fabric 26.3 : 40 fruits, 213 techniques, formes, assets alpha 19 et HUD alpha 20. |
 
-Le bridge Minecraft est construit uniquement depuis `voiddynasty-bridge/`. La copie de sources dans `voiddynasty-logistics/fabric-adapter/` a été retirée ; l’assistant et les tests utilisent le projet unique. [Organisation et versions](docs/CENTRALISATION.md).
+Le bridge Minecraft conserve ses sources dans `voiddynasty-bridge/`, directement incluses par le build de `voiddynasty/`. La copie de sources dans `voiddynasty-logistics/fabric-adapter/` reste retirée. L'assistant historique 0.7.1 cible les anciennes installations séparées ; le pack alpha 8 s'installe manuellement. [Organisation et versions](docs/CENTRALISATION.md).
 
-Le dossier `client-local/` publie uniquement les quatre JAR nécessaires à VOID DYNASTY, à la demande de l’utilisateur. Les bibliothèques de jeux, ressources privées de One Piece, mondes et données d’exécution restent locaux. One Piece fournit un manifeste et un importeur pour rétablir ses ressources depuis le paquet privé correspondant. Les droits existants de chaque composant sont conservés ; cette centralisation ne les remplace pas par une nouvelle licence.
+Le dossier `client-local/` contient le nouveau pack à trois JAR et les anciens packs à quatre JAR. Les bibliothèques de jeux, ressources privées de One Piece, mondes et données d’exécution restent locaux. One Piece fournit un manifeste et un importeur pour rétablir ses ressources depuis le paquet privé correspondant. Les droits existants de chaque composant sont conservés ; cette centralisation ne les remplace pas par une nouvelle licence.
 
 ---
 
-Monorepo des sources du mod Minecraft **VOID DYNASTY** et de son addon **Refit & Bridge**.
+Monorepo des sources du mod Minecraft **VOID DYNASTY**, incluant désormais **Refit & Bridge**.
 
 | Dossier | Rôle |
 |---|---|
 | `voiddynasty/` | Le mod principal (Fabric, MC 26.3) : ~180 classes, flotte de vaisseaux en blocs, armes, factions |
-| `voiddynasty-bridge/` | Addon client `voiddynasty_bridge` 0.7.1 : pad de commandement à onglets, lasers visibles, effets plasma, logistique |
+| `voiddynasty-bridge/` | Sources incluses : pad de commandement à onglets, lasers visibles, effets plasma, logistique |
 
 ## Environnement
 
@@ -50,13 +50,10 @@ Monorepo des sources du mod Minecraft **VOID DYNASTY** et de son addon **Refit &
 
 ```bash
 # le mod
-cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.3.0-alpha.95.jar
-
-# la bridge (nécessite le jar du mod dans voiddynasty-bridge/libs/)
-cd ../voiddynasty-bridge && ./gradlew build   # -> build/libs/voiddynasty_bridge-0.7.1.jar
+cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.3.0-alpha.8.jar, bridge inclus
 ```
 
-Voir `voiddynasty-bridge/libs/README.md` : les binaires de dépendance ne sont pas versionnés.
+Les binaires de dépendance ne sont pas versionnés dans `libs/`. La [documentation du build unifié](voiddynasty/docs/BUILD-UNIFIE-ALPHA8.md) décrit aussi le compilateur local explicite réellement testé.
 
 ## La flotte
 
