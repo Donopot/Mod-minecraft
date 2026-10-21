@@ -1,0 +1,356 @@
+{
+  "server_phases": {
+    "full-lab": [
+      {
+        "phase": "emptySetup",
+        "result": "PASS emptySetup checks=1"
+      },
+      {
+        "phase": "emptyCheck",
+        "result": "PASS emptyCheck checks=7"
+      },
+      {
+        "phase": "noKitSetup",
+        "result": "PASS noKitSetup checks=8"
+      },
+      {
+        "phase": "noKitCheck",
+        "result": "PASS noKitCheck checks=14"
+      },
+      {
+        "phase": "noSpawnSetup",
+        "result": "PASS noSpawnSetup checks=16"
+      },
+      {
+        "phase": "noSpawnCheck",
+        "result": "PASS noSpawnCheck checks=21"
+      },
+      {
+        "phase": "largeSetup",
+        "result": "PASS largeSetup checks=22"
+      },
+      {
+        "phase": "largeCheck",
+        "result": "PASS largeCheck checks=28"
+      },
+      {
+        "phase": "staleSetup",
+        "result": "PASS staleSetup checks=29"
+      },
+      {
+        "phase": "staleCheck",
+        "result": "PASS staleCheck checks=34"
+      },
+      {
+        "phase": "protectedSetup",
+        "result": "PASS protectedSetup checks=35"
+      },
+      {
+        "phase": "protectedCheck",
+        "result": "PASS protectedCheck checks=38"
+      },
+      {
+        "phase": "carrySetup",
+        "result": "PASS carrySetup checks=39"
+      },
+      {
+        "phase": "carryCheck",
+        "result": "PASS carryCheck checks=41"
+      },
+      {
+        "phase": "idle",
+        "result": "PASS idle checks=44"
+      },
+      {
+        "phase": "rollback",
+        "result": "PASS rollback checks=11"
+      },
+      {
+        "phase": "mining",
+        "result": "PASS mining checks=19"
+      },
+      {
+        "phase": "autoDepotSetup",
+        "result": "PASS autoDepotSetup checks=21"
+      },
+      {
+        "phase": "autoDepotCheck",
+        "result": "PASS autoDepotCheck checks=24"
+      },
+      {
+        "phase": "extendDepotSetup",
+        "result": "PASS extendDepotSetup checks=25"
+      },
+      {
+        "phase": "extendDepotCheck",
+        "result": "PASS extendDepotCheck checks=29"
+      },
+      {
+        "phase": "pendingSpawnSetup",
+        "result": "PASS pendingSpawnSetup checks=31"
+      },
+      {
+        "phase": "pendingSpawnCheck",
+        "result": "PASS pendingSpawnCheck checks=32"
+      },
+      {
+        "phase": "navigationSetup",
+        "result": "PASS navigationSetup checks=33"
+      },
+      {
+        "phase": "navigationCheck",
+        "result": "PASS navigationCheck checks=37"
+      },
+      {
+        "phase": "unreachableSetup",
+        "result": "PASS unreachableSetup checks=38"
+      },
+      {
+        "phase": "unreachableCheck",
+        "result": "PASS unreachableCheck checks=41"
+      },
+      {
+        "phase": "depositCheck",
+        "result": "PASS depositCheck checks=42"
+      },
+      {
+        "phase": "restartSetup",
+        "result": "PASS restartSetup checks=43"
+      },
+      {
+        "phase": "restartCheck",
+        "result": "PASS restartCheck checks=5"
+      },
+      {
+        "phase": "nav-begin",
+        "result": "PASS begin checks=0"
+      },
+      {
+        "phase": "nav-reconcile",
+        "result": "PASS reconcile checks=0"
+      },
+      {
+        "phase": "nav-oscillation",
+        "result": "PASS oscillation checks=3"
+      },
+      {
+        "phase": "nav-guards",
+        "result": "PASS guards checks=14"
+      },
+      {
+        "phase": "nav-restrictedSetup",
+        "result": "PASS restrictedSetup checks=16"
+      },
+      {
+        "phase": "nav-restricted",
+        "result": "PASS restricted checks=19"
+      },
+      {
+        "phase": "nav-upSetup",
+        "result": "PASS upSetup checks=21"
+      },
+      {
+        "phase": "nav-upDone",
+        "result": "PASS upDone checks=28"
+      },
+      {
+        "phase": "nav-rollback",
+        "result": "PASS rollback checks=28"
+      },
+      {
+        "phase": "nav-restored",
+        "result": "PASS restored checks=33"
+      },
+      {
+        "phase": "nav-upExcavateSetup",
+        "result": "PASS upExcavateSetup checks=35"
+      },
+      {
+        "phase": "nav-upExcavateDone",
+        "result": "PASS upExcavateDone checks=42"
+      },
+      {
+        "phase": "nav-rollback",
+        "result": "PASS rollback checks=42"
+      },
+      {
+        "phase": "nav-restored",
+        "result": "PASS restored checks=47"
+      },
+      {
+        "phase": "nav-downSetup",
+        "result": "PASS downSetup checks=49"
+      },
+      {
+        "phase": "nav-downDone",
+        "result": "PASS downDone checks=57"
+      },
+      {
+        "phase": "nav-rollback",
+        "result": "PASS rollback checks=57"
+      },
+      {
+        "phase": "nav-restored",
+        "result": "PASS restored checks=62"
+      },
+      {
+        "phase": "nav-downSetup",
+        "result": "PASS downSetup checks=64"
+      },
+      {
+        "phase": "nav-progress",
+        "result": "PASS progress checks=65"
+      },
+      {
+        "phase": "nav-changeFloor",
+        "result": "PASS changeFloor checks=66"
+      },
+      {
+        "phase": "nav-changed",
+        "result": "PASS changed checks=68"
+      },
+      {
+        "phase": "nav-resume",
+        "result": "PASS resume checks=69"
+      },
+      {
+        "phase": "nav-downDone",
+        "result": "PASS downDone checks=77"
+      },
+      {
+        "phase": "nav-rollback",
+        "result": "PASS rollback checks=77"
+      },
+      {
+        "phase": "nav-restored",
+        "result": "PASS restored checks=82"
+      },
+      {
+        "phase": "nav-downSetup",
+        "result": "PASS downSetup checks=84"
+      },
+      {
+        "phase": "nav-pause",
+        "result": "PASS pause checks=86"
+      },
+      {
+        "phase": "nav-persisted",
+        "result": "PASS persisted checks=2"
+      },
+      {
+        "phase": "nav-resume",
+        "result": "PASS resume checks=3"
+      },
+      {
+        "phase": "nav-downDone",
+        "result": "PASS downDone checks=11"
+      },
+      {
+        "phase": "nav-rollback",
+        "result": "PASS rollback checks=11"
+      },
+      {
+        "phase": "nav-restored",
+        "result": "PASS restored checks=16"
+      }
+    ],
+    "recovery-lab": [
+      {
+        "phase": "emptySetup",
+        "result": "PASS emptySetup checks=1"
+      },
+      {
+        "phase": "emptyCheck",
+        "result": "PASS emptyCheck checks=7"
+      },
+      {
+        "phase": "noKitSetup",
+        "result": "PASS noKitSetup checks=8"
+      },
+      {
+        "phase": "noKitCheck",
+        "result": "PASS noKitCheck checks=14"
+      },
+      {
+        "phase": "noSpawnSetup",
+        "result": "PASS noSpawnSetup checks=16"
+      },
+      {
+        "phase": "noSpawnCheck",
+        "result": "PASS noSpawnCheck checks=21"
+      },
+      {
+        "phase": "largeSetup",
+        "result": "PASS largeSetup checks=22"
+      },
+      {
+        "phase": "largeCheck",
+        "result": "PASS largeCheck checks=28"
+      },
+      {
+        "phase": "staleSetup",
+        "result": "PASS staleSetup checks=29"
+      },
+      {
+        "phase": "staleCheck",
+        "result": "PASS staleCheck checks=34"
+      },
+      {
+        "phase": "protectedSetup",
+        "result": "PASS protectedSetup checks=35"
+      },
+      {
+        "phase": "protectedCheck",
+        "result": "PASS protectedCheck checks=38"
+      },
+      {
+        "phase": "carrySetup",
+        "result": "PASS carrySetup checks=39"
+      },
+      {
+        "phase": "carryCheck",
+        "result": "PASS carryCheck checks=41"
+      },
+      {
+        "phase": "idle",
+        "result": "PASS idle checks=44"
+      },
+      {
+        "phase": "recovery_setup",
+        "result": "PASS setup checks=3"
+      },
+      {
+        "phase": "recovery_death",
+        "result": "PASS death checks=14"
+      },
+      {
+        "phase": "recovery_restore",
+        "result": "PASS restore checks=23"
+      },
+      {
+        "phase": "recovery_atomic",
+        "result": "PASS atomic checks=62"
+      },
+      {
+        "phase": "recovery_dimension",
+        "result": "PASS dimension checks=68"
+      },
+      {
+        "phase": "recovery_stash",
+        "result": "PASS stash checks=72"
+      },
+      {
+        "phase": "recovery_restart",
+        "result": "PASS restart checks=7"
+      }
+    ]
+  },
+  "python_mcp_tests": 24,
+  "native_conservation_checks": 46,
+  "client_mixins": 7,
+  "client_inventory_layout_assertions": 30,
+  "refit_models": 57,
+  "delivery_java_harness": "PASS",
+  "legacy_bridge_conflict": "rejected",
+  "same_jar_sha256": "347699d2b0da25ffa79e447a650561d8a2f18fba96c4927325de5a20717fab36"
+}

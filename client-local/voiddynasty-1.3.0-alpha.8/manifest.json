@@ -1,0 +1,35 @@
+{
+  "version": "1.3.0-alpha.8",
+  "mod_id": "voiddynasty",
+  "minecraft": "26.3",
+  "fabric_loader_min": "0.19.5",
+  "java_min": 25,
+  "source_base_commit": "bf8a0c1d99f67bbf8e12cae8558f6198784b4928",
+  "source_sha256": "65a032396264c11a1845fcd323a60fb0f81d54784ca1d51837260eea0e92eae6",
+  "branch": "codex/voiddynasty-unified",
+  "compiled_sources": 249,
+  "resources": 864,
+  "reproducible_build": true,
+  "modules": [
+    "voiddynasty",
+    "voiddynasty-bridge"
+  ],
+  "standalone_bridge_allowed": false,
+  "files": [
+    {
+      "path": "mods/fabric-api-0.162.0+26.3.jar",
+      "sha256": "8626c189b702f466800b1c8ddac6203cf8a1e0bdaee75a5f9a33b18c2baa81b1",
+      "bytes": 1772377
+    },
+    {
+      "path": "mods/geckolib-fabric-26.3-5.5.7.jar",
+      "sha256": "0e397991dae6e1aee9a342f80b740fe4fef6d161dc8abe694c6a555317163f82",
+      "bytes": 1191230
+    },
+    {
+      "path": "mods/voiddynasty-1.3.0-alpha.8.jar",
+      "sha256": "347699d2b0da25ffa79e447a650561d8a2f18fba96c4927325de5a20717fab36",
+      "bytes": 7017815
+    }
+  ]
+}

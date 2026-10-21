@@ -11,6 +11,9 @@ repositories {
 	// for more information about repositories.
 }
 
+// Compile both owned modules together, from their canonical sources. No old base JAR is needed.
+sourceSets.main.java.srcDir('../voiddynasty-bridge/src/main/java')
+
 loom {
 	accessWidenerPath = file("src/main/resources/voiddynasty.accesswidener")
 	mods {
@@ -39,6 +42,12 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": version
 	}
+
+	from('../voiddynasty-bridge/src/main/resources') {
+		exclude 'fabric.mod.json'
+	}
+
+	duplicatesStrategy = DuplicatesStrategy.FAIL
 }
 
 tasks.withType(JavaCompile).configureEach {

@@ -1,5 +1,7 @@
 # Pack Minecraft seul
 
+**Distribution actuelle : [VOID DYNASTY alpha 8 unifié](../voiddynasty/docs/BUILD-UNIFIE-ALPHA8.md).** Le code Minecraft de cette suite est inclus dans le JAR principal ; seul l'adaptateur Rogue Trader reste séparé côté RT. L'assistant 0.7.1 décrit ci-dessous est historique et ne sert pas à installer le nouveau JAR unique.
+
 Pour jouer sans Rogue Trader, utiliser [le dossier client-local](../client-local/voiddynasty-0.7.1) : quatre JAR, dépendances incluses, à copier dans `mods`. L’assistant Windows décrit ci-dessous sert à l’installation des deux jeux ; il n’est pas nécessaire pour ce mode local.
 
 # Update 0.7.1 — one Minecraft bridge source

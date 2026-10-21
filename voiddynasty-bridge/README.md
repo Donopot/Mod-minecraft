@@ -1,4 +1,10 @@
-# VOID DYNASTY — bridge Minecraft 0.7.1
+# Sources du bridge Minecraft — incluses dans VOID DYNASTY alpha 8
+
+La distribution actuelle compile ce dossier avec `../voiddynasty/` dans **un seul JAR `voiddynasty-1.3.0-alpha.8.jar`**. Il ne faut plus installer le compagnon séparé avec cette version. [Compilation unifiée et installation](../voiddynasty/docs/BUILD-UNIFIE-ALPHA8.md).
+
+Les instructions ci-dessous restent celles de la distribution historique 0.7.1 pour les anciennes versions séparées. Ce dossier conserve l'unique source des correctifs du pad, des coffres, des armes et de la logistique Minecraft.
+
+## Historique : bridge séparé 0.7.1
 
 Ce projet est la source unique du compagnon `voiddynasty_bridge`. Il conserve le pad à six types via `ShipType.values()`, les correctifs des coffres et des armes, et le relais `ControlPadMixin` qui transmet les réponses de flotte au pad affiché.
 

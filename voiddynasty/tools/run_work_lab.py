@@ -43,8 +43,10 @@ r=subprocess.run([str(javac),'--release','25','-proc:none','-encoding','UTF-8','
 (work/'server-test-compile.log').write_text(r.stdout+r.stderr,encoding='utf-8')
 if r.returncode:print(r.stdout+r.stderr);raise SystemExit(1)
 lab=work/('lab-'+uuid.uuid4().hex);lab.mkdir();mods=lab/'mods';mods.mkdir()
+with zipfile.ZipFile(args.candidate) as candidate_archive:
+ unified=bool(json.loads(candidate_archive.read('fabric.mod.json')).get('custom',{}).get('voiddynasty:bundled_bridge'))
 for p in args.dependencies.glob('*.jar'):
- if 'fabric-api' in p.name.lower() or 'geckolib' in p.name.lower() or 'bridge' in p.name.lower():shutil.copy2(p,mods/p.name)
+ if 'fabric-api' in p.name.lower() or 'geckolib' in p.name.lower() or ('bridge' in p.name.lower() and not unified):shutil.copy2(p,mods/p.name)
 shutil.copy2(args.candidate,mods/'voiddynasty-candidate.jar')
 with zipfile.ZipFile(mods/'work-test.jar','w',zipfile.ZIP_DEFLATED) as z:
  for p in classes.rglob('*.class'):z.write(p,p.relative_to(classes).as_posix())

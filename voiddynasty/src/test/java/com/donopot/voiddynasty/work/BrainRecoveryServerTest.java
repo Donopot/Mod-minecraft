@@ -118,17 +118,21 @@ public final class BrainRecoveryServerTest implements ModInitializer {
             }
             case "atomic" -> {
                 check(bot != null, "companion present for the atomicity test");
+                // The preceding restore phase intentionally leaves 17 items in this bag.
+                // Withdraw them before constructing an independent 27-slot fixture.
+                BrainInv.dropAll(level,bot);
+                check(BrainInv.of(bot).isEmpty(),"full-bag fixture starts empty after explicit withdrawal");
                 // Sac plein : 27 piles distinctes.
                 for (int i = 0; i < 27; i++) check(BrainInv.add(bot, named("plein-" + i, 64)), "fill slot " + i);
                 int before = BrainInv.count(bot);
                 check(before == 27 * 64, "bag is full");
 
                 // On fabrique une entrée de registre sans toucher au sac vivant.
-                check(BrainInv.add(BrainSpawn.spawn(level, BASE.east(4), BrainSpawn.Variant.RAPIDE),
-                        named("a-recuperer", 3)), "seed a donor bag");
-                LivingEntity donor = BrainSpawn.find(level);
+                LivingEntity donor = BrainSpawn.spawn(level, BASE.east(4), BrainSpawn.Variant.RAPIDE);
                 check(donor != null, "donor exists");
+                check(BrainInv.add(donor,named("a-recuperer",3)),"seed the actual donor, not the first tagged companion");
                 BrainBags.stash(level, donor, "TEST");
+                donor.discard(); // Its now-empty bag was transferred; keep one live fixture companion.
                 List<BrainBags.Entry> entries = BrainBags.list(server);
                 check(entries.size() == 1, "donor bag registered");
                 String id = entries.getFirst().id();
@@ -142,6 +146,8 @@ public final class BrainRecoveryServerTest implements ModInitializer {
                 // Le sac du donneur est vide : plus rien ne peut être restitué deux fois.
                 BrainBags.dropAt(server, id, level, bot.position());
                 check(BrainBags.list(server).isEmpty(), "drop consumes the entry");
+                BrainInv.dropAll(level,bot);
+                check(BrainInv.of(bot).isEmpty(),"next fixture is independent of full-bag contents");
             }
             case "dimension" -> {
                 bot = BrainSpawn.find(level);
@@ -153,7 +159,6 @@ public final class BrainRecoveryServerTest implements ModInitializer {
                     check(true, "nether unavailable in this lab; migration handler not exercised");
                     break;
                 }
-                BrainBags.Entry before = null;
                 String uuid = bot.getUUID().toString();
                 ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.invoker()
                         .afterChangeLevel(bot, bot, level, nether);
@@ -163,12 +168,14 @@ public final class BrainRecoveryServerTest implements ModInitializer {
                 check(audit.contains("vivant " + nether.dimension().identifier() + " : 4 objet(s)"),
                         "the destination dimension holds the 4 items: " + audit);
                 check(BrainBags.list(server).isEmpty(), "a successful migration leaves nothing in the ledger");
-                check(before == null && uuid != null, "identity preserved across the change");
+                ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.invoker().afterChangeLevel(bot,bot,nether,level);
+                check(BrainInv.count(bot)==4 && bot.getUUID().toString().equals(uuid),"reverse handler returns the same UUID bag to its actual fixture level");
             }
             case "stash" -> {
                 bot = BrainSpawn.find(level);
                 if (bot == null) bot = BrainSpawn.spawn(level, BASE.west(2), BrainSpawn.Variant.TIR);
                 check(bot != null, "companion available to seed the restart test");
+                BrainInv.dropAll(level,bot);
                 if (BrainInv.of(bot).isEmpty()) check(BrainInv.add(bot, named("survit-au-redemarrage", 7)),
                         "seed the bag that must survive a restart");
                 String id = BrainBags.stash(level, bot, "TEST_REDEMARRAGE");
