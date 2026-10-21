@@ -118,15 +118,17 @@ public final class BrainRecoveryServerTest implements ModInitializer {
             }
             case "atomic" -> {
                 check(bot != null, "companion present for the atomicity test");
+                // Close the previous restore fixture before filling all 27 slots.
+                BrainInv.dropAll(level, bot);
+                check(BrainInv.of(bot).isEmpty(), "previous bag released before capacity test");
                 // Sac plein : 27 piles distinctes.
                 for (int i = 0; i < 27; i++) check(BrainInv.add(bot, named("plein-" + i, 64)), "fill slot " + i);
                 int before = BrainInv.count(bot);
                 check(before == 27 * 64, "bag is full");
 
                 // On fabrique une entrée de registre sans toucher au sac vivant.
-                check(BrainInv.add(BrainSpawn.spawn(level, BASE.east(4), BrainSpawn.Variant.RAPIDE),
-                        named("a-recuperer", 3)), "seed a donor bag");
-                LivingEntity donor = BrainSpawn.find(level);
+                LivingEntity donor = BrainSpawn.spawn(level, BASE.east(4), BrainSpawn.Variant.RAPIDE);
+                check(BrainInv.add(donor, named("a-recuperer", 3)), "seed a donor bag");
                 check(donor != null, "donor exists");
                 BrainBags.stash(level, donor, "TEST");
                 List<BrainBags.Entry> entries = BrainBags.list(server);
@@ -142,6 +144,10 @@ public final class BrainRecoveryServerTest implements ModInitializer {
                 // Le sac du donneur est vide : plus rien ne peut être restitué deux fois.
                 BrainBags.dropAt(server, id, level, bot.position());
                 check(BrainBags.list(server).isEmpty(), "drop consumes the entry");
+                check(BrainInv.of(donor).isEmpty(), "donor has no duplicate items");
+                donor.discard();
+                BrainInv.dropAll(level, bot);
+                check(BrainInv.of(bot).isEmpty(), "capacity fixture released before migration test");
             }
             case "dimension" -> {
                 bot = BrainSpawn.find(level);

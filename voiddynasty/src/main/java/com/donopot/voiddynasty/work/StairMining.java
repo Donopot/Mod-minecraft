@@ -229,7 +229,7 @@ final class StairMining {
      * volume de passage (les TREAD colonnes du palier, deux niveaux, largeur du tunnel) doit etre
      * degage avant le franchissement, sinon la chute est bloquee par la dalle precedente.
      */
-    private static Step step(ServerLevel level, WorkMission mission, BlockPos from, Direction dir) {
+    static Step step(ServerLevel level, WorkMission mission, BlockPos from, Direction dir) {
         BlockPos delta = new BlockPos(dir.getStepX(), 0, dir.getStepZ());
         BlockPos perp = delta.getZ() != 0 ? new BlockPos(1, 0, 0) : new BlockPos(0, 0, 1);
         for (BlockPos side : List.of(perp, new BlockPos(-perp.getX(), 0, -perp.getZ()))) {
@@ -268,6 +268,9 @@ final class StairMining {
         if (ClaimIntegration.isClaimProtected(level, cell)) { lastReason = "claim " + cell.toShortString(); return false; }
         if (WorkService.touchesFluid(level, cell)) { lastReason = "fluide " + cell.toShortString(); return false; }
         var block = level.getBlockState(cell);
+        if (level.getBlockState(cell.above()).getBlock() instanceof net.minecraft.world.level.block.FallingBlock) {
+            lastReason = "plafond qui tombe " + cell.toShortString(); return false;
+        }
         if (block.isAir()) return true;
         if (!WorkAccess.safe(level, stateOf(level), cell, accessTop)) {
             lastReason = "bloc " + cell.toShortString() + " " + BuiltInRegistries.BLOCK.getKey(block.getBlock());
@@ -319,6 +322,9 @@ final class StairMining {
             if (ClaimIntegration.isClaimProtected(level, cell)) { lastReason = "claim " + cell.toShortString(); return null; }
             if (WorkService.touchesFluid(level, cell)) { lastReason = "fluide " + cell.toShortString(); return null; }
             var block = level.getBlockState(cell);
+            if (level.getBlockState(cell.above()).getBlock() instanceof net.minecraft.world.level.block.FallingBlock) {
+                lastReason = "plafond qui tombe " + cell.toShortString(); return null;
+            }
             if (block.isAir()) continue;
             if (!WorkAccess.safe(level, stateOf(level), cell, accessTop)) {
                 lastReason = "bloc " + cell.toShortString() + " "

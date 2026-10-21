@@ -95,6 +95,8 @@ public final class MissionService {
     }
 
     public static WorkMission parse(JsonObject obj) {
+        if (!obj.has("type") || !Set.of("GATHER", "EXCAVATE", "BUILD").contains(obj.get("type").getAsString()))
+            throw new IllegalArgumentException("Unsupported mission type");
         if(obj.has("type") && obj.get("type").getAsString().equals("BUILD")) return parseBuild(obj);
         Set<String> fields=new HashSet<>(obj.keySet());fields.remove("access");
         boolean excavate = obj.has("type") && obj.get("type").getAsString().equals("EXCAVATE");
@@ -175,7 +177,6 @@ public final class MissionService {
         if (s.missions.size() >= HISTORY_MAX) return error("HISTORY_FULL", "Mission history retained; no automatic eviction");
         if (s.jobName != null || !s.invSlots.isEmpty() || !s.journal.isEmpty()) return error("WORKER_BUSY", "Close or reconcile the previous job first");
         // La zone doit etre chargee et tickable pendant toute la mission (physique du compagnon).
-        WorkService.forceChunks(level, proposed.min, proposed.max);
         if (level.isOutsideBuildHeight(proposed.min) || level.isOutsideBuildHeight(proposed.max)
                 || !level.getWorldBorder().isWithinBounds(proposed.min) || !level.getWorldBorder().isWithinBounds(proposed.max))
             return error("INVALID_ZONE", "Zone outside dimension bounds");
@@ -183,8 +184,9 @@ public final class MissionService {
         if (level.isOutsideBuildHeight(proposed.origin) || !level.getWorldBorder().isWithinBounds(proposed.origin))
             return error("INVALID_ORIGIN", "Origin outside dimension bounds");
         if(proposed.build!=null) {String invalid=BuildService.validate(level,proposed);if(!invalid.isEmpty()) return error(invalid,"Build site refused before reserving resources");}
+        WorkService.forceChunks(level, proposed.min, proposed.max);
         WorkState started = WorkService.start(level, proposed.id, proposed.min, proposed.max, "minecraft:iron_pickaxe", proposed.origin, companion);
-        if (started == null) return error("START_REFUSED", s.lastStop);
+        if (started == null) { WorkService.releaseChunks(level); return error("START_REFUSED", s.lastStop); }
         // Collecte avec destination explicite : le coffre fourni TIENT LIEU de depot. Sans cela le
         // moteur cherche a en construire un autour du compagnon, et sur un terrain encombre il
         // peut boucler indefiniment en phase PREPARING au lieu de miner.

@@ -225,7 +225,7 @@ public final class ServitorBrain {
         String outcome = BrainOrders.apply(result.order(), level, bot, cfg);
         lastOrder = bot != null && TaskRunner.current(bot) != null ? signature : "";
         lastDecision = signature;
-        boolean observation=java.util.List.of("scan","probe","find","box","where","recall","remember","work_status","work_capabilities").contains(result.order().name());
+        boolean observation=java.util.List.of("scan","probe","find","box","where","recall","remember","work_status","work_capabilities","note_list").contains(result.order().name());
         if (!instruction.isEmpty() && !observation && !outcome.startsWith("REFUSE") && !outcome.contains("\"ok\":false")) {
             instruction = ""; instructionAge = 0; instructionForced = false;
         }

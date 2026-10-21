@@ -65,6 +65,8 @@ public final class WorkService {
     private WorkService() {}
 
     public static void init() {
+        WorkChunkTickets.init();
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> WorkChunkTickets.clear());
         ServerTickEvents.END_SERVER_TICK.register(WorkService::endTick);
         // La mort du Servitor arrête le chantier proprement : le journal reste, donc on reprend.
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
@@ -116,7 +118,8 @@ public final class WorkService {
                 rollbackTick(level, state);
                 continue;
             }
-            if (!state.hasJob()) continue;
+            if (!state.hasJob()) { releaseChunks(level); continue; }
+            ensureTicking(level, state, servitor(level, state));
             // Discover work before building infrastructure or waiting for a spawn position.
             // An empty selection must finish even with no depot, no kit or no spawn ground.
             WorkMission mission = MissionService.active(state);
@@ -153,7 +156,6 @@ public final class WorkService {
             }
             // Porte unique d'activation : leve le NoAI et le mode pilote sans reactiver les buts.
             activateMovement(bot);
-            ensureTicking(level, state, bot);
             double oldProgress = state.progress;
             int oldDone = state.done;
             int oldBuild = state.depotBuildTicks;
@@ -190,6 +192,11 @@ public final class WorkService {
         // A0. Restitution : quand le sac doit etre vide, on ne construit rien et on ne mine rien.
         // Ce cas passe AVANT l'infrastructure, sinon un chantier sans depot (mission annulee)
         // partait fabriquer un coffre et ne rendait jamais les objets -> WORKER_BUSY permanent.
+        if (state.finishing && MissionService.active(state) == null && (state.buildingDepot || !state.hasDepot)) {
+            // Legacy /work jobs still need to build their kit depot before returning carried loot.
+            WorkDepot.tick(level, state, bot);
+            return;
+        }
         if (state.finishing) {
             if (stepTowardDepot(level, state, bot)) {
                 state.finishing = false;
@@ -747,61 +754,39 @@ public final class WorkService {
         return sb.toString();
     }
 
-    private static final List<net.minecraft.world.level.ChunkPos> forcedChunks = new ArrayList<>();
-
-    /**
-     * Garde la zone d'une mission chargee ET tickable (ticket FORCED = niveau entite). Sans cela,
-     * loin de tout joueur, les chunks sont charges sans tick : le compagnon n'a ni physique ni IA,
-     * il flotte et refuse de descendre dans un trou. Les tickets sont relaches a la fermeture.
-     */
+    /** Keep mission reads and movement local to this dimension; leases expire after a crash. */
     static void forceChunks(ServerLevel level, BlockPos min, BlockPos max) {
-        releaseChunks(level);
+        var chunks = new java.util.HashSet<net.minecraft.world.level.ChunkPos>();
         int minX = Math.min(min.getX(), max.getX()), maxX = Math.max(min.getX(), max.getX());
         int minZ = Math.min(min.getZ(), max.getZ()), maxZ = Math.max(min.getZ(), max.getZ());
-        int count = 0;
-        for (int cx = minX >> 4; cx <= maxX >> 4 && count < 256; cx++) {
-            for (int cz = minZ >> 4; cz <= maxZ >> 4 && count < 256; cz++) {
-                var chunk = new net.minecraft.world.level.ChunkPos(cx, cz);
-                level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
-                forcedChunks.add(chunk);
-                count++;
-            }
-        }
+        for (int cx = minX >> 4; cx <= maxX >> 4 && chunks.size() < 256; cx++)
+            for (int cz = minZ >> 4; cz <= maxZ >> 4 && chunks.size() < 256; cz++)
+                chunks.add(new net.minecraft.world.level.ChunkPos(cx, cz));
+        WorkChunkTickets.acquire(level, "work", chunks);
     }
 
-    private static String tickingKey = "";
-    private static long tickingAt = 0L;
-
-    /**
-     * Garde tickables le compagnon ET la destination pendant un travail : hors de la zone de
-     * mission (retour au coffre, trajet de restitution), les chunks restent charges sans tick,
-     * donc le compagnon n'a ni gravite ni deplacement (motion figee, position immobile).
-     */
     static void ensureTicking(ServerLevel level, WorkState state, LivingEntity bot) {
+        if (level.getGameTime() % 20 != 0) return;
+        var chunks = new java.util.LinkedHashSet<net.minecraft.world.level.ChunkPos>();
+        // Reserve the worker and depot first: a distant chest must not push them outside
+        // the bounded lease. Navigation follows the worker instead of loading a huge rectangle.
+        BlockPos worker = bot == null ? new BlockPos(state.originX, state.originY, state.originZ) : bot.blockPosition();
+        addNeighborhood(chunks, worker);
         WorkMission mission = MissionService.active(state);
-        String key = bot.chunkPosition() + "|" + (mission == null ? "" : mission.destination.toShortString());
-        if (key.equals(tickingKey) && level.getGameTime() - tickingAt < 200L) return;
-        BlockPos a = bot.blockPosition(), b = a;
-        if (mission != null) {
-            a = new BlockPos(Math.min(a.getX(), mission.destination.getX()), Math.min(a.getY(), mission.destination.getY()),
-                    Math.min(a.getZ(), mission.destination.getZ()));
-            b = new BlockPos(Math.max(b.getX(), mission.destination.getX()), Math.max(b.getY(), mission.destination.getY()),
-                    Math.max(b.getZ(), mission.destination.getZ()));
-        }
-        forceChunks(level, a.offset(-16, -16, -16), b.offset(16, 16, 16));
-        tickingKey = key;
-        tickingAt = level.getGameTime();
-        System.out.println("[TICKING] bot=" + bot.chunkPosition().getRegionLocalX() + ","
-                + bot.chunkPosition().getRegionLocalZ() + " forced chunks=" + forcedChunks.size()
-                + " dest=" + (mission == null ? "-" : mission.destination.toShortString()));
+        if (mission != null) addNeighborhood(chunks, mission.destination);
+        else if (state.hasDepot) addNeighborhood(chunks, new BlockPos(state.depotX, state.depotY, state.depotZ));
+        for (int cx = state.minX >> 4; cx <= state.maxX >> 4 && chunks.size() < 256; cx++)
+            for (int cz = state.minZ >> 4; cz <= state.maxZ >> 4 && chunks.size() < 256; cz++)
+                chunks.add(new net.minecraft.world.level.ChunkPos(cx, cz));
+        WorkChunkTickets.acquire(level, "work", chunks);
     }
 
-    static void releaseChunks(ServerLevel level) {
-        for (var chunk : forcedChunks) {
-            level.getChunkSource().removeTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
-        }
-        forcedChunks.clear();
+    private static void addNeighborhood(java.util.Set<net.minecraft.world.level.ChunkPos> chunks, BlockPos pos) {
+        for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++)
+            chunks.add(new net.minecraft.world.level.ChunkPos((pos.getX() >> 4) + dx, (pos.getZ() >> 4) + dz));
     }
+
+    static void releaseChunks(ServerLevel level) { WorkChunkTickets.release(level, "work"); }
 
     static boolean loadedNeighborhood(ServerLevel level, BlockPos pos) {
         if (!level.hasChunkAt(pos)) return false;
@@ -891,20 +876,8 @@ public final class WorkService {
      * NoAI=true (readAdditionalSaveData) et en mode pilote (buts retires) : sans cette porte
      * unique, une commande de deplacement etait acceptee sans jamais etre executee.
      */
-    private static final Map<java.util.UUID, net.minecraft.world.level.ChunkPos> ENTITY_TICKING = new HashMap<>();
-
-    /**
-     * Maintient le chunk du compagnon au niveau « entity ticking ». Sans joueur a proximite, un
-     * chunk simplement charge ne tick pas les entites : aiStep() n'est jamais appele, la gravite
-     * n'est pas appliquee et AUCUN deplacement ne peut aboutir, quel que soit le controleur.
-     */
     public static void keepTicking(ServerLevel level, LivingEntity bot) {
-        if (bot == null) return;
-        var chunk = bot.chunkPosition();
-        var previous = ENTITY_TICKING.put(bot.getUUID(), chunk);
-        if (chunk.equals(previous)) return;
-        if (previous != null) level.getChunkSource().removeTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, previous, 2);
-        level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 2);
+        if (bot != null) WorkChunkTickets.acquire(level, bot.getUUID().toString(), java.util.Set.of(bot.chunkPosition()));
     }
 
     public static void activateMovement(LivingEntity bot) {
@@ -948,6 +921,7 @@ public final class WorkService {
     }
 
     static void conclude(ServerLevel level, WorkState state) {
+        releaseChunks(level);
         state.finished = true;
         state.awaitingServitor = false;
         state.buildingDepot = false; state.depotPlanned = false;
@@ -1107,6 +1081,7 @@ public final class WorkService {
     }
 
     public static boolean stop(ServerLevel level) {
+        releaseChunks(level);
         WorkState state = WorkState.get(level);
         state.rollbackRemaining = 0;
         MissionService.paused(state, "OPERATOR_PAUSE");

@@ -18,11 +18,12 @@ parser.add_argument('--build-only',action='store_true',help='Focus on constructi
 parser.add_argument('--empty-only',action='store_true',help='Only run empty/exhausted selection regressions')
 parser.add_argument('--navigation-only',action='store_true',help='Focus on movement, excavated stairs, route changes and clean restart')
 parser.add_argument('--brain-only',action='store_true',help='Exercise native AI validation, bags, ownership, MCP observation and clean restart; no LLM calls')
+parser.add_argument('--reliability-only',action='store_true',help='Movement, incomplete routines, full gather/return and restart regression')
 parser.add_argument('--recovery-only',action='store_true',help='Exercise companion bag recovery after death, dimension change and clean restart; no LLM calls')
 parser.add_argument('--accept-eula',action='store_true',required=True,help='Explicit acceptance of Minecraft EULA for the disposable server')
 args=parser.parse_args()
 if args.brain_only: args.empty_only=True
-if args.recovery_only: args.empty_only=True
+if args.recovery_only or args.reliability_only: args.empty_only=True
 if args.build_only: args.next_only=True
 if args.next_only: args.missions=True
 repo=Path(__file__).resolve().parents[2];work=args.output.resolve();work.mkdir(parents=True,exist_ok=True)
@@ -34,9 +35,10 @@ jdk=args.jdk.resolve()/'bin';cp=os.pathsep.join([str(args.candidate.resolve()),*
 test=repo/'voiddynasty/src/test/java/com/donopot/voiddynasty/work/WorkServerTest.java';classes=work/'test-mod-classes';classes.mkdir(exist_ok=True)
 test_sources=[test]
 test_sources.append(test.with_name('WorkEmptyServerTest.java'))
-test_sources.append(test.with_name('WorkNavigationServerTest.java'))
+if not args.empty_only: test_sources.append(test.with_name('WorkNavigationServerTest.java'))
 if args.brain_only: test_sources.append(test.with_name('BrainSafetyServerTest.java'))
 if args.recovery_only: test_sources.append(test.with_name('BrainRecoveryServerTest.java'))
+if args.reliability_only: test_sources.append(test.parent.parent/'ai/BrainReliabilityServerTest.java')
 if args.missions: test_sources.extend([test.with_name('MissionServerTest.java'),test.with_name('WorkNextServerTest.java')])
 javac=jdk/('javac.exe' if os.name=='nt' else 'javac');javab=jdk/('java.exe' if os.name=='nt' else 'java')
 r=subprocess.run([str(javac),'--release','25','-proc:none','-encoding','UTF-8','-cp',cp,'-d',str(classes),*map(str,test_sources)],capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=60)
@@ -48,7 +50,7 @@ for p in args.dependencies.glob('*.jar'):
 shutil.copy2(args.candidate,mods/'voiddynasty-candidate.jar')
 with zipfile.ZipFile(mods/'work-test.jar','w',zipfile.ZIP_DEFLATED) as z:
  for p in classes.rglob('*.class'):z.write(p,p.relative_to(classes).as_posix())
- z.writestr('fabric.mod.json',json.dumps({'schemaVersion':1,'id':'work-test','version':'1','environment':'server','entrypoints':{'main':['com.donopot.voiddynasty.work.'+p.stem for p in test_sources]},'depends':{'voiddynasty':'*','fabric-api':'*'}}))
+ z.writestr('fabric.mod.json',json.dumps({'schemaVersion':1,'id':'work-test','version':'1','environment':'server','entrypoints':{'main':['com.donopot.voiddynasty.'+p.parent.name+'.'+p.stem for p in test_sources]},'depends':{'voiddynasty':'*','fabric-api':'*'}}))
 reservations=[reserve(),reserve()];port,rport=[x[1] for x in reservations];password=secrets.token_urlsafe(32)
 props={'server-ip':'127.0.0.1','server-port':port,'enable-rcon':'true','rcon.port':rport,'rcon.password':password,'online-mode':'false','level-name':'work-test-world','level-type':'minecraft:flat','generate-structures':'false','generator-settings':json.dumps({'layers':[{'block':'minecraft:bedrock','height':1}],'biome':'minecraft:plains'}),'spawn-protection':0,'view-distance':4,'simulation-distance':4,'pause-when-empty-seconds':0,'sync-chunk-writes':'true','max-players':1}
 (lab/'server.properties').write_text(''.join(f'{k}={v}\n' for k,v in props.items()))
@@ -93,6 +95,25 @@ try:
   (lab/'logs/latest.log').rename(lab/'logs/brain-before-restart.log')
   proc,rcon,output=launch();time.sleep(2)
   asyncio.run(brain_after(rcon,lab,results,mission_notes))
+ if args.reliability_only:
+  def reliability(name, seconds=0):
+   if seconds: time.sleep(seconds)
+   answer=rcon.cmd('reliabilitycheck '+name);print(answer,flush=True);results.append({'phase':name,'result':answer})
+   if 'PASS '+name not in answer:raise AssertionError(answer)
+  reliability('notes');reliability('setup');reliability('moved',25)
+  # Load the completed companion for the next command, as an arriving player would.
+  # Movement and the gather/return cycle themselves run without this fixture ticket.
+  rcon.cmd('forceload add 998 998 1036 1012');time.sleep(2)
+  reliability('errors');reliability('incomplete');reliability('incompleteDone',2);reliability('gather')
+  rcon.cmd('forceload remove 998 998 1036 1012');time.sleep(40)
+  rcon.cmd('forceload add 998 998 1036 1012');time.sleep(2)
+  reliability('returned')
+  rcon.cmd('save-all flush');rcon.cmd('stop');proc.wait(timeout=45);rcon.sock.close();rcon=None;output.close()
+  (lab/'logs/latest.log').rename(lab/'logs/reliability-before-restart.log')
+  proc,rcon,output=launch();time.sleep(2)
+  reliability('restart');rcon.cmd('forceload remove 998 998 1036 1012');time.sleep(25)
+  rcon.cmd('forceload add 998 998 1036 1012');time.sleep(2)
+  reliability('resumed');reliability('second',5)
  if args.recovery_only:
   from brain_recovery_acceptance import before_restart as rec_before,after_restart as rec_after
   rec_before(rcon,lab,results,mission_notes)

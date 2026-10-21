@@ -28,8 +28,7 @@ import java.util.List;
  * durable et vérifiable (« filon de fer en 120, -54, 88 »), jamais un état d'exécution.</p>
  *
  * <p>Aucune erreur n'est avalée : une écriture qui échoue lève {@link BrainNotesException} et
- * l'appelant doit le dire à l'opérateur. Une lecture impossible renvoie une liste vide en
- * conservant le fichier illisible sous un nom d'archive, pour ne rien détruire.</p>
+ * l'appelant doit le dire à l'opérateur. Une lecture impossible bloque les ajouts et conserve le fichier original.</p>
  */
 public final class BrainNotes {
 
@@ -89,7 +88,7 @@ public final class BrainNotes {
             JsonObject o = notes.get(i).getAsJsonObject();
             sb.append("\n[").append(i + 1).append("] ").append(str(o, "note"))
                     .append(" — ").append(str(o, "x")).append(", ").append(str(o, "y"))
-                    .append(", ").append(str(o, "z"));
+                    .append(", ").append(str(o, "z")).append(" [").append(str(o, "monde")).append("] ").append(str(o, "quand"));
         }
         return sb.toString();
     }
@@ -104,7 +103,7 @@ public final class BrainNotes {
             JsonObject o = notes.get(i).getAsJsonObject();
             if (str(o, "note").toLowerCase().contains(k)) {
                 hits.add("[" + (i + 1) + "] " + str(o, "note") + " — " + str(o, "x") + ", "
-                        + str(o, "y") + ", " + str(o, "z"));
+                        + str(o, "y") + ", " + str(o, "z") + " [" + str(o, "monde") + "] " + str(o, "quand"));
             }
         }
         return hits.isEmpty() ? "aucune note de ce monde ne contient '" + keyword + "'"
@@ -134,14 +133,20 @@ public final class BrainNotes {
         }
         try {
             String json = Files.readString(p, StandardCharsets.UTF_8);
-            if (json.isBlank()) return new JsonArray();
+            if (json.isBlank()) throw new IllegalStateException("fichier de notes vide");
             JsonElement parsed = JsonParser.parseString(json);
-            return parsed.isJsonArray() ? parsed.getAsJsonArray() : new JsonArray();
+            if (!parsed.isJsonArray()) throw new IllegalStateException("tableau de notes attendu");
+            for (JsonElement entry : parsed.getAsJsonArray()) {
+                if (!entry.isJsonObject() || !entry.getAsJsonObject().has("note")
+                        || !entry.getAsJsonObject().get("note").isJsonPrimitive())
+                    throw new IllegalStateException("note invalide");
+            }
+            return parsed.getAsJsonArray();
         } catch (IOException | RuntimeException e) {
             // On ne détruit rien : le fichier illisible est mis de côté, l'erreur est dite.
             Path backup = p.resolveSibling(FILE_NAME + ".corrompu-" + System.currentTimeMillis());
             try {
-                Files.move(p, backup, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(p, backup, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException ignored) {
                 // le message ci-dessous dit déjà que la lecture a échoué
             }
@@ -172,7 +177,7 @@ public final class BrainNotes {
             Files.createDirectories(p.getParent());
             Path tmp = p.resolveSibling(FILE_NAME + ".tmp");
             Files.writeString(tmp, GSON.toJson(notes), StandardCharsets.UTF_8);
-            Files.move(tmp, p, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(tmp, p, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new BrainNotesException("ecriture impossible dans " + p.getParent(), e);
         }
