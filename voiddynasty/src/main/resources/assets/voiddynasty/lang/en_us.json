@@ -213,5 +213,7 @@
   "hud.voiddynasty.reserve": "Reserve %s",
   "hud.voiddynasty.reloading": "Reloading…",
   "hud.voiddynasty.empty": "Magazine empty",
-  "hud.voiddynasty.ready": "Ready"
+  "hud.voiddynasty.ready": "Ready",
+  "tooltip.voiddynasty.laser_drill.hold": "Hold use: charge, then continuous drilling",
+  "tooltip.voiddynasty.laser_drill.range": "Range: %s blocks - direct collection"
 }

@@ -1,4 +1,5 @@
 # sorties de build
+logs/
 build/
 .gradle/
 run/

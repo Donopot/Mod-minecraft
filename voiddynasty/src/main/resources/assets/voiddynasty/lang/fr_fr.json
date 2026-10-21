@@ -213,5 +213,7 @@
   "hud.voiddynasty.reserve": "Réserve %s",
   "hud.voiddynasty.reloading": "Rechargement…",
   "hud.voiddynasty.empty": "Chargeur vide",
-  "hud.voiddynasty.ready": "Prêt"
+  "hud.voiddynasty.ready": "Prêt",
+  "tooltip.voiddynasty.laser_drill.hold": "Maintenir le clic droit : charge puis forage continu",
+  "tooltip.voiddynasty.laser_drill.range": "Portee : %s blocs - collecte directe"
 }
