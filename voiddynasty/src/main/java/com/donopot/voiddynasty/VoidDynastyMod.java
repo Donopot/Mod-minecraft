@@ -197,6 +197,7 @@ public class VoidDynastyMod implements ModInitializer {
         });
 
         WorkService.init();
+        com.donopot.voiddynasty.work.SupplyService.init();
         com.donopot.voiddynasty.ai.ServitorBrain.init();
         com.donopot.voiddynasty.ai.ChatListener.init();
 

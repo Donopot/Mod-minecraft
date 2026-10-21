@@ -16,7 +16,13 @@ public class Servitor1Entity extends ChaosCultistEntity {
 
     /** Keep native navigation/move controls, remove combat and wandering only for workers. */
     public void setWorkMode() {
-        if (workMode) return;
+        if (workMode) {
+            // Un worker recharge depuis une sauvegarde arrive en NoAI=true (voir
+            // readAdditionalSaveData). Le drapeau workMode est deja vrai : sans cette ligne,
+            // setWorkMode() ne rendait jamais l'IA et le compagnon restait immobile pour toujours.
+            setNoAi(false);
+            return;
+        }
         workMode = true;
         addTag("voiddynasty_work");
         goalSelector.removeAllGoals(goal -> true);
@@ -27,6 +33,15 @@ public class Servitor1Entity extends ChaosCultistEntity {
         // Work routes can need a long detour to exit a mined passage and reach the depot.
         getNavigation().setRequiredPathLength(64.0f);
         getNavigation().stop();
+    }
+
+    /**
+     * Un compagnon recharge depuis une sauvegarde reste volontairement immobile (setNoAi(true))
+     * jusqu'a ce qu'un ordre explicite le reveille. Sans cela, un simple deplacement ne fait rien.
+     */
+    public void wake() {
+        if (entityTags().contains("voiddynasty_work")) setWorkMode();
+        setNoAi(false);
     }
 
     @Override

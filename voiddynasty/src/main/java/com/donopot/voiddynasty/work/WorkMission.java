@@ -60,10 +60,13 @@ public final class WorkMission {
         if(tag.contains("build")) m.build=BuildPlan.load(tag.getCompound("build").orElseThrow());
         m.materialsReserved=tag.getBoolean("materials_reserved").orElse(false);m.placed=tag.getInt("placed").orElse(0);m.buildTicks=tag.getInt("build_ticks").orElse(0);
         if (!Set.of("PREPARING", "MINING", "DELIVERING", "STORING_REMAINDER", "RESERVING", "BUILDING", "PAUSED", "SUCCEEDED", "INCOMPLETE", "CANCELLED").contains(m.status)
-                || m.amount < 1 || m.amount > 4096 || m.collected < 0 || m.delivered < 0
+                || m.amount < 1 || m.amount > (MissionService.EXCAVATE_ITEM.equals(m.item) ? 32768 : 4096)
+                || m.collected < 0 || m.delivered < 0
                 || m.delivered > m.amount || m.delivered > m.collected
-                || (m.status.equals("SUCCEEDED") && m.delivered != m.amount)
-                || !m.requestId.matches("[A-Za-z0-9_-]{1,64}") || (m.build==null && !MissionService.SOURCES.containsKey(m.item))
+                || (m.status.equals("SUCCEEDED") && !com.donopot.voiddynasty.work.MissionService.EXCAVATE_ITEM.equals(m.item)
+                    && m.delivered != m.amount)
+                || !m.requestId.matches("[A-Za-z0-9_-]{1,64}")
+                || (m.build==null && !MissionService.EXCAVATE_ITEM.equals(m.item) && !MissionService.SOURCES.containsKey(m.item))
                 || !Set.of("surface","excavate").contains(m.access) || m.accessMined<0 || m.accessMined>WorkAccess.MAX_BLOCKS
                 || m.placed<0 || m.placed>m.amount || m.buildTicks<0 || m.buildTicks>6
                 || (m.build!=null && (m.build.blocks().size()!=m.amount || !m.build.anchor().equals(m.min) || !m.build.max().equals(m.max)
@@ -75,7 +78,8 @@ public final class WorkMission {
 
     public JsonObject json() {
         JsonObject result = new JsonObject();
-        result.addProperty("id", id); result.addProperty("request_id", requestId); result.addProperty("type", build==null?"GATHER":"BUILD");
+        result.addProperty("id", id); result.addProperty("request_id", requestId);
+        result.addProperty("type", build!=null ? "BUILD" : MissionService.EXCAVATE_ITEM.equals(item) ? "EXCAVATE" : "GATHER");
         result.addProperty("status", status); result.addProperty("reason", reason); result.addProperty("item", item);
         result.addProperty("amount", amount); result.addProperty("collected_total", collected);
         result.addProperty("delivered_total", delivered); result.addProperty("goal_met", status.equals("SUCCEEDED"));

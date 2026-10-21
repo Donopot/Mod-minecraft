@@ -56,11 +56,16 @@ public final class BrainOrders {
             }
             case "goto" -> {
                 BlockPos dst = new BlockPos(order.intArg("x"), order.intArg("y"), order.intArg("z"));
+                // Une commande de deplacement doit d'abord rendre le mouvement possible.
+                com.donopot.voiddynasty.work.WorkService.activateMovement(bot);
+                com.donopot.voiddynasty.work.WorkService.keepTicking(level, bot);
                 TaskRunner.assign(level, bot, new BrainTasks.Goto(dst, cfg.timeoutSeconds * 3));
                 yield "deplacement lance vers " + dst.toShortString();
             }
             case "come_to_player" -> {
                 String player = order.strArg("player");
+                com.donopot.voiddynasty.work.WorkService.activateMovement(bot);
+                com.donopot.voiddynasty.work.WorkService.keepTicking(level, bot);
                 TaskRunner.assign(level, bot, new BrainTasks.ComeTo(player));
                 yield "deplacement vers " + player;
             }

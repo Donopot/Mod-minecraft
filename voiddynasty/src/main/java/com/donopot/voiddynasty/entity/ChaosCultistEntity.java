@@ -230,6 +230,28 @@ public abstract class ChaosCultistEntity extends Monster implements GeoEntity {
         this.getNavigation().stop();
     }
 
+    /**
+     * Trace physique : premier point ou une intention de mouvement n'est pas executee.
+     * (isEffectiveAi faux = IA coupee ; navRun vrai + position figee = deplacement bloque.)
+     */
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (!this.level().isClientSide() && this.tickCount % 20 == 0 && this.entityTags().contains("voiddynasty_brain")) {
+            var nav = this.getNavigation();
+            System.out.println("[ENTITY_TRACE] ai=" + this.isEffectiveAi() + " noAi=" + this.isNoAi()
+                    + " immobile=" + this.isImmobile()
+                    + " speed=" + String.format(java.util.Locale.ROOT, "%.3f",
+                        this.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED))
+                    + " navRun=" + nav.isInProgress() + " navDone=" + nav.isDone()
+                    + " onGround=" + this.onGround()
+                    + " passenger=" + !this.getPassengers().isEmpty()
+                    + " pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", this.getX(), this.getY(), this.getZ())
+                    + " delta=" + String.format(java.util.Locale.ROOT, "%.3f,%.3f,%.3f",
+                        this.getDeltaMovement().x, this.getDeltaMovement().y, this.getDeltaMovement().z));
+        }
+    }
+
     public boolean isAttacking() {
         return this.entityData.get(DATA_ATTACKING);
     }

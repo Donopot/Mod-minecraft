@@ -14,7 +14,8 @@ Compatible avec MCP Python SDK 1.30.0 (voir requirements-mcp.txt).
 import sys
 
 from mcp.server.fastmcp import FastMCP
-from pydantic import StrictInt
+from pydantic import StrictFloat, StrictInt
+from typing import List
 
 import vd_core
 
@@ -78,6 +79,88 @@ async def tool_servitor_mission_wait(mission_id: str,timeout_seconds: StrictInt=
     return await vd_core.servitor_mission_wait(mission_id,timeout_seconds,dimension)
 
 
+def tool_servitor_recipes(filter: str = "", dimension: str = "overworld") -> dict:
+    """Livre de recettes du serveur : pour chaque recette, le resultat, les ingredients et la
+    station requise ("bag" = grille 2x2 sans table, "table" = grille 3x3 a portee d'une table).
+    A appeler AVANT de promettre un craft : ne jamais inventer une recette ni ses ingredients.
+    """
+    return vd_core.servitor_recipes(filter=filter, dimension=dimension)
+
+
+def tool_servitor_materials(item: str, count: StrictInt, chest: List[StrictInt], radius: StrictInt = 16,
+                            dimension: str = "overworld") -> dict:
+    """Plan d'approvisionnement AVANT de fabriquer : etapes de craft dans l'ordre, contenu du coffre,
+    et pour chaque matiere premiere manquante les blocs sources presents autour du compagnon
+    (`found_in_box`, `absence_proven`). Aucun bloc casse, rien fabrique : c'est un plan.
+    Utilise-le pour repondre a "il me faut X" au lieu de deviner les ingredients."""
+    return vd_core.servitor_materials(item=item, count=count, chest=chest, radius=radius, dimension=dimension)
+
+
+def tool_servitor_supply(item: str, count: StrictInt, chest: List[StrictInt], dimension: str = "overworld") -> dict:
+    """UNE demande : le moteur enchaine seul recolte -> fonte -> craft jusqu'a `count` de `item`
+    dans le coffre. Ne rien orchestrer ensuite : interroger servitor_supply_status."""
+    return vd_core.servitor_supply(item=item, count=count, chest=chest, dimension=dimension)
+
+
+def tool_servitor_supply_status(dimension: str = "overworld") -> dict:
+    """Etat, note et journal de l'approvisionnement autonome en cours (ou 'aucun')."""
+    return vd_core.servitor_supply_status(dimension=dimension)
+
+
+def tool_servitor_supply_cancel(dimension: str = "overworld") -> dict:
+    """Annule l'approvisionnement autonome en cours."""
+    return vd_core.servitor_supply_cancel(dimension=dimension)
+
+
+def tool_servitor_smelt_recipes(filter: str = "", dimension: str = "overworld") -> dict:
+    """Recettes de FONTE du serveur (four) : entree, sortie, temps de cuisson, experience.
+    Filtre sur le resultat ou l'entree. Une recette absente ici ne se fond pas."""
+    return vd_core.servitor_smelt_recipes(filter=filter, dimension=dimension)
+
+
+def tool_servitor_smelt_fuels(chest: List[StrictInt], dimension: str = "overworld") -> dict:
+    """Carburants reellement presents dans un coffre, avec leur pouvoir calorifique (ticks par piece)."""
+    return vd_core.servitor_smelt_fuels(chest=chest, dimension=dimension)
+
+
+def tool_servitor_smelt(item: str, count: StrictInt, chest: List[StrictInt],
+                        dimension: str = "overworld") -> dict:
+    """Fond `count` de `item` : entree et carburant consommes dans le coffre, resultat remis dedans.
+    Il faut un four a moins de 5 blocs du compagnon (NEEDS_FURNACE sinon)."""
+    return vd_core.servitor_smelt(item=item, count=count, chest=chest, dimension=dimension)
+
+
+def tool_servitor_craft(item: str, count: StrictInt, chest: List[StrictInt],
+                        dimension: str = "overworld") -> dict:
+    """Fabrique `count` exemplaires de `item` depuis le contenu du coffre `chest` [x,y,z].
+    Les ingredients sont consommes dans le coffre et le resultat y est remis. Erreurs explicites :
+    MISSING_INGREDIENTS (avec la liste), NEEDS_CRAFTING_TABLE, CHEST_FULL, NO_RECIPE.
+    Pour un objet en plusieurs etapes (planches -> batons -> etabli), enchainer un appel par etape
+    et relire servitor_recipes entre chaque.
+    """
+    return vd_core.servitor_craft(item=item, count=count, chest=chest, dimension=dimension)
+
+
+def tool_servitor_move(mode: str = "status", player: str = "", x: StrictInt = 0, y: StrictInt = 0,
+                       z: StrictInt = 0, distance: StrictFloat = 3.0, dimension: str = "overworld") -> dict:
+    """Deplacer le compagnon : mode "come" (rejoindre le joueur), "follow" (le suivre),
+    "goto" (coordonnees x,y,z) ou "status" (ou il en est). Un deplacement dure plusieurs
+    secondes : rappeler le status pour savoir s'il est arrive avant d'enchainer une mission.
+    """
+    return vd_core.servitor_move(mode=mode, player=player, x=x, y=y, z=z, distance=distance, dimension=dimension)
+
+
+def tool_servitor_excavate(request_id: str, zone_min: List[StrictInt], zone_max: List[StrictInt],
+                           destination: List[StrictInt], origin: List[StrictInt],
+                           access: str = "excavate", dimension: str = "overworld") -> dict:
+    """Vider entierement une zone (mine a ciel ouvert, tranchee, cavite) et deposer les objets au coffre.
+    Pas d'item ni d'amount : le but est la zone videe. Volume max 32768 blocs, donc une grande
+    mine se decoupe en tranches successives ; relire servitor_mission_status entre chaque tranche.
+    """
+    return vd_core.servitor_excavate(request_id=request_id, zone_min=zone_min, zone_max=zone_max,
+                                     destination=destination, origin=origin, access=access, dimension=dimension)
+
+
 def tool_servitor_gather(request_id: str, item: str, amount: StrictInt, zone_min: list[StrictInt],
                          zone_max: list[StrictInt], destination: list[StrictInt], origin: list[StrictInt],
                          dimension: str = "overworld", access: str = "surface") -> dict:
@@ -112,12 +195,49 @@ def tool_servitor_mission_control(mission_id: str, action: str, dimension: str =
     return vd_core.servitor_mission_control(mission_id,action,dimension)
 
 
+def tool_servitor_status(dimension: str = "overworld") -> dict:
+    """Where the companion is, whether it exists at all, its health, ground and inventory state.
+    Call this first when a mission seems to target the wrong place: it tells you if the servitor is
+    present in this dimension and where, instead of guessing from unloaded observations."""
+    return vd_core.servitor_status(dimension)
+
+
+def tool_servitor_players(dimension: str = "overworld") -> dict:
+    """Online players: name, dimension, position, health, game mode, op flag and distance to the companion.
+    Use it to work near a player or to report who is where. Distance is null when the companion is in
+    another dimension."""
+    return vd_core.servitor_players(dimension)
+
+
+def tool_servitor_work(dimension: str = "overworld") -> dict:
+    """Internal job state: whether a depot exists, depot count, done/total counters, and last_stop —
+    the engine's own reason for waiting. Use it when a mission stays PREPARING or PAUSED."""
+    return vd_core.servitor_work(dimension)
+
+
+def tool_servitor_look(radius: StrictInt = 8, dimension: str = "overworld") -> dict:
+    """The companion's immediate surroundings: block histogram, hazards, and every living entity within
+    radius (2..24) blocks with type, position, distance, hostility and health. Read-only."""
+    return vd_core.servitor_look(radius, dimension)
+
+
 for fn, nom in ((tool_server_status, "server_status"), (tool_vdyntest, "vdyntest"),
                 (tool_scan_zone, "scan_zone"), (tool_place_ship, "place_ship"),
                 (tool_fleet, "fleet"), (tool_command, "command"),
                 (tool_servitor_capabilities, "servitor_capabilities"), (tool_servitor_gather, "servitor_gather"),
                 (tool_servitor_observe,"servitor_observe"),(tool_servitor_find,"servitor_find"),(tool_servitor_mission_wait,"servitor_mission_wait"),
                 (tool_servitor_build_estimate,"servitor_build_estimate"),(tool_servitor_build,"servitor_build"),
+                (tool_servitor_status, "servitor_status"), (tool_servitor_players, "servitor_players"),
+                (tool_servitor_look, "servitor_look"), (tool_servitor_work, "servitor_work"),
+                (tool_servitor_move, "servitor_move"), (tool_servitor_excavate, "servitor_excavate"),
+                (tool_servitor_recipes, "servitor_recipes"), (tool_servitor_craft, "servitor_craft"),
+                (tool_servitor_materials, "servitor_materials"),
+                (tool_servitor_smelt_recipes, "servitor_smelt_recipes"),
+                (tool_servitor_smelt_fuels, "servitor_smelt_fuels"),
+                (tool_servitor_smelt, "servitor_smelt"),
+                (tool_servitor_supply, "servitor_supply"),
+                (tool_servitor_supply_status, "servitor_supply_status"),
+                (tool_servitor_supply_cancel, "servitor_supply_cancel"),
                 (tool_servitor_mission_status, "servitor_mission_status"), (tool_servitor_mission_control, "servitor_mission_control")):
     if "--servitor-only" not in sys.argv or nom.startswith("servitor_"):
         server.add_tool(fn, name=nom)

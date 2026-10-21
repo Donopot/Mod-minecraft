@@ -31,7 +31,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Le Servitor mine. Pas le serveur à sa place : lui, avec une pioche, à portée de bras.
@@ -149,7 +151,9 @@ public final class WorkService {
                 pause(state, "servitor absent ou dimension incorrecte — /work resume");
                 continue;
             }
-            if (bot instanceof Servitor1Entity worker) worker.setWorkMode();
+            // Porte unique d'activation : leve le NoAI et le mode pilote sans reactiver les buts.
+            activateMovement(bot);
+            ensureTicking(level, state, bot);
             double oldProgress = state.progress;
             int oldDone = state.done;
             int oldBuild = state.depotBuildTicks;
@@ -170,18 +174,33 @@ public final class WorkService {
 
     /** Une unité de travail par tick. */
     private static void tickWorker(ServerLevel level, WorkState state, LivingEntity bot) {
-        if (MissionService.tick(level, state, bot)) return;
-        // Infrastructure is a worker task; starting a selection never places or requires a chest.
-        if (state.buildingDepot || !state.hasDepot) {
-            WorkDepot.tick(level, state, bot);
-            return;
+        boolean missionTick = MissionService.tick(level, state, bot);
+        if (level.getGameTime() % 20L == 0L) {
+            WorkMission active = MissionService.active(state);
+            System.out.println("[WORK_TRACE] mission=" + (active == null ? "none" : active.status)
+                    + " missionTick=" + missionTick + " finishing=" + state.finishing
+                    + " goingToDepot=" + state.goingToDepot + " hasDepot=" + state.hasDepot
+                    + " depots=" + state.depots.size() + " buildingDepot=" + state.buildingDepot
+                    + " awaiting=" + state.awaitingServitor + " bag=" + state.invSlots.size()
+                    + " finished=" + state.finished + " total=" + state.total
+                    + " cursorY=" + state.cursorY + " minY=" + state.minY
+                    + " bot=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ()));
         }
-        // A0. travail fini : on vide le sac au depot avant de conclure
+        if (missionTick) return;
+        // A0. Restitution : quand le sac doit etre vide, on ne construit rien et on ne mine rien.
+        // Ce cas passe AVANT l'infrastructure, sinon un chantier sans depot (mission annulee)
+        // partait fabriquer un coffre et ne rendait jamais les objets -> WORKER_BUSY permanent.
         if (state.finishing) {
             if (stepTowardDepot(level, state, bot)) {
                 state.finishing = false;
+                state.goingToDepot = false;
                 conclude(level, state);
             }
+            return;
+        }
+        // Infrastructure is a worker task; starting a selection never places or requires a chest.
+        if (state.buildingDepot || !state.hasDepot) {
+            WorkDepot.tick(level, state, bot);
             return;
         }
         // A. inventaire plein : on va vider avant de continuer
@@ -215,6 +234,19 @@ public final class WorkService {
         // C. à portée ?
         if (distanceSq(bot, target) > REACH * REACH || !visible(level, bot, target)) {
             if(WorkAccess.enabled(state)) {
+                // Un chemin vanilla qui n'avance plus ne doit pas immobiliser le chantier : au-dela
+                // de 60 ticks sans mouvement reel, on rend la main au planificateur d'acces, qui
+                // bascule sur l'escalier si aucune marche a niveau n'existe.
+                if (StairMining.owns(MissionService.active(state))) {
+                    StairMining.drive(level, state, bot, target);
+                    return;
+                }
+                if (state.accessRoute.isEmpty() && state.idleTicks > 60) {
+                    if (bot instanceof Mob stuck) stuck.getNavigation().stop();
+                    state.accessRoute.clear();
+                    WorkAccess.tick(level, state, bot, target);
+                    return;
+                }
                 if(!state.accessRoute.isEmpty() || !stepToward(level,state,bot,target)) WorkAccess.tick(level,state,bot,target);
                 return;
             }
@@ -246,17 +278,25 @@ public final class WorkService {
     }
 
     /** Choisit la prochaine cible en avançant le curseur, en sautant ce qu'on ne touche pas. */
+    /** Derniere cellule examinee par la recherche de cible : sert a diagnostiquer un chantier immobile. */
+    public static String lastScanNote = "aucun scan encore";
+
     private static boolean pickTarget(ServerLevel level, WorkState state) {
         for (int scan = 0; scan < 64; scan++) {
             if (state.cursorY < state.minY) {
+                lastScanNote = "curseur epuise (y=" + state.cursorY + " < minY=" + state.minY + ")";
                 return false;
             }
             BlockPos pos = new BlockPos(state.cursorX, state.cursorY, state.cursorZ);
             if (!loadedNeighborhood(level, pos)) { pause(state, "chunk decharge — /work resume"); return false; }
             BlockState blockState = level.getBlockState(pos);
             WorkMission mission = MissionService.active(state);
-            if (!blockState.isAir() && (mission == null || MissionService.matches(mission, blockState))
-                    && !skip(level, state, pos, blockState)) {
+            boolean matched = !blockState.isAir() && (mission == null || MissionService.matches(mission, blockState));
+            boolean skipped = matched && skip(level, state, pos, blockState);
+            lastScanNote = pos.toShortString() + " " + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(blockState.getBlock())
+                    + (matched ? "" : " (ne correspond pas)") + (skipped ? " (laisse)" : "")
+                    + " | mission=" + (mission == null ? "aucune" : mission.item + "/" + mission.status);
+            if (matched && !skipped) {
                 state.hasTarget = true;
                 state.targetX = pos.getX();
                 state.targetY = pos.getY();
@@ -332,7 +372,7 @@ public final class WorkService {
 
         // Revalidate after travel/mining delay, before touching the block or ledger.
         WorkMission mission = MissionService.active(state);
-        if (blockState.isAir() || (access ? !WorkAccess.enabled(state) || !WorkAccess.safe(level,state,pos)
+        if (blockState.isAir() || (access ? !WorkAccess.enabled(state) || !WorkAccess.safe(level,state,pos,state.accessCeiling)
                 : mission != null && !MissionService.matches(mission, blockState))
                 || skip(level, state, pos, blockState)) {
             if(access) {state.accessRoute.clear();state.accessBlock=null;state.accessFrom=null;state.progress=0;}
@@ -373,7 +413,17 @@ public final class WorkService {
         entry.drops = WorkInventory.copy(drops);
         entry.dropsKnown = true;
         state.journal.add(entry);
-        MissionService.mined(state, drops);
+        // Classement de l'operation AVANT comptage : un bloc de tunnel n'est jamais du butin.
+        WorkMission activeMission = MissionService.active(state);
+        boolean inZone = activeMission == null || WorkAccess.contains(activeMission, pos);
+        if (inZone) {
+            MissionService.mined(state, drops);
+            state.zoneMined++;
+        } else {
+            state.accessBroken++;
+            System.out.println("[MINE] pos=" + pos.toShortString() + " class=ACCESS"
+                    + " accessBroken=" + state.accessBroken + " zoneMined=" + state.zoneMined);
+        }
         state.invSlots.clear(); state.invSlots.addAll(replacement);
         state.done++;
         boolean wasTarget=state.hasTarget && state.targetX==pos.getX() && state.targetY==pos.getY() && state.targetZ==pos.getZ();
@@ -398,6 +448,7 @@ public final class WorkService {
     // ---------------------------------------------------------------- déplacement
 
     static boolean navigationStalled(WorkState state, BlockPos cell, boolean worked) {
+        if (StairMining.driving(MissionService.active(state))) { return false; }
         if (worked) state.movementCells.clear();
         boolean discovered = state.movementCells.size() < 2048 && state.movementCells.add(cell.immutable());
         if (worked || discovered) state.idleTicks = 0;
@@ -408,6 +459,13 @@ public final class WorkService {
     static boolean visible(ServerLevel level, LivingEntity bot, BlockPos target) {
         return visibleFrom(level,bot,bot.getEyePosition(),target);
     }
+
+    /** Ligne de vue depuis un point arbitraire (position de travail candidate). */
+    public static boolean lineOfSight(ServerLevel level, LivingEntity bot, Vec3 eye, BlockPos target) {
+        return visibleFrom(level, bot, eye, target);
+    }
+
+    public static double eyeHeight(LivingEntity bot) { return bot.getEyeHeight(); }
 
     private static boolean visibleFrom(ServerLevel level,LivingEntity bot,Vec3 eye,BlockPos target) {
         // Un joueur mine un bloc par la face qu'il voit, pas par son centre : un bloc
@@ -492,8 +550,94 @@ public final class WorkService {
         return mob.getNavigation().createPath(stands, 0);
     }
 
+    /** Point de stationnement praticable adjacent a un conteneur (air + appui solide). */
+    static BlockPos standNear(ServerLevel level, BlockPos target, LivingEntity bot) {
+        BlockPos best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (Direction d : new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST}) {
+            BlockPos feet = target.relative(d);
+            if (!level.hasChunkAt(feet) || !level.hasChunkAt(feet.below())) continue;
+            if (!level.getBlockState(feet).isAir() || !level.getBlockState(feet.above()).isAir()) continue;
+            if (!level.getBlockState(feet.below()).isFaceSturdy(level, feet.below(), Direction.UP)) continue;
+            double distance = feet.distSqr(bot.blockPosition());
+            if (distance < bestDistance) { bestDistance = distance; best = feet; }
+        }
+        return best == null ? target.above() : best;
+    }
+
+    /** Guidage direct par le controleur de deplacement vanilla, avec suivi de progres borne. */
+    static boolean guideTo(ServerLevel level, WorkState state, LivingEntity bot, BlockPos target, String step) {
+        if (!(bot instanceof Mob mob)) return false;
+        BlockPos stand = standNear(level, target, bot);
+        double cx = stand.getX() + 0.5, cz = stand.getZ() + 0.5;
+        if (level.getGameTime() % 8L == 0L) {
+            mob.getNavigation().stop();
+            mob.getMoveControl().setWantedPosition(cx, stand.getY(), cz, 1.0);
+        }
+        double distance = Math.sqrt(distanceSq(bot, target));
+        double previous = GUIDE_LAST.getOrDefault(step, Double.MAX_VALUE);
+        if (distance < previous - 0.05) { GUIDE_STILL.put(step, 0); GUIDE_LAST.put(step, distance); }
+        else {
+            int still = GUIDE_STILL.getOrDefault(step, 0) + 1;
+            GUIDE_STILL.put(step, still);
+            if (still > 160) {
+                GUIDE_STILL.put(step, 0);
+                pause(state, "DEPOSIT_UNREACHABLE: coffre " + target.toShortString()
+                        + " non atteignable depuis " + bot.blockPosition().toShortString());
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private static final Map<String, Double> GUIDE_LAST = new HashMap<>();
+    private static final Map<String, Integer> GUIDE_STILL = new HashMap<>();
+
     /** Va au coffre et vide l'inventaire. Renvoie true quand c'est fait. */
     static boolean stepTowardDepot(ServerLevel level, WorkState state, LivingEntity bot) {
+        // Depot de mission : quand une destination a ete fournie, le reste du sac y est depose.
+        // Sans cela, la finalisation tournait sur un depot inexistant (depots=0) et ne liberait
+        // jamais le chantier, donc le compagnon restait bloque en WORKER_BUSY.
+        WorkMission mission = MissionService.active(state);
+        // Une destination fournie par l'operateur vaut depot, meme si un ancien depot de chantier
+        // existe encore : c'est celui que la mission a designe qui doit recevoir les objets.
+        if (mission != null) {
+            Container destination = MissionService.destinationOf(level, mission);
+            if (destination != null) {
+                BlockPos dest = mission.destination;
+                if (distanceSq(bot, dest) > REACH * REACH || !visible(level, bot, dest)) {
+                    // La navigation par chemin ne deplace pas cette entite (chemin valide, navRun=true,
+                    // position figee). Le controleur de deplacement vanilla, lui, fonctionne (prouve
+                    // en phase ALIGN) : on l'utilise pour la restitution, sans toucher a la physique.
+                    boolean walked = guideTo(level, state, bot, dest, "DEPOSIT");
+                    if (level.getGameTime() % 10L == 0L) {
+                        Mob mob = bot instanceof Mob m ? m : null;
+                        var path = mob == null ? null : mob.getNavigation().getPath();
+                        System.out.println("[DEPOSIT_TRACE] step=walk dest=" + dest.toShortString()
+                                + " mission=" + mission.status + " finished=" + state.finished
+                                + " finishing=" + state.finishing + " goingToDepot=" + state.goingToDepot
+                                + " hasJob=" + state.hasJob() + " bag=" + state.invSlots.size()
+                                + " dist=" + String.format(java.util.Locale.ROOT, "%.2f", Math.sqrt(distanceSq(bot, dest)))
+                                + " walked=" + walked + " path=" + (path != null) + " canReach=" + (path != null && path.canReach())
+                                + " navDone=" + (mob != null && mob.getNavigation().isDone())
+                                + " navRun=" + (mob != null && mob.getNavigation().isInProgress())
+                                + " onGround=" + bot.onGround()
+                                + " pos=" + String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", bot.getX(), bot.getY(), bot.getZ()));
+                    }
+                    return false;
+                }
+                List<ItemStack> stacks = invToStacks(state);
+                int total = 0;
+                for (ItemStack stack : stacks) total += stack.getCount();
+                List<ItemStack> left = insertAll(destination, stacks);
+                state.invSlots.clear(); state.invSlots.addAll(WorkInventory.copy(left));
+                state.deposited += total - leftCount(left);
+                state.lastStop = "";
+                state.setDirty();
+                if (!left.isEmpty()) pause(state, "destination pleine — sac conserve");
+                return left.isEmpty();
+            }
+        }
         if (!state.hasDepot) {
             WorkDepot.request(state);
             return false;
@@ -603,6 +747,62 @@ public final class WorkService {
         return sb.toString();
     }
 
+    private static final List<net.minecraft.world.level.ChunkPos> forcedChunks = new ArrayList<>();
+
+    /**
+     * Garde la zone d'une mission chargee ET tickable (ticket FORCED = niveau entite). Sans cela,
+     * loin de tout joueur, les chunks sont charges sans tick : le compagnon n'a ni physique ni IA,
+     * il flotte et refuse de descendre dans un trou. Les tickets sont relaches a la fermeture.
+     */
+    static void forceChunks(ServerLevel level, BlockPos min, BlockPos max) {
+        releaseChunks(level);
+        int minX = Math.min(min.getX(), max.getX()), maxX = Math.max(min.getX(), max.getX());
+        int minZ = Math.min(min.getZ(), max.getZ()), maxZ = Math.max(min.getZ(), max.getZ());
+        int count = 0;
+        for (int cx = minX >> 4; cx <= maxX >> 4 && count < 256; cx++) {
+            for (int cz = minZ >> 4; cz <= maxZ >> 4 && count < 256; cz++) {
+                var chunk = new net.minecraft.world.level.ChunkPos(cx, cz);
+                level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
+                forcedChunks.add(chunk);
+                count++;
+            }
+        }
+    }
+
+    private static String tickingKey = "";
+    private static long tickingAt = 0L;
+
+    /**
+     * Garde tickables le compagnon ET la destination pendant un travail : hors de la zone de
+     * mission (retour au coffre, trajet de restitution), les chunks restent charges sans tick,
+     * donc le compagnon n'a ni gravite ni deplacement (motion figee, position immobile).
+     */
+    static void ensureTicking(ServerLevel level, WorkState state, LivingEntity bot) {
+        WorkMission mission = MissionService.active(state);
+        String key = bot.chunkPosition() + "|" + (mission == null ? "" : mission.destination.toShortString());
+        if (key.equals(tickingKey) && level.getGameTime() - tickingAt < 200L) return;
+        BlockPos a = bot.blockPosition(), b = a;
+        if (mission != null) {
+            a = new BlockPos(Math.min(a.getX(), mission.destination.getX()), Math.min(a.getY(), mission.destination.getY()),
+                    Math.min(a.getZ(), mission.destination.getZ()));
+            b = new BlockPos(Math.max(b.getX(), mission.destination.getX()), Math.max(b.getY(), mission.destination.getY()),
+                    Math.max(b.getZ(), mission.destination.getZ()));
+        }
+        forceChunks(level, a.offset(-16, -16, -16), b.offset(16, 16, 16));
+        tickingKey = key;
+        tickingAt = level.getGameTime();
+        System.out.println("[TICKING] bot=" + bot.chunkPosition().getRegionLocalX() + ","
+                + bot.chunkPosition().getRegionLocalZ() + " forced chunks=" + forcedChunks.size()
+                + " dest=" + (mission == null ? "-" : mission.destination.toShortString()));
+    }
+
+    static void releaseChunks(ServerLevel level) {
+        for (var chunk : forcedChunks) {
+            level.getChunkSource().removeTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 1);
+        }
+        forcedChunks.clear();
+    }
+
     static boolean loadedNeighborhood(ServerLevel level, BlockPos pos) {
         if (!level.hasChunkAt(pos)) return false;
         for (Direction direction : Direction.values()) if (!level.hasChunkAt(pos.relative(direction))) return false;
@@ -683,6 +883,40 @@ public final class WorkService {
         state.pendingServitor = servitor;
         state.awaitingServitor = false;
         return true;
+    }
+
+    /**
+     * Activation unique et idempotente du mouvement, commune a tous les chemins : chantier, depot,
+     * ordre manuel, reprise apres chargement. Un worker charge depuis une sauvegarde arrive en
+     * NoAI=true (readAdditionalSaveData) et en mode pilote (buts retires) : sans cette porte
+     * unique, une commande de deplacement etait acceptee sans jamais etre executee.
+     */
+    private static final Map<java.util.UUID, net.minecraft.world.level.ChunkPos> ENTITY_TICKING = new HashMap<>();
+
+    /**
+     * Maintient le chunk du compagnon au niveau « entity ticking ». Sans joueur a proximite, un
+     * chunk simplement charge ne tick pas les entites : aiStep() n'est jamais appele, la gravite
+     * n'est pas appliquee et AUCUN deplacement ne peut aboutir, quel que soit le controleur.
+     */
+    public static void keepTicking(ServerLevel level, LivingEntity bot) {
+        if (bot == null) return;
+        var chunk = bot.chunkPosition();
+        var previous = ENTITY_TICKING.put(bot.getUUID(), chunk);
+        if (chunk.equals(previous)) return;
+        if (previous != null) level.getChunkSource().removeTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, previous, 2);
+        level.getChunkSource().addTicketWithRadius(net.minecraft.server.level.TicketType.FORCED, chunk, 2);
+    }
+
+    public static void activateMovement(LivingEntity bot) {
+        if (bot == null) return;
+        if (bot instanceof Servitor1Entity s1) { s1.setWorkMode(); s1.wake(); }
+        if (bot instanceof com.donopot.voiddynasty.entity.ChaosCultistEntity cultist
+                && !bot.entityTags().contains("voiddynasty_pilot")) {
+            // Mode pilote : buts autonomes retires, navigation conservee. Jamais reapplique si deja fait.
+            cultist.passerEnModePilote();
+            bot.addTag("voiddynasty_pilot");
+        }
+        if (bot instanceof Mob mob) mob.setNoAi(false);
     }
 
     public static void discardServitor(ServerLevel level, WorkState state) {
@@ -844,6 +1078,9 @@ public final class WorkService {
             return null;
         }
         if (state.hasJob()) return state;
+        System.out.println("[DEPOSIT_TRACE] step=resume jobName=" + state.jobName + " total=" + state.total
+                + " cursorY=" + state.cursorY + " minY=" + state.minY + " bag=" + state.invSlots.size()
+                + " finishing=" + state.finishing + " servitor=" + state.servitorUuid);
         LivingEntity retained = servitor(level, state);
         if (!state.servitorUuid.isEmpty() && (retained == null || retained.level() != level)) {
             state.lastStop = "WORKER_UNAVAILABLE: retrouver et charger le servitor conserve avant la reprise";
@@ -985,14 +1222,21 @@ public final class WorkService {
 
     /** Explicitly release rollback history. Never throw away carried resources. */
     public static boolean commit(ServerLevel level, WorkState state) {
-        if (state.needsRecovery() || state.hasJob() || state.rollbackRemaining > 0 || !state.invSlots.isEmpty()) return false;
-        WorkMission mission = MissionService.active(state);
+        WorkMission activeMission = MissionService.active(state);
+        // Un chantier dont la mission est terminale (ANNULEE, ECHOUEE, TERMINEE) ne doit pas rester
+        // verrouille : sinon le compagnon reste indefiniment en WORKER_BUSY. Le sac doit toutefois
+        // etre vide (aucun objet n'est efface ici).
+        boolean released = activeMission == null || activeMission.terminal();
+        if (state.needsRecovery() || (state.hasJob() && !released) || state.rollbackRemaining > 0
+                || !state.invSlots.isEmpty()) return false;
+        WorkMission mission = activeMission;
         if (mission != null && !mission.terminal()) return false;
         discardServitor(level, state);
         state.servitorUuid = ""; state.pendingServitor = null;
         state.missionId = "";
         state.journal.clear(); state.depots.clear();
         state.jobName = null; state.hasDepot = false; state.rollbackStarted = false;
+        releaseChunks(level);
         state.tool = ItemStack.EMPTY; state.toolId = "";
         state.lastStop = "chantier valide — ressources laissees dans les depots; rollback abandonne";
         state.setDirty(); return true;
