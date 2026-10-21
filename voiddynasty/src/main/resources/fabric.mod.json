@@ -3,7 +3,7 @@
 	"id": "voiddynasty",
 	"version": "${version}",
 	"name": "Void Dynasty",
-	"description": "Warhammer 40k-inspired Fabric mod: pilotable frigate, Mortuary World mission, and a boltgun.",
+	"description": "VOID DYNASTY unified: fleet, weapons, containers, persistent servitor AI and optional Rogue Trader deliveries.",
 	"authors": [
 		"Donopot (via Hermes / universal-modder)"
 	],
@@ -12,14 +12,17 @@
 	"accessWidener": "voiddynasty.accesswidener",
 	"entrypoints": {
 		"main": [
-			"com.donopot.voiddynasty.VoidDynastyMod"
+			"com.donopot.voiddynasty.VoidDynastyMod",
+			"com.donopot.voiddynastybridge.BridgeMod"
 		],
 		"client": [
-			"com.donopot.voiddynasty.client.VoidDynastyModClient"
+			"com.donopot.voiddynasty.client.VoidDynastyModClient",
+			"com.donopot.voiddynastybridge.VoidDynastyBridgeClient"
 		]
 	},
 	"mixins": [
-		"voiddynasty.mixins.json"
+		"voiddynasty.mixins.json",
+		"voiddynasty-bridge.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.5",
@@ -27,5 +30,11 @@
 		"java": ">=25",
 		"fabric-api": "*",
 		"geckolib": "*"
+	},
+	"breaks": {
+		"voiddynasty_bridge": "*"
+	},
+	"custom": {
+		"voiddynasty:bundled_bridge": "0.7.1"
 	}
 }
