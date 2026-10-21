@@ -1,5 +1,9 @@
 # Mod-minecraft — sources des mods
 
+## Foreuse laser
+
+La version **1.3.0-alpha.95** ajoute une foreuse laser en 3D, avec tête rotative, faisceau lumineux continu, étincelles et son de fonctionnement. Maintenir le clic droit pour forer, puis relâcher pour arrêter. [Présentation et installation](voiddynasty/docs/LASER-DRILL-ALPHA95.md).
+
 ## Développement du servitor polyvalent
 
 La correction **1.3.0-alpha.94** fiabilise l'exécution des tâches, les chunks actifs et les routines de récolte avec retour confirmé. Les routines conservées après redémarrage se reprennent explicitement avec `/servitor routine resume <id>`. [Installation, changements et vérifications](voiddynasty/docs/SERVITOR-ALPHA94.md).
@@ -18,7 +22,7 @@ Ce dépôt réunit les projets de développement Minecraft et la passerelle Rogu
 
 | Dossier | Contenu |
 |---|---|
-| `voiddynasty/` | Mod principal 1.3.0-alpha.94, flotte à six classes et missions du servitor. |
+| `voiddynasty/` | Mod principal 1.3.0-alpha.95, flotte à six classes et missions du servitor. |
 | `voiddynasty-bridge/` | Source unique du bridge Minecraft 0.7.1 : pad dynamique, coffres, armes et logistique. |
 | `voiddynasty-logistics/` | Suite 0.7.1 : adaptateur Rogue Trader, protocole, simulation, tests et assistant Windows. |
 | `onepiece/` | Port Fabric 26.3 : 40 fruits, 213 techniques, formes, assets alpha 19 et HUD alpha 20. |
@@ -46,7 +50,7 @@ Monorepo des sources du mod Minecraft **VOID DYNASTY** et de son addon **Refit &
 
 ```bash
 # le mod
-cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.3.0-alpha.94.jar
+cd voiddynasty && ./gradlew build        # -> build/libs/voiddynasty-1.3.0-alpha.95.jar
 
 # la bridge (nécessite le jar du mod dans voiddynasty-bridge/libs/)
 cd ../voiddynasty-bridge && ./gradlew build   # -> build/libs/voiddynasty_bridge-0.7.1.jar

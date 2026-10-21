@@ -21,6 +21,8 @@ public final class VoidDynastyModClient implements ClientModInitializer {
     public void onInitializeClient() {
         BolterKeybindings.init();
         BolterHud.init();
+        LaserDrillEffects.init();
+        LaserDrillBeamRenderer.init();
         EntityRendererRegistry.register(ModEntities.BOLT_PROJECTILE, BoltProjectileRenderer::new);
         EntityRendererRegistry.register(ModEntities.LASER_BEAM, LaserBeamRenderer::new);
         EntityRendererRegistry.register(ModEntities.CARNIFEX, CarnifexRenderer::new);
