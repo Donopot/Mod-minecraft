@@ -6,6 +6,8 @@
 
 ## Historique : servitor alpha 5
 
+La correction **1.3.0-alpha.94** fiabilise l'exécution des tâches, les chunks actifs et les routines de récolte avec retour confirmé. Les routines conservées après redémarrage se reprennent explicitement avec `/servitor routine resume <id>`. [Installation, changements et vérifications](voiddynasty/docs/SERVITOR-ALPHA94.md).
+
 La version de développement **1.3.0-alpha.5** met à jour le HUD des armes et les raccourcis, avec une [interface coordonnée avec One Piece alpha 20](docs/HUD-KEYBINDINGS.md). Elle conserve les accès en paliers, les zones vides, les matériaux réels, MCP et rollback. [Navigation et commandes](voiddynasty/docs/SERVITOR-NAVIGATION-ALPHA4.md) · [Construction et limites](voiddynasty/docs/SERVITOR-POLYVALENT-ALPHA2.md) · [Exemple Hermes distant](voiddynasty/tools/hermes/README.md) · [Pack alpha de test](client-local/voiddynasty-1.3.0-alpha.5). Les packs précédents restent disponibles.
 
 ## Jouer en local, avec ou sans Rogue Trader

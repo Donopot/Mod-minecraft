@@ -17,7 +17,7 @@ async def before_restart(rcon, lab, results, notes):
         phase(rcon,results,name)
     async with connection(lab) as session:
         names={tool.name for tool in (await session.list_tools()).tools}
-        check(notes,'nine_restricted_tools',len(names)==9 and 'servitor_find' in names and 'servitor_mission_wait' in names)
+        check(notes,'restricted_servitor_tools',{'servitor_find','servitor_observe','servitor_mission_wait','servitor_gather','servitor_mission_control'} <= names and all(name.startswith('servitor_') for name in names))
         found=await call(session,'servitor_find',item='cobblestone',zone_min=[34,64,4],zone_max=[38,64,4],limit=1)
         if not found.get('ok'): raise AssertionError(found)
         check(notes,'real_mcp_find',found['matches_total']==5 and len(found['matches'])==1 and found['truncated'])

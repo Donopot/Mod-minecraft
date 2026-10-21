@@ -94,6 +94,7 @@ public final class BrainSpawn {
             if (e instanceof LivingEntity le && le.entityTags().contains(TAG)) {
                 com.donopot.voiddynasty.work.WorkState work = com.donopot.voiddynasty.work.WorkState.get(level);
                 if (work.jobName != null && le.getUUID().toString().equals(work.servitorUuid)) continue;
+                BrainRoutine.cancel(level, le.getUUID());
                 TaskRunner.cancel(le, level, "retrait operateur");
                 BrainInv.dropAll(level, le);
                 if (!BrainInv.of(le).isEmpty()) continue;

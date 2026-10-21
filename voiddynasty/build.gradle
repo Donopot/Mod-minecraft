@@ -97,3 +97,20 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+
+// The conservation suite is a standalone main, so execute it explicitly during check.
+tasks.register('conservationTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.donopot.voiddynasty.work.WorkConservationTest'
+}
+tasks.named('check') { dependsOn 'conservationTest' }
+
+// HUD integration fixtures require the separately built One Piece mod. They are
+// compiled by the HUD lab, or opt in here with -PonepieceTestJar=/path/to/mod.jar.
+if (providers.gradleProperty('onepieceTestJar').isPresent()) {
+    dependencies { testImplementation files(providers.gradleProperty('onepieceTestJar').get()) }
+} else {
+    sourceSets.test.java.exclude 'com/donopot/voiddynasty/client/HudClientTest.java',
+            'com/donopot/voiddynasty/client/HudServerTest.java'
+}

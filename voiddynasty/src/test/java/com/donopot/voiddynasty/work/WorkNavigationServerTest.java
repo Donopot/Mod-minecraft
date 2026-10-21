@@ -119,25 +119,25 @@ public final class WorkNavigationServerTest implements ModInitializer {
             }
             case "restrictedSetup" -> {arena(level);submit(level,DOWN,"excavate",DOWN,DOWN);}
             case "restricted" -> {
-                check(!s.hasJob() && m.reason.equals("ACCESS_NO_SAFE_ROUTE") && s.journal.isEmpty(),"no mining outside a too-small authorization");
+                check(!s.hasJob() && m.reason.equals("STAIR_NO_ROUTE") && s.journal.isEmpty(),"no mining outside a too-small authorization");
                 check(level.getBlockState(DOWN).is(Blocks.DIAMOND_ORE) && s.invSlots.isEmpty(),"unreachable ore and stock remain intact");
                 MissionService.control(level,m.id,"cancel");check(WorkService.commit(level,s),"refused access closed");
             }
             case "guards" -> {
                 arena(level);submit(level,DOWN,"excavate",new BlockPos(12,59,5),new BlockPos(32,68,15));
-                BlockPos to=ORIGIN.east(3).below();
-                check(WorkStairs.safe(level,s,ORIGIN,to),"valid descending landing accepted");
+                BlockPos from=new BlockPos(16,64,10), to=from.east().below();
+                check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)!=null,"valid descending landing accepted");
                 level.setBlock(to.below(),Blocks.AIR.defaultBlockState(),2|16);
-                check(!WorkStairs.safe(level,s,ORIGIN,to),"unsupported landing refused");
+                check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)==null,"unsupported landing refused");
                 level.setBlock(to.below(),Blocks.MAGMA_BLOCK.defaultBlockState(),2|16);
-                check(!WorkStairs.safe(level,s,ORIGIN,to),"damaging magma floor refused");
+                check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)==null,"damaging magma floor refused");
                 level.setBlock(to.below(),Blocks.STONE.defaultBlockState(),2|16);
-                level.setBlock(to,Blocks.CHEST.defaultBlockState(),2|16);check(!WorkStairs.safe(level,s,ORIGIN,to),"container in access refused");
-                level.setBlock(to,Blocks.BEDROCK.defaultBlockState(),2|16);check(!WorkStairs.safe(level,s,ORIGIN,to),"unbreakable access refused");
+                level.setBlock(to,Blocks.CHEST.defaultBlockState(),2|16);check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)==null,"container in access refused");
+                level.setBlock(to,Blocks.BEDROCK.defaultBlockState(),2|16);check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)==null,"unbreakable access refused");
                 level.setBlock(to,Blocks.STONE.defaultBlockState(),2|16);level.setBlock(to.above(2),Blocks.WATER.defaultBlockState(),2|16);
-                check(!WorkStairs.safe(level,s,ORIGIN,to),"water in return headroom refused");
-                level.setBlock(to.above(2),Blocks.LAVA.defaultBlockState(),2|16);check(!WorkStairs.safe(level,s,ORIGIN,to),"lava in return headroom refused");
-                level.setBlock(to.above(2),Blocks.GRAVEL.defaultBlockState(),2|16);check(!WorkStairs.safe(level,s,ORIGIN,to),"falling ceiling refused");
+                check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)==null,"water in return headroom refused");
+                level.setBlock(to.above(2),Blocks.LAVA.defaultBlockState(),2|16);check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)==null,"lava in return headroom refused");
+                level.setBlock(to.above(2),Blocks.GRAVEL.defaultBlockState(),2|16);check(StairMining.step(level,MissionService.active(s),from,net.minecraft.core.Direction.EAST)==null,"falling ceiling refused");
                 level.setBlock(to.above(2),Blocks.AIR.defaultBlockState(),2|16);
                 MissionService.control(level,s.missionId,"cancel");check(WorkService.commit(level,s),"guard fixture closed");
             }

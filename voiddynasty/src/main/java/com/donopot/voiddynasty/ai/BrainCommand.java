@@ -54,8 +54,11 @@ public final class BrainCommand {
                         .then(Commands.argument("variante", IntegerArgumentType.integer(1, 3))
                                 .executes(ctx -> spawn(ctx, IntegerArgumentType.getInteger(ctx, "variante")))))
                 .then(Commands.literal("despawn").executes(BrainCommand::despawn))
-                .then(Commands.literal("routine").then(Commands.literal("list").executes(ctx -> {
-                    for (String line : BrainRoutine.describe().split("\n")) {
+                .then(Commands.literal("routine")
+                        .then(Commands.literal("resume").then(Commands.argument("mission", StringArgumentType.word()).executes(ctx -> routine(ctx, true))))
+                        .then(Commands.literal("cancel").then(Commands.argument("mission", StringArgumentType.word()).executes(ctx -> routine(ctx, false))))
+                        .then(Commands.literal("list").executes(ctx -> {
+                    for (String line : BrainRoutine.describe(ctx.getSource().getLevel()).split("\n")) {
                         ctx.getSource().sendSuccess(() -> Component.literal(line), false);
                     }
                     return 1;
@@ -426,12 +429,21 @@ public final class BrainCommand {
         return any ? 1 : 0;
     }
 
+    private static int routine(CommandContext<CommandSourceStack> ctx, boolean resume) {
+        String id = StringArgumentType.getString(ctx, "mission");
+        String result = resume ? BrainRoutine.resume(ctx.getSource().getLevel(), id)
+                : BrainRoutine.cancel(ctx.getSource().getLevel(), id);
+        ctx.getSource().sendSuccess(() -> Component.literal(result), false);
+        return result.startsWith("REFUSE") ? 0 : 1;
+    }
+
     private static int stop(CommandContext<CommandSourceStack> ctx) {
         LivingEntity bot = BrainSpawn.find(ctx.getSource().getLevel());
         if (bot == null) {
             ctx.getSource().sendFailure(Component.literal("Aucun servitor en jeu."));
             return 0;
         }
+        BrainRoutine.cancel(ctx.getSource().getLevel(), bot.getUUID());
         ServitorBrain.invalidatePending();
         ServerLevel level=ctx.getSource().getLevel();
         String out;

@@ -22,7 +22,9 @@ public final class TaskRunner {
         BrainTask task;
         LivingEntity bot;
         String lastOutcome = "";
-        int ticks;
+        ServerLevel level;
+        Result result = Result.RUNNING;
+        BrainTask lastTask;
 
         Running(BrainTask task, LivingEntity bot) {
             this.task = task;
@@ -30,28 +32,49 @@ public final class TaskRunner {
         }
     }
 
+    public enum Result { RUNNING, DONE, FAILED, CANCELLED }
+
     private static final Map<UUID, Running> TASKS = new HashMap<>();
 
     private TaskRunner() {}
-    static void reset() { TASKS.clear(); }
+    static void reset() {
+        for (UUID id : TASKS.keySet()) com.donopot.voiddynasty.work.WorkChunkTickets.releaseEntity(id);
+        TASKS.clear();
+    }
+
+    public static Result result(LivingEntity bot, BrainTask task) {
+        Running r = bot == null ? null : TASKS.get(bot.getUUID());
+        if (r == null || r.lastTask != task) return Result.CANCELLED;
+        return r.result;
+    }
+
+    private static void finish(Running r, Result result, String outcome) {
+        BrainTask task = r.task;
+        r.task = null;
+        r.result = result;
+        r.lastOutcome = outcome;
+        try { if (task != null) task.cancel(new BrainTask.Ctx(r.level, r.bot, BrainConfig.get())); }
+        catch (RuntimeException e) { r.lastOutcome += " (arret: " + e.getClass().getSimpleName() + ")"; }
+        com.donopot.voiddynasty.work.WorkChunkTickets.releaseEntity(r.bot.getUUID());
+        ServitorBrain.onTaskFinished(r.lastOutcome);
+    }
 
     public static void assign(ServerLevel level, LivingEntity bot, BrainTask task) {
         if (bot == null || task == null) throw new IllegalArgumentException("aucun servitor/tache");
         if (com.donopot.voiddynasty.work.WorkService.owns(level, bot)) throw new IllegalStateException("ACTION_BUSY: chantier actif");
         Running previous = TASKS.get(bot.getUUID());
-        if (previous != null && previous.task != null) {
-            try {
-                previous.task.cancel(new BrainTask.Ctx(level, bot, BrainConfig.get()));
-            } catch (RuntimeException ignored) {
-            }
-        }
+        if (previous != null && previous.task != null)
+            finish(previous, Result.CANCELLED, "tache remplacee par un nouvel ordre");
         Running running = new Running(task, bot);
+        running.level = level;
+        running.lastTask = task;
         TASKS.put(bot.getUUID(), running);
         try {
+            com.donopot.voiddynasty.work.WorkService.activateMovement(bot);
+            com.donopot.voiddynasty.work.WorkService.keepTicking(level, bot);
             task.start(new BrainTask.Ctx(level, bot, BrainConfig.get()));
         } catch (RuntimeException e) {
-            running.task = null;
-            running.lastOutcome = "tache impossible a demarrer : " + e.getMessage();
+            finish(running, Result.FAILED, "tache impossible a demarrer : " + e.getMessage());
         }
     }
 
@@ -73,12 +96,7 @@ public final class TaskRunner {
         Running r = bot == null ? null : TASKS.get(bot.getUUID());
         if (r == null || r.task == null) return "aucune tache en cours";
         String what = r.task.describe();
-        try {
-            r.task.cancel(new BrainTask.Ctx(level, bot, BrainConfig.get()));
-        } catch (RuntimeException ignored) {
-        }
-        r.task = null;
-        r.lastOutcome = "tache annulee (" + reason + ") : " + what;
+        finish(r, Result.CANCELLED, "tache annulee (" + reason + ") : " + what);
         return "tache annulee : " + what;
     }
 
@@ -96,12 +114,11 @@ public final class TaskRunner {
             Running r = entry.getValue();
             if (r.task == null) continue;
             LivingEntity bot = r.bot;
-            if (bot == null || bot.isRemoved() || !bot.isAlive()) {
-                r.task = null;
-                r.lastOutcome = "tache interrompue : le servitor n'existe plus";
+            if (bot == null || bot.isRemoved() || !bot.isAlive() || bot.level() != r.level) {
+                finish(r, Result.CANCELLED, "tache interrompue : compagnon absent ou dimension changee");
                 continue;
             }
-            ServerLevel level = (ServerLevel) bot.level();
+            ServerLevel level = r.level;
             BrainTask.Ctx ctx = new BrainTask.Ctx(level, bot, BrainConfig.get());
             if (com.donopot.voiddynasty.work.WorkService.owns(level, bot)) {
                 cancel(bot, level, "controle reserve au chantier");
@@ -110,25 +127,16 @@ public final class TaskRunner {
 
             BrainTask.Status status;
             try {
+                com.donopot.voiddynasty.work.WorkService.keepTicking(level, bot);
                 status = r.task.tick(ctx);
             } catch (RuntimeException e) {
-                r.task.cancel(ctx);
-                r.lastOutcome = "tache echouee sur erreur : " + e.getClass().getSimpleName();
-                r.task = null;
-                ServitorBrain.onTaskFinished(r.lastOutcome);
+                finish(r, Result.FAILED, "tache echouee sur erreur : " + e.getClass().getSimpleName());
                 continue;
             }
-            if (status == BrainTask.Status.DONE) {
-                r.lastOutcome = "tache terminee : " + r.task.describe();
-                r.task.cancel(ctx);
-                ServitorBrain.onTaskFinished(r.lastOutcome);
-                r.task = null;
-            } else if (status == BrainTask.Status.FAILED) {
-                r.lastOutcome = "tache echouee : " + r.task.describe();
-                r.task.cancel(ctx);
-                ServitorBrain.onTaskFinished(r.lastOutcome);
-                r.task = null;
-            }
+            if (status == BrainTask.Status.DONE)
+                finish(r, Result.DONE, "tache terminee : " + r.task.describe());
+            else if (status == BrainTask.Status.FAILED)
+                finish(r, Result.FAILED, "tache echouee : " + r.task.describe());
         }
     }
 }
