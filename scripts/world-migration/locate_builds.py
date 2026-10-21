@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Localise les zones CONSTRUITES d'un monde Minecraft et les regroupe en clusters.
+"""Localise les zones CONSTRUITES d'un monde Minecraft, les regroupe en clusters et exporte un CSV.
 
-Approche : on decomprime chaque chunk et on compte les *entrees de palette* qui correspondent
-a des blocs poses par un joueur (planches, verre, beton, cuivre, coffres, rails...).
-Les blocs naturels piegeux (terracotta des badlands, pierre, terre) sont volontairement EXCLUS.
-Sortie : bounding boxes utilisables pour `//pos1 //pos2 //copy //schem save` dans WorldEdit.
+Usage: python3 locate_builds.py <dossier_monde> [chemin_csv]
 
-Usage: python3 locate_builds.py <dossier_monde>
+Approche : on decomprime chaque chunk et on compte les *entrees de palette* correspondant a des blocs
+poses par un joueur (planches, verre, beton, cuivre, coffres, rails, tuff bricks...). Les blocs
+naturels piegeux (terracotta des badlands) sont volontairement EXCLUS. Sortie : bounding boxes
+utilisables directement pour `//pos1 //pos2 //copy //schem save` dans WorldEdit.
 """
-import os, re, sys, zlib, glob
+import os, re, sys, csv, zlib, glob, json
 from collections import Counter
 
 world = sys.argv[1] if len(sys.argv) > 1 else "world"
+out_csv = sys.argv[2] if len(sys.argv) > 2 else None
 
 FRAGS = [
     "planks", "_concrete", "_concrete_powder", "_wool", "_stained_glass", "_glass", "glass_pane",
@@ -66,7 +67,7 @@ built = {}
 for region in glob.glob(os.path.join(world, "dimensions", "minecraft", "overworld", "region", "*.mca")):
     for cx, cz, n, ids in chunks_of(region):
         built[(cx, cz)] = (n, ids)
-print(f"chunks construits detectes (>=10 blocs artificiels distincts): {len(built)}")
+print(f"chunks construits detectes: {len(built)}")
 
 seen, clusters = set(), []
 for start in built:
@@ -87,11 +88,10 @@ for start in built:
     clusters.append(comp)
 
 clusters.sort(key=len, reverse=True)
-print(f"zones (clusters) detectees: {len(clusters)}\n")
+print(f"zones (clusters) detectees: {len(clusters)}")
 
-print("=== TOP 12 zones construites (candidat schematics) ===")
-zone_rows = []
-for idx, comp in enumerate(clusters[:12], 1):
+rows = []
+for idx, comp in enumerate(clusters, 1):
     xs = [c[0] for c in comp]
     zs = [c[1] for c in comp]
     x1, x2 = min(xs) * 16, (max(xs) + 1) * 16
@@ -99,20 +99,25 @@ for idx, comp in enumerate(clusters[:12], 1):
     blocks = Counter()
     for c in comp:
         blocks.update(built[c][1])
-    top = ", ".join(f"{k}x{v}" for k, v in blocks.most_common(4))
-    zone_rows.append((idx, len(comp), x1, x2, z1, z2, top))
-    print(f"  #{idx:<2d} {len(comp):5d} chunks  X[{x1}..{x2}] Z[{z1}..{z2}]  ({x2-x1}x{z2-z1})")
-    print(f"        {top}")
+    sig = " ".join(f"{k}={v}" for k, v in blocks.most_common(5))
+    rows.append({
+        "zone": f"zone_{idx:03d}",
+        "chunks": len(comp),
+        "x1": x1, "x2": x2, "z1": z1, "z2": z2,
+        "y1": -64, "y2": 320,
+        "size_x": x2 - x1, "size_z": z2 - z1,
+        "blocs_dominants": sig,
+    })
 
-tot = Counter()
-for comp in clusters:
-    for c in comp:
-        tot.update(built[c][1])
-print("\n=== blocs artificiels dominants (toutes zones) ===")
-for k, v in tot.most_common(12):
-    print(f"  {v:6d}  {k}")
+print("\n=== TOP 10 ===")
+for r in rows[:10]:
+    print(f"  {r['zone']} {r['chunks']:5d} chunks X[{r['x1']}..{r['x2']}] Z[{r['z1']}..{r['z2']}]  {r['blocs_dominants'][:70]}")
 
-# sortie machine-readable pour le plan
-import json
-print("\nJSON:", json.dumps([{"zone": r[0], "chunks": r[1], "x1": r[2], "x2": r[3], "z1": r[4], "z2": r[5]}
-                            for r in zone_rows]))
+if out_csv:
+    with open(out_csv, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        w.writeheader()
+        w.writerows(rows)
+    print(f"\nCSV ecrit: {out_csv} ({len(rows)} lignes)")
+else:
+    print("\nJSON:", json.dumps(rows[:3], ensure_ascii=False))

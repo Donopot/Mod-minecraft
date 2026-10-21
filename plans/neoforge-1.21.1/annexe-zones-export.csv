@@ -1,0 +1,174 @@
+zone,chunks,x1,x2,z1,z2,y1,y2,size_x,size_z,blocs_dominants
+zone_001,155,-272,304,-192,176,-64,320,576,368,chest=430 wall_torch=427 cobbled_deepslate_stairs=376 dispenser=348 stone_stairs=324
+zone_002,65,-544,-384,-1568,-1312,-64,320,160,256,oak_fence=307 waxed_oxidized_cut_copper_stairs=114 dispenser=92 tuff_brick=90 rail=87
+zone_003,65,720,880,-1632,-1168,-64,320,160,464,oak_fence=223 moss_carpet=155 waxed_oxidized_cut_copper_stairs=76 oak_planks=65 tuff_brick=63
+zone_004,64,768,1104,528,688,-64,320,336,160,oak_fence=336 oak_planks=98 rail=81 dispenser=68 tuff_brick=65
+zone_005,56,-32,176,-400,-208,-64,320,208,192,oak_fence=231 brick=154 waxed_oxidized_cut_copper_stairs=90 rail=83 tuff_brick=81
+zone_006,55,560,720,-2080,-1792,-64,320,160,288,oak_fence=157 waxed_oxidized_cut_copper_stairs=92 tuff_brick=74 chest=70 dispenser=68
+zone_007,48,576,864,16,336,-64,320,288,320,oak_fence=248 chest=80 dispenser=78 oak_planks=72 waxed_oxidized_cut_copper_stairs=72
+zone_008,46,1696,1856,-3344,-3040,-64,320,160,304,oak_fence=222 waxed_oxidized_cut_copper_stairs=63 oak_planks=52 tuff_brick=48 rail=47
+zone_009,39,-832,-720,2784,3072,-64,320,112,288,oak_fence=286 rail=89 oak_planks=83 wall_torch=35 chest=3
+zone_010,33,-384,-224,-880,-640,-64,320,160,240,oak_fence=78 waxed_oxidized_cut_copper_stairs=65 tuff_brick=62 dispenser=62 chiseled_tuff_brick=51
+zone_011,32,1488,1696,-2912,-2672,-64,320,208,240,oak_fence=178 rail=53 oak_planks=48 chest=28 jungle_stairs=27
+zone_012,32,32,176,-1120,-992,-64,320,144,128,oak_fence=86 waxed_oxidized_cut_copper_stairs=73 tuff_brick=56 chiseled_tuff_brick=44 polished_tuff=44
+zone_013,31,1296,1424,-3616,-3488,-64,320,128,128,dispenser=111 waxed_oxidized_cut_copper_stairs=84 tuff_brick=83 chiseled_tuff_brick=67 polished_tuff=65
+zone_014,31,640,752,-3664,-3536,-64,320,112,128,oak_fence=91 waxed_oxidized_cut_copper_stairs=82 tuff_brick=66 dispenser=64 chiseled_tuff_brick=61
+zone_015,30,32,144,-1488,-1360,-64,320,112,128,dispenser=117 tuff_brick=85 waxed_oxidized_cut_copper_stairs=84 polished_tuff=61 chiseled_tuff_brick=58
+zone_016,30,-880,-736,2544,2656,-64,320,144,112,oak_fence=265 rail=79 oak_planks=73 wall_torch=24 chest=24
+zone_017,30,592,704,-2464,-2208,-64,320,112,256,oak_fence=171 smooth_sandstone_stairs=56 rail=49 oak_planks=49 wall_torch=33
+zone_018,30,1184,1328,-1168,-1056,-64,320,144,112,iron_door=72 oak_door=62 cracked_stone_brick=59 mossy_stone_brick=59 stone_brick=59
+zone_019,29,-1104,-976,2800,2896,-64,320,128,96,dispenser=109 tuff_brick=72 waxed_oxidized_cut_copper_stairs=72 chiseled_tuff_brick=64 polished_tuff=52
+zone_020,29,320,448,528,672,-64,320,128,144,oak_fence=209 oak_planks=69 rail=63 wall_torch=19 chest=9
+zone_021,28,-368,-240,1392,1488,-64,320,128,96,waxed_oxidized_cut_copper_stairs=70 tuff_brick=60 trail=50 chest=49 chiseled_tuff_brick=48
+zone_022,28,1040,1184,-928,-816,-64,320,144,112,tuff_brick=67 waxed_oxidized_cut_copper_stairs=64 dispenser=56 waxed_oxidized_cut_copper=41 chiseled_tuff_brick=41
+zone_023,27,1360,1456,-2080,-1872,-64,320,96,208,oak_fence=61 waxed_oxidized_cut_copper_stairs=58 tuff_brick=57 chiseled_tuff_brick=41 polished_tuff=40
+zone_024,27,672,800,-800,-704,-64,320,128,96,waxed_oxidized_cut_copper_stairs=61 dispenser=59 tuff_brick=58 chiseled_tuff_brick=53 polished_tuff=45
+zone_025,27,-288,-160,672,768,-64,320,128,96,dispenser=95 waxed_oxidized_cut_copper_stairs=73 tuff_brick=70 polished_tuff=55 chiseled_tuff_brick=48
+zone_026,25,-944,-816,2400,2496,-64,320,128,96,dispenser=70 tuff_brick=66 waxed_oxidized_cut_copper_stairs=64 chiseled_tuff_brick=47 polished_tuff=44
+zone_027,25,-272,-176,1776,1904,-64,320,96,128,waxed_oxidized_cut_copper_stairs=65 tuff_brick=57 dispenser=54 chiseled_tuff_brick=47 polished_tuff=41
+zone_028,24,-880,-768,3504,3600,-64,320,112,96,waxed_oxidized_cut_copper_stairs=85 dispenser=83 tuff_brick=68 chiseled_tuff_brick=61 polished_tuff=56
+zone_029,24,1168,1312,-3440,-3280,-64,320,144,160,oak_fence=175 rail=43 oak_planks=41 wall_torch=17 chest=6
+zone_030,24,-432,-304,2112,2208,-64,320,128,96,waxed_oxidized_cut_copper_stairs=99 tuff_brick=65 polished_tuff=42 waxed_oxidized_cut_copper=39 chiseled_tuff_brick=37
+zone_031,24,-160,-48,288,400,-64,320,112,112,oak_fence=190 oak_planks=67 rail=57 wall_torch=15 chest=9
+zone_032,23,112,240,672,752,-64,320,128,80,waxed_oxidized_cut_copper_stairs=79 tuff_brick=58 chiseled_tuff_brick=53 polished_tuff=52 dispenser=42
+zone_033,23,960,1072,-192,-48,-64,320,112,144,oak_fence=175 rail=54 oak_planks=45 wall_torch=21 chest=14
+zone_034,23,960,1088,-3968,-3824,-64,320,128,144,oak_fence=175 oak_planks=42 rail=35 chest=18 wall_torch=12
+zone_035,23,-704,-608,2176,2336,-64,320,96,160,oak_fence=154 oak_planks=41 rail=40 moss_carpet=36 raw_iron_block=12
+zone_036,22,1216,1344,-2784,-2688,-64,320,128,96,waxed_oxidized_cut_copper_stairs=66 tuff_brick=59 dispenser=55 chiseled_tuff_brick=49 chest=44
+zone_037,22,1056,1184,-1616,-1520,-64,320,128,96,waxed_oxidized_cut_copper_stairs=71 tuff_brick=54 waxed_oxidized_cut_copper=38 chiseled_tuff_brick=38 polished_tuff=36
+zone_038,21,272,464,-192,-64,-64,320,192,128,oak_fence=134 oak_planks=39 rail=32 chest=18 wall_torch=17
+zone_039,21,640,752,-4048,-3968,-64,320,112,80,tuff_brick=59 waxed_oxidized_cut_copper_stairs=51 dispenser=42 chiseled_tuff_brick=41 polished_tuff=37
+zone_040,20,1280,1376,-656,-544,-64,320,96,112,oak_fence=172 rail=53 oak_planks=46 wall_torch=10 chest=3
+zone_041,20,-320,-208,-1568,-1456,-64,320,112,112,oak_fence=109 rail=39 oak_planks=33 moss_carpet=24 wall_torch=15
+zone_042,20,1504,1616,-3296,-3168,-64,320,112,128,dark_oak_fence=151 dark_oak_planks=43 rail=39 wall_torch=14 chest=6
+zone_043,20,-464,-368,-464,-352,-64,320,96,112,waxed_oxidized_cut_copper_stairs=75 tuff_brick=56 waxed_oxidized_cut_copper=39 chiseled_tuff_brick=36 polished_tuff=36
+zone_044,20,528,672,-992,-800,-64,320,144,192,oak_fence=136 rail=46 oak_planks=39 wall_torch=20 chest=6
+zone_045,19,1088,1184,-352,-256,-64,320,96,96,waxed_oxidized_cut_copper_stairs=81 tuff_brick=62 dispenser=62 polished_tuff=48 chiseled_tuff_brick=46
+zone_046,18,336,464,848,1024,-64,320,128,176,oak_fence=130 rail=29 oak_planks=29 raw_iron_block=11 wall_torch=11
+zone_047,18,-672,-544,1056,1264,-64,320,128,208,oak_fence=127 rail=37 oak_planks=33 chest=14 moss_carpet=11
+zone_048,17,-128,-64,1520,1696,-64,320,64,176,oak_fence=76 pale_moss_carpet=43 moss_carpet=26 oak_planks=23 rail=16
+zone_049,17,-320,-192,2256,2368,-64,320,128,112,oak_fence=103 oak_planks=31 rail=27 moss_carpet=26 chest=15
+zone_050,17,-400,-256,1536,1616,-64,320,144,80,oak_fence=131 rail=38 oak_planks=34 wall_torch=3
+zone_051,15,-1040,-912,2944,3040,-64,320,128,96,smooth_sandstone_stairs=49 oak_fence=31 jungle_door=30 wall_torch=30 smooth_sandstone_slab=21
+zone_052,14,-1264,-1136,3232,3408,-64,320,128,176,oak_fence=100 oak_planks=28 rail=25 wall_torch=10 chest=6
+zone_053,14,352,512,-416,-240,-64,320,160,176,oak_fence=80 rail=27 chest=24 oak_planks=16 wall_torch=14
+zone_054,13,-704,-608,2016,2096,-64,320,96,80,oak_fence=75 moss_carpet=37 oak_planks=22 rail=18 wall_torch=2
+zone_055,13,480,608,-1488,-1424,-64,320,128,64,oak_fence=95 rail=31 oak_planks=24 moss_carpet=11 wall_torch=11
+zone_056,13,512,624,832,944,-64,320,112,112,oak_fence=77 moss_carpet=25 rail=24 oak_planks=23 wall_torch=12
+zone_057,13,-432,-368,2368,2496,-64,320,64,128,oak_fence=71 moss_carpet=31 rail=23 oak_planks=21 wall_torch=8
+zone_058,13,1856,1952,-3312,-3232,-64,320,96,80,smooth_sandstone_stairs=63 jungle_door=37 wall_torch=31 smooth_sandstone_slab=26 chest=23
+zone_059,13,640,704,-3424,-3296,-64,320,64,128,oak_fence=86 rail=24 oak_planks=22 chest=18 wall_torch=8
+zone_060,12,-1376,-1312,3248,3312,-64,320,64,64,dispenser=33 waxed_oxidized_cut_copper_stairs=30 tuff_brick=24 dark_oak_fence=24 chiseled_tuff_brick=22
+zone_061,12,2160,2208,-3152,-3056,-64,320,48,96,waxed_oxidized_cut_copper_stairs=31 brick=27 tuff_brick=26 chest=26 polished_tuff=23
+zone_062,12,1424,1520,-3776,-3728,-64,320,96,48,oak_fence=89 oak_planks=24 rail=20 wall_torch=8
+zone_063,12,-416,-352,-592,-512,-64,320,64,80,oak_fence=111 oak_planks=35 rail=21 wall_torch=8
+zone_064,12,-416,-288,96,224,-64,320,128,128,oak_fence=96 oak_planks=28 rail=27 wall_torch=12
+zone_065,11,1264,1376,-4112,-4000,-64,320,112,112,oak_fence=72 oak_planks=23 rail=19 wall_torch=8 chest=3
+zone_066,11,1776,1872,-3760,-3728,-64,320,96,32,dispenser=42 tuff_brick=38 waxed_oxidized_cut_copper_stairs=36 chiseled_tuff_brick=33 polished_tuff=32
+zone_067,10,-576,-496,1440,1488,-64,320,80,48,oak_fence=79 rail=26 oak_planks=18 wall_torch=10 chest=6
+zone_068,10,-512,-448,288,336,-64,320,64,48,dispenser=55 tuff_brick=26 waxed_oxidized_cut_copper_stairs=21 chiseled_tuff_brick=16 waxed_oxidized_cut_copper=11
+zone_069,9,1984,2048,-3040,-2960,-64,320,64,80,oak_fence=70 oak_planks=17 rail=17 wall_torch=7
+zone_070,9,336,416,-2064,-1952,-64,320,80,112,smooth_sandstone_stairs=29 jungle_door=26 smooth_sandstone_slab=19 chest=19 wall_torch=13
+zone_071,9,336,400,-1616,-1568,-64,320,64,48,oak_fence=71 rail=21 oak_planks=18 wall_torch=4 chest=3
+zone_072,9,1056,1152,-2192,-2128,-64,320,96,64,oak_fence=58 oak_planks=15 rail=13 raw_iron_block=11 dark_oak_fence=7
+zone_073,8,-720,-640,3488,3664,-64,320,80,176,oak_fence=26 chest=21 sandstone_stairs=10 oak_planks=9 jungle_door=8
+zone_074,8,-608,-544,2848,2944,-64,320,64,96,oak_fence=63 rail=16 oak_planks=16 chest=12 wall_torch=2
+zone_075,8,288,368,-528,-384,-64,320,80,144,oak_fence=53 oak_planks=14 rail=13 chest=9 wall_torch=3
+zone_076,8,736,832,-368,-288,-64,320,96,80,oak_fence=43 rail=15 chest=15 oak_planks=12 wall_torch=3
+zone_077,8,-656,-592,-96,-32,-64,320,64,64,oak_fence=57 oak_planks=16 rail=16 chest=6 wall_torch=4
+zone_078,8,1168,1232,-4160,-4112,-64,320,64,48,dispenser=39 waxed_oxidized_cut_copper_stairs=30 tuff_brick=19 chiseled_tuff_brick=19 polished_tuff=18
+zone_079,8,848,912,-3488,-3376,-64,320,64,112,oak_fence=56 rail=13 oak_planks=13 wall_torch=6 chest=6
+zone_080,7,-160,-16,1024,1088,-64,320,144,64,oak_fence=33 moss_carpet=11 rail=10 oak_planks=10 wall_torch=7
+zone_081,7,240,304,-1232,-1168,-64,320,64,64,oak_fence=43 rail=11 oak_planks=11 chest=6 wall_torch=4
+zone_082,7,-672,-640,3344,3424,-64,320,32,80,oak_fence=79 oak_planks=28 rail=27 wall_torch=10 chest=4
+zone_083,7,1792,1840,-2944,-2896,-64,320,48,48,oak_fence=65 oak_planks=16 rail=10 wall_torch=9
+zone_084,7,-656,-576,-1456,-1408,-64,320,80,48,oak_fence=46 oak_planks=13 chest=11 rail=8 wall_torch=4
+zone_085,7,1328,1504,-2512,-2464,-64,320,176,48,oak_fence=35 rail=12 chest=9 oak_planks=8 wall_torch=5
+zone_086,7,-1040,-992,2128,2208,-64,320,48,80,oak_fence=42 rail=15 oak_planks=13 wall_torch=6 chest=5
+zone_087,7,864,944,288,384,-64,320,80,96,trail=44 oak_fence=20 mud_brick_stairs=14 mud_brick=11 brick=10
+zone_088,7,-624,-576,2368,2416,-64,320,48,48,oak_fence=43 oak_planks=14 moss_carpet=13 rail=10 wall_torch=8
+zone_089,6,0,128,1696,1776,-64,320,128,80,oak_fence=38 oak_planks=11 rail=10 wall_torch=3 chest=3
+zone_090,6,976,1040,-2560,-2480,-64,320,64,80,oak_fence=39 rail=13 wall_torch=9 oak_planks=8 raw_iron_block=3
+zone_091,6,-1232,-1104,2464,2528,-64,320,128,64,oak_fence=27 dispenser=11 rail=9 oak_planks=9 wall_torch=5
+zone_092,5,-464,-400,976,1040,-64,320,64,64,oak_fence=20 moss_carpet=12 oak_planks=7 rail=6 raw_iron_block=4
+zone_093,5,496,592,-1120,-1072,-64,320,96,48,oak_fence=39 rail=11 oak_planks=9 moss_carpet=4 wall_torch=3
+zone_094,5,1088,1232,-2448,-2416,-64,320,144,32,dark_oak_fence=34 dark_oak_planks=10 rail=10 wall_torch=4 raw_iron_block=1
+zone_095,5,-416,-368,-688,-640,-64,320,48,48,oak_fence=45 oak_planks=11 raw_iron_block=9 rail=9 wall_torch=1
+zone_096,5,-272,-208,896,976,-64,320,64,80,oak_fence=31 rail=9 oak_planks=9 moss_carpet=5 wall_torch=4
+zone_097,4,-304,-272,1216,1312,-64,320,32,96,oak_fence=29 rail=9 oak_planks=6 chest=6 moss_carpet=2
+zone_098,4,480,560,-1296,-1248,-64,320,80,48,oak_fence=21 moss_carpet=7 rail=6 oak_planks=4 wall_torch=4
+zone_099,4,400,432,-1744,-1696,-64,320,32,48,oak_fence=27 oak_planks=8 rail=5 wall_torch=4
+zone_100,4,-528,-448,2512,2576,-64,320,80,64,oak_fence=23 oak_planks=7 rail=7 moss_carpet=6 wall_torch=1
+zone_101,4,-528,-480,48,96,-64,320,48,48,oak_fence=35 oak_planks=8 rail=6 chest=3 wall_torch=2
+zone_102,4,224,304,-992,-944,-64,320,80,48,oak_fence=23 rail=8 oak_planks=7 wall_torch=6 chest=6
+zone_103,4,-352,-320,1968,2000,-64,320,32,32,spruce_stairs=35 dark_oak_fence=17 dark_oak_stairs=9 chest=9 moss_carpet=8
+zone_104,4,1808,1872,-3472,-3424,-64,320,64,48,oak_fence=23 rail=8 oak_planks=6 wall_torch=4 chest=3
+zone_105,4,-320,-272,464,496,-64,320,48,32,oak_fence=36 rail=7 oak_planks=7 wall_torch=2
+zone_106,4,592,624,-3792,-3760,-64,320,32,32,trail=44 brick_stairs=12 mud_brick_stairs=7 brick_slab=5 cracked_stone_brick=4
+zone_107,3,-896,-864,3424,3456,-64,320,32,32,oak_fence=19 oak_planks=6 wall_torch=4 rail=2
+zone_108,3,-1328,-1296,3072,3104,-64,320,32,32,oak_fence=14 chest=12 sandstone_stairs=8 oak_planks=4 sandstone_slab=2
+zone_109,3,288,320,736,784,-64,320,32,48,oak_fence=19 rail=6 chest=6 oak_planks=3 wall_torch=2
+zone_110,3,1344,1392,-2192,-2144,-64,320,48,48,oak_fence=19 rail=6 oak_planks=5 chest=3
+zone_111,3,1328,1360,-3248,-3200,-64,320,32,48,dark_oak_fence=21 rail=7 dark_oak_planks=4 wall_torch=1
+zone_112,3,1056,1088,400,480,-64,320,32,80,oak_fence=15 moss_carpet=6 rail=5 oak_planks=3 wall_torch=2
+zone_113,3,912,960,-480,-448,-64,320,48,32,oak_fence=17 chest=8 oak_planks=3 wall_torch=3 rail=2
+zone_114,3,-16,0,2224,2288,-64,320,16,64,dispenser=9 tuff_brick=6 waxed_oxidized_cut_copper_stairs=6 chiseled_tuff_brick=6 polished_tuff=5
+zone_115,3,5088,5104,4928,5008,-64,320,16,80,oak_fence=14 oak_planks=6 rail=6 chest=4 wall_torch=3
+zone_116,3,1056,1088,896,928,-64,320,32,32,oak_fence=23 oak_planks=5 rail=4
+zone_117,2,-768,-752,1936,1968,-64,320,16,32,jungle_stairs=13 moss_carpet=4 jungle_planks=4 spruce_stairs=4 spruce_fence=4
+zone_118,2,1136,1184,-2848,-2816,-64,320,48,32,oak_fence=9 rail=4 raw_iron_block=3 oak_planks=3 chest=3
+zone_119,2,128,144,1888,1936,-64,320,16,48,oak_fence=14 rail=4 oak_planks=2 wall_torch=2
+zone_120,2,2192,2208,-3248,-3216,-64,320,16,32,oak_fence=13 rail=4 oak_planks=4 chest=4 wall_torch=1
+zone_121,2,-1216,-1184,2944,2960,-64,320,32,16,dark_oak_fence=15 rail=5 dark_oak_planks=4 wall_torch=1
+zone_122,2,1216,1232,-2176,-2128,-64,320,16,48,dark_oak_fence=15 dark_oak_planks=3 rail=2 wall_torch=1
+zone_123,2,-688,-640,3744,3776,-64,320,48,32,oak_fence=11 chest=5 oak_planks=3 rail=2 wall_torch=1
+zone_124,2,544,560,-144,-112,-64,320,16,32,chest=12 oak_fence=7 oak_planks=2 rail=2
+zone_125,2,1056,1088,-1792,-1760,-64,320,32,32,oak_fence=9 chest=6 rail=4 wall_torch=2 oak_planks=2
+zone_126,2,304,320,-2144,-2112,-64,320,16,32,dispenser=10 waxed_oxidized_cut_copper_stairs=5 tuff_brick=4 polished_tuff=4 waxed_cut_copper_slab=2
+zone_127,2,-304,-288,-464,-432,-64,320,16,32,dark_oak_stairs=10 spruce_stairs=9 chest=6 spruce_fence=5 dark_oak_trapdoor=4
+zone_128,2,-384,-368,1744,1776,-64,320,16,32,spruce_stairs=27 oak_fence=20 oak_stairs=10 chest=8 spruce_planks=4
+zone_129,2,528,592,-592,-528,-64,320,64,64,oak_fence=13 rail=5 oak_planks=3 raw_iron_block=1
+zone_130,2,1152,1184,608,656,-64,320,32,48,oak_fence=10 chest=6 oak_planks=3 rail=3 wall_torch=2
+zone_131,2,1152,1184,816,848,-64,320,32,32,oak_fence=10 oak_stairs=5 wall_torch=4 oak_planks=3 oak_door=2
+zone_132,2,1024,1056,992,1024,-64,320,32,32,chest=15 stone_brick_stairs=9 oak_fence=2 oak_planks=1 mossy_stone_brick=1
+zone_133,1,-1024,-1008,1856,1872,-64,320,16,16,trail=38
+zone_134,1,-48,-32,1472,1488,-64,320,16,16,chest=9 moss_carpet=2
+zone_135,1,1424,1440,-2992,-2976,-64,320,16,16,stone_brick=5 stone_brick_stairs=3 chest=3 cracked_stone_brick=2 gold_block=1
+zone_136,1,1200,1216,-2912,-2896,-64,320,16,16,oak_fence=7 oak_planks=2 wall_torch=1
+zone_137,1,-752,-736,3264,3280,-64,320,16,16,chest=12 sandstone_stairs=2
+zone_138,1,96,112,2016,2032,-64,320,16,16,stone_brick_stairs=3 chest=3 stone_slab=2 stone_brick_slab=2 stone_brick=1
+zone_139,1,-1104,-1088,3088,3104,-64,320,16,16,dark_oak_fence=5 dark_oak_planks=2 wall_torch=2 rail=1
+zone_140,1,2144,2160,-3376,-3360,-64,320,16,16,chest=12 sandstone_stairs=2
+zone_141,1,2192,2208,-3312,-3296,-64,320,16,16,oak_fence=7 oak_planks=2 rail=1
+zone_142,1,-1232,-1216,3008,3024,-64,320,16,16,dark_oak_fence=5 rail=2 wall_torch=2 dark_oak_planks=1
+zone_143,1,768,784,800,816,-64,320,16,16,stone_brick_stairs=6 chest=3 mossy_stone_brick_stairs=2 stone_brick=1 stone_brick_slab=1
+zone_144,1,1456,1472,-2368,-2352,-64,320,16,16,mossy_stone_brick_stairs=8 oak_fence=7 mossy_stone_brick_slab=5 stone_brick_slab=3 stone_brick_stairs=2
+zone_145,1,1440,1456,-2272,-2256,-64,320,16,16,oak_fence=7 oak_planks=2 rail=1
+zone_146,1,960,976,-2400,-2384,-64,320,16,16,stone_brick_stairs=6 mossy_stone_brick_stairs=3 chest=3 stone_brick_slab=2 mossy_stone_brick=2
+zone_147,1,864,880,-2384,-2368,-64,320,16,16,chest=11
+zone_148,1,1248,1264,-320,-304,-64,320,16,16,oak_fence=6 rail=3 wall_torch=2 oak_planks=1
+zone_149,1,-1120,-1104,2400,2416,-64,320,16,16,chest=6 oak_fence=4 oak_planks=2 rail=1
+zone_150,1,240,256,1168,1184,-64,320,16,16,oak_fence=8 rail=4 chest=4 oak_planks=2
+zone_151,1,1328,1344,-3920,-3904,-64,320,16,16,chest=11
+zone_152,1,816,832,-1888,-1872,-64,320,16,16,stone_brick_stairs=5 chest=3 mossy_stone_brick_stairs=2 stone_brick=1 stone_brick_slab=1
+zone_153,1,80,96,-496,-480,-64,320,16,16,oak_fence=2 rail=2 chest=2 oak_stairs=2 oak_planks=1
+zone_154,1,528,544,-64,-48,-64,320,16,16,oak_fence=5 rail=2 wall_torch=2 oak_planks=1
+zone_155,1,-624,-608,-192,-176,-64,320,16,16,chest=3 oak_fence=2 oak_planks=1 cracked_stone_brick=1 stone_brick=1
+zone_156,1,848,864,224,240,-64,320,16,16,stone_brick_stairs=4 chest=3 stone_brick=2 stone_slab=1 gold_block=1
+zone_157,1,-432,-416,-976,-960,-64,320,16,16,chest=6 oak_fence=4 rail=2 oak_planks=1
+zone_158,1,-288,-272,-576,-560,-64,320,16,16,smooth_stone_slab=3 mossy_stone_brick_slab=3 mossy_stone_brick=2 stone_brick_stairs=2 stone_brick=2
+zone_159,1,624,640,-1344,-1328,-64,320,16,16,chest=7 cobblestone_stairs=6 dispenser=4 sticky_piston=2 chiseled_stone_brick=1
+zone_160,1,960,976,-1120,-1104,-64,320,16,16,chest=11
+zone_161,1,640,656,-1104,-1088,-64,320,16,16,oak_fence=5 rail=2 moss_carpet=1 oak_planks=1 wall_torch=1
+zone_162,1,-912,-896,2144,2160,-64,320,16,16,chest=8 cobblestone_stairs=4 dispenser=4 sticky_piston=2 chiseled_stone_brick=1
+zone_163,1,992,1008,-736,-720,-64,320,16,16,chest=6 oak_fence=5 rail=2 oak_planks=1
+zone_164,1,944,960,-544,-528,-64,320,16,16,oak_fence=8 oak_planks=2 rail=1
+zone_165,1,816,832,-528,-512,-64,320,16,16,stone_brick_stairs=5 stone_brick_slab=4 smooth_stone_slab=3 mossy_stone_brick_slab=2 stone_brick=2
+zone_166,1,4944,4960,4944,4960,-64,320,16,16,pale_moss_carpet=11
+zone_167,1,5056,5072,5088,5104,-64,320,16,16,oak_fence=7 oak_planks=2 rail=1
+zone_168,1,560,576,-3584,-3568,-64,320,16,16,oak_fence=7 oak_planks=2 rail=1
+zone_169,1,752,768,-3312,-3296,-64,320,16,16,chest=12 sandstone_stairs=2
+zone_170,1,-352,-336,288,304,-64,320,16,16,stone_brick_stairs=6 oak_fence=3 chest=3 mossy_stone_brick_stairs=3 stone_brick_slab=3
+zone_171,1,976,992,-3728,-3712,-64,320,16,16,stone_brick_stairs=6 chest=3 gold_block=1 cracked_stone_brick=1 stone_brick=1
+zone_172,1,1552,1568,-2560,-2544,-64,320,16,16,spruce_stairs=9 chest=5 oak_stairs=3 oak_fence=3 spruce_fence=2
+zone_173,1,1632,1648,-2416,-2400,-64,320,16,16,chest=6 moss_carpet=2 oak_fence=2 rail=1 oak_planks=1
