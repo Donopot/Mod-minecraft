@@ -3,6 +3,12 @@
 > Document d'exécution. Remplace `plans/2026-10-21-PLAN-REBUILD-NEOFORGE-1.21.1.md` (v1, décisionnel).
 > Toutes les versions, volumétries et coordonnées de ce document ont été **mesurées ou vérifiées** le 2026-10-21.
 
+## Reprise d'exécution — 21 octobre 2026
+
+**P0 PASS** : contrat et GameTest compilé livrés. **P1 en attente d'Hermes**, qui seul accède au monde source ; P2 et la suite restent non démarrées. Détails et corrections de données : [avancement](neoforge-1.21.1/AVANCEMENT.md), [contrat figé](neoforge-1.21.1/contrat-ids.json), [relais Hermes](neoforge-1.21.1/HERMES-P1-EXPORTS.md).
+
+Le baseline réel contient Fabric alpha.95. Les commandes d'export doivent convertir les bornes hautes exclusives du CSV vers les coordonnées inclusives WorldEdit (x2-1, z2-1, Y=319). Les clés de fours et les données du servitor exigent un traitement de migration explicite ; voir le contrat avant tout collage.
+
 ## 0. Décisions actées
 
 | Sujet | Décision |

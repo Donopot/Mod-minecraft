@@ -1,0 +1,437 @@
+{
+  "schema": 1,
+  "status": "frozen-p0",
+  "source_commit": "020fa9cf5efc10e7e697829e228001336b2c016a",
+  "source_minecraft": "26.3",
+  "target": {
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264",
+    "java": 21,
+    "moddevgradle": "2.0.148",
+    "geckolib": "4.9.3"
+  },
+  "runtime_checks": {
+    "block": [
+      "voiddynasty:super_chest",
+      "voiddynasty:super_container",
+      "voiddynasty:mining_rig",
+      "voiddynasty:promethium_furnace",
+      "voiddynasty:promethium_blast_furnace",
+      "voiddynasty:promethium_smoker",
+      "voiddynasty:promethium_brewing_stand"
+    ],
+    "item": [
+      "voiddynasty:adamantium_plate",
+      "voiddynasty:black_ceramite_ingot",
+      "voiddynasty:blue_ceramite_ingot",
+      "voiddynasty:bolt_pistol",
+      "voiddynasty:bolt_shell",
+      "voiddynasty:boltgun",
+      "voiddynasty:ceramite_ingot",
+      "voiddynasty:chainsword",
+      "voiddynasty:control_pad",
+      "voiddynasty:dark_green_ceramite_ingot",
+      "voiddynasty:flamethrower",
+      "voiddynasty:focus_lens",
+      "voiddynasty:green_ceramite_ingot",
+      "voiddynasty:heavy_bolt_shell",
+      "voiddynasty:heavy_bolter",
+      "voiddynasty:hunter_killer_missile",
+      "voiddynasty:las_cell",
+      "voiddynasty:las_gun",
+      "voiddynasty:laser_drill",
+      "voiddynasty:laz_pistol",
+      "voiddynasty:light_blue_ceramite_ingot",
+      "voiddynasty:melta_cell",
+      "voiddynasty:melta_gun",
+      "voiddynasty:mining_rig",
+      "voiddynasty:missile_ammo",
+      "voiddynasty:pink_ceramite_ingot",
+      "voiddynasty:plasma_cell",
+      "voiddynasty:plasma_coil",
+      "voiddynasty:plasma_incinerator",
+      "voiddynasty:plasma_pistol",
+      "voiddynasty:power_hammer",
+      "voiddynasty:powersword",
+      "voiddynasty:promethium_blast_furnace",
+      "voiddynasty:promethium_brewing_stand",
+      "voiddynasty:promethium_furnace",
+      "voiddynasty:promethium_smoker",
+      "voiddynasty:red_ceramite_ingot",
+      "voiddynasty:shotgun",
+      "voiddynasty:shotgun_shell",
+      "voiddynasty:silicon_carbide",
+      "voiddynasty:stalker_bolt_rifle",
+      "voiddynasty:stalker_bolt_round",
+      "voiddynasty:super_chest",
+      "voiddynasty:super_container",
+      "voiddynasty:titanium_ingot",
+      "voiddynasty:warhead",
+      "voiddynasty:wax_seal",
+      "voiddynasty:white_ceramite_ingot",
+      "voiddynasty:wires",
+      "voiddynasty:yellow_ceramite_ingot"
+    ],
+    "entity_type": [
+      "voiddynasty:servitor_1",
+      "voiddynasty:servitor_2",
+      "voiddynasty:servitor_3",
+      "voiddynasty:bolt_projectile",
+      "voiddynasty:laser_beam",
+      "voiddynasty:projectile_chaos"
+    ],
+    "block_entity_type": [
+      "voiddynasty:super_chest",
+      "voiddynasty:super_container",
+      "voiddynasty:mining_rig",
+      "minecraft:furnace",
+      "minecraft:blast_furnace",
+      "minecraft:smoker",
+      "minecraft:brewing_stand"
+    ],
+    "menu": [
+      "voiddynasty:super_chest"
+    ],
+    "sound_event": [
+      "voiddynasty:item.bolter.fire",
+      "voiddynasty:item.bolt_pistol.fire",
+      "voiddynasty:item.heavy_bolter.fire",
+      "voiddynasty:item.las_gun.fire",
+      "voiddynasty:item.plasma_pistol.fire",
+      "voiddynasty:item.plasma_incinerator.fire",
+      "voiddynasty:item.shotgun.fire",
+      "voiddynasty:item.flamethrower.fire",
+      "voiddynasty:item.melta.fire",
+      "voiddynasty:item.missile.fire",
+      "voiddynasty:item.melee.swing",
+      "voiddynasty:item.dry_fire",
+      "voiddynasty:item.reload"
+    ],
+    "creative_mode_tab": [
+      "voiddynasty:main"
+    ],
+    "data_component_type": [
+      "voiddynasty:ammo",
+      "voiddynasty:recoil",
+      "voiddynasty:reloading"
+    ]
+  },
+  "map_required": {
+    "block": [
+      "voiddynasty:super_chest",
+      "voiddynasty:super_container",
+      "voiddynasty:promethium_furnace",
+      "voiddynasty:promethium_blast_furnace",
+      "voiddynasty:promethium_smoker",
+      "voiddynasty:promethium_brewing_stand"
+    ],
+    "entity_type": [
+      "voiddynasty:servitor_2"
+    ],
+    "item": [
+      "voiddynasty:control_pad",
+      "voiddynasty:laser_drill"
+    ]
+  },
+  "block_entities": [
+    {
+      "block": "voiddynasty:super_chest",
+      "type": "voiddynasty:super_chest",
+      "slots": 81,
+      "fusion": [
+        2,
+        2
+      ],
+      "nbt_profile": "container"
+    },
+    {
+      "block": "voiddynasty:super_container",
+      "type": "voiddynasty:super_container",
+      "slots": 54,
+      "fusion": [
+        6,
+        2
+      ],
+      "nbt_profile": "container"
+    },
+    {
+      "block": "voiddynasty:mining_rig",
+      "type": "voiddynasty:mining_rig",
+      "slots": 3,
+      "nbt_profile": "inventory"
+    },
+    {
+      "block": "voiddynasty:promethium_furnace",
+      "type": "minecraft:furnace",
+      "slots": 3,
+      "nbt_profile": "furnace"
+    },
+    {
+      "block": "voiddynasty:promethium_blast_furnace",
+      "type": "minecraft:blast_furnace",
+      "slots": 3,
+      "nbt_profile": "furnace"
+    },
+    {
+      "block": "voiddynasty:promethium_smoker",
+      "type": "minecraft:smoker",
+      "slots": 3,
+      "nbt_profile": "furnace"
+    },
+    {
+      "block": "voiddynasty:promethium_brewing_stand",
+      "type": "minecraft:brewing_stand",
+      "slots": 5,
+      "nbt_profile": "brewing"
+    }
+  ],
+  "nbt_profiles": {
+    "inventory": {
+      "keys": [
+        "Items"
+      ],
+      "item_keys": [
+        "Slot",
+        "id",
+        "count",
+        "components"
+      ],
+      "slot_encoding": "unsigned byte 0..255",
+      "source": "ContainerHelper / ItemStackWithSlot (26.3)"
+    },
+    "container": {
+      "extends": "inventory",
+      "keys": [
+        "CustomName",
+        "lock"
+      ],
+      "source": "BaseContainerBlockEntity / LockCode (26.3)",
+      "requires_adapter": [
+        "CustomName component encoding",
+        "lock item predicate to target Lock format"
+      ]
+    },
+    "furnace": {
+      "extends": "container",
+      "keys": [
+        "cooking_time_spent",
+        "cooking_total_time",
+        "lit_time_remaining",
+        "lit_total_time",
+        "speed_multiplier",
+        "RecipesUsed"
+      ],
+      "target_aliases": {
+        "cooking_time_spent": "CookTime",
+        "cooking_total_time": "CookTimeTotal",
+        "lit_time_remaining": "BurnTime"
+      },
+      "requires_adapter": [
+        "target timer tag types",
+        "lit_total_time",
+        "speed_multiplier",
+        "RecipesUsed recipe identifier schema"
+      ]
+    },
+    "brewing": {
+      "extends": "container",
+      "keys": [
+        "BrewTime",
+        "total_brew_time",
+        "Fuel",
+        "total_fuel",
+        "speed_multiplier"
+      ],
+      "requires_adapter": [
+        "target timer/fuel tag types",
+        "total_brew_time",
+        "total_fuel",
+        "speed_multiplier"
+      ]
+    }
+  },
+  "menu": {
+    "id": "voiddynasty:super_chest",
+    "visible_slots": 54,
+    "columns": 9,
+    "persistent_nbt": false,
+    "note": "Scroll/page is transient; item slots belong to individual block entities."
+  },
+  "components": {
+    "voiddynasty:ammo": {
+      "persistent": true,
+      "type": "int"
+    },
+    "voiddynasty:recoil": {
+      "persistent": false,
+      "type": "int"
+    },
+    "voiddynasty:reloading": {
+      "persistent": false,
+      "type": "int"
+    }
+  },
+  "entity": {
+    "id": "voiddynasty:servitor_2",
+    "custom_nbt_keys": [],
+    "preserve": [
+      "UUID",
+      "Pos",
+      "Rotation",
+      "Tags",
+      "NoAI",
+      "PersistenceRequired",
+      "CustomName",
+      "Health",
+      "equipment"
+    ],
+    "note": "Servitor2 and ChaosCultist add no custom saved fields. Brain bags and routines are world SavedData, not carried by WorldEdit entity NBT."
+  },
+  "external_data": {
+    "dimension_saved_data": [
+      "voiddynasty:brain_inventory",
+      "voiddynasty:brain_routines",
+      "voiddynasty:work_state"
+    ],
+    "overworld_saved_data": [
+      "voiddynasty:brain_bag_ledger"
+    ],
+    "world_files": [
+      "voiddynasty/voiddynasty-servitor-notes.json"
+    ],
+    "policy": "Export separately, preserve originals, never imply that schematics carry these data; no automatic resume."
+  },
+  "regenerate_in_p4": [
+    "voiddynasty:ceramite_ore",
+    "voiddynasty:deepslate_ceramite_ore"
+  ],
+  "deferred_source_ids": {
+    "block": [
+      "voiddynasty:barrel",
+      "voiddynasty:ammo_crate",
+      "voiddynasty:cannon_shell",
+      "voiddynasty:sandbags",
+      "voiddynasty:gothic_wall",
+      "voiddynasty:crate",
+      "voiddynasty:crate_green",
+      "voiddynasty:crate_red",
+      "voiddynasty:crate_shut",
+      "voiddynasty:gothic_panel",
+      "voiddynasty:corpse_1",
+      "voiddynasty:corpse_2",
+      "voiddynasty:corpse_3",
+      "voiddynasty:corpse_4",
+      "voiddynasty:corpse_5",
+      "voiddynasty:corpse_6",
+      "voiddynasty:blood_stain",
+      "voiddynasty:blood_arrow",
+      "voiddynasty:blast_mark",
+      "voiddynasty:blood_god",
+      "voiddynasty:spent_shell",
+      "voiddynasty:battery_pack",
+      "voiddynasty:wax_seal_prop",
+      "voiddynasty:corpse_starch",
+      "voiddynasty:laz_cannon",
+      "voiddynasty:multimelta_turret",
+      "voiddynasty:ceramite_block",
+      "voiddynasty:blue_ceramite_block",
+      "voiddynasty:red_ceramite_block",
+      "voiddynasty:black_ceramite_block",
+      "voiddynasty:green_ceramite_block",
+      "voiddynasty:dark_green_ceramite_block",
+      "voiddynasty:pink_ceramite_block",
+      "voiddynasty:white_ceramite_block",
+      "voiddynasty:yellow_ceramite_block",
+      "voiddynasty:light_blue_ceramite_block"
+    ],
+    "entity_type": [
+      "voiddynasty:tyranid_warrior",
+      "voiddynasty:carnifex",
+      "voiddynasty:carnifex_leviathan",
+      "voiddynasty:lemunruss",
+      "voiddynasty:lemunruss_v2",
+      "voiddynasty:lictor",
+      "voiddynasty:norn_emissary",
+      "voiddynasty:great_unclean_one",
+      "voiddynasty:lord_of_change",
+      "voiddynasty:keeper_of_secrets",
+      "voiddynasty:khorne_juggernaut",
+      "voiddynasty:large_khorne_daemon",
+      "voiddynasty:plaguetoad",
+      "voiddynasty:ghazghkull",
+      "voiddynasty:servo_skull",
+      "voiddynasty:cultist_1",
+      "voiddynasty:cultist_2",
+      "voiddynasty:cultist_3",
+      "voiddynasty:cultist_4",
+      "voiddynasty:cultist_boss",
+      "voiddynasty:chaos_marine_1",
+      "voiddynasty:chaos_marine_2",
+      "voiddynasty:chaos_marine_3",
+      "voiddynasty:chaos_captain",
+      "voiddynasty:chaos_raptor",
+      "voiddynasty:chaos_helldrake",
+      "voiddynasty:chaos_dreadnought",
+      "voiddynasty:chaos_hellbrute",
+      "voiddynasty:chaos_forgefiend",
+      "voiddynasty:daemon_prince"
+    ],
+    "armor_item": [
+      "voiddynasty:space_marine_helmet",
+      "voiddynasty:space_marine_chestplate",
+      "voiddynasty:space_marine_leggings",
+      "voiddynasty:space_marine_boots",
+      "voiddynasty:terminator_helmet",
+      "voiddynasty:terminator_chestplate",
+      "voiddynasty:terminator_leggings",
+      "voiddynasty:terminator_boots"
+    ]
+  },
+  "import_policy": {
+    "unknown_block_or_item": "refuse import and report ID, never substitute air or silently empty a slot",
+    "unknown_component_or_nbt": "retain original NBT and report; adapter required before paste",
+    "inventory_checks": [
+      "slot index",
+      "item ID",
+      "count",
+      "components",
+      "custom name",
+      "lock",
+      "before/after restart"
+    ],
+    "worldedit_paste_allowed": false,
+    "paste_gate": "P5 validated and per-schematic target palette / NBT validation passed; then P10."
+  },
+  "scope_corrections": [
+    "ModSounds annex was empty; source registers 13 sounds.",
+    "ModArmor annex mixes an item tag and equipment-asset keys with items; only 8 armor pieces are actual registered items.",
+    "Refining machines reuse vanilla block-entity IDs, not voiddynasty:promethium_* block-entity IDs.",
+    "The source is alpha.95, not alpha.94; exact baseline is source_commit."
+  ],
+  "source_files_sha256": {
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModBlocks.java": "74661294601df83651ea46e9b0513c237baf31932438cb987d012e4891c7f04f",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModItems.java": "bfc08b01662d8a7e13e024f1b0995d10290b3cbe1da5f76bb1d508d608c633df",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModArmor.java": "2e01e8dbe70684851c77542328149fc1bf3165218a31f75857b44bf2264c5861",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModBlockEntities.java": "0b7fc3fff3fd3757235ac587abe8d2e3cc9f8f8f897ab9aa8b0fa522ee8f4471",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModEntities.java": "75935c368ec0d0597cdddcde85fe99acf03e9f00b3eff2243d5e346042bb53d6",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModMenuTypes.java": "5f8ff51572292b088b17383cd17474a73b68ebded8226aea57b9d606738e2ad5",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModSounds.java": "24a830e8442bad9b6c15be326e3ec4bb2b69eea4e055523fe2bc5670c9ecb716",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/registry/ModItemGroups.java": "63946db57c97e3dbe7cb36745bc267558aeaaa3b9067f805c82806cedd41472d",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/component/ModDataComponents.java": "d41e04ece2866eeee2ad6b7d8f78387560f56ccdddcb92989ddeeb3656b67bec",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/AbstractSuperContainerBlockEntity.java": "99e069e29dac6884286bdee0152ba3b78d7a5c902b85a145f92b21f81a992976",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/MiningRigBlockEntity.java": "618d89535da6d558a3e734aee8c15d9a206335f6586fbabeebea84ad0a4c6a1d",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/SuperChestBlockEntity.java": "5042d55904d9dc99f8d62f5bef0b97001938ce40b6a74c0d3dc626cdbbe58703",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/SuperContainerBlockEntity.java": "89b7a38e205fac19509ccf47150fe9b16d4924371e4778711b196efaf0463831",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/PromethiumFurnaceBlockEntity.java": "c67a6f47229683ff9ca56955c33bd9aa52a224b19b28aaf0eb3802f895443d18",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/PromethiumBlastFurnaceBlockEntity.java": "f505b2707f344ba687baf2c6cc9f661e438d37c2f1cd786bf5428c03b007c154",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/PromethiumSmokerBlockEntity.java": "97d5b307a0f8f0271bd4142dae123ad96ffe5149d484d4f134d7930658c795f9",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/machine/PromethiumBrewingStandBlockEntity.java": "ea6f87f32ee7e20f6f26f089a2566a3d541a573ecf88bc05268829b9f2812da8",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/menu/SuperChestMenu.java": "fc24072a3851d6585b4e5e9fd805e7b419420611a80bc05fbb7708a82094a278",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/entity/Servitor2Entity.java": "af012deea391ee2c4db2bba44c48b68f90b620a30b017eb5349087a915575c6f",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/entity/ChaosCultistEntity.java": "e5ae04a68a6f33f7ec29cdb1203472b3343def893b015520f186b8450a9c0703",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/ai/BrainInventoryState.java": "29c8ab35c6fa46ab5cda7648b7d57590a293fac9796be17f6b0eccf5dcc5b916",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/ai/BrainBags.java": "3bf549659d5a4b5ae3dbcca792430ece1b6c7a0a84bdcc7946e452085b813918",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/ai/BrainRoutineState.java": "d3ada410dcdfb317aef6230f68ffa0acfeb1d0b672fadd75aa63b0a607a4e250",
+    "voiddynasty/src/main/java/com/donopot/voiddynasty/work/WorkState.java": "50598a23fab77c4b9c9b6cd12839561dcb5a445692d91ff45dabdb5d5686a752"
+  }
+}

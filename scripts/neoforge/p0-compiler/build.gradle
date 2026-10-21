@@ -1,0 +1,13 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+neoForge { version = '21.1.264' }
+sourceSets.main.java.srcDirs = [file('../../../voiddynasty-neoforge/src/gametest/java')]
+tasks.withType(JavaCompile).configureEach { options.release = 21; options.encoding = 'UTF-8' }
+// This target compiles the future P3 GameTest. It neither registers content nor starts a server.
+
+processResources {
+    from('../../../plans/neoforge-1.21.1/contrat-ids.json') { into 'migration' }
+}

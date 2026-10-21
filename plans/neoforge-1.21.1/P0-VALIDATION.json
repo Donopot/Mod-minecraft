@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "phase": "P0",
+  "status": "PASS",
+  "source_baseline": "020fa9cf5efc10e7e697829e228001336b2c016a",
+  "runtime_identifiers": 88,
+  "source_hashes_verified": 24,
+  "python_tests_passed": 12,
+  "game_test_compiled": true,
+  "game_test_executed": false,
+  "java_class_major": 65,
+  "compiled_class_sha256": "7f5351395f813c9500737d33750cf23aac3f7e7b173bda9e2b3b4c1e5e823130",
+  "versions": {
+    "java": "Temurin 21.0.12.1+1",
+    "gradle": "9.2.1",
+    "moddevgradle": "2.0.148",
+    "neoforge": "21.1.264"
+  },
+  "P1": "WAITING_FOR_HERMES_PROOFS",
+  "production_world_accessed": false
+}
